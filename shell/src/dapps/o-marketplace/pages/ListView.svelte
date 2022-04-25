@@ -8,35 +8,30 @@ import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-import {
-  Shop,
-  ShopCategory, ShopDocument, ShopQueryVariables,
-} from "../../../shared/api/data/types";
+import { Shop, ShopCategory, ShopDocument, ShopQueryVariables } from "../../../shared/api/data/types";
 
-import {ApiClient} from "../../../shared/apiConnection";
+import { ApiClient } from "../../../shared/apiConnection";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
-export let storeId:number;
+export let storeId: number;
 
-let shop: Shop|null = null;
+let shop: Shop | null = null;
 let categories: ShopCategory[] = [];
 let shellEventSubscription: Subscription;
 
 onMount(async () => {
-  shop = await ApiClient.query<Shop, ShopQueryVariables>(
-          ShopDocument,
-          {
-            id: parseInt(storeId.toString())
-          }
-  );
+  shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
+    id: parseInt(storeId.toString()),
+  });
 
-  if (!shop){
+  if (!shop) {
     await push("/not-found");
     return;
   }
 
   categories = shop.categories;
+  console.log("CATEGORIES", categories);
 });
 </script>
 
@@ -66,21 +61,22 @@ onMount(async () => {
     {#if categories.length > 0}
       <div class="flex flex-col space-y-4">
         {#each categories as category, i}
-          <div class="pt-4 pb-10" class:bg-gray-300="{i % 2 == 1}">
-            <div class="mx-auto space-y-4 xl:w-1/2 md:w-2/3">
-              <h1 class="px-4 mb-2 ml-2 ">{category.name}</h1>
-              <div class="flex flex-col px-4 space-y-4">
-                {#each category.entries.map(o => o.product) as offer}
-                  <ListViewCard param="{offer}" />
-                {/each}
+          {#if category.entries && category.enabled}
+            <div class="pt-4 pb-10" class:bg-gray-300="{i % 2 == 1}">
+              <div class="mx-auto space-y-4 xl:w-1/2 md:w-2/3">
+                <h1 class="px-4 mb-2 ml-2 ">{category.name}</h1>
+                <div class="flex flex-col px-4 space-y-4">
+                  {#each category.entries.map((o) => o.product) as offer}
+                    <ListViewCard param="{offer}" />
+                  {/each}
+                </div>
               </div>
             </div>
-          </div>
+          {/if}
         {/each}
         {#if shop}
           <div class="p-6 text-center text-2xs">
-            Informationen über Zusatzstoffe und Allergene können auf der Physische Karte der {shop.name} eingesehen
-            werden.
+            Informationen über Zusatzstoffe und Allergene können auf der Physische Karte der {shop.name} eingesehen werden.
           </div>
         {/if}
       </div>
