@@ -246,10 +246,11 @@ function removeLast() {
                   bind:value="{category.description}" />
               </div>
 
-              <div class="table-cell w-64 h-10 p-1 overflow-hidden ">
-                <div class="w-64 h-12 ">
+              <div class="relative table-cell w-12 p-1 overflow-hidden">
+                <div class="absolute w-12 h-12 bottom-2">
                   {#if category.largeBannerUrl}
                     <img
+                      class="w-12 h-12"
                       src="{category.largeBannerUrl}"
                       alt="large Banner Url"
                       on:click="{() => imageEditor(index, 'largeBannerUrl', false)}" />
@@ -261,10 +262,11 @@ function removeLast() {
                 </div>
               </div>
 
-              <div class="table-cell w-64 h-10 p-1 overflow-hidden ">
-                <div class="w-64 h-12 ">
+              <div class="relative table-cell w-12 p-1 overflow-hidden">
+                <div class="absolute w-12 h-12 bottom-2">
                   {#if category.smallBannerUrl}
                     <img
+                      class="w-12 h-12"
                       src="{category.smallBannerUrl}"
                       alt="small Banner Url"
                       on:click="{() => imageEditor(index, 'smallBannerUrl', false)}" />

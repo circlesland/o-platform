@@ -361,7 +361,7 @@ function addProduct(categoryId) {
                   <div class="table-cell p-1 break-all">
                     <input
                       type="text"
-                      size="50"
+                      size="30"
                       class="input"
                       placeholder="{entry.product.description}"
                       bind:value="{entry.product.description}"
