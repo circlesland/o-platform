@@ -14,6 +14,11 @@ const VERBOSE = process.argv.includes("--verbose");
 let __CIRCLES_GARDEN_API__ = "https://api.circles.garden/api/users/";
 let __AUTH_ENDPOINT__ = "https://auth.circles.name";
 let __API_ENDPOINT__ = "https://api.circles.land";
+let __HUMANODE_AUTH_URL__ = "https://auth.staging.oauth2.humanode.io/oauth2/auth";
+let __HUMANODE_TOKEN_URL__ = "https://auth.staging.oauth2.humanode.io/oauth2/token";
+let __HUMANODE_REDIRECT_URL__ = "http://localhost:5000/";
+let __HUMANODE_CLIENT_ID__ = "circles-ubi-jwks";
+let __HUMANODE_SCOPE__ = "openid";
 let __EXTERNAL_URL__ = "https://circles.land";
 let __CIRCLES_SUBGRAPH_ENDPOINT__ =
   "https://api.thegraph.com/subgraphs/name/circlesubi/circles";
@@ -79,7 +84,13 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
 }
 
 console.log(`__AUTH_ENDPOINT__: ${__AUTH_ENDPOINT__}`);
-console.log(`__AUTH_ENDPOINT__: ${__AUTH_ENDPOINT__}`);
+
+console.log(`__HUMANODE_AUTH_URL__: ${__HUMANODE_AUTH_URL__}`);
+console.log(`__HUMANODE_TOKEN_URL__: ${__HUMANODE_TOKEN_URL__}`);
+console.log(`__HUMANODE_REDIRECT_URL__: ${__HUMANODE_REDIRECT_URL__}`);
+console.log(`__HUMANODE_CLIENT_ID__: ${__HUMANODE_CLIENT_ID__}`);
+console.log(`__HUMANODE_SCOPE__: ${__HUMANODE_SCOPE__}`);
+
 console.log(`__APP_ID__: ${__APP_ID__}`);
 console.log(`__EXTERNAL_URL__: ${__EXTERNAL_URL__}`);
 console.log(`__FILES_APP_ID__: ${__FILES_APP_ID__}`);
@@ -143,6 +154,51 @@ module.exports = {
 
   module: {
     rules: [
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__HUMANODE_SCOPE__",
+          replace: __HUMANODE_SCOPE__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__HUMANODE_CLIENT_ID__",
+          replace: __HUMANODE_CLIENT_ID__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__HUMANODE_REDIRECT_URL__",
+          replace: __HUMANODE_REDIRECT_URL__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__HUMANODE_TOKEN_URL__",
+          replace: __HUMANODE_TOKEN_URL__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__HUMANODE_AUTH_URL__",
+          replace: __HUMANODE_AUTH_URL__,
+          flags: "g",
+        },
+      },
       {
         test: /\.ts|\.js|\.svelte$/,
         loader: "string-replace-loader",

@@ -8,6 +8,7 @@ import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 import {Generate} from "@o-platform/o-utils/dist/generate";
 import {ApiClient} from "../../../shared/apiConnection";
 import {ClientAssertionJwtDocument, ClientAssertionJwtQueryVariables} from "../../../shared/api/data/types";
+import {Environment} from "../../../shared/environment";
 
 export type PerformOauthContextData = {
   nonce: string, // A random string
@@ -47,15 +48,12 @@ const processDefinition = (processId: string) =>
               ...context.data,
               oauthRequest: {
                 ...context.data.oauthRequest,
-                clientId: "circles-ubi-jwks",
-                redirectUri: "http://localhost:5000/",
-                scope: "openid",
+                clientId: Environment.humanodeClientId,
+                redirectUri: Environment.humanodeRedirectUrl,
+                scope: Environment.humanodeScope,
                 responseType: "code",
                 prompt: "consent",
                 accessType: "offline",
-              },
-              authorizationResponse: {
-                ...context.data.authorizationResponse,
               }
             }
           }
@@ -67,7 +65,7 @@ const processDefinition = (processId: string) =>
           cond: (context) => !!context.data.authorizationResponse && !!context.data.authorizationResponse.error,
           target: "#cancelled"
         }, {
-          cond: (context) => !!context.data.authorizationResponse && !context.data.authorizationResponse.error,
+          cond: (context) => !!context.data.authorizationResponse.code && !context.data.authorizationResponse.error,
           target: "#callback"
         }]
       },
@@ -101,18 +99,19 @@ const processDefinition = (processId: string) =>
         id: "redirect",
         entry: (context) => {
           const state = Generate.randomHexString(8) + "-" + context.data.origin ?? "";
-          let url = `https://auth.staging.oauth2.humanode.io/oauth2/auth`
-              url += `?client_id=${context.data.oauthRequest.clientId}`
-              url += `&redirect_uri=${context.data.oauthRequest.redirectUri}`
-              url += `&scope=${context.data.oauthRequest.scope}`
-              url += `&access_type=${context.data.oauthRequest.accessType}`
-              url += `&client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer`
-              url += `&client_assertion=${context.data.oauthRequest.clientAssertion}`
-              url += `&response_type=${context.data.oauthRequest.responseType}`
-              url += `&state=${state}`
-              url += `&prompt=${context.data.oauthRequest.prompt}`;
+          const urlParams = new URLSearchParams({
+            client_id: context.data.oauthRequest.clientId,
+            redirect_uri: context.data.oauthRequest.redirectUri,
+            scope: context.data.oauthRequest.scope,
+            access_type: context.data.oauthRequest.accessType,
+            client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+            client_assertion: `${context.data.oauthRequest.clientAssertion}`,
+            response_type: `${context.data.oauthRequest.responseType}`,
+            state: `${state}`,
+            prompt: `${context.data.oauthRequest.prompt}`
+          });
 
-          window.location.href = url;
+          window.location.href = `${Environment.humanodeAuthUrl}?${urlParams.toString()}`;
         }
       },
       cancelled: prompt({
@@ -141,7 +140,10 @@ const processDefinition = (processId: string) =>
         invoke: {
           src: async context => {
             console.log("Exchange token:", context.data);
-            const response = await fetch("https://auth.staging.oauth2.humanode.io/oauth2/token",
+            context.data.oauthRequest.clientAssertion =
+              await ApiClient.query<string, ClientAssertionJwtQueryVariables>(ClientAssertionJwtDocument, {});
+
+            const response = await fetch(Environment.humanodeTokenUrl,
             {
               method: "POST",
               headers: {
@@ -151,7 +153,9 @@ const processDefinition = (processId: string) =>
                 client_id: context.data.oauthRequest.clientId,
                 grant_type: "authorization_code",
                 code: context.data.authorizationResponse.code,
-                redirect_uri: "http://localhost:5000/"
+                redirect_uri: Environment.humanodeRedirectUrl,
+                client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+                client_assertion: `${context.data.oauthRequest.clientAssertion}`
               })
             });
             console.log("Code exchange response:", await response.json());

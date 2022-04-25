@@ -3,7 +3,6 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { Environment } from "./shared/environment";
 import dayjs from "dayjs";
-import * as bip39 from "bip39";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 RpcGateway.setup(Environment.xdaiRpcGatewayUrl);
