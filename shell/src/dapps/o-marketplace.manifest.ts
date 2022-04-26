@@ -26,7 +26,7 @@ import { me } from "../shared/stores/me";
 
 const addToCart: Trigger<{ id: Number }, DappState> = {
   isSystem: true,
-  routeParts: ["=actions", "=addToCart", ":id"],
+  routeParts: ["=actions", "=addToCart", ":id", ":shopId"],
   title: "Add to Cart",
   type: "trigger",
   action: async (params) => {

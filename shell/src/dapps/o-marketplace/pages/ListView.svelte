@@ -67,7 +67,7 @@ onMount(async () => {
                 <h1 class="px-4 mb-2 ml-2 ">{category.name}</h1>
                 <div class="flex flex-col px-4 space-y-4">
                   {#each category.entries.map((o) => o.product) as offer}
-                    <ListViewCard param="{offer}" />
+                    <ListViewCard param="{offer}" storeId="{storeId}" />
                   {/each}
                 </div>
               </div>
