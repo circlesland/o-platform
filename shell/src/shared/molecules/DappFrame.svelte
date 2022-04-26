@@ -131,6 +131,7 @@ async function onBack() {
     .reduce((p, c) => p + "/" + c, "");
 
   //stack.pop();
+  console.log("DappFrame.onBack() is pushing to:", `#/${previous.params.dappId}${path}`);
   await push(`#/${previous.params.dappId}${path}`);
   setTimeout(() => popScrollPosition());
 }
@@ -220,7 +221,15 @@ async function onRoot() {
 
     nextRoute = findRoutableByParams(previousRuntimeDapp, baseParams);
     if (nextRoute && nextRoute.found) {
-      path = nextRoute.routable.routeParts
+      const routePartsWithReplacedVariables = nextRoute.routable.routeParts.map((o, i) => {
+        if (!o.startsWith(":"))
+          return o;
+
+        if (baseParams[(i + 1).toString()]) {
+          return baseParams[(i + 1).toString()];
+        }
+      });
+      path = routePartsWithReplacedVariables
         .map((o) => o.replace("=", ""))
         .join("/");
     }
@@ -262,7 +271,9 @@ async function onRoot() {
     return;
   }
 
-  while (stack.length > 0) stack.pop();
+  while (stack.length > 0) {
+    stack.pop();
+  }
 
   onCloseModal();
 
@@ -271,6 +282,7 @@ async function onRoot() {
     0,
     dc > -1 ? dc : previousRuntimeDapp.dappId.length
   );
+  console.log("DappFrame.onRoot() is pushing to:", `#/${dappIdForRoute}/${path}`);
   await push(`#/${dappIdForRoute}/${path}`);
 
   window.scrollTo(0, root.scrollY);
@@ -1221,7 +1233,6 @@ function showMainPage(
   //   `showMainPage(runtimeDapp: ${runtimeDapp.dappId}, routable: ${routable.title} (type: ${routable.type}), params: object)`,
   //   params
   // );
-
   layout = {
     ...layout,
     main: {
