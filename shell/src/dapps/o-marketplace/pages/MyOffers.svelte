@@ -2,7 +2,6 @@
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 
 import { onMount } from "svelte";
-import { push } from "svelte-spa-router";
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
@@ -11,28 +10,19 @@ import {
   Offer,
   ShopCategory,
   ShopDocument,
-  ShopsDocument,
-  ShopsQueryVariables,
   ShopQueryVariables,
   UpsertOfferDocument,
   UpsertOfferMutationVariables,
   OfferInput,
-  MutationUpsertOfferArgs,
   UpsertShopCategoryEntriesResult,
-  UpsertShopCategoriesDocument,
   ShopCategoryInput,
-  UpsertShopCategoriesResult,
-  UpsertShopCategoriesMutationVariables,
   UpsertShopCategoryEntriesDocument,
   UpsertShopCategoryEntriesMutationVariables,
-  MutationUpsertShopCategoryEntriesArgs,
   ShopCategoryEntry,
 } from "../../../shared/api/data/types";
-import { storeOffers } from "../../../shared/stores/storeOffers";
-import { _ } from "svelte-i18n";
 import { Environment } from "../../../shared/environment";
 import { Readable } from "svelte/store";
-import { ok, err, Result } from "neverthrow";
+import { ok } from "neverthrow";
 import { ApiClient } from "../../../shared/apiConnection";
 import Center from "../../../shared/layouts/Center.svelte";
 
@@ -67,17 +57,14 @@ let currentEntry: ShopCategoryEntry;
 let hovering: number = null;
 
 onMount(async () => {
-  if ($me.shops.length) {
-    storeId = $me.shops[0].id;
+  if (!$me || !$me.shops || !$me.shops.length) {
+    return;
   }
+
+  storeId = $me.shops[0].id;
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
     id: parseInt(storeId.toString()),
   });
-
-  if (!shop) {
-    await push("/not-found");
-    return;
-  }
 
   categories = shop.categories;
   categoryInput = categories;
@@ -298,7 +285,7 @@ function addProduct(categoryId) {
 
 <div class="w-5/6 px-4 mx-auto -mt-3">
   <div class="items-center w-full p-4 ">
-    {#if storeId}
+    {#if shop}
       {#if categories.length > 0}
         {#each categories as category, catindex (category.name)}
           <div class="p-2 w-min whitespace-nowrap rounded-t-md" class:bg-gray-300="{catindex % 2 == 1}">
