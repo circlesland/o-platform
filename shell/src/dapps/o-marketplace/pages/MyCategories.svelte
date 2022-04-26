@@ -46,18 +46,14 @@ let currentCategoryId: any;
 $: categories = categories;
 
 onMount(async () => {
-  if ($me.shops.length) {
-    storeId = $me.shops[0].id;
+  if (!$me || !$me.shops || !$me.shops.length) {
+    return;
   }
 
+  storeId = $me.shops[0].id;
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
     id: parseInt(storeId.toString()),
   });
-
-  if (!shop) {
-    await push("/not-found");
-    return;
-  }
 
   if (shop.categories == null) {
     newCategory = {
@@ -220,7 +216,7 @@ function removeLast() {
 
 <div class="w-5/6 px-4 mx-auto -mt-3">
   <div class="items-center w-full p-4 ">
-    {#if storeId}
+    {#if shop}
       {#if categories.length > 0}
         <div class="table">
           <div class="table-header-group">
