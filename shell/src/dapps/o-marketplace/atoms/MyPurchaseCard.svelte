@@ -44,12 +44,6 @@ function loadDetailPage(path) {
           </div>
           <div class="text-xs text-right text-dark-lightest whitespace-nowrap leading-non">
             <span class="inline-block"> {relativeTimeString(purchased.purchase.createdAt, 1, true)}</span>
-            {#if purchased.purchase.lines[0].metadata}
-              <br />
-
-              {Object.keys(JSON.parse(purchased.purchase.lines[0].metadata))}:
-              {Object.values(JSON.parse(purchased.purchase.lines[0].metadata))}
-            {/if}
           </div>
         </div>
         <div class="flex flex-row items-center justify-between px-3 text-left">
@@ -62,6 +56,7 @@ function loadDetailPage(path) {
               {/if}
             </h2>
           </div>
+          <div class="text-right">Table: 15</div>
         </div>
         <div class="flex flex-row items-center justify-between px-3 mt-2 text-left">
           <div
