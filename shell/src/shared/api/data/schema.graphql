@@ -757,6 +757,11 @@ type NotificationEvent {
   transaction_hash: String
 }
 
+type ProofUniquenessResult {
+  existingSafe: String!
+  isUnique: Boolean!
+}
+
 type CreatedInvitation {
   createdBy: Profile
   createdByProfileId: Int!
@@ -1201,6 +1206,7 @@ type Mutation {
   purchase(lines: [PurchaseLineInput!]!): [Invoice!]!
   completePurchase(invoiceId: Int!, revoke: Boolean): Invoice!
   completeSale(invoiceId: Int!, revoke: Boolean): Invoice!
+  proofUniqueness(humanodeToken: String!): ProofUniquenessResult!
 
   logout: LogoutResponse!
   upsertProfile(data: UpsertProfileInput!): Profile!

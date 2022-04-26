@@ -500,6 +500,7 @@ export type Mutation = {
   purchase: Array<Invoice>;
   completePurchase: Invoice;
   completeSale: Invoice;
+  proofUniqueness: ProofUniquenessResult;
   logout: LogoutResponse;
   upsertProfile: Profile;
   requestUpdateSafe: RequestUpdateSafeResponse;
@@ -527,7 +528,6 @@ export type Mutation = {
   importOrganisationsOfAccount: Array<Organisation>;
   verifySafe: VerifySafeResult;
   revokeSafeVerification: VerifySafeResult;
-  proofUniqueness: ProofUniquenessResult;
 };
 
 
@@ -551,6 +551,11 @@ export type MutationCompletePurchaseArgs = {
 export type MutationCompleteSaleArgs = {
   invoiceId: Scalars['Int'];
   revoke?: Maybe<Scalars['Boolean']>;
+};
+
+
+export type MutationProofUniquenessArgs = {
+  token: Scalars['String'];
 };
 
 
@@ -673,11 +678,6 @@ export type MutationVerifySafeArgs = {
 
 export type MutationRevokeSafeVerificationArgs = {
   safeAddress: Scalars['String'];
-};
-
-
-export type MutationProofUniquenessArgs = {
-  token: Scalars['String'];
 };
 
 export type MyInviteRank = {
@@ -907,8 +907,8 @@ export type ProofPaymentResult = {
 
 export type ProofUniquenessResult = {
   __typename?: 'ProofUniquenessResult';
-  isUnique: Scalars['Boolean'];
   existingSafe: Scalars['String'];
+  isUnique: Scalars['Boolean'];
 };
 
 export type PublicEvent = {
