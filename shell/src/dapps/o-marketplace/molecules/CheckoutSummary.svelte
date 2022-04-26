@@ -104,7 +104,7 @@ function resetError() {
           >Please select your Table Number</span>
         <div class="mt-2">
           <select
-            class="w-full max-w-xs select select-bordered"
+            class="w-full max-w-xs select select-lg select-bordered"
             bind:value="{tableNumber}"
             on:change="{(event) => resetError()}"
             class:select-error="{tableError}">
