@@ -87,7 +87,9 @@ $: {
               {relativeTimeString(sale.invoice.createdAt, 1, true)}
             </span>
 
-            <div class="mt-2 mb-2 text-lg font-bold text-right">Table: 15</div>
+            <div class="mt-2 mb-2 text-lg font-bold text-right">{sale.invoice.lines[0].metadata
+                    ? "Table: " +  JSON.parse(sale.invoice.lines[0].metadata).Table
+                    : ""}</div>
           </div>
         </div>
         <div class="flex flex-row items-center justify-between px-3 mt-2 text-left">
