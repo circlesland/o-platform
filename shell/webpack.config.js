@@ -7,7 +7,7 @@ const webpack = require("webpack");
 const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
 
 const mode = process.env.NODE_ENV || "development";
-const prod = mode === "production";
+let prod = mode === "production";
 const DEBUG = !process.argv.includes("--release");
 const VERBOSE = process.argv.includes("--verbose");
 
@@ -50,24 +50,28 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __APP_ID__ = "circles.land";
   __EXTERNAL_URL__ = "https://circles.land";
   __FILES_APP_ID__ = "files.circles.land";
+  prod = true;
 } else if (process.env.DEPLOY_ENVIRONMENT === "dev") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
   __API_ENDPOINT__ = "https://dev.api.circles.land";
   __APP_ID__ = "staging.circles.land";
   __EXTERNAL_URL__ = "https://staging.circles.land";
   __FILES_APP_ID__ = "dev.files.circles.land";
+  prod = false;
 } else if (process.env.DEPLOY_ENVIRONMENT === "local") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
   __API_ENDPOINT__ = "https://local.api.circles.land";
   __APP_ID__ = "local.circles.land";
   __EXTERNAL_URL__ = "https://localhost:5000";
   __FILES_APP_ID__ = "dev.files.circles.land";
+  prod = false;
 } else if (process.env.DEPLOY_ENVIRONMENT === "ultralocal") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
   __API_ENDPOINT__ = "http://localhost:8989";
   __APP_ID__ = "ultralocal.circles.land";
   __EXTERNAL_URL__ = "https://localhost:5000";
   __FILES_APP_ID__ = "dev.files.circles.land";
+  prod = false;
 } else if (process.env.DEPLOY_ENVIRONMENT === "docker") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
   __API_ENDPOINT__ = "http://localhost:8989";
@@ -81,6 +85,7 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __ALLOW_VERIFY__ = "true";
   __ALLOW_CREATE_ORGANISATION__ = "true";
   __FIXED_GAS_PRICE__ = "1";
+  prod = false;
 }
 
 __HUMANODE_REDIRECT_URL__ = __EXTERNAL_URL__;

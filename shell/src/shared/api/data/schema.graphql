@@ -291,6 +291,7 @@ type Invoice {
 type InvoiceLine {
     amount: Int!
     id: Int!
+    metadata: String
     offer: Offer
 }
 

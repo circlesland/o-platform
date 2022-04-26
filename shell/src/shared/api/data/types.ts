@@ -413,6 +413,7 @@ export type InvoiceLine = {
   __typename?: 'InvoiceLine';
   amount: Scalars['Int'];
   id: Scalars['Int'];
+  metadata?: Maybe<Scalars['String']>;
   offer?: Maybe<Offer>;
 };
 
@@ -2844,7 +2845,7 @@ export type StreamQuery = (
         & Pick<Invoice, 'id' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate' | 'createdAt' | 'cancelledAt' | 'cancelReason' | 'simplePickupCode' | 'paymentTransactionHash'>
         & { lines?: Maybe<Array<(
           { __typename?: 'InvoiceLine' }
-          & Pick<InvoiceLine, 'amount'>
+          & Pick<InvoiceLine, 'amount' | 'metadata'>
           & { offer?: Maybe<(
             { __typename?: 'Offer' }
             & Pick<Offer, 'id' | 'title' | 'pictureUrl' | 'pricePerUnit'>
@@ -4863,6 +4864,7 @@ export const StreamDocument = gql`
           simplePickupCode
           lines {
             amount
+            metadata
             offer {
               id
               title

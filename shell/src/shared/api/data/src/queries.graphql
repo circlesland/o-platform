@@ -1180,6 +1180,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           simplePickupCode
           lines {
             amount
+            metadata
             offer {
               id
               title
