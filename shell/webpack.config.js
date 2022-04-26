@@ -53,8 +53,8 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
 } else if (process.env.DEPLOY_ENVIRONMENT === "dev") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
   __API_ENDPOINT__ = "https://dev.api.circles.land";
-  __APP_ID__ = "dev.circles.land";
-  __EXTERNAL_URL__ = "https://dev.circles.land";
+  __APP_ID__ = "staging.circles.land";
+  __EXTERNAL_URL__ = "https://staging.circles.land";
   __FILES_APP_ID__ = "dev.files.circles.land";
 } else if (process.env.DEPLOY_ENVIRONMENT === "local") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
