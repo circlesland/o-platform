@@ -82,23 +82,17 @@ $: {
               {sale.buyer_profile.displayName}
             </h2>
           </div>
-          <div class="text-xs text-right text-dark-light whitespace-nowrap leading-non">
+          <div class="pt-1 text-xs text-right text-dark-light whitespace-nowrap leading-non">
             <span class="inline-block">
               {relativeTimeString(sale.invoice.createdAt, 1, true)}
             </span>
+
+            <div class="mt-2 mb-2 text-lg font-bold text-right">Table: 15</div>
           </div>
         </div>
         <div class="flex flex-row items-center justify-between px-3 mt-2 text-left">
           <div class="flex-grow leading-none" on:click="{() => push(`#/marketplace/my-sales/${sale.invoice.id}`)}">
             <table>
-              {#if sale.metadata}
-                {console.log(JSON.parse(sale.metadata))}
-                <tr>
-                  <td>
-                    <div class="mb-2 text-center ">{sale.metadata}</div>
-                  </td>
-                </tr>
-              {/if}
               {#each sale.invoice.lines as item}
                 <tr>
                   <td>
