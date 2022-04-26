@@ -21,6 +21,22 @@ $: {
 function loadDetailPage(path) {
   push(`#/marketplace/my-purchases/${path}`);
 }
+
+function getTableNoFromMetadata(metadataJson:string|undefined) {
+  if (!metadataJson) {
+    return "";
+  }
+
+  const parsedJson = purchased.purchase.lines[0].metadata
+          ? JSON.parse(purchased.purchase.lines[0].metadata)
+          : {};
+
+  if (!parsedJson.Table) {
+    return "";
+  }
+
+  return parsedJson.Table;
+}
 </script>
 
 <div on:click="{() => loadDetailPage(purchased.purchase.id)}">
@@ -56,9 +72,7 @@ function loadDetailPage(path) {
               {/if}
             </h2>
           </div>
-          <div class="text-right">{purchased.purchase.lines[0].metadata
-                  ? "Table: " +  JSON.parse(purchased.purchase.lines[0].metadata).Table
-                  : ""}</div>
+          <div class="text-right">{getTableNoFromMetadata(purchased.purchase.lines[0].metadata)}</div>
         </div>
         <div class="flex flex-row items-center justify-between px-3 mt-2 text-left">
           <div
