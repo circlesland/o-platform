@@ -6,7 +6,7 @@ const dispatch = createEventDispatcher();
 import Cropper from "svelte-easy-crop";
 
 export let cropShape: string = "rect";
-export let aspect: Number = 1;
+export let aspect: Number;
 
 let crop = { x: 0, y: 0 };
 let zoom = 1;
@@ -22,11 +22,13 @@ $: uploadMessage = "";
 $: image = null;
 
 $: {
-  if (cropShape && cropShape == "rect") {
-    aspect = 4 / 3;
-  }
-  if (cropShape && cropShape == "square") {
-    aspect = 1 / 1;
+  if (!aspect) {
+    if (cropShape && cropShape == "rect") {
+      aspect = 4 / 3;
+    }
+    if (cropShape && cropShape == "square") {
+      aspect = 1 / 1;
+    }
   }
 }
 

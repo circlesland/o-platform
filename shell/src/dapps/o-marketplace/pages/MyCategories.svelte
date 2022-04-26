@@ -59,7 +59,23 @@ onMount(async () => {
     return;
   }
 
-  categories = shop.categories;
+  if (shop.categories == null) {
+    newCategory = {
+      description: null,
+      enabled: true,
+      id: null,
+      largeBannerUrl: null,
+      name: null,
+      private: null,
+      productListingStyle: null,
+      shopId: storeId,
+      smallBannerUrl: null,
+      sortOrder: categories.length,
+    };
+    categories = [newCategory];
+  } else {
+    categories = shop.categories;
+  }
 });
 
 let hovering = false;
@@ -187,7 +203,7 @@ function addCategory() {
     name: null,
     private: null,
     productListingStyle: null,
-    shopId: 5,
+    shopId: storeId,
     smallBannerUrl: null,
     sortOrder: categories.length,
   };
@@ -317,7 +333,7 @@ function removeLast() {
                   <button class="self-center m-4 btn btn-primary btn-sm" on:click="{removeImage}">No Image</button>
                 </center>
               </div>
-              <ImageUpload on:submit="{handleImageUpload}" />
+              <ImageUpload on:submit="{handleImageUpload}" aspect="{750 / 216}" />
             {:else}
               <div class="flex flex-col w-full h-full p-4">
                 <button

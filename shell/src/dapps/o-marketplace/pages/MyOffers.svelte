@@ -81,11 +81,13 @@ onMount(async () => {
 
   categories = shop.categories;
   categoryInput = categories;
+  console.log("CATE: ", shop);
 });
 
 async function updateOffer(entry) {
   try {
-    const entryId = JSON.parse(JSON.stringify(entry.id));
+    console.log("ENTRY", entry);
+
     delete entry.product.__typename;
     delete entry.product.createdByProfile;
     delete entry.product.version;
@@ -103,10 +105,13 @@ async function updateOffer(entry) {
     });
     showToast("success", "Product was updated");
 
-    changeList.splice(
-      changeList.findIndex((v) => v.id === entryId),
-      1
-    );
+    if (entry.id) {
+      const entryId = JSON.parse(JSON.stringify(entry.id));
+      changeList.splice(
+        changeList.findIndex((v) => v.id === entryId),
+        1
+      );
+    }
 
     entry.product = result;
     entry.productVersion = result.version;
@@ -123,6 +128,7 @@ async function updateOffer(entry) {
     changeList = changeList;
     return ok(result);
   } catch (error) {
+    console.log("ERROR", error);
     showToast("error", "Categories not updated");
   }
 }
@@ -142,6 +148,7 @@ async function updateCategoryEntries(entries) {
     showToast("success", "Category Entries updated");
     return ok(result);
   } catch (error) {
+    console.log("ERROR", error);
     showToast("error", "Category Entries not updated");
   }
 }
@@ -399,7 +406,6 @@ function addProduct(categoryId) {
                   </div>
                   <div class="table-cell w-10 p-1 whitespace-nowrap">
                     {#if changeList.length && changeList.find(({ id }) => id === entry.id)}
-                      {entry.id}
                       <button class="btn btn-primary" on:click="{updateOffer(entry)}">Save</button>
                     {/if}
                   </div>

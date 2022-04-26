@@ -62,9 +62,22 @@ onMount(async () => {
       <div class="flex flex-col space-y-4">
         {#each categories as category, i}
           {#if category.entries && category.enabled}
-            <div class="pt-4 pb-10" class:bg-gray-300="{i % 2 == 1}">
+            <div class="pt-4 pb-10">
               <div class="mx-auto space-y-4 xl:w-1/2 md:w-2/3">
-                <h1 class="px-4 mb-2 ml-2 ">{category.name}</h1>
+                {#if category.largeBannerUrl}
+                  <div class="relative mx-4 overflow-hidden bg-white rounded-xl image-wrapper">
+                    <img
+                      src="{category.largeBannerUrl}"
+                      alt="{category.name}"
+                      class="w-full rounded-xl opacity-60 object-position: center center;  " />
+                    <div
+                      class="absolute left-0 pt-1 pb-1 pl-2 pr-4 mt-2 text-xl rounded-r-full sm:pb-2 sm:pt-3 sm:text-3xl font-heading bottom-4 bg-light-lightest">
+                      <span class="inline-block">{category.name}</span>
+                    </div>
+                  </div>
+                {:else}
+                  <h1 class="px-4 mb-2 ml-2 ">{category.name}</h1>
+                {/if}
                 <div class="flex flex-col px-4 space-y-4">
                   {#each category.entries.map((o) => o.product) as offer}
                     <ListViewCard param="{offer}" storeId="{storeId}" />
