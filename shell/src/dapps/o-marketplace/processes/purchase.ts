@@ -26,8 +26,6 @@ import { fTransferCircles, fTransferCirclesHashOnly, TransitivePath } from "../.
 import { cartContents } from "../stores/shoppingCartStore";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { findDirectTransfers } from "../../o-banking/processes/transfer";
-import { Environment } from "../../../shared/environment";
-import { ApiClient } from "../../../shared/apiConnection";
 import { myPurchases } from "../../../shared/stores/myPurchases";
 
 export type PurchaseContextData = {
@@ -45,6 +43,7 @@ export type PurchaseContextData = {
     invoice: Invoice;
     path: TransitivePath;
   }[];
+  redirectTo?: string
 };
 
 export type PurchaseContext = ProcessContext<PurchaseContextData>;
@@ -258,6 +257,7 @@ const processDefinition = (processId: string) =>
                 context.data.invoices[0].purchaseId.toString()
               );
             }
+
             myPurchases.refresh();
 
             const receipt = await fTransferCircles(
@@ -305,7 +305,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           cartContents.set([]);
         },
-        field: "__",
+        field: "redirectTo",
         component: CheckoutConfirm,
         params: (context) => {
           return {
@@ -333,10 +333,13 @@ const processDefinition = (processId: string) =>
       success: {
         type: "final",
         id: "success",
-
+        entry: (context) => {
+          if (context.data.redirectTo) {
+            console.log("context.data.redirectTo:", context.data.redirectTo);
+          }
+        },
         data: (context, event: PlatformEvent) => {
-          window.o.publishEvent({ type: "shell.root" });
-          return "yeah!";
+          return context.data;
         },
       },
     },

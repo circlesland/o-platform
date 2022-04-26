@@ -36,6 +36,7 @@
   import {goToPreviouslyDesiredRouteIfExisting} from "../../dapps/o-onboarding/processes/init";
   import {Trigger} from "@o-platform/o-interfaces/dist/routables/trigger";
   import {mySales} from "../stores/mySales";
+  import {Stopped} from "@o-platform/o-process/dist/events/stopped";
 
   export let params: {
   dappId: string;
@@ -198,15 +199,6 @@ async function onRoot() {
     return;
   }
   const root = stack[0];
-  // log("onRoot() - new stack: ", JSON.stringify(stack, null, 2));
-
-  /*
-      const previousContext: {
-        runtimeDapp: RuntimeDapp<any>,
-        routable: Page<any, any>,
-        params: { [x: string]: any }
-      } = {};
-       */
 
   let nextRoute: FindRouteResult;
   let previousRuntimeDapp: RuntimeDapp<any>;
@@ -648,7 +640,17 @@ async function onRunProcess(event: any) {
   window.o.publishEvent(startedEvent);
 }
 
-async function onProcessStopped() {
+async function onProcessStopped(event:Stopped) {
+
+  // TODO: Hack: If the returned data contains a 'redirectTo' go to this url instead
+  if (event.result?.redirectTo) {
+    while (stack.length) {
+      stack.pop();
+    }
+    await push(event.result.redirectTo);
+    return;
+  }
+
   // log("onProcessStopped()");
   // TODO: How to handle onProcessStopped() vs. onRoot()? Exit to the root page when a process stopped or go back to the last card?
   //       Below is the "to last card" solution
@@ -885,7 +887,7 @@ onMount(async () => {
         runningProcess = event;
         break;
       case "process.stopped":
-        await onProcessStopped();
+        await onProcessStopped(event);
         runningProcess = null;
         break;
     }

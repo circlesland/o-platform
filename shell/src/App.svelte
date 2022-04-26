@@ -20,6 +20,7 @@ import { getProcessContext } from "./main";
 import { Stopped } from "@o-platform/o-process/dist/events/stopped";
 import { me } from "./shared/stores/me";
 import { Environment } from "./shared/environment";
+
 const runningProcesses: {
   [id: string]: Process;
 } = {};
@@ -75,8 +76,14 @@ const shell: IShell = {
           stopped: true,
         });
 
+        let result:any = undefined;
+        if ((<any>service)._state?.event?.data) {
+          result = (<any>service)._state.event.data;
+          console.log("stopped process (service._state.event.data): ", result);
+        }
+
         delete runningProcesses[processId];
-        window.o.publishEvent(new Stopped(processId));
+        window.o.publishEvent(new Stopped(processId, result));
       });
 
       function isProcessEvent(event: PlatformEvent | ProcessEvent): event is ProcessEvent {
