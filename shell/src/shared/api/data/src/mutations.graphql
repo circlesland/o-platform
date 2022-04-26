@@ -479,3 +479,9 @@ mutation upsertOffer($offer: OfferInput!) {
     }
   }
 }
+
+mutation proofUniqueness($humanodeToken:String!) {
+  proofUniqueness(humanodeToken: $humanodeToken) {
+    existingSafe
+  }
+}
