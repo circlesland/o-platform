@@ -83,6 +83,8 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __FIXED_GAS_PRICE__ = "1";
 }
 
+__HUMANODE_REDIRECT_URL__ = __EXTERNAL_URL__;
+
 console.log(`__AUTH_ENDPOINT__: ${__AUTH_ENDPOINT__}`);
 
 console.log(`__HUMANODE_AUTH_URL__: ${__HUMANODE_AUTH_URL__}`);

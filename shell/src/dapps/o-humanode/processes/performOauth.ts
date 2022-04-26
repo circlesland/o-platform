@@ -7,7 +7,13 @@ import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 import {Generate} from "@o-platform/o-utils/dist/generate";
 import {ApiClient} from "../../../shared/apiConnection";
-import {ClientAssertionJwtDocument, ClientAssertionJwtQueryVariables} from "../../../shared/api/data/types";
+import {
+  ClientAssertionJwtDocument,
+  ClientAssertionJwtQueryVariables,
+  ProofUniquenessDocument,
+  ProofUniquenessMutationVariables,
+  ProofUniquenessResult
+} from "../../../shared/api/data/types";
 import {Environment} from "../../../shared/environment";
 
 export type PerformOauthContextData = {
@@ -139,7 +145,6 @@ const processDefinition = (processId: string) =>
         },
         invoke: {
           src: async context => {
-            console.log("Exchange token:", context.data);
             context.data.oauthRequest.clientAssertion =
               await ApiClient.query<string, ClientAssertionJwtQueryVariables>(ClientAssertionJwtDocument, {});
 
@@ -158,7 +163,15 @@ const processDefinition = (processId: string) =>
                 client_assertion: `${context.data.oauthRequest.clientAssertion}`
               })
             });
-            console.log("Code exchange response:", await response.json());
+
+            const responseData = await response.arrayBuffer();
+            const responseString = Buffer.from(responseData).toString("utf-8");
+            await ApiClient.mutate<ProofUniquenessResult, ProofUniquenessMutationVariables>(
+              ProofUniquenessDocument,
+              {
+                humanodeToken: responseString
+              }
+            );
           },
           onDone: "success"
         }
