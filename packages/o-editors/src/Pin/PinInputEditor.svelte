@@ -3,7 +3,6 @@ import { EditorContext } from "./../editorContext";
 import ProcessNavigation from "./../ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { logout } from "@o-platform/shell/src/dapps/o-passport/processes/logout";
-import { identify } from "@o-platform/shell/src/dapps/o-passport/processes/identify/identify2";
 // import Pin from "./PinInput.svelte";
 import { onMount } from "svelte";
 import PincodeInput from "pincode-input";
@@ -95,7 +94,7 @@ const submitHandler = () => {
           on:click="{() =>
             window.o.runProcess(logout, {
               successAction: () => {
-                window.o.runProcess(identify, { redirectTo: '/home' });
+
               },
             })}">Forgot your Pin?</span>
       </div>
