@@ -8,9 +8,9 @@ import {getMainDefinition} from 'apollo-utilities';
 import {DocumentNode, OperationDefinitionNode} from "graphql/language/ast";
 import {
     AggregatesDocument,
-    AggregateType, ProfileAggregate,
+    AggregateType, CreateTagInput, ProfileAggregate,
     ProfileAggregateFilter,
-    QueryAggregatesArgs
+    QueryAggregatesArgs, ShopCategoryInput
 } from "./api/data/types";
 
 export class ApiClient {
@@ -33,23 +33,7 @@ export class ApiClient {
      * @param args
      */
     static async query<TResult, TArgs>(query: DocumentNode, args: TArgs) : Promise<TResult> {
-        const queryDef:any = query.definitions.length == 1 ? query.definitions[0] : null;
-        if (!queryDef) {
-            throw new Error(window.i18n("shared.apiConnection.errors.noOrMoreThanOneDefinitions"))
-        }
-        if (!queryDef.selectionSet){
-            throw new Error(window.i18n("shared.apiConnection.errors.noSelectionSet"))
-        }
-        if (queryDef.selectionSet.selections?.length != 1) {
-            throw new Error(window.i18n("shared.apiConnection.errors.noOrMoreThanOneSelection"))
-        }
-
-        const selection = queryDef.selectionSet.selections[0];
-        const dataProp:string = selection.name.value;
-        if (!dataProp) {
-            throw new Error(window.i18n("shared.apiConnection.errors.selectionHasNoName"))
-        }
-
+        const dataProp = this.getResultSelectionProperty(query);
         const apiClient = await window.o.apiClient.client.subscribeToResult();
         const result = await apiClient.query({
             query: query,
@@ -61,6 +45,62 @@ export class ApiClient {
         }
 
         return <TResult>result.data[dataProp];
+    }
+
+    static async mutate<TResult, TArgs>(mutation: DocumentNode, args: TArgs) : Promise<TResult> {
+        const dataProp = this.getResultSelectionProperty(mutation);
+        const strippedInput = this.stripUnknownProperties(mutation, args);
+        const apiClient = await window.o.apiClient.client.subscribeToResult();
+        const result = await apiClient.mutate({
+            mutation: mutation,
+            variables: strippedInput
+        });
+
+        if (result.errors?.length > 0) {
+            throw new Error(window.i18n("shared.apiConnection.errors.someThingWentWrong", { values: { error: result.errors.map((o) => o.message).join("\n")}}));
+        }
+
+        return <TResult>result.data[dataProp];
+    }
+
+    private static getResultSelectionProperty(documentNode: DocumentNode) {
+        const definition: any = documentNode.definitions.length == 1 ? documentNode.definitions[0] : null;
+        if (!definition) {
+            throw new Error(window.i18n("shared.apiConnection.errors.noOrMoreThanOneDefinitions"))
+        }
+        if (!definition.selectionSet) {
+            throw new Error(window.i18n("shared.apiConnection.errors.noSelectionSet"))
+        }
+        if (definition.selectionSet.selections?.length != 1) {
+            throw new Error(window.i18n("shared.apiConnection.errors.noOrMoreThanOneSelection"))
+        }
+
+        const selection = definition.selectionSet.selections[0];
+        const dataProp: string = selection.name.value;
+        if (!dataProp) {
+            throw new Error(window.i18n("shared.apiConnection.errors.selectionHasNoName"))
+        }
+        return dataProp;
+    }
+
+    private static stripUnknownProperties(documentNode: DocumentNode, input:any) {
+        const definition: any = documentNode.definitions.length == 1 ? documentNode.definitions[0] : null;
+        if (!definition) {
+            throw new Error(window.i18n("shared.apiConnection.errors.noOrMoreThanOneDefinitions"))
+        }
+        if (!definition.variableDefinitions) {
+            return input
+        }
+
+
+
+        const selection = definition.selectionSet.selections[0];
+        const dataProp: string = selection.name.value;
+        if (!dataProp) {
+            throw new Error(window.i18n("shared.apiConnection.errors.selectionHasNoName"))
+        }
+        return input;
+        //return dataProp;
     }
 }
 

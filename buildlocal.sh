@@ -40,29 +40,11 @@ echo "* api"
 npx --no-install  graphql-codegen
 
 cd ../../../../..
-echo "Generating graphql types for dapps/o-passport"
-#echo "* api"
-#cd shell/src/dapps/o-passport/data/api
-#npx graphql-codegen
-echo "* auth"
-cd shell/src/dapps/o-passport/data/auth
-npx --no-install  graphql-codegen
-
-# cd ../../../../../..
-# echo "Generating graphql types for dapps/o-contacts"
-# echo "* api"
-# cd shell/src/dapps/o-contacts/data/api
-# npx graphql-codegen
-
-
-cd ../../../../../..
 
 echo "Building 'shell' with dapps .."
 cd shell || exit
 npx devcert-cli generate localhost
-# npm run build
 cd .. || exit
-
 
 search='__TIMESTAMP__'
 replace=`date +"%s"`

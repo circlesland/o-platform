@@ -2,13 +2,13 @@ import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/process
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import {show} from "@o-platform/o-process/dist/actions/show";
+import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
-import {AddMemberDocument} from "../../../shared/api/data/types";
-import {promptCirclesSafe} from "../../../shared/api/promptCirclesSafe";
+import { AddMemberDocument } from "../../../shared/api/data/types";
+import { promptCirclesSafe } from "../../../shared/api/promptCirclesSafe";
 
 export type AddMemberContextData = {
-  successAction: (data:AddMemberContextData) => void,
+  successAction: (data: AddMemberContextData) => void;
   groupId?: number;
   memberAddress?: string;
 };
@@ -35,7 +35,7 @@ const processDefinition = (processId: string) =>
             submitButtonText: window.i18n("dapps.o-verification.processes.verify.submitButtonText"),
           },
           placeholder: window.i18n("dapps.o-verification.processes.verify.placeholder"),
-          submitButtonText: window.i18n("dapps.o-verification.processes.verify.submitButtontext"),
+          submitButtonText: window.i18n("dapps.o-verification.processes.verify.submitButtonText"),
         },
         navigation: {
           next: "#addMember",
@@ -50,7 +50,7 @@ const processDefinition = (processId: string) =>
               mutation: AddMemberDocument,
               variables: {
                 groupId: context.data.groupId,
-                memberAddress: context.data.memberAddress
+                memberAddress: context.data.memberAddress,
               },
             });
           },
@@ -61,7 +61,7 @@ const processDefinition = (processId: string) =>
             },
             target: "#showError",
           },
-        }
+        },
       },
       showError: {
         id: "showError",
@@ -82,7 +82,8 @@ const processDefinition = (processId: string) =>
           if (context.data.successAction) {
             context.data.successAction(context.data);
           }
-        }
+        },
+        data: () => true,
       },
     },
   });

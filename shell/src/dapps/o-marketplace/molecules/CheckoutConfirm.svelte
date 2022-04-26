@@ -1,13 +1,11 @@
 <script lang="ts">
 import UserImage from "src/shared/atoms/UserImage.svelte";
-
-// import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
 import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { Profile, Organisation } from "../../../shared/api/data/types";
-import Account from "../../o-passport/pages/Account.svelte";
 import { _ } from "svelte-i18n";
 import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";
+import {push} from "svelte-spa-router";
 
 export let context: any;
 let profile: Profile | Organisation;
@@ -23,9 +21,12 @@ $: {
 
 let classes: string;
 
-function submit() {
+function submit(redirectTo?:string) {
   const answer = new Continue();
-  answer.data = context.data;
+  answer.data = {
+    ...context.data,
+    redirectTo: redirectTo
+  };
   context.process.sendAnswer(answer);
 }
 
@@ -78,7 +79,7 @@ function orderItems(items) {
           <div class="flex flex-col items-start w-full ml-2 space-y-2">
             <div class="flex flex-row justify-between w-full">
               <div class="md:text-md">
-                <a href="#/marketplace//{groupPurchase.item.item.id}" alt="{groupPurchase.item.item.title}">
+                <a href="#/marketplace/{groupPurchase.item.item.id}" alt="{groupPurchase.item.item.title}">
                   {groupPurchase.item.item.title}
                 </a>
               </div>
@@ -131,9 +132,10 @@ function orderItems(items) {
         {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode1")}<span class="text-primary-dark"
           >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode2")}</span
         >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode3")}
-        <a href="#/marketplace/my-purchases" alt="My Purchases" class="btn-link"
-          >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4")}</a
-        >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5")}
+        <a title="My Purchases" class="btn-link cursor-pointer" on:click={() => submit("#/marketplace/my-purchases")}>
+          {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4")}
+        </a>
+        {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5")}
       </div>
 
       <div class="pt-2 text-sm font-bold">

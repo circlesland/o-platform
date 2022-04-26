@@ -1,11 +1,5 @@
 <script>
-import {
-  beforeUpdate,
-  createEventDispatcher,
-  onDestroy,
-  onMount,
-  tick,
-} from "svelte";
+import { beforeUpdate, createEventDispatcher, onDestroy, onMount, tick } from "svelte";
 import List from "./List.svelte";
 import ItemComponent from "./Item.svelte";
 import SelectionComponent from "./Selection.svelte";
@@ -106,7 +100,7 @@ let prev_filterText;
 let prev_isFocused;
 let prev_filteredItems;
 let displayableSelectedValue = null;
-let buttonDisabled = "disabled";
+let buttonDisabled = "";
 async function resetFilter() {
   await tick();
   filterText = "";
@@ -137,7 +131,7 @@ export const getItems = debounce(async () => {
       isWaiting = false;
       isFocused = true;
       listOpen = true;
-      buttonDisabled = "disabled";
+      // buttonDisabled = "disabled";
     }
   } else if (evaluatedLoadOptions.subscribe) {
     return new Promise((resolve) => {
@@ -164,14 +158,8 @@ $: {
       [optionIdentifier]: selectedValue,
       label: selectedValue,
     };
-  } else if (
-    isMulti &&
-    Array.isArray(selectedValue) &&
-    selectedValue.length > 0
-  ) {
-    selectedValue = selectedValue.map((item) =>
-      typeof item === "string" ? { value: item, label: item } : item
-    );
+  } else if (isMulti && Array.isArray(selectedValue) && selectedValue.length > 0) {
+    selectedValue = selectedValue.map((item) => (typeof item === "string" ? { value: item, label: item } : item));
   }
 
   // This is some Hardcoded shit to display the currently selected Value into the placeholder of the input.
@@ -181,8 +169,7 @@ $: {
   } else if (selectedValue && selectedValue.__typename == "City") {
     displayableSelectedValue = selectedValue.name;
     if (selectedValue.country) {
-      displayableSelectedValue =
-        displayableSelectedValue + ",  " + selectedValue.country;
+      displayableSelectedValue = displayableSelectedValue + ",  " + selectedValue.country;
     }
   } else if (selectedValue && selectedValue.__typename == "Tag") {
     displayableSelectedValue = selectedValue.value;
@@ -245,14 +232,9 @@ $: {
 
           if (!keepItem) return false;
           if (filterText.length < 1) return true;
-          return itemFilter(
-            getOptionLabel(item, filterText),
-            filterText,
-            item,
-            {
-              filter: loadOptions && loadOptions().then,
-            }
-          );
+          return itemFilter(getOptionLabel(item, filterText), filterText, item, {
+            filter: loadOptions && loadOptions().then,
+          });
         })
       : [];
   }
@@ -279,9 +261,7 @@ $: {
         }
       }
 
-      groups[groupValue].push(
-        Object.assign({ isGroupItem: !!groupValue }, item)
-      );
+      groups[groupValue].push(Object.assign({ isGroupItem: !!groupValue }, item));
     });
 
     const sortedGroupedItems = [];
@@ -304,17 +284,13 @@ beforeUpdate(() => {
   if (!isMulti && selectedValue && prev_selectedValue !== selectedValue) {
     if (
       !prev_selectedValue ||
-      JSON.stringify(selectedValue[optionIdentifier]) !==
-        JSON.stringify(prev_selectedValue[optionIdentifier])
+      JSON.stringify(selectedValue[optionIdentifier]) !== JSON.stringify(prev_selectedValue[optionIdentifier])
     ) {
       dispatch("select", selectedValue);
     }
   }
 
-  if (
-    isMulti &&
-    JSON.stringify(selectedValue) !== JSON.stringify(prev_selectedValue)
-  ) {
+  if (isMulti && JSON.stringify(selectedValue) !== JSON.stringify(prev_selectedValue)) {
     if (checkSelectedValueForDuplicates()) {
       dispatch("select", selectedValue);
     }
@@ -380,13 +356,9 @@ beforeUpdate(() => {
       if (selectedValue) {
         if (isMulti) {
           existingSelectionWithFilterValue = selectedValue.find((selection) => {
-            return (
-              selection[optionIdentifier] === itemToCreate[optionIdentifier]
-            );
+            return selection[optionIdentifier] === itemToCreate[optionIdentifier];
           });
-        } else if (
-          selectedValue[optionIdentifier] === itemToCreate[optionIdentifier]
-        ) {
+        } else if (selectedValue[optionIdentifier] === itemToCreate[optionIdentifier]) {
           existingSelectionWithFilterValue = selectedValue;
         }
       }
@@ -427,34 +399,23 @@ function checkSelectedValueForDuplicates() {
 }
 
 function findItem(selection) {
-  let matchTo = selection
-    ? selection[optionIdentifier]
-    : selectedValue[optionIdentifier];
+  let matchTo = selection ? selection[optionIdentifier] : selectedValue[optionIdentifier];
   return items.find((item) => item[optionIdentifier] === matchTo);
 }
 
 // Updates the list of results //
 function updateSelectedValueDisplay(items) {
-  if (
-    !items ||
-    items.length === 0 ||
-    items.some((item) => typeof item !== "object")
-  )
-    return;
+  if (!items || items.length === 0 || items.some((item) => typeof item !== "object")) return;
   if (
     !selectedValue ||
     (isMulti
-      ? selectedValue.some(
-          (selection) => !selection || !selection[optionIdentifier]
-        )
+      ? selectedValue.some((selection) => !selection || !selection[optionIdentifier])
       : !selectedValue[optionIdentifier])
   )
     return;
 
   if (Array.isArray(selectedValue)) {
-    selectedValue = selectedValue.map(
-      (selection) => findItem(selection) || selection
-    );
+    selectedValue = selectedValue.map((selection) => findItem(selection) || selection);
   } else {
     selectedValue = findItem() || selectedValue;
   }
@@ -469,8 +430,7 @@ async function setList(items) {
 
 function handleMultiItemClear(event) {
   const { detail } = event;
-  const itemToRemove =
-    selectedValue[detail ? detail.i : selectedValue.length - 1];
+  const itemToRemove = selectedValue[detail ? detail.i : selectedValue.length - 1];
 
   if (selectedValue.length === 1) {
     selectedValue = undefined;
@@ -530,17 +490,9 @@ function handleKeyDown(e) {
     case "Backspace":
       if (!isMulti || filterText.length > 0) return;
       if (isMulti && selectedValue && selectedValue.length > 0) {
-        handleMultiItemClear(
-          activeSelectedValue !== undefined
-            ? activeSelectedValue
-            : selectedValue.length - 1
-        );
-        if (activeSelectedValue === 0 || activeSelectedValue === undefined)
-          break;
-        activeSelectedValue =
-          selectedValue.length > activeSelectedValue
-            ? activeSelectedValue - 1
-            : undefined;
+        handleMultiItemClear(activeSelectedValue !== undefined ? activeSelectedValue : selectedValue.length - 1);
+        if (activeSelectedValue === 0 || activeSelectedValue === undefined) break;
+        activeSelectedValue = selectedValue.length > activeSelectedValue ? activeSelectedValue - 1 : undefined;
       }
       break;
     case "ArrowLeft":
@@ -549,21 +501,13 @@ function handleKeyDown(e) {
 
       if (activeSelectedValue === undefined) {
         activeSelectedValue = selectedValue.length - 1;
-      } else if (
-        selectedValue.length > activeSelectedValue &&
-        activeSelectedValue !== 0
-      ) {
+      } else if (selectedValue.length > activeSelectedValue && activeSelectedValue !== 0) {
         activeSelectedValue -= 1;
       }
       break;
     case "ArrowRight":
       if (list) list.$set({ hoverItemIndex: -1 });
-      if (
-        !isMulti ||
-        filterText.length > 0 ||
-        activeSelectedValue === undefined
-      )
-        return;
+      if (!isMulti || filterText.length > 0 || activeSelectedValue === undefined) return;
       if (activeSelectedValue === selectedValue.length - 1) {
         activeSelectedValue = undefined;
       } else if (activeSelectedValue < selectedValue.length - 1) {
@@ -604,8 +548,7 @@ function removeList() {
 
 function handleWindowClick(event) {
   if (!container) return;
-  const eventTarget =
-    event.path && event.path.length > 0 ? event.path[0] : event.target;
+  const eventTarget = event.path && event.path.length > 0 ? event.path[0] : event.target;
   if (container.contains(eventTarget)) return;
   isFocused = false;
   listOpen = false;
@@ -739,10 +682,7 @@ onDestroy(() => {
 });
 </script>
 
-<svelte:window
-  on:click="{handleWindowClick}"
-  on:keydown="{handleKeyDown}"
-  on:resize="{getPosition}" />
+<svelte:window on:click="{handleWindowClick}" on:keydown="{handleKeyDown}" on:resize="{getPosition}" />
 
 <div
   class="selectContainer {containerClasses} flex-col"
@@ -795,9 +735,7 @@ onDestroy(() => {
           bind:this="{input}"
           on:blur="{handleBlur}"
           bind:value="{filterText}"
-          placeholder="{displayableSelectedValue
-            ? displayableSelectedValue
-            : ''}"
+          placeholder="{displayableSelectedValue ? displayableSelectedValue : ''}"
           class="order-1 input input-lg input-bordered" />
       </div>
       {#if inlineSubmit}
@@ -848,7 +786,7 @@ onDestroy(() => {
     </div>
   {/if}
 
-  {#if isWaiting}
+  <!-- {#if isWaiting}
     <div class="spinner">
       <svg class="spinner_icon" viewBox="25 25 50 50">
         <circle
@@ -862,7 +800,7 @@ onDestroy(() => {
           stroke-miterlimit="10"></circle>
       </svg>
     </div>
-  {/if}
+  {/if} -->
 </div>
 
 <style>
@@ -982,7 +920,7 @@ onDestroy(() => {
   stroke-width: 0;
 }
 
-.spinner {
+/* .spinner {
   position: absolute;
   right: var(--spinnerRight, 10px);
   top: var(--spinnerLeft, 11px);
@@ -990,9 +928,9 @@ onDestroy(() => {
   height: var(--spinnerHeight, 20px);
   color: var(--spinnerColor, #51ce6c);
   animation: rotate 0.75s linear infinite;
-}
+} */
 
-.spinner_icon {
+/* .spinner_icon {
   display: block;
   height: 100%;
   transform-origin: center center;
@@ -1004,12 +942,12 @@ onDestroy(() => {
   right: 0;
   margin: auto;
   -webkit-transform: none;
-}
+} */
 
-.spinner_path {
+/* .spinner_path {
   stroke-dasharray: 90;
   stroke-linecap: round;
-}
+} */
 
 .multiSelect {
   display: flex;

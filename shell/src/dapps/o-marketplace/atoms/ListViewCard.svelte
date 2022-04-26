@@ -11,6 +11,8 @@ import { truncateString } from "../../../shared/functions/truncateString";
 import Time from "svelte-time";
 import { _ } from "svelte-i18n";
 
+export let storeId: Number;
+
 export let param: Offer = <any>{
   categoryTag: {
     value: "",
@@ -52,10 +54,11 @@ function loadDetailPage() {
 }
 
 function buy() {
-  window.o.runProcess(purchase, {});
+  window.o.runProcess(purchase, {data:{storeId: storeId}});
 }
 
 function addToCart(item) {
+  item.storeId = storeId;
   $cartContents = $cartContents ? [...$cartContents, item] : [item];
   push(`#/marketplace/cart`);
 }
@@ -69,15 +72,18 @@ function dateOlderThanSevenDays(unixTime: number) {
 
 let displayName = `${offer.createdByProfile.displayName}`;
 
-displayName =
-  displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
+displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
 </script>
 
 <section class="flex items-start bg-white shadow-md rounded-xl">
   <div class="flex flex-col w-full ">
-    <div
-      class="relative flex flex-col items-stretch w-full px-4 py-4 space-y-4 ">
+    <div class="relative flex flex-col items-stretch w-full px-4 py-4 space-y-4 ">
       <div class="flex flex-row space-x-2">
+        <div>
+          <div class="flex items-center w-full">
+            <img class="w-20 h-20 rounded-md" src="{offer.pictureUrl}" alt="{offer.title}" />
+          </div>
+        </div>
         <div class="flex-grow" on:click="{() => loadDetailPage()}">
           <div class="text-lg leading-tight text-left uppercase break-word">
             <span class="cursor-pointer">{offer.title}</span>
@@ -88,8 +94,7 @@ displayName =
                 {@html truncateString(offer.description, 40)}
                 -
               {/if}
-              <span class="inline-block text-dark-dark"
-                >{offer.pricePerUnit}</span>
+              <span class="inline-block text-dark-dark">{offer.pricePerUnit}</span>
               <span class="inline-block text-dark-dark">€</span>
             </div>
           </div>

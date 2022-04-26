@@ -28,6 +28,9 @@ query init {
       displayTimeCircles
       displayCurrency
       cityGeonameid
+      shops {
+        id
+      }
       city {
         geonameid
         name
@@ -248,6 +251,9 @@ query myProfile {
     displayTimeCircles
     displayCurrency
     cityGeonameid
+    shops {
+      id
+    }
     city {
       geonameid
       name
@@ -268,6 +274,9 @@ query myProfile {
         description
         avatarUrl
         cityGeonameid
+        shops {
+          id
+        }
         city {
           geonameid
           country
@@ -1171,6 +1180,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           simplePickupCode
           lines {
             amount
+            metadata
             offer {
               id
               title
@@ -1202,6 +1212,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           lines {
             id
             amount
+            metadata
             offer {
               id
               pictureUrl
@@ -1505,6 +1516,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
           lines {
             id
             amount
+            metadata
             offer {
               id
               version
@@ -1598,6 +1610,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
           lines {
             id
             amount
+            metadata
             offer {
               id
               version
@@ -1726,14 +1739,95 @@ query findInvitationCreator($code: String!) {
   }
 }
 
-query organisationsWithOffers {
-  organisationsWithOffers {
+query shop($id: Int!) {
+  shop(id: $id) {
+    id
     name
-    displayName
-    circlesAddress
-    avatarUrl
+    description
     smallBannerUrl
     largeBannerUrl
-    productListingType
+    openingHours
+    private
+    productListingStyle
+    purchaseMetaDataKeys
+    owner {
+      id
+      name
+      avatarUrl
+      circlesAddress
+    }
+    categories {
+      id
+      name
+      description
+      sortOrder
+      shopId
+      smallBannerUrl
+      largeBannerUrl
+      private
+      enabled
+      createdAt
+      productListingStyle
+      entries {
+        id
+        sortOrder
+        private
+        productId
+        productVersion
+        shopCategoryId
+        enabled
+        product {
+          id
+          version
+          title
+          description
+          pictureUrl
+          pricePerUnit
+          createdByProfile {
+            id
+            displayName
+            avatarUrl
+            circlesAddress
+          }
+        }
+      }
+    }
   }
+}
+
+query shops {
+  shops {
+    id
+    createdAt
+    name
+    description
+    smallBannerUrl
+    largeBannerUrl
+    openingHours
+    private
+    shopListingStyle
+    productListingStyle
+    sortOrder
+    owner {
+      id
+      name
+      avatarUrl
+      circlesAddress
+    }
+    pickupAddress {
+      name
+      street
+      house
+      city {
+        name
+        country
+      }
+      zip
+      state
+    }
+  }
+}
+
+query clientAssertionJwt {
+  clientAssertionJwt
 }

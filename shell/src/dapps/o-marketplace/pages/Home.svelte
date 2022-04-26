@@ -2,52 +2,45 @@
 import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
 import OfferCard from "../atoms/OfferCard.svelte";
 import { onMount } from "svelte";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
 
 import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-import {
-  Offer,
-  QueryTagsInput,
-  Tag,
-  TagsDocument,
-} from "../../../shared/api/data/types";
-import { me } from "../../../shared/stores/me";
-import { ApiClient } from "../../../shared/apiConnection";
-
 import { offers } from "../../../shared/stores/offers";
 
-import { Offer } from "../../../shared/api/data/types";
+import {
+  Offer,
+  Shop,
+  ShopDocument, ShopQueryVariables,
+} from "../../../shared/api/data/types";
 
-import { storeOffers } from "../../../shared/stores/storeOffers";
+import {ApiClient} from "../../../shared/apiConnection";
 
-export let storeCirclesAddress: string;
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
+export let storeId:number;
 
-const listArguments = {};
-
-let isLoading: boolean;
-let error: Error;
-let store: any;
+let shop: Shop|null = null;
 let offers: Offer[] = [];
+let shellEventSubscription: Subscription;
 
-onMount(() => {
-  store = storeOffers.getOffersFor(storeCirclesAddress);
-  isLoading = true;
-  return store.subscribe((data: any) => {
-    offers = data;
+onMount(async () => {
+  shop = await ApiClient.query<Shop, ShopQueryVariables>(
+          ShopDocument,
+          {
+            id: parseInt(storeId.toString())
+          }
+  );
 
-    isLoading = false;
-  });
+  if (!shop || !shop.categories){
+    await push("/not-found");
+    return;
+  }
+
+  offers = shop.categories.flatMap(o => o.entries.flatMap(o => o.product));
 });
-
-function loadCategoryPage(category: any) {
-  push("#/marketplace/categories/" + category.id + "/" + category.value);
-}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />

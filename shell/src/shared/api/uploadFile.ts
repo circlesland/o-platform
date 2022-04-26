@@ -36,27 +36,31 @@ const processDefinition = (processId: string) =>
         invoke: {
           id: "upload",
           src: async (context, event) => {
-            const response = await fetch(
-              `${Environment.apiEndpointUrl}/upload`,
-              {
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                  Cache: "no-cache",
-                },
-                credentials: "include",
-                method: "POST",
-                body: JSON.stringify({
-                  fileName: `${Generate.randomHexString(14)}.jpg`,
-                  mimeType: "image/*",
-                  bytes: context.data.bytes,
-                }),
-              }
-            );
+            console.log("CON INSIDE: ", context.data);
+            const response = await fetch(`${Environment.apiEndpointUrl}/upload`, {
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Cache: "no-cache",
+              },
+              credentials: "include",
+              method: "POST",
+              body: JSON.stringify({
+                fileName: `${Generate.randomHexString(14)}.jpg`,
+                mimeType: "image/*",
+                bytes: context.data.bytes,
+              }),
+            });
+            console.log("HIER ISSES< ", response);
 
             const jsonResponse = await response.json();
+
             if (jsonResponse.status != "ok") {
-              throw new Error(window.i18n("shared.api.uploadFile.noOkStatusFromFileServer", { values: { status: JSON.stringify(jsonResponse, null, 2)}}));
+              throw new Error(
+                window.i18n("shared.api.uploadFile.noOkStatusFromFileServer", {
+                  values: { status: JSON.stringify(jsonResponse, null, 2) },
+                })
+              );
             }
             delete context.data.bytes;
             context.data.hash = jsonResponse.hash;

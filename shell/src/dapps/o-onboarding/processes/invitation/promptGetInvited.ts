@@ -23,12 +23,18 @@ const editorContent = {
   info: {
     title: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.title"),
     description: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.description"),
-    submitButtonText: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.submitButtonText"),
+    submitButtonText: window.i18n(
+      "dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.submitButtonText"
+    ),
   },
   checkInviteCode: {
     title: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.title"),
-    description: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.description"),
-    submitButtonText: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.submitButtonText"),
+    description: window.i18n(
+      "dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.description"
+    ),
+    submitButtonText: window.i18n(
+      "dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.submitButtonText"
+    ),
   },
 };
 const processDefinition = (processId: string) =>
@@ -114,8 +120,7 @@ const processDefinition = (processId: string) =>
         invoke: {
           src: async (context) => {
             console.log("REDEEMING NOW", context.data.inviteCode);
-            const apiClient =
-              await window.o.apiClient.client.subscribeToResult();
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
             const claimResult = await apiClient.mutate({
               mutation: ClaimInvitationDocument,
               variables: {
@@ -123,18 +128,19 @@ const processDefinition = (processId: string) =>
               },
             });
             if (claimResult.errors) {
-              context.messages["inviteCode"] = claimResult.errors
-                .map((o) => o.message)
-                .join(" \n");
+              context.messages["inviteCode"] = claimResult.errors.map((o) => o.message).join(" \n");
               throw new Error(
-                window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.couldNotClaimInvitation", {values: {contextMessages: context.messages["inviteCode"]}})
+                window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.couldNotClaimInvitation", {
+                  values: { contextMessages: context.messages["inviteCode"] },
+                })
               );
             }
             if (!claimResult.data.claimInvitation.success) {
-              context.messages["inviteCode"] =
-                claimResult.data.claimInvitation.error;
+              context.messages["inviteCode"] = claimResult.data.claimInvitation.error;
               throw new Error(
-                window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.couldNotClaimInvitation", {values: {contextMessages: context.messages["inviteCode"]}})
+                window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.couldNotClaimInvitation", {
+                  values: { contextMessages: context.messages["inviteCode"] },
+                })
               );
             }
           },
@@ -152,14 +158,12 @@ const processDefinition = (processId: string) =>
             context.data.successAction(context.data);
           }
         },
+        data: () => true,
       },
     },
   });
 
-export const promptGetInvited: ProcessDefinition<
-  void,
-  PromptGetInvitedContext
-> = {
+export const promptGetInvited: ProcessDefinition<void, PromptGetInvitedContext> = {
   name: "promptGetInvited",
   stateMachine: <any>processDefinition,
 };

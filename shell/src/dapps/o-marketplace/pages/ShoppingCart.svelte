@@ -1,13 +1,11 @@
 <script lang="ts">
   import {cartContents, totalPrice} from "../stores/shoppingCartStore";
   import CartItems from "../molecules/CartItems.svelte";
-  import {push} from "svelte-spa-router";
   import {purchase} from "../processes/purchase";
   import {_} from "svelte-i18n";
   import {assetBalances} from "../../../shared/stores/assetsBalances";
   import {BN} from "ethereumjs-util";
   import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
-  import {convertCirclesToTimeCircles} from "../../../shared/functions/displayCirclesAmount";
   import {Currency} from "../../../shared/currency";
   import {ApiClient} from "../../../shared/apiConnection";
   import {TransitivePath} from "../../o-banking/processes/transferCircles";
@@ -16,7 +14,7 @@
   import {onMount} from "svelte";
 
   function checkout() {
-    window.o.runProcess(purchase, cartContents);
+    window.o.runProcess(purchase, {});
   }
 
   function handleClickOutside(event) {

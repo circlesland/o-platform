@@ -36,6 +36,7 @@
   import {goToPreviouslyDesiredRouteIfExisting} from "../../dapps/o-onboarding/processes/init";
   import {Trigger} from "@o-platform/o-interfaces/dist/routables/trigger";
   import {mySales} from "../stores/mySales";
+  import {Stopped} from "@o-platform/o-process/dist/events/stopped";
 
   export let params: {
   dappId: string;
@@ -131,6 +132,7 @@ async function onBack() {
     .reduce((p, c) => p + "/" + c, "");
 
   //stack.pop();
+  console.log("DappFrame.onBack() is pushing to:", `#/${previous.params.dappId}${path}`);
   await push(`#/${previous.params.dappId}${path}`);
   setTimeout(() => popScrollPosition());
 }
@@ -197,15 +199,6 @@ async function onRoot() {
     return;
   }
   const root = stack[0];
-  // log("onRoot() - new stack: ", JSON.stringify(stack, null, 2));
-
-  /*
-      const previousContext: {
-        runtimeDapp: RuntimeDapp<any>,
-        routable: Page<any, any>,
-        params: { [x: string]: any }
-      } = {};
-       */
 
   let nextRoute: FindRouteResult;
   let previousRuntimeDapp: RuntimeDapp<any>;
@@ -220,7 +213,15 @@ async function onRoot() {
 
     nextRoute = findRoutableByParams(previousRuntimeDapp, baseParams);
     if (nextRoute && nextRoute.found) {
-      path = nextRoute.routable.routeParts
+      const routePartsWithReplacedVariables = nextRoute.routable.routeParts.map((o, i) => {
+        if (!o.startsWith(":"))
+          return o;
+
+        if (baseParams[(i + 1).toString()]) {
+          return baseParams[(i + 1).toString()];
+        }
+      });
+      path = routePartsWithReplacedVariables
         .map((o) => o.replace("=", ""))
         .join("/");
     }
@@ -262,7 +263,9 @@ async function onRoot() {
     return;
   }
 
-  while (stack.length > 0) stack.pop();
+  while (stack.length > 0) {
+    stack.pop();
+  }
 
   onCloseModal();
 
@@ -271,6 +274,7 @@ async function onRoot() {
     0,
     dc > -1 ? dc : previousRuntimeDapp.dappId.length
   );
+  console.log("DappFrame.onRoot() is pushing to:", `#/${dappIdForRoute}/${path}`);
   await push(`#/${dappIdForRoute}/${path}`);
 
   window.scrollTo(0, root.scrollY);
@@ -400,15 +404,15 @@ function initSession(session: SessionInfo) {
               await contacts.findBySafeAddress(event.to, true);
               const chatStore = myChats.with(event.to);
               const message = await chatStore.findSingleItemFallback(
-                [EventType.CrcHubTransfer, EventType.CrcMinting],
+                [EventType.CrcHubTransfer],
                 event.transaction_hash
               );
               chatStore.refresh(true);
-            } else {
+            } else if (event.type != EventType.CrcMinting) {
               await contacts.findBySafeAddress(event.from, true);
               const chatStore = myChats.with(event.from);
               const message = await chatStore.findSingleItemFallback(
-                [EventType.CrcHubTransfer, EventType.CrcMinting],
+                [EventType.CrcHubTransfer],
                 event.transaction_hash
               );
               chatStore.refresh(true);
@@ -636,7 +640,17 @@ async function onRunProcess(event: any) {
   window.o.publishEvent(startedEvent);
 }
 
-async function onProcessStopped() {
+async function onProcessStopped(event:Stopped) {
+
+  // TODO: Hack: If the returned data contains a 'redirectTo' go to this url instead
+  if (event.result?.redirectTo) {
+    while (stack.length) {
+      stack.pop();
+    }
+    await push(event.result.redirectTo);
+    return;
+  }
+
   // log("onProcessStopped()");
   // TODO: How to handle onProcessStopped() vs. onRoot()? Exit to the root page when a process stopped or go back to the last card?
   //       Below is the "to last card" solution
@@ -775,27 +789,19 @@ function armOauthListener() {
         // possibly valid
         // TODO: allow app-id + routeParts in the second part of the 'state'
         if (splittedState[1] == "dashboard") {
-          push("/home").then(() => {
-            setTimeout(() => {
-              window.o.runProcess(performOauth, {
-                origin: "dashboard",
-                oauthRequest: {
-                  clientId:
-                    "1087329459459-3t3i510j124ni65r96g4fjoflnelnj3v.apps.googleusercontent.com",
-                  redirectUri: "https://localhost:5000/",
-                  scope: "https://www.googleapis.com/auth/drive",
-                  accessType: "offline",
-                  responseType: "code",
-                  prompt: "consent",
-                },
-                oauthResponse: {
-                  error: paramsMap?.error,
-                  state: paramsMap?.state,
-                },
-                successAction: () => {},
-              });
+          setTimeout(() => {
+            window.o.runProcess(performOauth, {
+              origin: "dashboard",
+              authorizationResponse: {
+                error: paramsMap?.error,
+                state: paramsMap?.state,
+                code: paramsMap?.code,
+              },
+              successAction: () => {
+                push("#/dashboard");
+              },
             });
-          });
+          }, 1000);
         } else {
           alert("Couldn't parse the 'state' from the oauth response");
           // invalid
@@ -881,7 +887,7 @@ onMount(async () => {
         runningProcess = event;
         break;
       case "process.stopped":
-        await onProcessStopped();
+        await onProcessStopped(event);
         runningProcess = null;
         break;
     }
@@ -1229,7 +1235,6 @@ function showMainPage(
   //   `showMainPage(runtimeDapp: ${runtimeDapp.dappId}, routable: ${routable.title} (type: ${routable.type}), params: object)`,
   //   params
   // );
-
   layout = {
     ...layout,
     main: {

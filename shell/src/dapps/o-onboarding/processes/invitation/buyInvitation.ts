@@ -79,9 +79,7 @@ const processDefinition = (processId: string) =>
         params: {
           view: editorContent.checkInviteCode,
         },
-        dataSchema: yup
-          .string()
-          .required(window.i18n("dapps.o-onboarding.processes.invitation")),
+        dataSchema: yup.string().required(window.i18n("dapps.o-onboarding.processes.invitation.buyInvitation.editorContent.dataSchemaRequired")),
         navigation: {
           next: "#redeemCode",
         },
@@ -90,8 +88,7 @@ const processDefinition = (processId: string) =>
         id: "redeemCode",
         invoke: {
           src: async (context) => {
-            const apiClient =
-              await window.o.apiClient.client.subscribeToResult();
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
             const claimResult = await apiClient.mutate({
               mutation: ClaimInvitationDocument,
               variables: {
@@ -99,18 +96,21 @@ const processDefinition = (processId: string) =>
               },
             });
             if (claimResult.errors) {
-              context.messages["inviteCode"] = claimResult.errors
-                .map((o) => o.message)
-                .join(" \n");
+              context.messages["inviteCode"] = claimResult.errors.map((o) => o.message).join(" \n");
               throw new Error(
-                window.i18n("dapps.o-onboarding.processes.invitation.buyInvitation.editorContent.couldNotClaimInvitation", {values: {contextMessages: context.messages["inviteCode"]}})
+                window.i18n(
+                  "dapps.o-onboarding.processes.invitation.buyInvitation.editorContent.couldNotClaimInvitation",
+                  { values: { contextMessages: context.messages["inviteCode"] } }
+                )
               );
             }
             if (!claimResult.data.claimInvitation.success) {
-              context.messages["inviteCode"] =
-                claimResult.data.claimInvitation.error;
+              context.messages["inviteCode"] = claimResult.data.claimInvitation.error;
               throw new Error(
-                window.i18n("dapps.o-onboarding.processes.invitation.buyInvitation.editorContent.couldNotClaimInvitation", {values: {contextMessages: context.messages["inviteCode"]}})
+                window.i18n(
+                  "dapps.o-onboarding.processes.invitation.buyInvitation.editorContent.couldNotClaimInvitation",
+                  { values: { contextMessages: context.messages["inviteCode"] } }
+                )
               );
             }
           },
@@ -127,14 +127,12 @@ const processDefinition = (processId: string) =>
             context.data.successAction(context.data);
           }
         },
+        data: () => true,
       },
     },
   });
 
-export const promptGetInvited: ProcessDefinition<
-  void,
-  PromptGetInvitedContext
-  > = {
+export const promptGetInvited: ProcessDefinition<void, PromptGetInvitedContext> = {
   name: "promptGetInvited",
   stateMachine: <any>processDefinition,
 };

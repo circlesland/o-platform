@@ -40,13 +40,6 @@ mutation createPurchase($lines: [PurchaseLineInput!]!) {
   }
 }
 
-mutation exchangeToken {
-  exchangeToken {
-    success
-    errorMessage
-  }
-}
-
 mutation requestSessionChallenge($address: String!) {
   requestSessionChallenge(address: $address)
 }
@@ -55,17 +48,6 @@ mutation verifySessionChallenge($challenge: String!, $signature: String!) {
   verifySessionChallenge(challenge: $challenge, signature: $signature) {
     success
     errorMessage
-  }
-}
-
-mutation authenticateAt($appId: String!) {
-  authenticateAt(appId: $appId) {
-    appId
-    success
-    errorMessage
-    challengeType
-    delegateAuthCode
-    validTo
   }
 }
 
@@ -154,13 +136,6 @@ mutation redeemClaimedInvitation {
     success
     error
     transactionHash
-  }
-}
-
-mutation consumeDepositedChallenge($delegateAuthCode: String!) {
-  consumeDepositedChallenge(delegateAuthCode: $delegateAuthCode) {
-    success
-    challenge
   }
 }
 
@@ -421,5 +396,92 @@ mutation announcePayment($invoiceId: Int!, $transactionHash: String!) {
     invoiceId
     pickupCode
     simplePickupCode
+  }
+}
+
+mutation upsertShop($shop: ShopInput!) {
+  upsertShop(shop: $shop) {
+    id
+    name
+    description
+    smallBannerUrl
+    largeBannerUrl
+    openingHours
+    private
+    productListingStyle
+    owner {
+      id
+      name
+      avatarUrl
+      circlesAddress
+    }
+    categories {
+      id
+      name
+      description
+      sortOrder
+      enabled
+      private
+      largeBannerUrl
+      smallBannerUrl
+      productListingStyle
+      createdAt
+      entries {
+        id
+        sortOrder
+        product {
+          id
+          version
+          title
+          description
+          pictureUrl
+          pricePerUnit
+          createdByProfile {
+            id
+            displayName
+            avatarUrl
+            circlesAddress
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation upsertShopCategories($shopCategories: [ShopCategoryInput!]!) {
+  upsertShopCategories(shopCategories: $shopCategories) {
+    inserted
+    updated
+  }
+}
+
+mutation upsertShopCategoryEntries($shopCategoryEntries: [ShopCategoryEntryInput!]!) {
+  upsertShopCategoryEntries(shopCategoryEntries: $shopCategoryEntries) {
+    inserted
+    updated
+  }
+}
+
+mutation upsertOffer($offer: OfferInput!) {
+  upsertOffer(offer: $offer) {
+    id
+    version
+    createdAt
+    createdByAddress
+    title
+    description
+    pictureUrl
+    pricePerUnit
+    timeCirclesPriceShare
+    tags {
+      typeId
+      value
+    }
+  }
+}
+
+mutation proofUniqueness($humanodeToken:String!) {
+  proofUniqueness(humanodeToken: $humanodeToken) {
+    existingSafe
   }
 }

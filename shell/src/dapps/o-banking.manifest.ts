@@ -5,7 +5,7 @@ import XDaiDetail from "./o-banking/pages/XDaiDetail.svelte";
 
 import TransactionDetailPage from "./o-banking/pages/TransactionDetail.svelte";
 
-import { transfer } from "./o-banking/processes/transfer";
+import {transfer, TransferContextData} from "./o-banking/processes/transfer";
 import { init } from "./o-banking/init";
 import { me } from "../shared/stores/me";
 
@@ -17,6 +17,8 @@ import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { loadProfileByProfileId } from "../shared/api/loadProfileByProfileId";
 import { Profile } from "../shared/api/data/types";
+import {push} from "svelte-spa-router";
+// import {getUbi, getUbiInfo} from "../shared/ubiTimer2";
 
 const transactions: Page<any, BankingDappState> = {
   routeParts: ["=transactions"],
@@ -76,6 +78,20 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
           });
         },
       },
+      /*{
+        key: "requestUBI",
+        icon: "cash",
+        title: "Request UBI",
+        displayHint: "encouraged",
+        category: "Banking",
+        action: async () => {
+          const safeInfo = await getUbiInfo();
+          await getUbi({
+            nextUbiAt: Date.now(),
+            tokenAddress: safeInfo.tokenAddress
+          });
+        },
+      }*/
     ];
   },
 };
@@ -89,16 +105,7 @@ const transactionDetail: Page<{ transactionHash: string }, BankingDappState> = {
   component: TransactionDetailPage,
   jumplist: profileJumplist,
 };
-const transactionSend: Trigger<{ to: string; amount: string; message: string }, BankingDappState> = {
-  isSystem: true,
-  routeParts: ["=transactions", "=send", ":to", ":amount", ":message"],
-  title: "Transactions",
-  type: "trigger",
-  eventFactory: (params) => {
-    // TODO: Implement payment smartlink
-    throw new Error(`Not implemented`);
-  },
-};
+
 const assets: Page<any, BankingDappState> = {
   routeParts: ["=assets"],
   component: Assets,
@@ -106,6 +113,69 @@ const assets: Page<any, BankingDappState> = {
   icon: "assets",
   type: "page",
 };
+
+const transferTrigger: Trigger<any, BankingDappState> = {
+  routeParts: ["=send", ":amount", ":to"],
+  action: async (params:any, runtimeDapp: DappManifest<any>) => {
+    const $me = handleTransferTrigger(params);
+    window.o.runProcess(transfer, <TransferContextData>{
+      safeAddress: $me.circlesAddress,
+      recipientAddress: params.to,
+      tokens: {
+        currency: "crc",
+        amount: params.amount
+      }
+    });
+  },
+  title: "Send money",
+  icon: "cash",
+  type: "trigger",
+};
+
+const transferTriggerRedirect: Trigger<any, BankingDappState> = {
+  routeParts: ["=send", ":amount", ":to", ":redirectUrl"],
+  action: async (params:any, runtimeDapp: DappManifest<any>) => {
+    const $me = handleTransferTrigger(params);
+    window.o.runProcess(transfer, <TransferContextData>{
+      safeAddress: $me.circlesAddress,
+      recipientAddress: params.to,
+      tokens: {
+        currency: "crc",
+        amount: params.amount
+      },
+      successAction:(context) => {
+        window.location = params.redirectUrl;
+        /*console.log("Transfer completed");
+        window.close();*/
+      }
+    });
+  },
+  title: "Send money",
+  icon: "cash",
+  type: "trigger",
+};
+
+function handleTransferTrigger(params) {
+  let $me:Profile;
+  me.subscribe(me => $me = me)();
+  console.log(params);
+  if (!RpcGateway.get().utils.isAddress(params.to)) {
+    return $me;
+  }
+  if (!sessionStorage.getItem("circlesKey")) {
+    sessionStorage.setItem("desiredRoute", JSON.stringify({
+      dappId: "banking",
+      "1": "send",
+      "2": params.amount,
+      "3": params.to,
+      "4": params.redirectUrl
+    }));
+    push("/");
+    return $me;
+  }
+  return $me;
+}
+
 const crcDetail: Page<{ symbol: string }, BankingDappState> = {
   isSystem: true,
   position: "modal",
@@ -173,5 +243,5 @@ export const banking: DappManifest<BankingDappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [transactions, transactionDetail, transactionSend, assets, crcDetail, xdaiDetail],
+  routables: [transactions, transactionDetail, assets, crcDetail, xdaiDetail, transferTrigger, transferTriggerRedirect],
 };

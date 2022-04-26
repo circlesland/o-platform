@@ -42,6 +42,10 @@ onMount(() => {
 let lastBottomPosition = 0;
 
 const handleChange = async (e) => {
+  if (isLoading) {
+    return;
+  }
+
   // This function will be called at least once directly after the page loaded.
   // After that it will be called whenever the marker-element scrolls into view again.
   if (e.detail.inView && hasMore) {

@@ -7,13 +7,18 @@ const webpack = require("webpack");
 const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
 
 const mode = process.env.NODE_ENV || "development";
-const prod = mode === "production";
+let prod = mode === "production";
 const DEBUG = !process.argv.includes("--release");
 const VERBOSE = process.argv.includes("--verbose");
 
 let __CIRCLES_GARDEN_API__ = "https://api.circles.garden/api/users/";
 let __AUTH_ENDPOINT__ = "https://auth.circles.name";
 let __API_ENDPOINT__ = "https://api.circles.land";
+let __HUMANODE_AUTH_URL__ = "https://auth.staging.oauth2.humanode.io/oauth2/auth";
+let __HUMANODE_TOKEN_URL__ = "https://auth.staging.oauth2.humanode.io/oauth2/token";
+let __HUMANODE_REDIRECT_URL__ = "http://localhost:5000/";
+let __HUMANODE_CLIENT_ID__ = "circles-ubi-jwks";
+let __HUMANODE_SCOPE__ = "openid";
 let __EXTERNAL_URL__ = "https://circles.land";
 let __CIRCLES_SUBGRAPH_ENDPOINT__ =
   "https://api.thegraph.com/subgraphs/name/circlesubi/circles";
@@ -45,24 +50,28 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __APP_ID__ = "circles.land";
   __EXTERNAL_URL__ = "https://circles.land";
   __FILES_APP_ID__ = "files.circles.land";
+  prod = true;
 } else if (process.env.DEPLOY_ENVIRONMENT === "dev") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
   __API_ENDPOINT__ = "https://dev.api.circles.land";
-  __APP_ID__ = "dev.circles.land";
-  __EXTERNAL_URL__ = "https://dev.circles.land";
+  __APP_ID__ = "staging.circles.land";
+  __EXTERNAL_URL__ = "https://staging.circles.land";
   __FILES_APP_ID__ = "dev.files.circles.land";
+  prod = false;
 } else if (process.env.DEPLOY_ENVIRONMENT === "local") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
   __API_ENDPOINT__ = "https://local.api.circles.land";
   __APP_ID__ = "local.circles.land";
   __EXTERNAL_URL__ = "https://localhost:5000";
   __FILES_APP_ID__ = "dev.files.circles.land";
+  prod = false;
 } else if (process.env.DEPLOY_ENVIRONMENT === "ultralocal") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
   __API_ENDPOINT__ = "http://localhost:8989";
   __APP_ID__ = "ultralocal.circles.land";
   __EXTERNAL_URL__ = "https://localhost:5000";
   __FILES_APP_ID__ = "dev.files.circles.land";
+  prod = false;
 } else if (process.env.DEPLOY_ENVIRONMENT === "docker") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
   __API_ENDPOINT__ = "http://localhost:8989";
@@ -76,10 +85,19 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __ALLOW_VERIFY__ = "true";
   __ALLOW_CREATE_ORGANISATION__ = "true";
   __FIXED_GAS_PRICE__ = "1";
+  prod = false;
 }
 
+__HUMANODE_REDIRECT_URL__ = __EXTERNAL_URL__;
+
 console.log(`__AUTH_ENDPOINT__: ${__AUTH_ENDPOINT__}`);
-console.log(`__AUTH_ENDPOINT__: ${__AUTH_ENDPOINT__}`);
+
+console.log(`__HUMANODE_AUTH_URL__: ${__HUMANODE_AUTH_URL__}`);
+console.log(`__HUMANODE_TOKEN_URL__: ${__HUMANODE_TOKEN_URL__}`);
+console.log(`__HUMANODE_REDIRECT_URL__: ${__HUMANODE_REDIRECT_URL__}`);
+console.log(`__HUMANODE_CLIENT_ID__: ${__HUMANODE_CLIENT_ID__}`);
+console.log(`__HUMANODE_SCOPE__: ${__HUMANODE_SCOPE__}`);
+
 console.log(`__APP_ID__: ${__APP_ID__}`);
 console.log(`__EXTERNAL_URL__: ${__EXTERNAL_URL__}`);
 console.log(`__FILES_APP_ID__: ${__FILES_APP_ID__}`);
@@ -143,6 +161,51 @@ module.exports = {
 
   module: {
     rules: [
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__HUMANODE_SCOPE__",
+          replace: __HUMANODE_SCOPE__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__HUMANODE_CLIENT_ID__",
+          replace: __HUMANODE_CLIENT_ID__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__HUMANODE_REDIRECT_URL__",
+          replace: __HUMANODE_REDIRECT_URL__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__HUMANODE_TOKEN_URL__",
+          replace: __HUMANODE_TOKEN_URL__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__HUMANODE_AUTH_URL__",
+          replace: __HUMANODE_AUTH_URL__,
+          flags: "g",
+        },
+      },
       {
         test: /\.ts|\.js|\.svelte$/,
         loader: "string-replace-loader",

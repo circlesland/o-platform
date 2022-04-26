@@ -11,7 +11,9 @@ import {
   Offer,
   CreatePurchaseDocument,
   PurchaseLineInput,
-  Invoice, AnnouncePaymentDocument, EventType,
+  Invoice,
+  AnnouncePaymentDocument,
+  EventType,
 } from "../../../shared/api/data/types";
 import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
@@ -19,20 +21,16 @@ import { ipc } from "@o-platform/o-process/dist/triggers/ipc";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Currency } from "../../../shared/currency";
 
-import {
-  fTransferCircles, fTransferCirclesHashOnly,
-  TransitivePath,
-} from "../../o-banking/processes/transferCircles";
+import { fTransferCircles, fTransferCirclesHashOnly, TransitivePath } from "../../o-banking/processes/transferCircles";
 
 import { cartContents } from "../stores/shoppingCartStore";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { findDirectTransfers } from "../../o-banking/processes/transfer";
-import {Environment} from "../../../shared/environment";
-import {ApiClient} from "../../../shared/apiConnection";
-import {myPurchases} from "../../../shared/stores/myPurchases";
+import { myPurchases } from "../../../shared/stores/myPurchases";
 
 export type PurchaseContextData = {
   items: Offer[];
+  metadata?: string;
   sellerProfile?: Profile;
   invoices: Invoice[];
   pickupCode: string;
@@ -45,6 +43,7 @@ export type PurchaseContextData = {
     invoice: Invoice;
     path: TransitivePath;
   }[];
+  redirectTo?: string
 };
 
 export type PurchaseContext = ProcessContext<PurchaseContextData>;
@@ -57,7 +56,7 @@ const editorContent: { [x: string]: EditorViewContext } = {
     description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.description"),
     placeholder: "",
     submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.submitButtonText"),
-  }
+  },
 };
 
 const processDefinition = (processId: string) =>
@@ -83,7 +82,8 @@ const processDefinition = (processId: string) =>
         // onError: "#error",
       },
       checkoutSummary: prompt<PurchaseContext, any>({
-        field: "checkoutSummary",
+        id: "checkoutSummary",
+        field: "metadata",
         component: CheckoutSummary,
         params: {
           view: editorContent.summary,
@@ -103,15 +103,13 @@ const processDefinition = (processId: string) =>
         },
         invoke: {
           src: async (context) => {
+            console.log("METADAATATATA: ", context.data.metadata);
             const linesGroupedByOffer: { [offerId: number]: number } = {};
             context.data.items.forEach((o) => {
-              linesGroupedByOffer[o.id] = linesGroupedByOffer[o.id]
-                ? linesGroupedByOffer[o.id] + 1
-                : 1;
+              linesGroupedByOffer[o.id] = linesGroupedByOffer[o.id] ? linesGroupedByOffer[o.id] + 1 : 1;
             });
 
-            const apiClient =
-              await window.o.apiClient.client.subscribeToResult();
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
             const result = await apiClient.mutate({
               mutation: CreatePurchaseDocument,
               variables: {
@@ -119,6 +117,7 @@ const processDefinition = (processId: string) =>
                   return <PurchaseLineInput>{
                     offerId: parseInt(o[0]),
                     amount: o[1],
+                    metadata: JSON.stringify(context.data.metadata),
                   };
                 }),
               },
@@ -126,7 +125,10 @@ const processDefinition = (processId: string) =>
 
             context.data.invoices = <Invoice[]>result.data.purchase;
             if (context.data.invoices.length > 0) {
-              await myPurchases.findSingleItemFallback([EventType.Purchased], context.data.invoices[0].purchaseId.toString());
+              await myPurchases.findSingleItemFallback(
+                [EventType.Purchased],
+                context.data.invoices[0].purchaseId.toString()
+              );
             }
             myPurchases.refresh();
 
@@ -160,19 +162,13 @@ const processDefinition = (processId: string) =>
                 return p + amount * pricePerUnit;
               }, 0);
               /* TODO: Cleanup Hardcoded Euro to timecircles conversion here */
-              const amount = currency
-                .convertEuroToCircles(invoiceTotal, null)
-                .toString();
+              const amount = currency.convertEuroToCircles(invoiceTotal, null).toString();
 
               const circlesValueInWei = RpcGateway.get()
                 .utils.toWei(amount.toString() ?? "0", "ether")
                 .toString();
 
-              const flow = await findDirectTransfers(
-                invoice.buyerAddress,
-                invoice.sellerAddress,
-                circlesValueInWei
-              );
+              const flow = await findDirectTransfers(invoice.buyerAddress, invoice.sellerAddress, circlesValueInWei);
 
               if (flow.transfers.length > 0) {
                 context.data.payableInvoices.push({
@@ -186,29 +182,21 @@ const processDefinition = (processId: string) =>
           },
           onDone: [
             {
-              cond: (context) =>
-                context.data.invoices.length ==
-                context.data.payableInvoices.length,
+              cond: (context) => context.data.invoices.length == context.data.payableInvoices.length,
               target: "#pay",
             },
             {
-              cond: (context) =>
-                context.data.invoices.length !=
-                context.data.payableInvoices.length,
+              cond: (context) => context.data.invoices.length != context.data.payableInvoices.length,
               actions: (context, event) => {
-                let invoices = JSON.parse(
-                  JSON.stringify(context.data.invoices)
-                );
+                let invoices = JSON.parse(JSON.stringify(context.data.invoices));
                 context.data.payableInvoices.forEach((pi) => {
-                  const pi_ = context.data.invoices.find(
-                    (o) => o.id == pi.invoice.id
-                  );
+                  const pi_ = context.data.invoices.find((o) => o.id == pi.invoice.id);
                   const pi_i = context.data.invoices.indexOf(pi_);
                   invoices = invoices.splice(pi_i, 1);
                 });
-                const errorMessage = window.i18n("dapps.o-marketplace.processes.purchases.calculatePaths.errorMessage") + `${invoices
-                  .map((o) => o.sellerAddress)
-                  .join(", ")}`;
+                const errorMessage =
+                  window.i18n("dapps.o-marketplace.processes.purchases.calculatePaths.errorMessage") +
+                  `${invoices.map((o) => o.sellerAddress).join(", ")}`;
                 window.o.lastError = new Error(errorMessage);
               },
               target: "#showError",
@@ -239,40 +227,45 @@ const processDefinition = (processId: string) =>
 
             // TODO: Calculate the transaction hash and send it to the api so that it can wait for this specific tx
             const txHash = await fTransferCirclesHashOnly(
-                currentInvoice.invoice.buyerAddress,
-                sessionStorage.getItem("circlesKey"),
-                currentInvoice.path
+              currentInvoice.invoice.buyerAddress,
+              sessionStorage.getItem("circlesKey"),
+              currentInvoice.path
             );
 
             console.log(`Announcing txHash: ${txHash}`);
 
-
-            const apiClient =
-                await window.o.apiClient.client.subscribeToResult();
+            const apiClient = await window.o.apiClient.client.subscribeToResult();
 
             const announceResult = await apiClient.mutate({
               mutation: AnnouncePaymentDocument,
               variables: {
                 transactionHash: txHash,
-                invoiceId: currentInvoice.invoice.id
-              }
+                invoiceId: currentInvoice.invoice.id,
+              },
             });
 
             context.data.pickupCode = announceResult.data.announcePayment.pickupCode;
             context.data.simplePickupCode = announceResult.data.announcePayment.simplePickupCode;
-            console.log(`Your pickup code is: ${context.data.pickupCode}. Short pickup code is: ${context.data.simplePickupCode}`);
+            console.log(
+              `Your pickup code is: ${context.data.pickupCode}. Short pickup code is: ${context.data.simplePickupCode}`
+            );
 
             context.data.invoices = <Invoice[]>context.data.invoices;
             if (context.data.invoices.length > 0) {
-              await myPurchases.findSingleItemFallback([EventType.Purchased], context.data.invoices[0].purchaseId.toString());
+              await myPurchases.findSingleItemFallback(
+                [EventType.Purchased],
+                context.data.invoices[0].purchaseId.toString()
+              );
             }
+
             myPurchases.refresh();
 
             const receipt = await fTransferCircles(
               currentInvoice.invoice.buyerAddress,
               sessionStorage.getItem("circlesKey"),
               currentInvoice.path,
-              window.i18n("dapps.o-marketplace.processes.purchases.pay.paymentOfInvoice") + `${currentInvoice.invoice.id}`
+              window.i18n("dapps.o-marketplace.processes.purchases.pay.paymentOfInvoice") +
+                `${currentInvoice.invoice.id}`
             );
 
             context.data.paidInvoices.push(currentInvoice);
@@ -312,7 +305,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           cartContents.set([]);
         },
-        field: "__",
+        field: "redirectTo",
         component: CheckoutConfirm,
         params: (context) => {
           return {
@@ -320,14 +313,18 @@ const processDefinition = (processId: string) =>
               title: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.title"),
               description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.description"),
               placeholder: "",
-              submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.submitButtonText"),
+              submitButtonText: window.i18n(
+                "dapps.o-marketplace.processes.purchases.editorContent.success.submitButtonText"
+              ),
             },
             html: ``,
             simplePickupCode: context.data.simplePickupCode,
             pickupCode: context.data.pickupCode,
-            submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.submitButtonText"),
-            hideNav: false
-          }
+            submitButtonText: window.i18n(
+              "dapps.o-marketplace.processes.purchases.editorContent.success.submitButtonText"
+            ),
+            hideNav: false,
+          };
         },
         navigation: {
           next: "#success",
@@ -336,10 +333,13 @@ const processDefinition = (processId: string) =>
       success: {
         type: "final",
         id: "success",
-
+        entry: (context) => {
+          if (context.data.redirectTo) {
+            console.log("context.data.redirectTo:", context.data.redirectTo);
+          }
+        },
         data: (context, event: PlatformEvent) => {
-          window.o.publishEvent({ type: "shell.root" });
-          return "yeah!";
+          return context.data;
         },
       },
     },

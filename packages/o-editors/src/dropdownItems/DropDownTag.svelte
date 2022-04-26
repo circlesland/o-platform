@@ -9,11 +9,12 @@ let itemClasses = "";
 $: {
   const classes = [];
 
-  if (isActive) {
-    classes.push("active border-primary");
-  } else {
-    classes.push("border-light-lightest");
-  }
+  // if (isActive) {
+  //   classes.push("active border-primary");
+  // } else {
+  //   classes.push("border-light-lightest");
+  // }
+  classes.push("border-light-lightest");
   if (isFirst) {
     classes.push("first");
   }
@@ -24,17 +25,12 @@ $: {
 }
 </script>
 
-<section
-  class="flex mb-2 mr-1 items-center justify-center  border rounded-sm shadow-sm customItem  {itemClasses}">
-  <div
-    class="flex items-center w-full px-3 pt-1 space-x-2 sm:space-x-6 item-body ">
+<section class="flex mb-2 mr-1 items-center justify-center  border rounded-sm shadow-sm customItem  {itemClasses}">
+  <div class="flex items-center w-full px-3 pt-1 space-x-2 sm:space-x-6 item-body ">
     <div class="text-center">
       <div class="inline-flex">
         <div class="w-10 h-10 m-auto rounded-full">
-          <img
-            class="rounded-full"
-            src="{'/images/common/bottle.png'}"
-            alt="user-icon" />
+          <img class="rounded-full" src="{'/images/common/bottle.png'}" alt="user-icon" />
         </div>
       </div>
     </div>
@@ -57,7 +53,7 @@ $: {
   @apply bg-white;
 }
 
-.customItem.active {
+/* .customItem.active {
   @apply border;
   @apply border-primary;
 }
@@ -65,7 +61,7 @@ $: {
 .customItem.hover:not(.active) {
   @apply border;
   @apply border-primary;
-}
+} */
 
 .customItem_title {
   overflow: hidden;

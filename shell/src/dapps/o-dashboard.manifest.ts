@@ -1,5 +1,6 @@
 import Home from "./o-dashboard/pages/Home.svelte";
 import InviteLeaderboard from "./o-dashboard/pages/InviteLeaderboard.svelte";
+import Monitor from "./o-dashboard/pages/Monitor.svelte";
 import SharePersonalInvite from "./o-dashboard/pages/SharePersonalInvite.svelte";
 import RedeemedInvitations from "./o-dashboard/pages/RedeemedInvitations.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
@@ -12,6 +13,13 @@ const index: Page<any, DappState> = {
   routeParts: [],
   component: Home,
   title: "Home",
+  type: "page",
+};
+const monitor: Page<any, DappState> = {
+  isSystem: true,
+  routeParts: ["=monitor"],
+  component: Monitor,
+  title: "Monitoring",
   type: "page",
 };
 const invites: Page<any, DappState> = {
@@ -120,5 +128,5 @@ export const home: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, invites, inviteLeaderboard, sharePersonalInvite, externalChat, externalForum],
+  routables: [index, invites, inviteLeaderboard, sharePersonalInvite, externalChat, externalForum, monitor],
 };

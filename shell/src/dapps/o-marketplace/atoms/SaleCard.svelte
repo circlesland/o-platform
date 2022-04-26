@@ -8,6 +8,7 @@ import UserImage from "../../../shared/atoms/UserImage.svelte";
 import Button from "../../../shared/atoms/button/Button.svelte";
 import ButtonContext from "../../../shared/atoms/button/buttonContext";
 import { mySales } from "../../../shared/stores/mySales";
+import {purchased} from "./MyPurchaseCard.svelte";
 
 export let event: ProfileEvent;
 export let sale: SaleEvent;
@@ -21,6 +22,7 @@ $: {
     const saleEvent = event.payload as SaleEvent;
     sale = saleEvent;
     invoice = sale.invoice;
+    console.log("SALE EVENT: ", sale);
   }
 
   const pickUpAction = {
@@ -55,6 +57,22 @@ $: {
     action: action.action,
   };
 }
+
+function getTableNoFromMetadata(metadataJson:string|undefined) {
+  if (!metadataJson) {
+    return "";
+  }
+
+  const parsedJson = purchased.purchase.lines[0].metadata
+          ? JSON.parse(purchased.purchase.lines[0].metadata)
+          : {};
+
+  if (!parsedJson.Table) {
+    return "";
+  }
+
+  return parsedJson.Table;
+}
 </script>
 
 <!--  -->
@@ -81,10 +99,12 @@ $: {
               {sale.buyer_profile.displayName}
             </h2>
           </div>
-          <div class="text-xs text-right text-dark-light whitespace-nowrap leading-non">
+          <div class="pt-1 text-xs text-right text-dark-light whitespace-nowrap leading-non">
             <span class="inline-block">
               {relativeTimeString(sale.invoice.createdAt, 1, true)}
             </span>
+
+            <div class="mt-2 mb-2 text-lg font-bold text-right">{getTableNoFromMetadata(sale.invoice.lines[0].metadata)}</div>
           </div>
         </div>
         <div class="flex flex-row items-center justify-between px-3 mt-2 text-left">

@@ -33,7 +33,7 @@ onMount(async () => {
         src="/images/common/circles.png"
         alt="circles.land" />
       <div class="card shadow bg-white z-0">
-        {$_("dapps.o-passport.exchangeToken.pleaseWait")}
+        {$_("dapps.o-passport.pages.exchangeToken.pleaseWait")}
       </div>
     </div>
   </div>
