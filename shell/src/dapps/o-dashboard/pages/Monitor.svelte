@@ -9,10 +9,12 @@
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 <div>
+    <b>Indexer:</b><br/>
+    <iframe class="w-full h-20" src="https://index.circles.land/health"></iframe>
     <b>Finnland:</b><br/>
-    <iframe class="w-full h-56" src="https://rpc.helsinki.circles.land/healthchecks-ui#/healthchecks"></iframe>
+    <iframe class="w-full h-16" src="https://rpc.helsinki.circles.land/health"></iframe>
     <b>Germany:</b><br/>
-    <iframe class="w-full h-56" src="https://rpc.falkenstein.circles.land/healthchecks-ui#/healthchecks"></iframe>
+    <iframe class="w-full h-16" src="https://rpc.falkenstein.circles.land/health"></iframe>
 </div>
 
 <style>
