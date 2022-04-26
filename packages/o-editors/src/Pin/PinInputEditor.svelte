@@ -20,10 +20,11 @@ onMount(() => {
   new PincodeInput(".pincode-input-container", {
     onInput: (value) => {
       _context.data[context.field] = value;
-      // console.log("VALUE", value);
-      // if (value.length == 6) {
-      //   submitHandler();
-      // }
+      if (!context.params.hideForgotLink) {
+        if (value.length == 6) {
+          submitHandler();
+        }
+      }
     },
     count: 6,
     secure: true,

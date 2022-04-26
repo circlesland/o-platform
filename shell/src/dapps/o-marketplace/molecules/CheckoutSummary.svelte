@@ -1,20 +1,23 @@
 <script lang="ts">
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import { onMount } from "svelte";
 import { cartContents, totalPrice } from "../stores/shoppingCartStore";
 import CartItems from "../molecules/CartItems.svelte";
 // import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
 import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
-import { Profile, Organisation } from "../../../shared/api/data/types";
-import { displayableName } from "../../../shared/functions/stringHelper";
+import { Profile, Organisation, Shop, ShopQueryVariables, ShopDocument } from "../../../shared/api/data/types";
 import { Currency } from "../../../shared/currency";
 import { _ } from "svelte-i18n";
+import { ApiClient } from "../../../shared/apiConnection";
 
 export let context: any;
 let profile: Profile | Organisation;
 let tableNumber: number;
 let tableError: Boolean = false;
 let placeholder: Boolean = true;
+let metadata: any;
+let storeId: any = null;
+
 let tables = [
   1, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211,
   212, 213, 214, 215, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315,
@@ -23,6 +26,52 @@ $: {
   context = context;
   profile = context.data.sellerProfile;
 }
+
+onMount(async () => {
+  console.log("ASLKAJSDLAKSJDLAKDSJ", $cartContents);
+  if ($cartContents.length) {
+    const result = await Promise.all(
+      $cartContents
+        .filter((o) => o.hasOwnProperty("storeId") == true)
+        .map(async (o) => {
+          return { storeId: o.storeId, item: o };
+        })
+    );
+    if (result.length) {
+      storeId = result[0].storeId;
+      let shop: Shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
+        id: parseInt(storeId.toString()),
+      });
+
+      if (shop.purchaseMetaDataKeys) {
+        metadata = JSON.parse(shop.purchaseMetaDataKeys);
+      }
+    }
+    // let hasMetadata = result
+    //   .filter((o) => o.hasStoreId == true)
+    //   .map((o) => {
+    //     return o.hasStoreId == true;
+    //   });
+    // if (hasMetadata.includes(true)) {
+    // }
+    // $cartContents.find(function (entry, index) {
+    //   if (entry.hasOwnProperty("storeId")) {
+    //     storeId = $cartContents[index].storeId;
+    //     console.log("SHOP", storeId);
+    //   }
+    // });
+
+    // if (storeId !== null) {
+    //   let shop: Shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
+    //     id: parseInt(storeId.toString()),
+    //   });
+
+    //   if (shop.purchaseMetaDataKeys) {
+    //     metadata = JSON.parse(shop.purchaseMetaDataKeys);
+    //   }
+    // }
+  }
+});
 
 let classes: string;
 
@@ -50,23 +99,25 @@ function resetError() {
 {#if context.data && profile}
   <div class="flex flex-col items-center self-center w-full m-auto space-y-4 text-center justify-self-center">
     <div>
-      <span class="inline-block text-2xl {classes}" class:text-alert-dark="{tableError}"
-        >Please select your Table Number</span>
-      <div class="mt-2">
-        <select
-          class="w-full max-w-xs select select-bordered"
-          bind:value="{tableNumber}"
-          on:change="{(event) => resetError()}"
-          class:select-error="{tableError}">
-          {#if placeholder}
-            <option value="" disabled selected>Select your table number</option>
-          {/if}
+      {#if metadata && metadata.properties.tableNumber}
+        <span class="inline-block text-2xl {classes}" class:text-alert-dark="{tableError}"
+          >Please select your Table Number</span>
+        <div class="mt-2">
+          <select
+            class="w-full max-w-xs select select-bordered"
+            bind:value="{tableNumber}"
+            on:change="{(event) => resetError()}"
+            class:select-error="{tableError}">
+            {#if placeholder}
+              <option value="" disabled selected>Select your table number</option>
+            {/if}
 
-          {#each tables as table}
-            <option value="{table}">{table}</option>
-          {/each}
-        </select>
-      </div>
+            {#each tables as table}
+              <option value="{table}">{table}</option>
+            {/each}
+          </select>
+        </div>
+      {/if}
     </div>
 
     <!-- <UserImage profile="{profile}" size="{36}" gradientRing="{true}" />

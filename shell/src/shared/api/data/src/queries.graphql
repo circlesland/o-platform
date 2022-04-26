@@ -1748,6 +1748,7 @@ query shop($id: Int!) {
     openingHours
     private
     productListingStyle
+    purchaseMetaDataKeys
     owner {
       id
       name

@@ -527,6 +527,7 @@ export type Mutation = {
   importOrganisationsOfAccount: Array<Organisation>;
   verifySafe: VerifySafeResult;
   revokeSafeVerification: VerifySafeResult;
+  proofUniqueness: ProofUniquenessResult;
 };
 
 
@@ -672,6 +673,11 @@ export type MutationVerifySafeArgs = {
 
 export type MutationRevokeSafeVerificationArgs = {
   safeAddress: Scalars['String'];
+};
+
+
+export type MutationProofUniquenessArgs = {
+  token: Scalars['String'];
 };
 
 export type MyInviteRank = {
@@ -897,6 +903,12 @@ export enum ProfileType {
 export type ProofPaymentResult = {
   __typename?: 'ProofPaymentResult';
   acknowledged: Scalars['Boolean'];
+};
+
+export type ProofUniquenessResult = {
+  __typename?: 'ProofUniquenessResult';
+  isUnique: Scalars['Boolean'];
+  existingSafe: Scalars['String'];
 };
 
 export type PublicEvent = {
@@ -1286,6 +1298,7 @@ export type Shop = {
   shopListingStyle: ShopListingStyle;
   sortOrder?: Maybe<Scalars['Int']>;
   productListingStyle: ProductListingType;
+  purchaseMetaDataKeys?: Maybe<Scalars['String']>;
   owner: Organisation;
   openingHours?: Maybe<Scalars['String']>;
   pickupAddress?: Maybe<PostAddress>;
@@ -3130,7 +3143,7 @@ export type ShopQuery = (
   { __typename?: 'Query' }
   & { shop?: Maybe<(
     { __typename?: 'Shop' }
-    & Pick<Shop, 'id' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'productListingStyle'>
+    & Pick<Shop, 'id' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'productListingStyle' | 'purchaseMetaDataKeys'>
     & { owner: (
       { __typename?: 'Organisation' }
       & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
@@ -5404,6 +5417,7 @@ export const ShopDocument = gql`
     openingHours
     private
     productListingStyle
+    purchaseMetaDataKeys
     owner {
       id
       name
