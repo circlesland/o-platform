@@ -54,7 +54,7 @@ function loadDetailPage() {
 }
 
 function buy() {
-  window.o.runProcess(purchase, {});
+  window.o.runProcess(purchase, {data:{storeId: storeId}});
 }
 
 function addToCart(item) {
