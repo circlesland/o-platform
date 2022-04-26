@@ -89,16 +89,17 @@ const processDefinition = (processId: string) =>
           hideNav: false,
         },
         navigation: {
-          next: "#redirect",
+          next: "#getClientAssertion",
         },
       }),
       getClientAssertion: {
+        id: "getClientAssertion",
         invoke: {
           src: async context => {
             context.data.oauthRequest.clientAssertion =
               await ApiClient.query<string, ClientAssertionJwtQueryVariables>(ClientAssertionJwtDocument, {});
           },
-          onDone: "redirect"
+          onDone: "#redirect"
         }
       },
       redirect: {

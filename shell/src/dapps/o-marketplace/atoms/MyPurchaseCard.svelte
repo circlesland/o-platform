@@ -56,7 +56,9 @@ function loadDetailPage(path) {
               {/if}
             </h2>
           </div>
-          <div class="text-right">Table: 15</div>
+          <div class="text-right">{purchased.purchase.lines[0].metadata
+                  ? "Table: " +  JSON.parse(purchased.purchase.lines[0].metadata).Table
+                  : ""}</div>
         </div>
         <div class="flex flex-row items-center justify-between px-3 mt-2 text-left">
           <div
