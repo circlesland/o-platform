@@ -4,7 +4,6 @@ import OfferCard from "../atoms/OfferCard.svelte";
 import { onMount } from "svelte";
 import { Subscription } from "rxjs";
 
-import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
@@ -33,12 +32,9 @@ onMount(async () => {
             id: parseInt(storeId.toString())
           }
   );
-
-  if (!shop || !shop.categories){
-    await push("/not-found");
+  if (!shop || !shop.categories) {
     return;
   }
-
   offers = shop.categories.flatMap(o => o.entries.flatMap(o => o.product));
 });
 </script>
@@ -74,10 +70,12 @@ onMount(async () => {
       fetchQueryArguments="{listArguments}"
       dataKey="offers"
       dataLimit="{100}" />-->
-    {#if offers}
+    {#if offers && offers.length}
       {#each offers as offer}
         <OfferCard param="{offer}" />
       {/each}
+    {:else}
+      No offers
     {/if}
   </div>
 </div>

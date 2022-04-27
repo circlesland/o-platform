@@ -2,7 +2,6 @@
 import { onMount } from "svelte";
 import { cartContents, totalPrice } from "../stores/shoppingCartStore";
 import CartItems from "../molecules/CartItems.svelte";
-// import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
 import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { Profile, Organisation, Shop, ShopQueryVariables, ShopDocument } from "../../../shared/api/data/types";
