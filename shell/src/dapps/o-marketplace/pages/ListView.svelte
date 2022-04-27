@@ -4,7 +4,6 @@ import ListViewCard from "../atoms/ListViewCard.svelte";
 import { onMount } from "svelte";
 import { Subscription } from "rxjs";
 
-import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
@@ -25,12 +24,9 @@ onMount(async () => {
     id: parseInt(storeId.toString()),
   });
 
-  if (!shop) {
-    await push("/not-found");
-    return;
+  if (shop) {
+    categories = shop.categories;
   }
-
-  categories = shop.categories;
   console.log("CATEGORIES", categories);
 });
 </script>
