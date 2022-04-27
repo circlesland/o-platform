@@ -59,19 +59,19 @@ $: {
 }
 
 function getTableNoFromMetadata(metadataJson:string|undefined) {
-  if (!metadataJson) {
+  if (!sale || !sale.invoice || !metadataJson) {
     return "";
   }
 
-  const parsedJson = purchased.purchase.lines[0].metadata
-          ? JSON.parse(purchased.purchase.lines[0].metadata)
+  const parsedJson = sale.invoice.lines[0].metadata
+          ? JSON.parse(sale.invoice.lines[0].metadata)
           : {};
 
   if (!parsedJson.Table) {
     return "";
   }
 
-  return parsedJson.Table;
+  return "Table: " + parsedJson.Table;
 }
 </script>
 

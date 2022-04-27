@@ -23,7 +23,7 @@ function loadDetailPage(path) {
 }
 
 function getTableNoFromMetadata(metadataJson:string|undefined) {
-  if (!metadataJson) {
+  if (!purchased || !purchased.purchase || !metadataJson) {
     return "";
   }
 
@@ -35,7 +35,7 @@ function getTableNoFromMetadata(metadataJson:string|undefined) {
     return "";
   }
 
-  return parsedJson.Table;
+  return "Table: " + parsedJson.Table;
 }
 </script>
 
