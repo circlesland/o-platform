@@ -72,7 +72,7 @@ onMount(async () => {
       dataLimit="{100}" />-->
     {#if offers && offers.length}
       {#each offers as offer}
-        <OfferCard param="{offer}" />
+        <OfferCard param="{offer}" storeId="{storeId}" />
       {/each}
     {:else}
       No offers

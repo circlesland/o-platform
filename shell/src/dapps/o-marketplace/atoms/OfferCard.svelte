@@ -55,7 +55,10 @@ function buy() {
   window.o.runProcess(purchase, {});
 }
 
+export let storeId: Number;
+
 function addToCart(item) {
+  item.storeId = storeId;
   $cartContents = $cartContents ? [...$cartContents, item] : [item];
   push(`#/marketplace/cart`);
 }
