@@ -57,6 +57,7 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __APP_ID__ = "staging.circles.land";
   __EXTERNAL_URL__ = "https://staging.circles.land";
   __FILES_APP_ID__ = "dev.files.circles.land";
+  __HUMANODE_CLIENT_ID__ = "circles-ubi-staging";
   prod = false;
 } else if (process.env.DEPLOY_ENVIRONMENT === "local") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
