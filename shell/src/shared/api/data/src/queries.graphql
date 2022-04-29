@@ -752,6 +752,13 @@ query organisations($pagination: PaginationArgs) {
       name
       country
     }
+    shops {
+      id
+      name
+      description
+      largeBannerUrl
+      smallBannerUrl
+    }
   }
 }
 
@@ -783,6 +790,13 @@ query organisationsByAddress($addresses: [String!]!) {
       geonameid
       name
       country
+    }
+    shops {
+      id
+      name
+      description
+      smallBannerUrl
+      largeBannerUrl
     }
     members {
       ... on Organisation {

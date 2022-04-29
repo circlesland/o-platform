@@ -453,9 +453,10 @@ export const initMachine = createMachine<InitContext, InitEvent>(
           () => {
             push("#/home").then(() => {
               setTimeout(() => {
-                if (sessionStorage.getItem("circlesKey")) {
+                goToPreviouslyDesiredRouteIfExisting();
+                /*if (sessionStorage.getItem("circlesKey")) {
                   goToPreviouslyDesiredRouteIfExisting();
-                }
+                }*/
               });
             });
           },

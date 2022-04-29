@@ -2559,7 +2559,10 @@ export type OrganisationsQuery = (
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country'>
-    )> }
+    )>, shops?: Maybe<Array<(
+      { __typename?: 'Shop' }
+      & Pick<Shop, 'id' | 'name' | 'description' | 'largeBannerUrl' | 'smallBannerUrl'>
+    )>> }
   )> }
 );
 
@@ -2591,7 +2594,10 @@ export type OrganisationsByAddressQuery = (
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country'>
-    )>, members?: Maybe<Array<(
+    )>, shops?: Maybe<Array<(
+      { __typename?: 'Shop' }
+      & Pick<Shop, 'id' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl'>
+    )>>, members?: Maybe<Array<(
       { __typename?: 'Organisation' }
       & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'createdAt' | 'name' | 'displayName' | 'avatarUrl'>
       & { city?: Maybe<(
@@ -4450,6 +4456,13 @@ export const OrganisationsDocument = gql`
       name
       country
     }
+    shops {
+      id
+      name
+      description
+      largeBannerUrl
+      smallBannerUrl
+    }
   }
 }
     `;
@@ -4483,6 +4496,13 @@ export const OrganisationsByAddressDocument = gql`
       geonameid
       name
       country
+    }
+    shops {
+      id
+      name
+      description
+      smallBannerUrl
+      largeBannerUrl
     }
     members {
       ... on Organisation {

@@ -16,11 +16,39 @@ let tableError: Boolean = false;
 let placeholder: Boolean = true;
 let metadata: any;
 let storeId: any = null;
+function range(from:number, to:number) {
+  const result:number[] = [];
+  for(let i = from; i <= to; i++) {
+    result.push(i);
+  }
+  return result;
+}
 
-let tables = [
-  1, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211,
-  212, 213, 214, 215, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315,
-];
+
+// Bar:
+//         1
+// Außen:
+//         100-107
+//         201-204
+//         300-310
+//         400-411
+//
+// Innen:
+//         501-503
+//         601-608
+//         701-705
+const tables = {
+  bar: 1,
+  outside: range(100, 107)
+          .concat(range(201, 204))
+          .concat(range(300, 310))
+          .concat(range(400, 411)),
+  inside: range(501, 503)
+          .concat(range(601, 608))
+          .concat(range(701, 705))
+};
+
+
 $: {
   context = context;
   profile = context.data.sellerProfile;
@@ -105,15 +133,29 @@ function resetError() {
           <select
             class="w-full max-w-xs select select-lg select-bordered"
             bind:value="{tableNumber}"
-            on:change="{(event) => resetError()}"
+            on:change="{() => resetError()}"
             class:select-error="{tableError}">
             {#if placeholder}
               <option value="" disabled selected>Select your table number</option>
             {/if}
 
-            {#each tables as table}
-              <option value="{table}">{table}</option>
-            {/each}
+            {#if tables.bar}
+              <option value={tables.bar}>&nbsp;&nbsp;&nbsp;Bar</option>
+            {/if}
+
+            {#if tables.outside}
+              <option disabled>Outdoor:</option>
+              {#each tables.outside as table, i}
+                <option value="{table}">&nbsp;&nbsp;&nbsp;{table}</option>
+              {/each}
+            {/if}
+
+            {#if tables.inside}
+              <option disabled>Indoor:</option>
+              {#each tables.inside as table, i}
+                <option value="{table}">&nbsp;&nbsp;&nbsp;{table}</option>
+              {/each}
+            {/if}
           </select>
         </div>
       {/if}
