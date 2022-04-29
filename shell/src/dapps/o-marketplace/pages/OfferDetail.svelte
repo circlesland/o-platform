@@ -28,10 +28,10 @@ async function load() {
   isLoading = false;
 }
 
-export let storeId: Number;
+export let shopId: Number;
 
-function addToCart(item) {
-  item.storeId = storeId;
+function addToCart(item:Offer, shopId:number) {
+  item.shopId = shopId;
   $cartContents = $cartContents ? [...$cartContents, item] : [item];
   push(`#/marketplace/cart`);
 }
@@ -312,7 +312,7 @@ onMount(async () => {
             </button>
           </div>
           <div class="flex-grow">
-            <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => addToCart(o)}">
+            <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => addToCart(o, shopId)}">
               {$_("dapps.o-marketplace.pages.offerDetail.addToCart")}
               <div class="absolute mr-1 right-2">
                 <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />

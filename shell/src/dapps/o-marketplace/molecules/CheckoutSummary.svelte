@@ -15,7 +15,7 @@ let tableNumber: number;
 let tableError: Boolean = false;
 let placeholder: Boolean = true;
 let metadata: any;
-let storeId: any = null;
+let shopId: any = null;
 function range(from:number, to:number) {
   const result:number[] = [];
   for(let i = from; i <= to; i++) {
@@ -51,6 +51,7 @@ const tables = {
 
 $: {
   context = context;
+  console.log("CheckoutSummary.context:", context)
   profile = context.data.sellerProfile;
 }
 
@@ -59,19 +60,24 @@ onMount(async () => {
   if ($cartContents.length) {
     const result = await Promise.all(
       $cartContents
-        .filter((o) => o.hasOwnProperty("storeId") == true)
+        .filter((o) => o.hasOwnProperty("shopId") == true)
         .map(async (o) => {
-          return { storeId: o.storeId, item: o };
+          return { shopId: o.shopId, item: o };
         })
     );
     if (result.length) {
-      storeId = result[0].storeId;
+      shopId = result[0].shopId;
       let shop: Shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
-        id: parseInt(storeId.toString()),
+        id: parseInt(shopId.toString()),
       });
 
-      if (shop.purchaseMetaDataKeys) {
+      if (shop.purchaseMetaDataKeys && context.data.metadata) {
+        metadata = context.data.metadata;
+        tableNumber = context.data.metadata.Table;
+      } else if (shop.purchaseMetaDataKeys) {
         metadata = JSON.parse(shop.purchaseMetaDataKeys);
+      } else {
+        metadata = undefined;
       }
     }
     // let hasMetadata = result
@@ -82,15 +88,15 @@ onMount(async () => {
     // if (hasMetadata.includes(true)) {
     // }
     // $cartContents.find(function (entry, index) {
-    //   if (entry.hasOwnProperty("storeId")) {
-    //     storeId = $cartContents[index].storeId;
-    //     console.log("SHOP", storeId);
+    //   if (entry.hasOwnProperty("shopId")) {
+    //     shopId = $cartContents[index].shopId;
+    //     console.log("SHOP", shopId);
     //   }
     // });
 
-    // if (storeId !== null) {
+    // if (shopId !== null) {
     //   let shop: Shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
-    //     id: parseInt(storeId.toString()),
+    //     id: parseInt(shopId.toString()),
     //   });
 
     //   if (shop.purchaseMetaDataKeys) {
@@ -108,6 +114,7 @@ function submit() {
     return;
   }
   const answer = new Continue();
+
   context.data.metadata = { Table: tableNumber };
   answer.data = context.data;
   context.process.sendAnswer(answer);
@@ -126,7 +133,7 @@ function resetError() {
 {#if context.data && profile}
   <div class="flex flex-col items-center self-center w-full m-auto space-y-4 text-center justify-self-center">
     <div>
-      {#if metadata && metadata.properties.tableNumber}
+      {#if metadata}
         <span class="inline-block text-2xl {classes}" class:text-alert-dark="{tableError}"
           >Please select your Table Number</span>
         <div class="mt-2">

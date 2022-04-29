@@ -30,8 +30,8 @@ const addToCart: Trigger<{ id: Number }, DappState> = {
   title: "Add to Cart",
   type: "trigger",
   action: async (params) => {
-    let offer: Offer;
-    let cart: Offer[] = [];
+    let offer: Offer & {shopId:number};
+    let cart: (Offer & {shopId:number})[] = [];
     let authenticated: boolean = false;
     if (!params.id) {
       return;
@@ -48,7 +48,10 @@ const addToCart: Trigger<{ id: Number }, DappState> = {
       const o = await offers.findById(parseInt(params.id.toString()));
 
       if (o) {
-        offer = o;
+        offer = {
+          ...o,
+          shopId:0
+        };
 
         const unsubCart = cartContents.subscribe((o) => {
           cart = o ? o : [];
@@ -69,7 +72,7 @@ const addToCart: Trigger<{ id: Number }, DappState> = {
 
 const market: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["=market", ":storeId"],
+  routeParts: ["=market", ":shopId"],
   component: Home,
   title: "Market",
   type: "page",
@@ -77,7 +80,7 @@ const market: Page<any, DappState> = {
 
 const list: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["=list", ":storeId"],
+  routeParts: ["=list", ":shopId"],
   component: ListView,
   title: "List",
   type: "page",

@@ -9,6 +9,7 @@
   } from "../../../shared/api/data/types";
   import {getSessionInfo} from "../../o-passport/processes/identify/services/getSessionInfo";
   import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
+  import {Environment} from "../../../shared/environment";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -34,22 +35,30 @@
     const hostProfileResult = <Organisation[]>queryResults[0];
     const sessionInfo = <SessionInfo>queryResults[1];
 
-    hostProfile = hostProfileResult.length > 0 ? hostProfileResult[0] : undefined;
+    hostProfile = hostProfileResult.length > 0
+      ? hostProfileResult[0]
+      : undefined;
 
-    if (sessionInfo.hasProfile && hostProfile?.shops.length > 0) {
-      sessionStorage.setItem("desiredRoute", JSON.stringify({
-        dappId: "marketplace",
-        "1": "list",
-        "2": hostProfile?.shops[0].id
-      }));
-      window.runInitMachine();
+    shop = hostProfile?.shops?.length > 0
+      ? hostProfile.shops[0]
+      : undefined;
+
+    loading = false;
+
+    if (!shop) {
       return;
     }
 
-    loading = false;
-    shop = hostProfile?.shops[0];
+    sessionStorage.setItem("desiredRoute", JSON.stringify({
+      dappId: "marketplace",
+      "1": "list",
+      "2": shop.id
+    }));
 
-    if (!hostProfile) {
+    Environment.setShopMetadata(shop.id, JSON.stringify({ Table: parseInt(table) }));
+
+    if (sessionInfo.hasProfile && hostProfile?.shops.length > 0) {
+      window.runInitMachine();
       return;
     }
   });
@@ -64,12 +73,10 @@
             <div class="flex flex-col w-full">
                 <header class="rounded-xl">
                     <div class="relative overflow-hidden bg-white rounded-xl image-wrapper">
-                        <img
-                                src="{shop.smallBannerUrl}"
-                                alt="{shop.name}"
-                                class="w-full rounded-xl opacity-60 object-position: center center;  " />
-                        <div
-                                class="absolute right-0 pt-1 pb-1 pl-4 pr-2 mt-2 text-xl rounded-l-full sm:pb-2 sm:pt-3 sm:text-3xl font-heading top-2 bg-light-lightest">
+                        <img src="{shop.smallBannerUrl}"
+                             alt="{shop.name}"
+                             class="w-full rounded-xl opacity-60 object-position: center center;  " />
+                        <div class="absolute right-0 pt-1 pb-1 pl-4 pr-2 mt-2 text-xl rounded-l-full sm:pb-2 sm:pt-3 sm:text-3xl font-heading top-2 bg-light-lightest">
                             <span class="inline-block">{shop.name}</span>
                         </div>
                     </div>

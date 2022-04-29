@@ -10,6 +10,7 @@ import { cartContents } from "../stores/shoppingCartStore";
 import { truncateString } from "../../../shared/functions/truncateString";
 import Time from "svelte-time";
 import { _ } from "svelte-i18n";
+import {Environment} from "../../../shared/environment";
 
 export let param: Offer = <any>{
   categoryTag: {
@@ -52,13 +53,18 @@ function loadDetailPage() {
 }
 
 function buy() {
-  window.o.runProcess(purchase, {});
+  const shopMetadataJson = Environment.getShopMetadata(shopId);
+  window.o.runProcess(purchase, {
+    data: {
+      metadata: shopMetadataJson
+    }
+  });
 }
 
-export let storeId: Number;
+export let shopId: Number;
 
-function addToCart(item) {
-  item.storeId = storeId;
+function addToCart(item:Offer, shopId:number) {
+  item.shopId = shopId;
   $cartContents = $cartContents ? [...$cartContents, item] : [item];
   push(`#/marketplace/cart`);
 }
@@ -130,7 +136,7 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
 
       <div class="flex flex-row space-x-4">
         <div class="">
-          <button type="submit" class="relative btn btn-primary btn-square" on:click="{() => addToCart(offer)}">
+          <button type="submit" class="relative btn btn-primary btn-square" on:click="{() => addToCart(offer, shopId)}">
             <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
           </button>
         </div>

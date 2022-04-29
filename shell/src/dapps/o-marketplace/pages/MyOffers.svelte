@@ -35,7 +35,7 @@ import { flip } from "svelte/animate";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
-export let storeId: number;
+export let shopId: number;
 
 let isLoading: boolean;
 let error: Error;
@@ -61,9 +61,9 @@ onMount(async () => {
     return;
   }
 
-  storeId = $me.shops[0].id;
+  shopId = $me.shops[0].id;
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
-    id: parseInt(storeId.toString()),
+    id: parseInt(shopId.toString()),
   });
 
   categories = shop.categories;

@@ -20,17 +20,17 @@ export class StoreOffers {
     return this._subscribe(run);
   }
 
-  private async loadOffers(storeId?: string) {
+  private async loadOffers(shopId?: string) {
     let mySafeAddress = "";
     me.subscribe(($me) => (mySafeAddress = $me.circlesAddress))();
     let result = undefined;
-    if (storeId) {
+    if (shopId) {
       result = await ApiClient.queryAggregate<Offers>(
         AggregateType.Offers,
         mySafeAddress,
         {
           offers: {
-            createdByAddresses: [storeId],
+            createdByAddresses: [shopId],
           },
         }
       );

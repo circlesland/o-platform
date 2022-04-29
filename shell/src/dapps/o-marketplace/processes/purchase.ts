@@ -27,9 +27,10 @@ import { cartContents } from "../stores/shoppingCartStore";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { findDirectTransfers } from "../../o-banking/processes/transfer";
 import { myPurchases } from "../../../shared/stores/myPurchases";
+import {Environment} from "../../../shared/environment";
 
 export type PurchaseContextData = {
-  items: Offer[];
+  items: (Offer & {shopId:number})[];
   metadata?: string;
   sellerProfile?: Profile;
   invoices: Invoice[];
@@ -83,6 +84,11 @@ const processDefinition = (processId: string) =>
       },
       checkoutSummary: prompt<PurchaseContext, any>({
         id: "checkoutSummary",
+        entry: (context) => {
+          context.data.metadata = JSON.parse(context.data.items.length > 0
+            ? Environment.getShopMetadata(context.data.items[0].shopId)
+            : "undefined");
+        },
         field: "metadata",
         component: CheckoutSummary,
         params: {
