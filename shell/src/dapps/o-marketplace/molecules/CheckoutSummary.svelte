@@ -109,7 +109,7 @@ onMount(async () => {
 let classes: string;
 
 function submit() {
-  if (tableNumber == "") {
+  if (!tableNumber) {
     tableError = true;
     return;
   }
