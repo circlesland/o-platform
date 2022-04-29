@@ -55,47 +55,30 @@
   });
 </script>
 
-
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<main>
-    <div class="mx-auto md:w-2/3 xl:w-1/2">
-        <div class="flex flex-col space-y-10">
-            {#if hostProfile}
-                <section class="m-4 -mb-4 text-center">
-                    <h1>Welcome at {hostProfile.name}!</h1>
-                    Please take a seat at table {table}.
-                </section>
-
-                {#if shop}
-                    <section class="flex items-start m-4 rounded-xl"
-                             class:cursor-pointer="{shop.enabled}">
-                        <div class="flex flex-col w-full ">
-                            <div class="m-4 ">
-                            </div>
-                            <header class=" rounded-xl headerImageContainer">
-                                <div class="relative rounded-xl image-wrapper">
-                                    <img
-                                            src="{shop.largeBannerUrl}"
-                                            alt=""
-                                            class="w-full rounded-xl"/>
-                                    <div
-                                            class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-3xl rounded-l-full font-heading top-2 bg-light-lightest">
-                                        <span class="inline-block">{shop.name}</span>
-                                    </div>
-                                </div>
-                            </header>
-                        </div>
-                    </section>
-                {:else}
-                    <div class="mx-auto md:w-2/3 xl:w-1/2 mt-12">
-                        <div class="m-4 mb-40 ">
-                            Welcome at {hostProfile.name}!<br/>
-                            Please take a seat at table {table}.
+<div class="mb-20 -mt-3 ">
+    <!-- <div class="flex flex-wrap items-stretch space-x-4 space-y-8"> -->
+    {#if shop}
+        <section class="flex items-start px-4 mx-auto mb-4 md:w-2/3 xl:w-1/2 rounded-xl">
+            <div class="flex flex-col w-full">
+                <header class="rounded-xl">
+                    <div class="relative overflow-hidden bg-white rounded-xl image-wrapper">
+                        <img
+                                src="{shop.smallBannerUrl}"
+                                alt="{shop.name}"
+                                class="w-full rounded-xl opacity-60 object-position: center center;  " />
+                        <div
+                                class="absolute right-0 pt-1 pb-1 pl-4 pr-2 mt-2 text-xl rounded-l-full sm:pb-2 sm:pt-3 sm:text-3xl font-heading top-2 bg-light-lightest">
+                            <span class="inline-block">{shop.name}</span>
                         </div>
                     </div>
-                {/if}
-            {/if}
-        </div>
-    </div>
-</main>
+                </header>
+            </div>
+        </section>
+        <section>
+            <h1 class="m-4 text-center">Welcome at {hostProfile.name}!</h1>
+            <h2 class="m-4 text-center">Click the sign-in button below access the shop.</h2>
+        </section>
+    {/if}
+</div>
