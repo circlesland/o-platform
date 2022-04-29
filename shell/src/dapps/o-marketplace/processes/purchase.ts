@@ -101,12 +101,15 @@ const processDefinition = (processId: string) =>
       }),
       createPurchase: {
         id: "createPurchase",
-        entry: () => {
-          window.o.publishEvent(<PlatformEvent>{
+        entry: [
+          () => window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
             message: window.i18n("dapps.o-marketplace.processes.purchases.createPurchase.message"),
-          });
-        },
+          }),
+          (context) => context.data.metadata
+            ? Environment.setShopMetadata(context.data.items[0].shopId, JSON.stringify(context.data.metadata))
+            : "undefined"
+        ],
         invoke: {
           src: async (context) => {
             console.log("METADAATATATA: ", context.data.metadata);
