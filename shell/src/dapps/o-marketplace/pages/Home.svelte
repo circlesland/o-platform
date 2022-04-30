@@ -7,11 +7,8 @@ import { Subscription } from "rxjs";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-import { offers } from "../../../shared/stores/offers";
-
 import {
-  Offer,
-  Shop,
+  Shop, ShopCategoryEntry,
   ShopDocument, ShopQueryVariables,
 } from "../../../shared/api/data/types";
 
@@ -22,7 +19,7 @@ export let routable: Routable;
 export let shopId:number;
 
 let shop: Shop|null = null;
-let offers: Offer[] = [];
+let categoryEntries: ShopCategoryEntry[] = [];
 let shellEventSubscription: Subscription;
 let loading = true;
 
@@ -37,7 +34,7 @@ onMount(async () => {
     loading = false;
     return;
   }
-  offers = shop.categories.flatMap(o => o.entries.flatMap(o => o.product));
+  categoryEntries = shop.categories.flatMap(o => o.entries);
   loading = false;
 });
 </script>
@@ -62,9 +59,9 @@ onMount(async () => {
   </section>
   <div
     class="grid grid-cols-1 mb-20 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid">
-    {#if offers && offers.length}
-      {#each offers as offer}
-        <OfferCard param="{offer}" shopId="{shopId}" />
+    {#if categoryEntries && categoryEntries.length}
+      {#each categoryEntries as categoryEntry}
+        <OfferCard entry="{categoryEntry}" shopId="{shopId}" />
       {/each}
     {:else if !loading}
       No offers

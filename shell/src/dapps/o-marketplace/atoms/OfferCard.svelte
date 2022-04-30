@@ -1,82 +1,27 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
-import { Offer } from "../../../shared/api/data/types";
-import { purchase } from "../processes/purchase";
-import OfferCardField from "./OfferCardField.svelte";
+import {Offer, ShopCategoryEntry} from "../../../shared/api/data/types";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
-import { me } from "../../../shared/stores/me";
 import { cartContents } from "../stores/shoppingCartStore";
 import { truncateString } from "../../../shared/functions/truncateString";
-import Time from "svelte-time";
 import { _ } from "svelte-i18n";
-import {Environment} from "../../../shared/environment";
 
-export let param: Offer = <any>{
-  categoryTag: {
-    value: "",
-    id: 0,
-  },
-  categoryTagId: 0,
-  deliveryTermsTag: {
-    value: "",
-    id: 0,
-  },
-  description: "",
-  unitTag: {
-    value: "",
-    id: 0,
-  },
-  pricePerUnit: "",
-  id: 0,
-  title: "",
-  geonameid: 0,
-  createdBy: {},
-};
+export let entry: ShopCategoryEntry;
+export let shopId: number;
 
-let offer = param;
-
-export let allowEdit: boolean = false;
-
-let isEditable: boolean = false;
-$: {
-  isEditable = allowEdit && $me && offer && $me.id == offer.createdByProfileId;
-}
-
-function edit(dirtyFlags: { [field: string]: boolean }) {
-  // console.log("edit: dirtyFlags:", dirtyFlags);
-  // window.o.runProcess(upsertOffer, offer, dirtyFlags, true);
-}
 
 function loadDetailPage() {
-  push("#/marketplace/offer/" + offer.id);
+  push("#/marketplace/detail/" + shopId + "/" + entry.id);
 }
 
-function buy() {
-  const shopMetadataJson = Environment.getShopMetadata(shopId);
-  window.o.runProcess(purchase, {
-    data: {
-      metadata: shopMetadataJson
-    }
-  });
-}
-
-export let shopId: Number;
-
-function addToCart(item:Offer, shopId:number) {
-  item.shopId = shopId;
+function addToCart(item:Offer & {shopId:number}) {
   $cartContents = $cartContents ? [...$cartContents, item] : [item];
   push(`#/marketplace/cart`);
 }
 
 let now = new Date();
-let sevendaysago = now.setDate(now.getDate() - 7);
-
-function dateOlderThanSevenDays(unixTime: number) {
-  return sevendaysago > unixTime * 1000;
-}
-
-let displayName = `${offer.createdByProfile.displayName}`;
+let displayName = `${entry.product.createdByProfile.displayName}`;
 
 displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
 </script>
@@ -86,12 +31,12 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
     <header class="cursor-pointer rounded-t-xl headerImageContainer" on:click="{() => loadDetailPage()}">
       <div class="relative rounded-t-xl image-wrapper">
         <img
-          src="{offer.pictureUrl ? offer.pictureUrl : '/images/market/circles-no-image.jpg'}"
+          src="{entry.product.pictureUrl ? entry.product.pictureUrl : '/images/market/circles-no-image.jpg'}"
           alt="
           "
           class="rounded-t-xl" />
         <div class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
-          <span class="inline-block">{offer.pricePerUnit}</span>
+          <span class="inline-block">{entry.product.pricePerUnit}</span>
           <span class="inline-block">€</span>
         </div>
 
@@ -103,45 +48,33 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
     <div
       class="relative flex flex-row items-center content-start p-2 space-x-4 text-base font-medium text-left bg-light-lighter">
       <div class="inline-flex">
-        <UserImage profile="{offer.createdByProfile}" size="{10}" gradientRing="{true}" />
+        <UserImage profile="{entry.product.createdByProfile}" size="{10}" gradientRing="{true}" />
       </div>
       <div>
         {displayName}
       </div>
     </div>
     <div class="flex flex-col w-full px-4 pb-2 mt-2 space-y-4 ">
-      <!--<<div class="flex flex-row flex-grow space-x-2">
-        div
-          class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs">
-         <a
-            href="#/marketplace/categories/{offer.categoryTagId}/{offer
-              .categoryTag.value}"
-            alt="{offer.categoryTag.value}">
-            {offer.categoryTag.value}
-          </a>
-        </div>
-      </div>-->
-
       <div class="h-32">
         <div class="text-4xl leading-tight text-left uppercase break-word font-heading">
-          {offer.title}
+          {entry.product.title}
         </div>
 
-        {#if offer.description}
+        {#if entry.product.description}
           <div class="text-sm text-dark-lightest">
-            {@html truncateString(offer.description, 70)}
+            {@html truncateString(entry.product.description, 70)}
           </div>
         {/if}
       </div>
 
       <div class="flex flex-row space-x-4">
         <div class="">
-          <button type="submit" class="relative btn btn-primary btn-square" on:click="{() => addToCart(offer, shopId)}">
+          <button type="submit" class="relative btn btn-primary btn-square" on:click="{() => addToCart({...entry.product, shopId: shopId})}">
             <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
           </button>
         </div>
         <div class="flex-grow">
-          <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => loadDetailPage()}">
+          <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => loadDetailPage(shopId)}">
             {$_("dapps.o-marketplace.atoms.offerCard.details")}
             <div class="absolute mr-1 right-2">
               <Icon name="eye" class="w-6 h-6 heroicon smallicon" />
