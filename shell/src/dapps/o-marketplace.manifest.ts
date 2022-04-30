@@ -12,17 +12,17 @@ import ScanPurchase from "./o-marketplace/pages/ScanPurchase.svelte";
 import MySales from "./o-marketplace/pages/MySales.svelte";
 import MySaleDetail from "./o-marketplace/pages/MySaleDetail.svelte";
 import MyPurchasesDetail from "./o-marketplace/pages/MyPurchasesDetail.svelte";
-import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
+import {Trigger} from "@o-platform/o-interfaces/dist/routables/trigger";
 import PleaseSignIn from "./o-marketplace/pages/PleaseSignIn.svelte";
 import ShoppingCart from "./o-marketplace/pages/ShoppingCart.svelte";
 // import { upsertOffer } from "./o-marketplace/processes/upsertOffer";
-import { Page } from "@o-platform/o-interfaces/dist/routables/page";
-import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import { cartContents } from "./o-marketplace/stores/shoppingCartStore";
-import { Offer } from "../shared/api/data/types";
-import { offers } from "../shared/stores/offers";
-import { push } from "svelte-spa-router";
-import { me } from "../shared/stores/me";
+import {Page} from "@o-platform/o-interfaces/dist/routables/page";
+import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+import {cartContents} from "./o-marketplace/stores/shoppingCartStore";
+import {Offer, ProfileType} from "../shared/api/data/types";
+import {offers} from "../shared/stores/offers";
+import {push} from "svelte-spa-router";
+import {me} from "../shared/stores/me";
 import CategoryEntryDetail from "./o-marketplace/pages/CategoryEntryDetail.svelte";
 
 const addToCart: Trigger<{ id: Number }, DappState> = {
@@ -149,12 +149,14 @@ const favorites: Page<any, DappState> = {
 const myOffers: Page<any, DappState> = {
   routeParts: ["=my-offers"],
   component: MyOffers,
+  audience: ProfileType.Organisation,
   title: "My Offers",
   type: "page",
 };
 const myCategories: Page<any, DappState> = {
   routeParts: ["=my-categories"],
   component: MyCategories,
+  audience: ProfileType.Organisation,
   title: "My Categories",
   type: "page",
 };
@@ -183,6 +185,7 @@ const scanPurchase: Page<any, DappState> = {
 const mySales: Page<any, DappState> = {
   routeParts: ["=my-sales"],
   component: MySales,
+  audience: ProfileType.Organisation,
   title: "My sales",
   type: "page",
 };
@@ -236,6 +239,7 @@ export const marketplace: DappManifest<DappState> = {
   isEnabled: true,
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
+
     return {
       initialRoutable: market,
       cancelDependencyLoading: false,
@@ -249,16 +253,16 @@ export const marketplace: DappManifest<DappState> = {
     addToCart,
     pleaseSignIn,
     // favorites,
-    myOffers,
-    myCategories,
     offerDetail,
     // myOffersDetail,
     shoppingCart,
     myPurchases,
     myPurchasesDetail,
     scanPurchase,
-    mySales,
     mySaleDetail,
-    categoryEntryDetail
+    categoryEntryDetail,
+    myOffers,
+    myCategories,
+    mySales
   ],
 };

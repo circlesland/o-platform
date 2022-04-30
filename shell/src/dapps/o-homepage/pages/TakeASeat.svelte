@@ -85,7 +85,7 @@
         </section>
         <section>
             <h1 class="m-4 text-center">Welcome at {hostProfile.name}!</h1>
-            <h2 class="m-4 text-center">Click the sign-in button below access the shop.</h2>
+            <h2 class="m-4 text-center">Click the sign-in button below to access the shop.</h2>
         </section>
     {/if}
 </div>
