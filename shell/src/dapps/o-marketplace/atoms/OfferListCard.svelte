@@ -10,6 +10,7 @@ import { cartContents } from "../stores/shoppingCartStore";
 import { truncateString } from "../../../shared/functions/truncateString";
 import Time from "svelte-time";
 import { _ } from "svelte-i18n";
+import {Environment} from "../../../shared/environment";
 
 export let param: Offer = <any>{
   categoryTag: {
@@ -52,13 +53,18 @@ function loadDetailPage() {
 }
 
 function buy() {
-  window.o.runProcess(purchase, {});
+  const shopMetadataJson = Environment.getShopMetadata(shopId);
+  window.o.runProcess(purchase, {
+    data: {
+      metadata: shopMetadataJson
+    }
+  });
 }
 
-export let storeId: Number;
+export let shopId: Number;
 
-function addToCart(item) {
-  item.storeId = storeId;
+function addToCart(item:Offer, shopId:number) {
+  item.shopId = shopId;
   $cartContents = $cartContents ? [...$cartContents, item] : [item];
   push(`#/marketplace/cart`);
 }
@@ -144,7 +150,7 @@ displayName =
           <button
             type="submit"
             class="relative btn btn-primary btn-square"
-            on:click="{() => addToCart(offer)}">
+            on:click="{() => addToCart(offer, shopId)}">
             <Icons icon="cart" />
           </button>
         </div>

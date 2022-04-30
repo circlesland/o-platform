@@ -96,4 +96,11 @@ export class Environment {
   public static get openLoginClientId(): string {
     return "__OPENLOGIN_CLIENT_ID__";
   }
+
+  public static getShopMetadata(shopId:number) : string {
+    return localStorage.getItem("shopMetadata." + shopId);
+  }
+  public static setShopMetadata(shopId:number, data:string) {
+    return localStorage.setItem("shopMetadata." + shopId, data);
+  }
 }

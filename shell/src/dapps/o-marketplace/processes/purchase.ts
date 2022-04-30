@@ -27,9 +27,10 @@ import { cartContents } from "../stores/shoppingCartStore";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { findDirectTransfers } from "../../o-banking/processes/transfer";
 import { myPurchases } from "../../../shared/stores/myPurchases";
+import {Environment} from "../../../shared/environment";
 
 export type PurchaseContextData = {
-  items: Offer[];
+  items: (Offer & {shopId:number})[];
   metadata?: string;
   sellerProfile?: Profile;
   invoices: Invoice[];
@@ -83,6 +84,11 @@ const processDefinition = (processId: string) =>
       },
       checkoutSummary: prompt<PurchaseContext, any>({
         id: "checkoutSummary",
+        entry: (context) => {
+          context.data.metadata = JSON.parse(context.data.items.length > 0
+            ? Environment.getShopMetadata(context.data.items[0].shopId)
+            : "undefined");
+        },
         field: "metadata",
         component: CheckoutSummary,
         params: {
@@ -95,12 +101,15 @@ const processDefinition = (processId: string) =>
       }),
       createPurchase: {
         id: "createPurchase",
-        entry: () => {
-          window.o.publishEvent(<PlatformEvent>{
+        entry: [
+          () => window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
             message: window.i18n("dapps.o-marketplace.processes.purchases.createPurchase.message"),
-          });
-        },
+          }),
+          (context) => context.data.metadata
+            ? Environment.setShopMetadata(context.data.items[0].shopId, JSON.stringify(context.data.metadata))
+            : "undefined"
+        ],
         invoke: {
           src: async (context) => {
             console.log("METADAATATATA: ", context.data.metadata);

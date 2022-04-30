@@ -19,7 +19,7 @@ import {ApiClient} from "../../../shared/apiConnection";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
-export let storeId:number;
+export let shopId:number;
 
 let shop: Shop|null = null;
 let offers: Offer[] = [];
@@ -29,7 +29,7 @@ onMount(async () => {
   shop = await ApiClient.query<Shop, ShopQueryVariables>(
           ShopDocument,
           {
-            id: parseInt(storeId.toString())
+            id: parseInt(shopId.toString())
           }
   );
   if (!shop || !shop.categories) {
@@ -72,7 +72,7 @@ onMount(async () => {
       dataLimit="{100}" />-->
     {#if offers && offers.length}
       {#each offers as offer}
-        <OfferCard param="{offer}" storeId="{storeId}" />
+        <OfferCard param="{offer}" shopId="{shopId}" />
       {/each}
     {:else}
       No offers

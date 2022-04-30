@@ -1,14 +1,11 @@
 <script lang="ts">
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import { cartContents, totalPrice } from "../../dapps/o-marketplace/stores/shoppingCartStore";
+import { cartContents } from "../../dapps/o-marketplace/stores/shoppingCartStore";
 import { me } from "../stores/me";
 
 import { Profile } from "../api/data/types";
-import UserImage from "./UserImage.svelte";
 import { push } from "svelte-spa-router";
-import OrganizationSwitcher from "../../dapps/o-coop/molecules/OrganizationSwitcher.svelte";
-import Icons from "../molecules/Icons.svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
@@ -47,7 +44,7 @@ $: {
     </div>
 
     <div class="col-start-3 pr-1 place-self-center justify-self-end">
-      {#if runtimeDapp && runtimeDapp.dappId !== "homepage:1"}
+      {#if runtimeDapp && (runtimeDapp.dappId !== "homepage:1" && !runtimeDapp.anonymous)}
         <div class="relative mr-4 cursor-pointer justify-self-center" on:click="{() => push(`#/marketplace/cart`)}">
           {#if $cartContents && $cartContents.length > 0}
             <div class="absolute left-0 w-full text-center text-secondary -top-4 font-heading">

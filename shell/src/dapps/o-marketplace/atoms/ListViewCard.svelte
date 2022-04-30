@@ -2,16 +2,12 @@
 import { push } from "svelte-spa-router";
 import { Offer } from "../../../shared/api/data/types";
 import { purchase } from "../processes/purchase";
-import OfferCardField from "./OfferCardField.svelte";
-import UserImage from "src/shared/atoms/UserImage.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { me } from "../../../shared/stores/me";
 import { cartContents } from "../stores/shoppingCartStore";
 import { truncateString } from "../../../shared/functions/truncateString";
-import Time from "svelte-time";
-import { _ } from "svelte-i18n";
 
-export let storeId: Number;
+export let shopId: Number;
 
 export let param: Offer = <any>{
   categoryTag: {
@@ -54,11 +50,11 @@ function loadDetailPage() {
 }
 
 function buy() {
-  window.o.runProcess(purchase, {data:{storeId: storeId}});
+  window.o.runProcess(purchase, {data:{shopId: shopId}});
 }
 
-function addToCart(item) {
-  item.storeId = storeId;
+function addToCart(item:Offer, shopId:number) {
+  item.shopId = shopId;
   $cartContents = $cartContents ? [...$cartContents, item] : [item];
   push(`#/marketplace/cart`);
 }
@@ -101,7 +97,7 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
         </div>
         <div
           class="flex flex-col self-start justify-end cursor-pointer text-primary"
-          on:click="{() => addToCart(offer)}">
+          on:click="{() => addToCart(offer, shopId)}">
           <Icons icon="cart" />
         </div>
       </div>

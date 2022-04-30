@@ -13,7 +13,7 @@ import { ApiClient } from "../../../shared/apiConnection";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
-export let storeId: number;
+export let shopId: number;
 
 let shop: Shop | null = null;
 let categories: ShopCategory[] = [];
@@ -21,7 +21,7 @@ let shellEventSubscription: Subscription;
 
 onMount(async () => {
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
-    id: parseInt(storeId.toString()),
+    id: parseInt(shopId.toString()),
   });
 
   if (shop) {
@@ -76,7 +76,7 @@ onMount(async () => {
                 {/if}
                 <div class="flex flex-col px-4 space-y-4">
                   {#each category.entries.map((o) => o.product) as offer}
-                    <ListViewCard param="{offer}" storeId="{storeId}" />
+                    <ListViewCard param="{offer}" shopId="{shopId}" />
                   {/each}
                 </div>
               </div>

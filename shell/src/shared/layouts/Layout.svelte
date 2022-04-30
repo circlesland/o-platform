@@ -3,7 +3,7 @@ import LeftDesktop from "./desktop/Left.svelte";
 import LeftMobile from "./mobile/Left.svelte";
 import RightDesktop from "./desktop/Right.svelte";
 import Center from "./Center.svelte";
-import NextNav from "src/shared/molecules/NextNav/NextNav.svelte";
+import NextNav from "../molecules/NextNav/NextNav.svelte";
 import { NavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
 
 import { RuntimeLayout } from "./layout";
@@ -11,8 +11,8 @@ import { RuntimeLayout } from "./layout";
 import { createEventDispatcher } from "svelte";
 import { media } from "../stores/media";
 
-let dapp = "homepage:!";
-let menuOpen: boolean = false;
+let dapp = "homepage:1";
+let menuOpen: boolean;
 
 const eventDispatcher = createEventDispatcher();
 
@@ -22,8 +22,8 @@ export let navigation: NavigationManifest;
 $: {
   // console.log("LayoutChanged:", layout);
   if (
-    (layout.dialogs.center && layout.dialogs.center.isOpen) ||
-    ($media.small && layout.dialogs.left && layout.dialogs.left.isOpen)
+    (layout?.dialogs.center && layout?.dialogs.center.isOpen) ||
+    ($media.small && layout?.dialogs.left && layout?.dialogs.left.isOpen)
   ) {
     menuOpen = true;
     document.body.style.overflow = "hidden";

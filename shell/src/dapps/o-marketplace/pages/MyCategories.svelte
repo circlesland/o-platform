@@ -30,7 +30,7 @@ import { Readable } from "svelte/store";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
-export let storeId: number;
+export let shopId: number;
 
 let shop: Shop | null = null;
 let _state: Readable<any>;
@@ -50,9 +50,9 @@ onMount(async () => {
     return;
   }
 
-  storeId = $me.shops[0].id;
+  shopId = $me.shops[0].id;
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
-    id: parseInt(storeId.toString()),
+    id: parseInt(shopId.toString()),
   });
 
   if (shop.categories == null) {
@@ -64,7 +64,7 @@ onMount(async () => {
       name: null,
       private: null,
       productListingStyle: null,
-      shopId: storeId,
+      shopId: shopId,
       smallBannerUrl: null,
       sortOrder: categories.length,
     };
@@ -199,7 +199,7 @@ function addCategory() {
     name: null,
     private: null,
     productListingStyle: null,
-    shopId: storeId,
+    shopId: shopId,
     smallBannerUrl: null,
     sortOrder: categories.length,
   };

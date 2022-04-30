@@ -353,7 +353,7 @@ function setNav(navArgs: GenerateNavManifestArgs) {
   }
   let args = {
     ...navArgs,
-    showLogin: dapp.dappId == "homepage:1" && !layout.dialogs.center,
+    showLogin: (dapp.anonymous) && !layout.dialogs.center,
   };
   navigation = generateNavManifest(args, null);
   if (dapp.dappId == "events:1") {
@@ -928,7 +928,7 @@ onMount(async () => {
     leftIsOpen: false,
     notificationCount: $inbox ? $inbox.length : 0,
   });
-  if (!identityChecked && !dapp.noAuthentication) {
+  if (!identityChecked && !dapp.anonymous) {
     //window.o.runProcess(identify, {}, {});
     identityChecked = true;
   }
@@ -1099,7 +1099,7 @@ async function handleUrlChanged() {
     }
   }
 
-  if (!navigation && dapp.dappId != "events:1") {
+  if (!navigation && (dapp.dappId != "events:1")) {
     navigation = generateNavManifest(navArgs, null);
   }
 

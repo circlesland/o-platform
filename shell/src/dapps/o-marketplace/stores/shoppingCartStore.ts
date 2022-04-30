@@ -1,6 +1,7 @@
 import { writable, derived } from "svelte/store";
+import {Offer} from "../../../shared/api/data/types";
 
-export const cartContents = writable(
+export const cartContents = writable<(Offer & {shopId:number})[]>(
   JSON.parse(localStorage.getItem("cartContents"))
 );
 
