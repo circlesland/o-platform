@@ -24,6 +24,7 @@ export let shopId:number;
 let shop: Shop|null = null;
 let offers: Offer[] = [];
 let shellEventSubscription: Subscription;
+let loading = true;
 
 onMount(async () => {
   shop = await ApiClient.query<Shop, ShopQueryVariables>(
@@ -33,9 +34,11 @@ onMount(async () => {
           }
   );
   if (!shop || !shop.categories) {
+    loading = false;
     return;
   }
   offers = shop.categories.flatMap(o => o.entries.flatMap(o => o.product));
+  loading = false;
 });
 </script>
 
@@ -46,35 +49,24 @@ onMount(async () => {
     <div class="flex flex-col w-full">
       <header class=" rounded-xl">
         <div class="relative overflow-hidden bg-white rounded-xl image-wrapper">
-          <img
-            src="/images/market/circlesShopsm.jpg"
-            alt="
-                "
+          <img src="{shop ? shop.smallBannerUrl : ''}"
+               alt="{shop ? shop.name : ''}"
             class="w-full rounded-xl opacity-60 object-position: center center;  " />
           <div
             class="absolute right-0 pt-1 pb-1 pl-4 pr-2 mt-2 text-xl rounded-l-full sm:pb-2 sm:pt-3 sm:text-3xl font-heading top-2 bg-light-lightest">
-            <span class="inline-block">CIRCLES.LAND SHOP</span>
+            <span class="inline-block">{shop ? shop.name : ''}</span>
           </div>
         </div>
       </header>
     </div>
   </section>
-  <!-- <div class="flex flex-wrap items-stretch space-x-4 space-y-8"> -->
   <div
     class="grid grid-cols-1 mb-20 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid">
-    <!--
-    <List
-      listItemType="{Offer}"
-      listItemComponent="{OfferCard}"
-      fetchQuery="{OffersDocument}"
-      fetchQueryArguments="{listArguments}"
-      dataKey="offers"
-      dataLimit="{100}" />-->
     {#if offers && offers.length}
       {#each offers as offer}
         <OfferCard param="{offer}" shopId="{shopId}" />
       {/each}
-    {:else}
+    {:else if !loading}
       No offers
     {/if}
   </div>
