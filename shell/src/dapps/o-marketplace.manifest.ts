@@ -23,6 +23,7 @@ import { Offer } from "../shared/api/data/types";
 import { offers } from "../shared/stores/offers";
 import { push } from "svelte-spa-router";
 import { me } from "../shared/stores/me";
+import CategoryEntryDetail from "./o-marketplace/pages/CategoryEntryDetail.svelte";
 
 const addToCart: Trigger<{ id: Number }, DappState> = {
   isSystem: true,
@@ -106,6 +107,14 @@ const offerDetail: Page<any, DappState> = {
   position: "modal",
   routeParts: ["=offer", ":id"],
   component: OfferDetail,
+  title: "Offer detail",
+  type: "page",
+};
+const categoryEntryDetail: Page<any, DappState> = {
+  isSystem: true,
+  position: "modal",
+  routeParts: ["=detail", ":shopId", ":entryId"],
+  component: CategoryEntryDetail,
   title: "Offer detail",
   type: "page",
 };
@@ -250,5 +259,6 @@ export const marketplace: DappManifest<DappState> = {
     scanPurchase,
     mySales,
     mySaleDetail,
+    categoryEntryDetail
   ],
 };
