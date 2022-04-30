@@ -51,7 +51,7 @@
 
     sessionStorage.setItem("desiredRoute", JSON.stringify({
       dappId: "marketplace",
-      "1": "list",
+      "1": "market",
       "2": shop.id
     }));
 
