@@ -55,6 +55,8 @@ $: {
   profile = context.data.sellerProfile;
 }
 
+let shop: Shop;
+
 onMount(async () => {
   console.log("ASLKAJSDLAKSJDLAKDSJ", $cartContents);
   if ($cartContents.length) {
@@ -67,7 +69,7 @@ onMount(async () => {
     );
     if (result.length) {
       shopId = result[0].shopId;
-      let shop: Shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
+      shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
         id: parseInt(shopId.toString()),
       });
 
@@ -109,11 +111,13 @@ onMount(async () => {
 let classes: string;
 
 function submit() {
+  if (!tableNumber && shop.purchaseMetaDataKeys) {
+    tableError = true;
+    return;
+  }
   const answer = new Continue();
 
-  if (tableNumber) {
-    context.data.metadata = {Table: tableNumber};
-  }
+  context.data.metadata = { Table: tableNumber };
   answer.data = context.data;
   context.process.sendAnswer(answer);
 }
@@ -179,7 +183,7 @@ function resetError() {
           >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
       </div>
     </div> -->
-    <!-- 
+    <!--
     {#if context.data && context.data.transitivePath}
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
@@ -248,5 +252,5 @@ function resetError() {
       </div>
     </div> -->
   </div>
-  <ProcessNavigation on:buttonClick="{() => submit()}" context="{context}" noSticky="{true}" />
+  <ProcessNavigation on:buttonClick="{submit}" context="{context}" noSticky="{true}" />
 {/if}
