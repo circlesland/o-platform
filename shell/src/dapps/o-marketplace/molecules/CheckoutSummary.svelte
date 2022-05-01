@@ -109,13 +109,11 @@ onMount(async () => {
 let classes: string;
 
 function submit() {
-  if (!tableNumber) {
-    tableError = true;
-    return;
-  }
   const answer = new Continue();
 
-  context.data.metadata = { Table: tableNumber };
+  if (tableNumber) {
+    context.data.metadata = {Table: tableNumber};
+  }
   answer.data = context.data;
   context.process.sendAnswer(answer);
 }
@@ -250,5 +248,5 @@ function resetError() {
       </div>
     </div> -->
   </div>
-  <ProcessNavigation on:buttonClick="{submit}" context="{context}" noSticky="{true}" />
+  <ProcessNavigation on:buttonClick="{() => submit()}" context="{context}" noSticky="{true}" />
 {/if}
