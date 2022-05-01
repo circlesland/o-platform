@@ -250,5 +250,5 @@ function resetError() {
       </div>
     </div> -->
   </div>
-  <ProcessNavigation on:buttonClick="{submit}" context="{context}" noSticky="{true}" />
+  <ProcessNavigation on:buttonClick="{() => submit()}" context="{context}" noSticky="{true}" />
 {/if}
