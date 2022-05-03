@@ -7,6 +7,8 @@ import { ContactsDappState } from "./o-contacts.manifest";
 import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { Environment } from "../shared/environment";
 import { performOauth } from "./o-humanode/processes/performOauth";
+import {CapabilityType} from "../shared/api/data/types";
+import {me} from "../shared/stores/me";
 
 const verifications: Page<any, ContactsDappState> = {
   routeParts: ["=verifications"],
@@ -35,7 +37,10 @@ const verificationJumplist: Jumplist<any, ContactsDappState> = {
   isSystem: false,
   routeParts: ["=actions"],
   items: async (params, runtimeDapp) => {
-    if (Environment.allowVerify) {
+    const sessionInfo = await me.getSessionInfo();
+    const capabilities = sessionInfo.capabilities;
+    const canVerify = capabilities && capabilities.find((o) => o.type == CapabilityType.Verify) && Environment.allowVerify;
+    if (canVerify) {
       return [
         {
           key: "verify-self",
