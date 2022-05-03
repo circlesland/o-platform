@@ -31,7 +31,7 @@ function getTableNoFromMetadata(metadataJson:string|undefined) {
           ? JSON.parse(purchased.purchase.lines[0].metadata)
           : {};
 
-  if (!parsedJson.Table) {
+  if (!parsedJson?.Table) {
     return "";
   }
 

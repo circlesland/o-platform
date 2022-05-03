@@ -67,7 +67,7 @@ function getTableNoFromMetadata(metadataJson:string|undefined) {
           ? JSON.parse(sale.invoice.lines[0].metadata)
           : {};
 
-  if (!parsedJson.Table) {
+  if (!parsedJson?.Table) {
     return "";
   }
 
