@@ -13,6 +13,7 @@ import {GnosisSafeProxy} from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import {show} from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {setWindowLastError} from "../../../shared/processes/actions/setWindowLastError";
 
 export type CreateOrganisationContextData = {
   successAction: (data:CreateOrganisationContextData) => void,
@@ -142,9 +143,7 @@ const processDefinition = (processId: string) =>
           },
           onDone: "#success",
           onError: {
-            actions: (context, event) => {
-              window.o.lastError = event.data;
-            },
+            actions: setWindowLastError,
             target: "#showError",
           },
         },

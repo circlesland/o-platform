@@ -23,6 +23,7 @@ import {
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
 import { AvataarGenerator } from "../../../shared/avataarGenerator";
+import {setWindowLastError} from "../../../shared/processes/actions/setWindowLastError";
 
 export type LoginWithTorusContextData = {
   chooseFlow?: {
@@ -230,9 +231,7 @@ const processDefinition = (processId: string) =>
               },
               {
                 cond: (context, event) => (window.o.lastError = event.data),
-                actions: (context, event) => {
-                  window.o.lastError = event.data;
-                },
+                actions: setWindowLastError,
                 target: "#showError",
               },
             ],
@@ -275,9 +274,7 @@ const processDefinition = (processId: string) =>
               },
               {
                 cond: (context, event) => (window.o.lastError = event.data),
-                actions: (context, event) => {
-                  window.o.lastError = event.data;
-                },
+                actions: setWindowLastError,
                 target: "#showError",
               },
             ],
@@ -319,9 +316,7 @@ const processDefinition = (processId: string) =>
               },
               {
                 cond: (context, event) => (window.o.lastError = event.data),
-                actions: (context, event) => {
-                  window.o.lastError = event.data;
-                },
+                actions: setWindowLastError,
                 target: "#showError",
               },
             ],
@@ -482,9 +477,7 @@ const processDefinition = (processId: string) =>
             },
             onDone: "#success",
             onError: {
-              actions: (context, event) => {
-                window.o.lastError = event.data;
-              },
+              actions: setWindowLastError,
               target: "#showError",
             },
           },

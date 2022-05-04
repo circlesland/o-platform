@@ -19,6 +19,7 @@ import ErrorView from "../../../shared/atoms/Error.svelte";
 import { BN } from "ethereumjs-util";
 import { Environment } from "../../../shared/environment";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import {setWindowLastError} from "../../../shared/processes/actions/setWindowLastError";
 
 export type CreateOrganisationContextData = {
   successAction: (data: CreateOrganisationContextData) => void;
@@ -307,9 +308,7 @@ const processDefinition = (processId: string) =>
           },
           onDone: "#signupOrganisation",
           onError: {
-            actions: (context, event) => {
-              window.o.lastError = event.data;
-            },
+            actions: setWindowLastError,
             target: "#showError",
           },
         },
@@ -334,9 +333,7 @@ const processDefinition = (processId: string) =>
           },
           onDone: "#upsertOrganisation",
           onError: {
-            actions: (context, event) => {
-              window.o.lastError = event.data;
-            },
+            actions: setWindowLastError,
             target: "#showError",
           },
         },
@@ -367,9 +364,7 @@ const processDefinition = (processId: string) =>
           },
           onDone: "#success",
           onError: {
-            actions: (context, event) => {
-              window.o.lastError = event.data;
-            },
+            actions: setWindowLastError,
             target: "#showError",
           },
         },
