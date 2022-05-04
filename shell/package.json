@@ -52,7 +52,8 @@
     "svelecte": "^3.2.1",
     "svelte-i18n": "3.3.13",
     "pincode-input": "^0.4.3",
-    "@krowten/svelte-heroicons": "^0.0.3"
+    "@krowten/svelte-heroicons": "^0.0.3",
+    "ethers-multisend": "^2.1.1"
   },
   "devDependencies": {
     "neverthrow": "^4.3.1",

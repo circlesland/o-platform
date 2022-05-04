@@ -1062,7 +1062,7 @@
     "@ethereumjs/common" "^2.6.3"
     ethereumjs-util "^7.1.4"
 
-"@ethersproject/abi@5.0.7":
+"@ethersproject/abi@5.0.7", "@ethersproject/abi@^5.0.0":
   version "5.0.7"
   resolved "https://registry.npmjs.org/@ethersproject/abi/-/abi-5.0.7.tgz"
   integrity sha512-Cqktk+hSIckwP/W8O47Eef60VwmoSC/L3lY0+dIBhQPCNn9E4V7rwmm2aFrNRRDJfFlGuZ1khkQUOc3oBX+niw==
@@ -1077,7 +1077,22 @@
     "@ethersproject/properties" "^5.0.3"
     "@ethersproject/strings" "^5.0.4"
 
-"@ethersproject/abstract-provider@^5.6.0":
+"@ethersproject/abi@^5.6.0":
+  version "5.6.1"
+  resolved "https://registry.npmjs.org/@ethersproject/abi/-/abi-5.6.1.tgz"
+  integrity sha512-0cqssYh6FXjlwKWBmLm3+zH2BNARoS5u/hxbz+LpQmcDB3w0W553h2btWui1/uZp2GBM/SI3KniTuMcYyHpA5w==
+  dependencies:
+    "@ethersproject/address" "^5.6.0"
+    "@ethersproject/bignumber" "^5.6.0"
+    "@ethersproject/bytes" "^5.6.0"
+    "@ethersproject/constants" "^5.6.0"
+    "@ethersproject/hash" "^5.6.0"
+    "@ethersproject/keccak256" "^5.6.0"
+    "@ethersproject/logger" "^5.6.0"
+    "@ethersproject/properties" "^5.6.0"
+    "@ethersproject/strings" "^5.6.0"
+
+"@ethersproject/abstract-provider@^5.5.1", "@ethersproject/abstract-provider@^5.6.0":
   version "5.6.0"
   resolved "https://registry.npmjs.org/@ethersproject/abstract-provider/-/abstract-provider-5.6.0.tgz"
   integrity sha512-oPMFlKLN+g+y7a79cLK3WiLcjWFnZQtXWgnLAbHZcN3s7L4v90UHpTOrLk+m3yr0gt+/h9STTM6zrr7PM8uoRw==
@@ -1101,7 +1116,7 @@
     "@ethersproject/logger" "^5.6.0"
     "@ethersproject/properties" "^5.6.0"
 
-"@ethersproject/address@^5.0.4", "@ethersproject/address@^5.6.0":
+"@ethersproject/address@^5.0.0", "@ethersproject/address@^5.0.4", "@ethersproject/address@^5.6.0":
   version "5.6.0"
   resolved "https://registry.npmjs.org/@ethersproject/address/-/address-5.6.0.tgz"
   integrity sha512-6nvhYXjbXsHPS+30sHZ+U4VMagFC/9zAk6Gd/h3S21YW4+yfb0WfRtaAIZ4kfM4rrVwqiy284LP0GtL5HXGLxQ==
@@ -1119,7 +1134,7 @@
   dependencies:
     "@ethersproject/bytes" "^5.6.0"
 
-"@ethersproject/bignumber@^5.0.7", "@ethersproject/bignumber@^5.6.0":
+"@ethersproject/bignumber@^5.0.0", "@ethersproject/bignumber@^5.0.7", "@ethersproject/bignumber@^5.6.0":
   version "5.6.0"
   resolved "https://registry.npmjs.org/@ethersproject/bignumber/-/bignumber-5.6.0.tgz"
   integrity sha512-VziMaXIUHQlHJmkv1dlcd6GY2PmT0khtAqaMctCIDogxkrarMzA9L94KN1NeXqqOfFD6r0sJT3vCTOFSmZ07DA==
@@ -1128,7 +1143,7 @@
     "@ethersproject/logger" "^5.6.0"
     bn.js "^4.11.9"
 
-"@ethersproject/bytes@^5.0.4", "@ethersproject/bytes@^5.6.0":
+"@ethersproject/bytes@^5.0.0", "@ethersproject/bytes@^5.0.4", "@ethersproject/bytes@^5.6.0":
   version "5.6.1"
   resolved "https://registry.npmjs.org/@ethersproject/bytes/-/bytes-5.6.1.tgz"
   integrity sha512-NwQt7cKn5+ZE4uDn+X5RAXLp46E1chXoaMmrxAyA0rblpxz8t58lVkrHXoRIn0lz1joQElQ8410GqhTqMOwc6g==
@@ -1142,7 +1157,23 @@
   dependencies:
     "@ethersproject/bignumber" "^5.6.0"
 
-"@ethersproject/hash@^5.0.4":
+"@ethersproject/contracts@^5.5.0":
+  version "5.6.0"
+  resolved "https://registry.npmjs.org/@ethersproject/contracts/-/contracts-5.6.0.tgz"
+  integrity sha512-74Ge7iqTDom0NX+mux8KbRUeJgu1eHZ3iv6utv++sLJG80FVuU9HnHeKVPfjd9s3woFhaFoQGf3B3iH/FrQmgw==
+  dependencies:
+    "@ethersproject/abi" "^5.6.0"
+    "@ethersproject/abstract-provider" "^5.6.0"
+    "@ethersproject/abstract-signer" "^5.6.0"
+    "@ethersproject/address" "^5.6.0"
+    "@ethersproject/bignumber" "^5.6.0"
+    "@ethersproject/bytes" "^5.6.0"
+    "@ethersproject/constants" "^5.6.0"
+    "@ethersproject/logger" "^5.6.0"
+    "@ethersproject/properties" "^5.6.0"
+    "@ethersproject/transactions" "^5.6.0"
+
+"@ethersproject/hash@^5.0.4", "@ethersproject/hash@^5.6.0":
   version "5.6.0"
   resolved "https://registry.npmjs.org/@ethersproject/hash/-/hash-5.6.0.tgz"
   integrity sha512-fFd+k9gtczqlr0/BruWLAu7UAOas1uRRJvOR84uDf4lNZ+bTkGl366qvniUZHKtlqxBRU65MkOobkmvmpHU+jA==
@@ -1191,6 +1222,15 @@
     "@ethersproject/bytes" "^5.6.0"
     "@ethersproject/logger" "^5.6.0"
 
+"@ethersproject/sha2@^5.6.0":
+  version "5.6.0"
+  resolved "https://registry.npmjs.org/@ethersproject/sha2/-/sha2-5.6.0.tgz"
+  integrity sha512-1tNWCPFLu1n3JM9t4/kytz35DkuF9MxqkGGEHNauEbaARdm2fafnOyw1s0tIQDPKF/7bkP1u3dbrmjpn5CelyA==
+  dependencies:
+    "@ethersproject/bytes" "^5.6.0"
+    "@ethersproject/logger" "^5.6.0"
+    hash.js "1.1.7"
+
 "@ethersproject/signing-key@^5.6.0":
   version "5.6.0"
   resolved "https://registry.npmjs.org/@ethersproject/signing-key/-/signing-key-5.6.0.tgz"
@@ -1202,6 +1242,18 @@
     bn.js "^4.11.9"
     elliptic "6.5.4"
     hash.js "1.1.7"
+
+"@ethersproject/solidity@^5.0.0":
+  version "5.6.0"
+  resolved "https://registry.npmjs.org/@ethersproject/solidity/-/solidity-5.6.0.tgz"
+  integrity sha512-YwF52vTNd50kjDzqKaoNNbC/r9kMDPq3YzDWmsjFTRBcIF1y4JCQJ8gB30wsTfHbaxgxelI5BfxQSxD/PbJOww==
+  dependencies:
+    "@ethersproject/bignumber" "^5.6.0"
+    "@ethersproject/bytes" "^5.6.0"
+    "@ethersproject/keccak256" "^5.6.0"
+    "@ethersproject/logger" "^5.6.0"
+    "@ethersproject/sha2" "^5.6.0"
+    "@ethersproject/strings" "^5.6.0"
 
 "@ethersproject/strings@^5.0.4", "@ethersproject/strings@^5.6.0":
   version "5.6.0"
@@ -1226,6 +1278,15 @@
     "@ethersproject/properties" "^5.6.0"
     "@ethersproject/rlp" "^5.6.0"
     "@ethersproject/signing-key" "^5.6.0"
+
+"@ethersproject/units@^5.0.0":
+  version "5.6.0"
+  resolved "https://registry.npmjs.org/@ethersproject/units/-/units-5.6.0.tgz"
+  integrity sha512-tig9x0Qmh8qbo1w8/6tmtyrm/QQRviBh389EQ+d8fP4wDsBrJBf08oZfoiz1/uenKK9M78yAP4PoR7SsVoTjsw==
+  dependencies:
+    "@ethersproject/bignumber" "^5.6.0"
+    "@ethersproject/constants" "^5.6.0"
+    "@ethersproject/logger" "^5.6.0"
 
 "@ethersproject/web@^5.6.0":
   version "5.6.0"
@@ -6874,6 +6935,20 @@ ethereumjs-util@^7.0.10, ethereumjs-util@^7.1.0, ethereumjs-util@^7.1.4:
     create-hash "^1.1.2"
     ethereum-cryptography "^0.1.3"
     rlp "^2.2.4"
+
+ethers-multisend@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.npmjs.org/ethers-multisend/-/ethers-multisend-2.1.1.tgz"
+  integrity sha512-bbYodHu+yGn8jO9Rjg0HZuLuSgxshk4mrVO9MAhOkPB5nfLqXEtiEVALASkCusk8K8xylnfW5DM1UAEn2hUC7w==
+  dependencies:
+    "@ethersproject/abi" "^5.0.0"
+    "@ethersproject/abstract-provider" "^5.5.1"
+    "@ethersproject/address" "^5.0.0"
+    "@ethersproject/bignumber" "^5.0.0"
+    "@ethersproject/bytes" "^5.0.0"
+    "@ethersproject/contracts" "^5.5.0"
+    "@ethersproject/solidity" "^5.0.0"
+    "@ethersproject/units" "^5.0.0"
 
 ethjs-unit@0.1.6:
   version "0.1.6"
