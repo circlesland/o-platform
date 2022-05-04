@@ -19,6 +19,8 @@ import {
   UpsertShopCategoryEntriesDocument,
   UpsertShopCategoryEntriesMutationVariables,
   ShopCategoryEntry,
+  ShopListingStyle,
+  ProductListingType,
 } from "../../../shared/api/data/types";
 import { Environment } from "../../../shared/environment";
 import { Readable } from "svelte/store";
@@ -34,6 +36,7 @@ import { useMachine } from "@xstate/svelte";
 import { flip } from "svelte/animate";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 import { async } from "rxjs";
+import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
@@ -162,6 +165,27 @@ function editShopName(shopId) {
 function handleClickOutside(event) {
   showModal = false;
 }
+
+async function createNewShop() {
+  currentShop = {
+    enabled: false,
+    private: false,
+    name: "",
+    description: "",
+    largeBannerUrl: "",
+    smallBannerUrl: "",
+    shopListingStyle: ShopListingStyle.Regular,
+    productListingStyle: ProductListingType.List,
+    ownerId: $me.id,
+  };
+  await updateShop();
+  const profile = $me;
+  window.o.publishEvent(<PlatformEvent>{
+    type: "shell.authenticated",
+    profile: profile,
+  });
+  location.reload();
+}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -171,7 +195,7 @@ function handleClickOutside(event) {
   {#if shops}
     {#each shops as shop, index (shop.id)}
       <section
-        class="flex items-start px-4 mx-auto mb-4 md:w-2/3 xl:w-1/2 rounded-xl"
+        class="flex items-start px-4 mx-auto mb-20 md:w-2/3 xl:w-1/2 rounded-xl"
         class:active="{editShopId == shop.id}">
         <div class="flex flex-col w-full space-y-2">
           <header class=" rounded-xl headerImageContainer">
@@ -314,6 +338,11 @@ function handleClickOutside(event) {
       </Center>
     {/if}
   {/if}
+  <section class="flex items-start px-4 mx-auto mb-20 md:w-2/3 xl:w-1/2 rounded-xl">
+    <div class="flex flex-col w-full space-y-2">
+      <button class=" btn btn-large btn-primary" on:click="{() => createNewShop()}"> Create new Shop </button>
+    </div>
+  </section>
 </div>
 
 <style>
