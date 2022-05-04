@@ -123,5 +123,26 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
         </div>
       </section>
     {/if}
+    {#if profile && profile.shippingAddresses}
+      <section class="justify-center">
+        <div class="flex flex-col w-full space-y-1">
+          <div class="text-left text-2xs text-dark-lightest">
+            {$_("dapps.o-passport.pages.home.postAddress")}
+          </div>
+          {#each profile.shippingAddresses as shippingAddress}
+          <div class="flex items-center w-full space-x-2 sm:space-x-4">
+            <div class="text-left">
+              <div class="inline-block break-all">
+                {shippingAddress.name}<br/>
+                {shippingAddress.street} {shippingAddress.house} <br/>
+                {shippingAddress.zip} {shippingAddress.city} <br/>
+                {shippingAddress.country}
+              </div>
+            </div>
+          </div>
+          {/each}
+        </div>
+      </section>
+    {/if}
   </div>
 </div>

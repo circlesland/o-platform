@@ -956,7 +956,8 @@ export const en = {
           home: {
             passion: "Passion",
             noPassionSet: "No passion set.",
-            address: "Address",
+            address: "Blockchain address",
+            postAddress: "Post address (only visible to you)",
             qrcode: "Show QR Code to others to be scanned with 'Scan to trust'",
           },
           settings: {

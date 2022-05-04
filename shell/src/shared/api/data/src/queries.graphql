@@ -36,6 +36,17 @@ query init {
         name
         country
       }
+      shippingAddresses {
+        id
+        name
+        street
+        house
+        city
+        cityGeonameid
+        zip
+        state
+        country
+      }
       memberships {
         isAdmin
         organisation {
@@ -1838,12 +1849,10 @@ query shops {
       name
       street
       house
-      city {
-        name
-        country
-      }
       zip
+      city
       state
+      country
     }
   }
 }
