@@ -1762,8 +1762,11 @@ query shop($id: Int!) {
     largeBannerUrl
     openingHours
     private
+    enabled
     productListingStyle
+    shopListingStyle
     purchaseMetaDataKeys
+    ownerId
     owner {
       id
       name
@@ -1819,9 +1822,11 @@ query shops {
     largeBannerUrl
     openingHours
     private
+    enabled
     shopListingStyle
     productListingStyle
     sortOrder
+    ownerId
     owner {
       id
       name

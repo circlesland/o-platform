@@ -49,6 +49,7 @@ onMount(async () => {
               <span class="inline-block">{shop.name}</span>
             </div>
           </div>
+          <div class="w-full mt-2 text-sm text-center">{shop.description}</div>
         </header>
       </div>
     </section>
