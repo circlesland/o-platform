@@ -20,7 +20,7 @@ import {
   UpsertShopCategoryEntriesMutationVariables,
   ShopCategoryEntry,
   ShopListingStyle,
-  ProductListingType,
+  ProductListingType, Organisation, OrganisationsByAddressQueryVariables, OrganisationsByAddressDocument, Profile,
 } from "../../../shared/api/data/types";
 import { Environment } from "../../../shared/environment";
 import { Readable } from "svelte/store";
@@ -59,13 +59,16 @@ onMount(async () => {
   }
 
   let shopIds = $me.shops;
+  console.log("$me.shops:", $me.shops)
   if (shopIds) {
     shopIds.forEach(async (shopId) => {
       const shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
         id: parseInt(shopId.id.toString()),
       });
       console.log("SPASDS", shop);
-      shops = [...shops, shop]; // ERROR: shops is not iterable?
+      if (shop) {
+        shops = [...shops, shop]; // ERROR: shops is not iterable?
+      }
     });
   }
 });
@@ -168,7 +171,7 @@ function handleClickOutside(event) {
 
 async function createNewShop() {
   currentShop = {
-    enabled: false,
+    enabled: true,
     private: false,
     name: "",
     description: "",
@@ -178,13 +181,20 @@ async function createNewShop() {
     productListingStyle: ProductListingType.List,
     ownerId: $me.id,
   };
+
   await updateShop();
-  const profile = $me;
+
+  const updatedProfile = await ApiClient.query<(Profile|Organisation)[], OrganisationsByAddressQueryVariables>(
+    OrganisationsByAddressDocument, {
+      addresses: [$me.circlesAddress]
+    }
+  )
+  const profile = updatedProfile[0];
+  console.log(profile);
   window.o.publishEvent(<PlatformEvent>{
     type: "shell.authenticated",
     profile: profile,
   });
-  location.reload();
 }
 </script>
 
@@ -193,7 +203,7 @@ async function createNewShop() {
 <div class="mb-20 -mt-3 ">
   <!-- <div class="flex flex-wrap items-stretch space-x-4 space-y-8"> -->
   {#if shops}
-    {#each shops as shop, index (shop.id)}
+    {#each $me.shops as shop, index (shop.id)}
       <section
         class="flex items-start px-4 mx-auto mb-20 md:w-2/3 xl:w-1/2 rounded-xl"
         class:active="{editShopId == shop.id}">

@@ -32,7 +32,7 @@ const ti2 = encodeSingle(<TransactionInput> {
 });
  */
 
-async function multisend(input:TransactionInput[]) {
+export async function multisend(input:TransactionInput[]) {
   let id = 0;
   const metaTransactions = input.map(o => encodeSingle({
     ...o,
