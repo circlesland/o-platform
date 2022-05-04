@@ -194,6 +194,18 @@ async function onStay() {
 
 async function onRoot() {
   // log("onRoot() - current stack: ", JSON.stringify(stack, null, 2));
+  if (runningProcess) {
+    const m = window.o.stateMachines.findById(runningProcess.processId);
+    if (m) {
+     m.sendEvent({
+        type: "process.cancel"
+      });
+      return;
+    } else {
+      runningProcess = null;
+    }
+  }
+
   if (stack.length == 0) {
     await onCloseModal();
     return;
@@ -583,7 +595,7 @@ function onHome() {
 
 async function onCloseModal() {
   // log("onCloseModal()");
-
+  runningProcess = null;
   await hideCenter();
   clearScrollPosition();
   lastModalPage = null;
