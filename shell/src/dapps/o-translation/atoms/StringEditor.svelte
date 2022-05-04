@@ -9,15 +9,22 @@ import {
   UpdateValueDocument,
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
+import { createEventDispatcher } from "svelte";
 
 export let dataKey: string;
 export let dataLang: string;
 export let dataString: string;
 export let dataVersion: number;
 
+let keyArray = [];
+
 let selectedVersion: number = dataVersion;
 let inputValue: string;
 let olderVersionData = [];
+
+const dispatch = createEventDispatcher();
+
+keyArray.concat(keyArray.push(dataKey.split(".")));
 
 onMount(() => {
   if (dataVersion > 1) {
@@ -47,12 +54,15 @@ async function writeValueToDb(value: string, lang: string, key: string) {
     key: key,
     value: value,
   });
-  window.location.reload();
 }
 </script>
 
 <div class="table-cell break-all w-64 p-1">{dataString}</div>
-<div class="table-cell break-all w-64 p-1">{dataKey}</div>
+<div class="table-cell break-all w-64 p-1">
+  {#each keyArray[0] as keyLink (keyLink)}
+    <p class="link link-primary text-secondary" on:click="{() => dispatch('searchKey', { keyLink })}">{keyLink}</p>
+  {/each}
+</div>
 <div class="table-cell p-1">{dataLang}</div>
 {#if dataVersion > 1}
   <div class="table-cell p-1">
@@ -70,8 +80,14 @@ async function writeValueToDb(value: string, lang: string, key: string) {
   <div class="table-cell p-1">
     <div class="flex">
       <input bind:value="{inputValue}" class="input" type="text" placeholder="{dataString}" />
-      <button class="bg-blue-100 rounded-lg m-1" on:click="{() => writeValueToDb(inputValue, dataLang, dataKey)}"
-        >Save</button>
+      <button
+        class="bg-blue-100 rounded-lg m-1"
+        on:click="{async () => {
+          await writeValueToDb(inputValue, dataLang, dataKey);
+          dataString = inputValue;
+          inputValue = '';
+          dispatch('save');
+        }}">Save</button>
     </div>
   </div>
 </form>

@@ -20,12 +20,14 @@ let languageList: string[] = [];
 
 let items: I18n[] = [];
 let currentPage: number = 1;
-let pageSize: number = 7;
+let pageSize: number = 30;
 $: paginatedItems = paginate({ items, pageSize, currentPage });
 
 function isSelected(languageCode: string) {
   return languageList.indexOf(languageCode) > -1;
 }
+
+
 
 function sortByKey(dataToSort: I18n[]) {
   dataToSort.sort((a, b) => {
@@ -59,10 +61,11 @@ async function reload() {
   const filteredQueryResult = queryResult.filter((o) => isSelected(o.lang));
   sortByKey(filteredQueryResult);
   items = filteredQueryResult;
+  console.log("reloaded")
 }
 
 $: {
-  reload()
+  reload();
 }
 
 onMount(async () => {
@@ -71,7 +74,7 @@ onMount(async () => {
 });
 
 function filterItems(keyFilter: string, valueFilter: string) {
-  const filteredByKey = items.filter((item) => item.key.startsWith(keyFilter));
+  const filteredByKey = items.filter((item) => item.key.includes(keyFilter));
   const filteredByValue = filteredByKey.filter((item) =>
     item.value.toLowerCase().startsWith(valueFilter.toLocaleLowerCase())
   );
@@ -130,9 +133,11 @@ const toggleLanguage = async (data: string) => {
       <div class="table-cell p-1">Version</div>
       <div class="table-cell p-1">Input</div>
     </div>
-    {#each paginatedItems as data(data.key + data.lang)}
+    {#each paginatedItems as data (data.key + data.lang + data.version)}
       <div class="w-full table-row-group">
         <StringEditor
+          on:save="{() => reload()}"
+          on:searchKey="{(e) => filterItems(e.detail.keyLink, valueFilter)}"
           dataString="{data.value}"
           dataKey="{data.key}"
           dataLang="{data.lang}"

@@ -3,7 +3,7 @@ import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
-import TreeNav from "./TreeNav.svelte";
+import TreeView from "./TreeView.svelte";
 import EditorView from "./EditorView.svelte";
 
 
@@ -16,5 +16,6 @@ const listArguments = {};
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <section class="flex flex-row items-center justify-center p-6">
-  <EditorView />
+  <TreeView />
+  <!--<EditorView />-->
 </section>
