@@ -786,6 +786,7 @@ query organisationsByAddress($addresses: [String!]!) {
     createdAt
     name
     avatarUrl
+    displayName
     city {
       geonameid
       name
