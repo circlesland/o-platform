@@ -1824,8 +1824,8 @@ query shop($id: Int!) {
   }
 }
 
-query shops {
-  shops {
+query shops($ownerId:Int) {
+  shops(ownerId: $ownerId) {
     id
     createdAt
     name

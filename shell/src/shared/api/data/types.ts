@@ -1111,6 +1111,11 @@ export type QueryShopArgs = {
 };
 
 
+export type QueryShopsArgs = {
+  ownerId?: Maybe<Scalars['Int']>;
+};
+
+
 export type QueryTagByIdArgs = {
   id: Scalars['Int'];
 };
@@ -3192,7 +3197,9 @@ export type ShopQuery = (
   )> }
 );
 
-export type ShopsQueryVariables = Exact<{ [key: string]: never; }>;
+export type ShopsQueryVariables = Exact<{
+  ownerId?: Maybe<Scalars['Int']>;
+}>;
 
 
 export type ShopsQuery = (
@@ -5523,8 +5530,8 @@ export const ShopDocument = gql`
 }
     `;
 export const ShopsDocument = gql`
-    query shops {
-  shops {
+    query shops($ownerId: Int) {
+  shops(ownerId: $ownerId) {
     id
     createdAt
     name
