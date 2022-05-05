@@ -374,6 +374,7 @@ type Mutation {
     completePurchase(invoiceId: Int!, revoke: Boolean): Invoice!
     completeSale(invoiceId: Int!, revoke: Boolean): Invoice!
     createTestInvitation: CreateInvitationResult!
+    deleteShippingAddress(id: Int!): PostAddress
     importOrganisationsOfAccount: [Organisation!]!
     logout: LogoutResponse!
     proofUniqueness(humanodeToken: String!): ProofUniquenessResult!
@@ -381,7 +382,6 @@ type Mutation {
     redeemClaimedInvitation: RedeemClaimedInvitationResult!
     rejectMembership(membershipId: Int!): RejectMembershipResult
     removeMember(groupId: String!, memberAddress: String!): RemoveMemberResult
-    requestInvitationOffer(for: String!): Offer!
     requestSessionChallenge(address: String!): String!
     requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
     revokeSafeVerification(safeAddress: String!): VerifySafeResult!
@@ -392,6 +392,7 @@ type Mutation {
     upsertOrganisation(organisation: UpsertOrganisationInput!): CreateOrganisationResult!
     upsertProfile(data: UpsertProfileInput!): Profile!
     upsertRegion(organisation: UpsertOrganisationInput!): CreateOrganisationResult!
+    upsertShippingAddress(data: PostAddressInput!): PostAddress
     upsertShop(shop: ShopInput!): Shop!
     upsertShopCategories(shopCategories: [ShopCategoryInput!]!): UpsertShopCategoriesResult!
     upsertShopCategoryEntries(shopCategoryEntries: [ShopCategoryEntryInput!]!): UpsertShopCategoryEntriesResult!
@@ -1003,6 +1004,15 @@ input PaginationArgs {
     continueAtId: Int
     limit: Int!
     order: SortOrder!
+}
+
+input PostAddressInput {
+    cityGeonameid: Int!
+    house: String!
+    id: Int
+    name: String
+    street: String!
+    zip: String!
 }
 
 input ProfileAggregateFilter {

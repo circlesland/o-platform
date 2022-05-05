@@ -14,6 +14,7 @@ import { AvataarGenerator } from "../../../shared/avataarGenerator";
 import { onMount } from "svelte";
 import { upsertOrganisation } from "../../o-coop/processes/upsertOrganisation";
 import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";
+import {upsertShippingAddress} from "../processes/upsertShippingAddress";
 
 let name;
 let profile: Profile;
@@ -130,7 +131,11 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
             {$_("dapps.o-passport.pages.home.postAddress")}
           </div>
           {#each profile.shippingAddresses as shippingAddress}
-          <div class="flex items-center w-full space-x-2 sm:space-x-4">
+          <div class="flex items-center w-full space-x-2 sm:space-x-4" on:click={() => {
+            window.o.runProcess(upsertShippingAddress, {
+              ...shippingAddress
+            });
+          }}>
             <div class="text-left">
               <div class="inline-block break-all">
                 {shippingAddress.name}<br/>
@@ -142,6 +147,9 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
           </div>
           {/each}
         </div>
+        <div on:click={() => {
+            window.o.runProcess(upsertShippingAddress, {});
+        }}> + </div>
       </section>
     {/if}
   </div>

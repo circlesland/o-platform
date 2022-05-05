@@ -1,3 +1,18 @@
+mutation upsertShippingAddress($data: PostAddressInput!) {
+  upsertShippingAddress(data: $data) {
+    id
+    name
+
+    street
+    house
+    zip
+    cityGeonameid
+    city
+    state
+    country
+  }
+}
+
 mutation createPurchase($lines: [PurchaseLineInput!]!) {
   purchase(lines: $lines) {
     id

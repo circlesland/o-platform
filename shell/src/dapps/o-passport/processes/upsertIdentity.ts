@@ -6,7 +6,6 @@ import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import HtmlViewer from "@o-platform/o-editors/src/HtmlViewer.svelte";
 import EmailAddressEditor from "@o-platform/o-editors/src/EmailAddressEditor.svelte";
-import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import * as yup from "yup";
@@ -17,7 +16,6 @@ import { promptCity } from "../../../shared/api/promptCity";
 import { City, DisplayCurrency, UpsertProfileDocument } from "../../../shared/api/data/types";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { UpsertRegistrationContext } from "../../o-onboarding/processes/registration/promptRegistration";
-import ButtonStackSelector from "../../../../../packages/o-editors/src/ButtonStackSelector.svelte";
 
 export type UpsertIdentityContextData = {
   id?: number;
@@ -341,6 +339,7 @@ const processDefinition = (processId: string) =>
       },
     },
   });
+
 
 export const upsertIdentity: ProcessDefinition<void, UpsertIdentityContextData> = {
   name: "upsertIdentity",

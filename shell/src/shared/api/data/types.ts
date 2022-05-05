@@ -506,6 +506,7 @@ export type Mutation = {
   completePurchase: Invoice;
   completeSale: Invoice;
   createTestInvitation: CreateInvitationResult;
+  deleteShippingAddress?: Maybe<PostAddress>;
   importOrganisationsOfAccount: Array<Organisation>;
   logout: LogoutResponse;
   proofUniqueness: ProofUniquenessResult;
@@ -513,7 +514,6 @@ export type Mutation = {
   redeemClaimedInvitation: RedeemClaimedInvitationResult;
   rejectMembership?: Maybe<RejectMembershipResult>;
   removeMember?: Maybe<RemoveMemberResult>;
-  requestInvitationOffer: Offer;
   requestSessionChallenge: Scalars['String'];
   requestUpdateSafe: RequestUpdateSafeResponse;
   revokeSafeVerification: VerifySafeResult;
@@ -524,6 +524,7 @@ export type Mutation = {
   upsertOrganisation: CreateOrganisationResult;
   upsertProfile: Profile;
   upsertRegion: CreateOrganisationResult;
+  upsertShippingAddress?: Maybe<PostAddress>;
   upsertShop: Shop;
   upsertShopCategories: UpsertShopCategoriesResult;
   upsertShopCategoryEntries: UpsertShopCategoryEntriesResult;
@@ -573,6 +574,11 @@ export type MutationCompleteSaleArgs = {
 };
 
 
+export type MutationDeleteShippingAddressArgs = {
+  id: Scalars['Int'];
+};
+
+
 export type MutationProofUniquenessArgs = {
   humanodeToken: Scalars['String'];
 };
@@ -591,11 +597,6 @@ export type MutationRejectMembershipArgs = {
 export type MutationRemoveMemberArgs = {
   groupId: Scalars['String'];
   memberAddress: Scalars['String'];
-};
-
-
-export type MutationRequestInvitationOfferArgs = {
-  for: Scalars['String'];
 };
 
 
@@ -649,6 +650,11 @@ export type MutationUpsertProfileArgs = {
 
 export type MutationUpsertRegionArgs = {
   organisation: UpsertOrganisationInput;
+};
+
+
+export type MutationUpsertShippingAddressArgs = {
+  data: PostAddressInput;
 };
 
 
@@ -788,6 +794,15 @@ export type PostAddress = {
   id: Scalars['Int'];
   name?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
+  street: Scalars['String'];
+  zip: Scalars['String'];
+};
+
+export type PostAddressInput = {
+  cityGeonameid: Scalars['Int'];
+  house: Scalars['String'];
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
   street: Scalars['String'];
   zip: Scalars['String'];
 };
@@ -1554,6 +1569,19 @@ export type WelcomeMessage = IEventPayload & {
   invitedBy_profile?: Maybe<Profile>;
   transaction_hash?: Maybe<Scalars['String']>;
 };
+
+export type UpsertShippingAddressMutationVariables = Exact<{
+  data: PostAddressInput;
+}>;
+
+
+export type UpsertShippingAddressMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertShippingAddress?: Maybe<(
+    { __typename?: 'PostAddress' }
+    & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'cityGeonameid' | 'city' | 'state' | 'country'>
+  )> }
+);
 
 export type CreatePurchaseMutationVariables = Exact<{
   lines: Array<PurchaseLineInput> | PurchaseLineInput;
@@ -3237,6 +3265,21 @@ export type EventsSubscription = (
 );
 
 
+export const UpsertShippingAddressDocument = gql`
+    mutation upsertShippingAddress($data: PostAddressInput!) {
+  upsertShippingAddress(data: $data) {
+    id
+    name
+    street
+    house
+    zip
+    cityGeonameid
+    city
+    state
+    country
+  }
+}
+    `;
 export const CreatePurchaseDocument = gql`
     mutation createPurchase($lines: [PurchaseLineInput!]!) {
   purchase(lines: $lines) {
@@ -5586,6 +5629,9 @@ export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 const defaultWrapper: SdkFunctionWrapper = sdkFunction => sdkFunction();
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    upsertShippingAddress(variables: UpsertShippingAddressMutationVariables): Promise<UpsertShippingAddressMutation> {
+      return withWrapper(() => client.request<UpsertShippingAddressMutation>(print(UpsertShippingAddressDocument), variables));
+    },
     createPurchase(variables: CreatePurchaseMutationVariables): Promise<CreatePurchaseMutation> {
       return withWrapper(() => client.request<CreatePurchaseMutation>(print(CreatePurchaseDocument), variables));
     },
