@@ -126,7 +126,7 @@ const processDefinition = (processId: string) =>
                   id: context.data.id,
                   house: context.data.house,
                   zip: context.data.zip,
-                  street: context.data.zip,
+                  street: context.data.street,
                   name: context.data.name,
                   cityGeonameid: context.data.cityGeonameid
                 }
