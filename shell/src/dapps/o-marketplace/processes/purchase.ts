@@ -50,7 +50,6 @@ export type PurchaseContextData = {
 
 export type PurchaseContext = ProcessContext<PurchaseContextData>;
 
-let currency = Currency.instance();
 
 const processDefinition = (processId: string) =>
   createMachine<PurchaseContext, any>({
@@ -273,6 +272,7 @@ const calculatePathService = async (context) => {
       return p + amount * pricePerUnit;
     }, 0);
     /* TODO: Cleanup Hardcoded Euro to timecircles conversion here */
+    const currency = Currency.instance();
     const amount = currency.convertEuroToCircles(invoiceTotal, null).toString();
 
     const circlesValueInWei = RpcGateway.get()
