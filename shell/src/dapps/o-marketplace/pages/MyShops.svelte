@@ -7,20 +7,17 @@ import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import {
   Shop,
-  Offer,
-  ShopCategory,
-  ShopDocument,
   ShopInput,
-  ShopQueryVariables,
   UpsertShopDocument,
   UpsertShopMutationVariables,
-  UpsertShopCategoryEntriesResult,
-  ShopCategoryInput,
-  UpsertShopCategoryEntriesDocument,
-  UpsertShopCategoryEntriesMutationVariables,
-  ShopCategoryEntry,
+  ShopsDocument,
   ShopListingStyle,
-  ProductListingType, Organisation, OrganisationsByAddressQueryVariables, OrganisationsByAddressDocument, Profile,
+  ProductListingType,
+  Organisation,
+  OrganisationsByAddressQueryVariables,
+  OrganisationsByAddressDocument,
+  Profile,
+  ShopsQueryVariables,
 } from "../../../shared/api/data/types";
 import { Environment } from "../../../shared/environment";
 import { Readable } from "svelte/store";
@@ -33,9 +30,9 @@ import { showToast } from "../../../shared/toast";
 
 import ImageUpload from "../../../shared/molecules/ImageUpload/ImageUpload.svelte";
 import { useMachine } from "@xstate/svelte";
-import { flip } from "svelte/animate";
+
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
-import { async } from "rxjs";
+
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -54,31 +51,19 @@ let currentImage: string = null;
 let editName: Boolean = false;
 
 onMount(async () => {
-  if (!$me || !$me.shops || !$me.shops.length) {
-    return;
-  }
-
-  let shopIds = $me.shops;
-  console.log("$me.shops:", $me.shops)
-  if (shopIds) {
-    shopIds.forEach(async (shopId) => {
-      const shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
-        id: parseInt(shopId.id.toString()),
-      });
-      console.log("SPASDS", shop);
-      if (shop) {
-        shops = [...shops, shop]; // ERROR: shops is not iterable?
-      }
-    });
-  }
+  shops = await ApiClient.query<Shop[], ShopsQueryVariables>(ShopsDocument, {
+    ownerId: $me.id,
+  });
 });
 
-async function updateShop() {
+async function updateShop(newShop: Boolean = false) {
   try {
     const result = await ApiClient.mutate<Shop, UpsertShopMutationVariables>(UpsertShopDocument, { shop: currentShop });
     showToast("success", "Shop successfully updated");
     // editShopId = null;
-
+    if (newShop) {
+      shops = [...shops, <Shop>currentShop];
+    }
     return ok(result);
   } catch {
     showToast("error", "Shop not updated");
@@ -92,6 +77,8 @@ function toggleEditShop(shopId, index) {
     delete shops[index].purchaseMetaDataKeys;
     delete shops[index].owner;
     delete shops[index].categories;
+    delete shops[index].createdAt;
+    delete shops[index].pickupAddress;
     delete shops[index].__typename;
     currentShop = <ShopInput>shops[index];
     editShopId = shopId;
@@ -148,7 +135,6 @@ function handleImageUpload(event) {
 }
 $: {
   if (_state) {
-    console.log("ES statet was", $_state);
     if ($_state.value == "success") {
       if (editType == "largeBannerUrl") {
         shops[currentShopIndex].largeBannerUrl = $_state.context.data.url;
@@ -156,8 +142,8 @@ $: {
         shops[currentShopIndex].smallBannerUrl = $_state.context.data.url;
       }
       updateShop();
+      _state = null;
     }
-    _state = null;
   }
 }
 
@@ -182,15 +168,16 @@ async function createNewShop() {
     ownerId: $me.id,
   };
 
-  await updateShop();
+  await updateShop(true);
 
-  const updatedProfile = await ApiClient.query<(Profile|Organisation)[], OrganisationsByAddressQueryVariables>(
-    OrganisationsByAddressDocument, {
-      addresses: [$me.circlesAddress]
+  const updatedProfile = await ApiClient.query<(Profile | Organisation)[], OrganisationsByAddressQueryVariables>(
+    OrganisationsByAddressDocument,
+    {
+      addresses: [$me.circlesAddress],
     }
-  )
+  );
   const profile = updatedProfile[0];
-  console.log(profile);
+
   window.o.publishEvent(<PlatformEvent>{
     type: "shell.authenticated",
     profile: profile,
@@ -203,7 +190,7 @@ async function createNewShop() {
 <div class="mb-20 -mt-3 ">
   <!-- <div class="flex flex-wrap items-stretch space-x-4 space-y-8"> -->
   {#if shops}
-    {#each $me.shops as shop, index (shop.id)}
+    {#each shops as shop, index (shop.id)}
       <section
         class="flex items-start px-4 mx-auto mb-20 md:w-2/3 xl:w-1/2 rounded-xl"
         class:active="{editShopId == shop.id}">
