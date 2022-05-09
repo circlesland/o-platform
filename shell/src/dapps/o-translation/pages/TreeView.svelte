@@ -7,115 +7,64 @@ import {
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
 import Tree from "../atoms/Tree.svelte";
+import { CTreeNode } from "../classes/treenode";
 
-let i18nData: I18n[] = [];
-let tree: object = {};
-let currentNode = tree;
 
-let expanded: boolean = false;
+let fullI18nData: I18n[] = [];
+let displayedTree: CTreeNode = new CTreeNode("root");
 
-function toggle() {
-  expanded = !expanded;
-}
-
-async function createTree() {
-  i18nData = await getI18nData();
-  for (const row of i18nData) {
-    resetCurrentNode();
+async function createTree(rootData: I18n[]): Promise<CTreeNode> {
+  let cTreenode = new CTreeNode("root");
+  let currentNode: CTreeNode = cTreenode;
+  for (const row of rootData) {
+    currentNode = cTreenode.add(row.key, row);
     let keyParts = row.key.split(".");
     for (let i = 0; i < keyParts.length; i++) {
       let keyPart = keyParts[i];
-      if (containsBranch(keyPart)) {
-        currentNode = currentNode[keyPart];
+      if (currentNode.findChildByKey(keyPart)) {
+        currentNode = currentNode.findChildByKey(keyPart);
       } else {
-        if (isLastKey(i, keyParts)) {
-          if (alreadyContainsLeaf(currentNode, keyPart)) {
-            appendRowToLeaf(currentNode, keyPart, row);
-          } else {
-            createNewLeaf(currentNode, keyPart, row);
-          }
-        } else {
-          currentNode[keyPart] = {};
-        }
-        currentNode = currentNode[keyPart];
+        currentNode = currentNode.add(keyPart, row);
       }
     }
   }
-  tree = tree;
-  console.log(tree);
+
+  return cTreenode;
 }
 
 onMount(async () => {
-  await createTree();
-  //buildHtmlTree(tree);
-  htmlTree = htmlTree;
-  svelteTree = Object.keys(tree);
+  fullI18nData = await getI18nData();
+  await refreshView();
 });
 
-function containsBranch(keyPart: string) {
-  return currentNode[keyPart] && !Array.isArray(currentNode[keyPart]);
-}
-
-function resetCurrentNode() {
-  currentNode = tree;
-}
-
-async function getI18nData() {
+async function getI18nData(): Promise<I18n[]> {
   return await ApiClient.query<I18n[], GetAllStringsByMaxVersionQuery>(GetAllStringsByMaxVersionDocument, {});
 }
 
-function isLastKey(i: number, keyParts: string[]) {
-  return i == keyParts.length - 1;
+async function filterItems(keyFilter: string, valueFilter: string, i18nData: I18n[]) {
+  const filteredByKey = i18nData.filter((item) => item.key.includes(keyFilter));
+  const filteredByValue = filteredByKey.filter((item) =>
+    item.value.toLowerCase().startsWith(valueFilter.toLocaleLowerCase())
+  );
+  console.log("filtered", filteredByValue);
+  return filteredByValue;
 }
 
-function createNewLeaf(currentNode: {}, keyPart: string, row: I18n) {
-  currentNode[keyPart] = [row];
+async function refreshView() {
+  let filteredI18nData = await filterItems(keyFilter, valueFilter, fullI18nData);
+  displayedTree = await createTree(filteredI18nData);
 }
 
-function appendRowToLeaf(currentNode: {}, keyPart: string, row: I18n) {
-  currentNode[keyPart].push(row);
-}
-
-function alreadyContainsLeaf(currentNode: {}, keyPart: string) {
-  return currentNode[keyPart];
-}
-
-//function buildHtmlTree(treeNode: object) {
-//  let objKeys = Object.keys(treeNode);
-//  if (objKeys.length == 0) {
-//    return;
-//  }
-//  for (let key of objKeys) {
-//    let currentNode = treeNode[key];
-//    htmlTree += `
-//      <ul class="ml-2 mb-4">
-//        <span>
-//          ${key}
-//        </span>
-//      `;
-//    if (Array.isArray(currentNode)) {
-//      // is leaf
-//      for (let currentLanguage of currentNode) {
-//        htmlTree += `
-//          <li class="ml-2">
-//            ${currentLanguage.lang}: ${currentLanguage.value}
-//          </li>
-//          `;
-//      }
-//    } else {
-//      // is branch
-//      buildHtmlTree(treeNode);
-//    }
-//    htmlTree += `</ul>`;
-//  }
-//}
-
-let htmlTree: string = "";
-let currentSvelteNode: object = {};
-let svelteTree = Object.keys(tree);
-
+let keyFilter: string = "";
+let valueFilter: string = "";
 </script>
 
 <section>
-  <Tree data="{tree}" />
+  <form on:input="{() => refreshView()}">
+    <input bind:value="{keyFilter}" class="input m-1" type="text" placeholder="dapps.o-banking..." />
+  </form>
+  <form on:input="{() => refreshView()}">
+    <input bind:value="{valueFilter}" class="input m-1" type="text" placeholder="String" />
+  </form>
+  <Tree rootNode="{displayedTree}" />
 </section>

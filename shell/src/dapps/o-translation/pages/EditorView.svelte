@@ -80,6 +80,7 @@ function filterItems(keyFilter: string, valueFilter: string) {
   );
   currentPage = 1;
   paginatedItems = paginate({ items: filteredByValue, pageSize, currentPage });
+  console.log(filteredByValue);
 }
 
 const toggleLanguage = async (data: string) => {

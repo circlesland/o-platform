@@ -1,18 +1,38 @@
-<script>
-export let data;
+<script lang="ts">
+import { CTreeNode } from "../classes/treenode";
+
+
+
+import StringEditor from "./StringEditor.svelte";
+
+export let rootNode: CTreeNode;
+
+
 </script>
 
-{#each Object.entries(data) as [key, values]}
-  <ul class="ml-2 mb-4">
-    <span>{key}:</span>
-    {#if Array.isArray(values)}
-      {#each values as item}
-        <svelte:self data="{item}" />
-      {/each}
-    {:else if typeof values === "object"}
-      <svelte:self data="{values}" />
-    {:else}
-      <span>{values}</span>
-    {/if}
-  </ul>
-{/each}
+<span on:click={() => {
+    rootNode.toggleExpanded(); 
+    rootNode = rootNode;
+    }}>
+    {rootNode.key}:
+</span>
+
+{#if rootNode.isExpanded}
+  {#if rootNode}
+    {#each rootNode.children as childNode}
+      <ul class="ml-2 mb-4">
+        {#if childNode.isLeaf}
+          {#each childNode.values as item}
+            <StringEditor
+              dataString="{item.value}"
+              dataKey="{item.key}"
+              dataLang="{item.lang}"
+              dataVersion="{item.version}" />
+          {/each}
+        {:else}
+          <svelte:self rootNode="{childNode}" />
+        {/if}
+      </ul>
+    {/each}
+  {/if}
+{/if}
