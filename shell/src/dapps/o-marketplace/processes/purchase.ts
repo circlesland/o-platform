@@ -13,7 +13,7 @@ import {
   PurchaseLineInput,
   Invoice,
   AnnouncePaymentDocument,
-  EventType,
+  EventType, CreatePurchaseMutationVariables, Purchase,
 } from "../../../shared/api/data/types";
 import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
@@ -29,6 +29,7 @@ import { findDirectTransfers } from "../../o-banking/processes/transfer";
 import { myPurchases } from "../../../shared/stores/myPurchases";
 import {Environment} from "../../../shared/environment";
 import {setWindowLastError} from "../../../shared/processes/actions/setWindowLastError";
+import {ApiClient} from "../../../shared/apiConnection";
 
 export type PurchaseContextData = {
   items: (Offer & {shopId:number})[];
@@ -219,9 +220,22 @@ const createPurchaseService = async (context) => {
   });
 
   const apiClient = await window.o.apiClient.client.subscribeToResult();
+
+  const result = await ApiClient.mutate<Purchase, CreatePurchaseMutationVariables>(CreatePurchaseDocument, {
+    deliveryMethodId: 1,
+    lines: Object.entries(linesGroupedByOffer).map((o) => {
+      return <PurchaseLineInput>{
+        offerId: parseInt(o[0]),
+        amount: o[1],
+        metadata: JSON.stringify(context.data.metadata),
+      };
+    }),
+  });
+/*
   const result = await apiClient.mutate({
     mutation: CreatePurchaseDocument,
     variables: {
+
       lines: Object.entries(linesGroupedByOffer).map((o) => {
         return <PurchaseLineInput>{
           offerId: parseInt(o[0]),
@@ -231,8 +245,9 @@ const createPurchaseService = async (context) => {
       }),
     },
   });
+ */
 
-  context.data.invoices = <Invoice[]>result.data.purchase;
+  context.data.invoices = <Invoice[]>result.invoices;
   if (context.data.invoices.length > 0) {
     await myPurchases.findSingleItemFallback(
       [EventType.Purchased],
@@ -240,8 +255,6 @@ const createPurchaseService = async (context) => {
     );
   }
   myPurchases.refresh();
-
-  console.log(result);
 };
 
 const loadAndSetCartContents = (context: ProcessContext<PurchaseContextData>) => {
