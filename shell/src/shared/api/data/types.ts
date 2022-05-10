@@ -16,6 +16,8 @@ export type Scalars = {
   Date: any;
 };
 
+
+
 export type AcceptMembershipResult = {
   __typename?: 'AcceptMembershipResult';
   error?: Maybe<Scalars['String']>;
@@ -259,6 +261,12 @@ export type CreatedInviteEoa = {
   for: Scalars['String'];
 };
 
+
+export type DeliveryMethod = {
+  __typename?: 'DeliveryMethod';
+  id: Scalars['Int'];
+  name: Scalars['String'];
+};
 
 export enum Direction {
   In = 'in',
@@ -585,6 +593,7 @@ export type MutationProofUniquenessArgs = {
 
 
 export type MutationPurchaseArgs = {
+  deliveryMethodId: Scalars['Int'];
   lines: Array<PurchaseLineInput>;
 };
 
@@ -946,6 +955,7 @@ export type Purchase = {
   createdAt: Scalars['String'];
   createdByAddress: Scalars['String'];
   createdByProfile?: Maybe<Profile>;
+  deliveryMethod: DeliveryMethod;
   id: Scalars['Int'];
   invoices?: Maybe<Array<Invoice>>;
   lines?: Maybe<Array<PurchaseLine>>;
@@ -1312,6 +1322,7 @@ export type Shop = {
   __typename?: 'Shop';
   categories?: Maybe<Array<ShopCategory>>;
   createdAt: Scalars['Date'];
+  deliveryMethods?: Maybe<Array<DeliveryMethod>>;
   description: Scalars['String'];
   enabled?: Maybe<Scalars['Boolean']>;
   id: Scalars['Int'];
@@ -1585,6 +1596,7 @@ export type UpsertShippingAddressMutation = (
 
 export type CreatePurchaseMutationVariables = Exact<{
   lines: Array<PurchaseLineInput> | PurchaseLineInput;
+  deliveryMethodId: Scalars['Int'];
 }>;
 
 
@@ -2849,7 +2861,10 @@ export type StreamQuery = (
       )>, purchase: (
         { __typename?: 'Purchase' }
         & Pick<Purchase, 'id' | 'createdAt' | 'createdByAddress' | 'total'>
-        & { lines?: Maybe<Array<(
+        & { deliveryMethod: (
+          { __typename?: 'DeliveryMethod' }
+          & Pick<DeliveryMethod, 'id' | 'name'>
+        ), lines?: Maybe<Array<(
           { __typename?: 'PurchaseLine' }
           & Pick<PurchaseLine, 'id' | 'amount' | 'metadata'>
           & { offer?: Maybe<(
@@ -3040,7 +3055,10 @@ export type AggregatesQuery = (
         & { createdByProfile?: Maybe<(
           { __typename?: 'Profile' }
           & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
-        )>, lines?: Maybe<Array<(
+        )>, deliveryMethod: (
+          { __typename?: 'DeliveryMethod' }
+          & Pick<DeliveryMethod, 'id' | 'name'>
+        ), lines?: Maybe<Array<(
           { __typename?: 'PurchaseLine' }
           & Pick<PurchaseLine, 'id' | 'amount' | 'metadata'>
           & { offer?: Maybe<(
@@ -3281,8 +3299,8 @@ export const UpsertShippingAddressDocument = gql`
 }
     `;
 export const CreatePurchaseDocument = gql`
-    mutation createPurchase($lines: [PurchaseLineInput!]!) {
-  purchase(lines: $lines) {
+    mutation createPurchase($lines: [PurchaseLineInput!]!, $deliveryMethodId: Int!) {
+  purchase(lines: $lines, deliveryMethodId: $deliveryMethodId) {
     id
     buyerAddress
     buyerProfile {
@@ -4977,6 +4995,10 @@ export const StreamDocument = gql`
           createdAt
           createdByAddress
           total
+          deliveryMethod {
+            id
+            name
+          }
           lines {
             id
             amount
@@ -5280,6 +5302,10 @@ export const AggregatesDocument = gql`
             avatarUrl
             circlesAddress
             displayCurrency
+          }
+          deliveryMethod {
+            id
+            name
           }
           total
           lines {

@@ -1235,6 +1235,10 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           createdAt
           createdByAddress
           total
+          deliveryMethod {
+            id
+            name
+          }
           lines {
             id
             amount
@@ -1537,6 +1541,10 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             avatarUrl
             circlesAddress
             displayCurrency
+          }
+          deliveryMethod {
+            id
+            name
           }
           total
           lines {

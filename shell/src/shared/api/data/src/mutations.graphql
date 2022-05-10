@@ -13,8 +13,8 @@ mutation upsertShippingAddress($data: PostAddressInput!) {
   }
 }
 
-mutation createPurchase($lines: [PurchaseLineInput!]!) {
-  purchase(lines: $lines) {
+mutation createPurchase($lines: [PurchaseLineInput!]! $deliveryMethodId: Int!) {
+  purchase(lines: $lines deliveryMethodId: $deliveryMethodId) {
     id
     buyerAddress
     buyerProfile {

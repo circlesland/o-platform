@@ -6,6 +6,10 @@ schema {
     subscription: Subscription
 }
 
+directive @cost(value: Int) on FIELD_DEFINITION
+
+directive @costFactor(value: Int) on FIELD_DEFINITION
+
 interface IAggregatePayload {
     lastUpdatedAt: String
 }
@@ -203,6 +207,11 @@ type CreatedInviteEoa {
     for: String!
 }
 
+type DeliveryMethod {
+    id: Int!
+    name: String!
+}
+
 type Erc20Balances implements IAggregatePayload {
     balances: [AssetBalance!]!
     lastUpdatedAt: String!
@@ -378,7 +387,7 @@ type Mutation {
     importOrganisationsOfAccount: [Organisation!]!
     logout: LogoutResponse!
     proofUniqueness(humanodeToken: String!): ProofUniquenessResult!
-    purchase(lines: [PurchaseLineInput!]!): [Invoice!]!
+    purchase(deliveryMethodId: Int!, lines: [PurchaseLineInput!]!): [Invoice!]!
     redeemClaimedInvitation: RedeemClaimedInvitationResult!
     rejectMembership(membershipId: Int!): RejectMembershipResult
     removeMember(groupId: String!, memberAddress: String!): RemoveMemberResult
@@ -573,6 +582,7 @@ type Purchase {
     createdAt: String!
     createdByAddress: String!
     createdByProfile: Profile
+    deliveryMethod: DeliveryMethod!
     id: Int!
     invoices: [Invoice!]
     lines: [PurchaseLine!]
@@ -730,6 +740,7 @@ type SessionInfo {
 type Shop {
     categories: [ShopCategory!]
     createdAt: Date!
+    deliveryMethods: [DeliveryMethod!]
     description: String!
     enabled: Boolean
     id: Int!
