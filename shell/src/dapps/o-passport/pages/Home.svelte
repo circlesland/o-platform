@@ -125,7 +125,7 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
           <div class="text-left text-2xs text-dark-lightest">
             {$_("dapps.o-passport.pages.home.postAddress")}
           </div>
-          {#if profile.shippingAddresses.length}
+          {#if profile.shippingAddresses && profile.shippingAddresses.length}
             {#each profile.shippingAddresses as shippingAddress, index}
               <div
                 class="flex items-center w-full space-x-2 cursor-pointer sm:space-x-4"
