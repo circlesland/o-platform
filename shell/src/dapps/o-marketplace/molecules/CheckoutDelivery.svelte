@@ -20,7 +20,7 @@ let deliveryType: number = 2;
 
 function submit(redirectTo?: string) {
   const answer = new Continue();
-  context.data.delivery = deliveryType === 1;
+  context.data.deliveryMethod = deliveryType === 1;
   console.log("CONTEXT: ", context);
   answer.data = {
     ...context.data,

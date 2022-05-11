@@ -1,5 +1,4 @@
 <script lang="ts">
-import UserImage from "src/shared/atoms/UserImage.svelte";
 import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { Profile, Organisation } from "../../../shared/api/data/types";
@@ -23,6 +22,7 @@ let classes: string;
 
 function submit(redirectTo?: string) {
   const answer = new Continue();
+
   answer.data = {
     ...context.data,
     redirectTo: redirectTo,
@@ -60,7 +60,6 @@ function orderItems(items) {
             size="{5}"
             gradientRing="{false}" />
         </div>
-
         <div>
           {context.data.sellerProfile.firstName}
           {context.data.sellerProfile.lastName

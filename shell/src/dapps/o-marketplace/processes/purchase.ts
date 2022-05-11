@@ -14,7 +14,9 @@ import {
   PurchaseLineInput,
   Invoice,
   AnnouncePaymentDocument,
-  EventType, CreatePurchaseMutationVariables, Purchase,
+  EventType,
+  CreatePurchaseMutationVariables,
+  Purchase,
 } from "../../../shared/api/data/types";
 import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
@@ -28,9 +30,9 @@ import { cartContents } from "../stores/shoppingCartStore";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { findDirectTransfers } from "../../o-banking/processes/transfer";
 import { myPurchases } from "../../../shared/stores/myPurchases";
-import {Environment} from "../../../shared/environment";
-import {setWindowLastError} from "../../../shared/processes/actions/setWindowLastError";
-import {ApiClient} from "../../../shared/apiConnection";
+import { Environment } from "../../../shared/environment";
+import { setWindowLastError } from "../../../shared/processes/actions/setWindowLastError";
+import { ApiClient } from "../../../shared/apiConnection";
 
 export type PurchaseContextData = {
   items: (Offer & { shopId: number })[];
@@ -72,7 +74,7 @@ const processDefinition = (processId: string) =>
 
       checkoutDelivery: prompt<PurchaseContext, any>({
         id: "checkoutDelivery",
-        field: "delivery",
+        field: "deliveryMethod",
         component: CheckoutDelivery,
         params: {
           view: editorContent.delivery,

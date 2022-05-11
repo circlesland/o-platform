@@ -19,14 +19,14 @@ let shopId: any = null;
 
 $: {
   context = context;
-  console.log("CheckoutSummary.context:", context)
+  console.log("CheckoutSummary.context:", context);
   profile = context.data.sellerProfile;
 }
 
 let shop: Shop;
 
 onMount(async () => {
-  console.log("ASLKAJSDLAKSJDLAKDSJ", $cartContents);
+  console.log("ASLKAJSDLAKSJDLAKDSJ", context);
   if ($cartContents.length) {
     const result = await Promise.all(
       $cartContents
@@ -69,14 +69,13 @@ function onkeydown(e: KeyboardEvent) {
     submit();
   }
 }
-
 </script>
 
 {#if context.data && profile}
   <div class="flex flex-col items-center self-center w-full m-auto space-y-4 text-center justify-self-center">
     <div>
       {#if shop && shop.purchaseMetaDataKeys}
-        <ShopMetadata jsonSchema={shop.purchaseMetaDataKeys} bind:value={metadata} bind:error={metadataError}/>
+        <ShopMetadata jsonSchema="{shop.purchaseMetaDataKeys}" bind:value="{metadata}" bind:error="{metadataError}" />
       {/if}
     </div>
 
