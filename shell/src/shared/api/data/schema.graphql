@@ -637,6 +637,7 @@ type Query {
     sessionInfo: SessionInfo!
     shop(id: Int!): Shop
     shops(ownerId: Int): [Shop!]!
+    shopsById(ids: [Int!]!): [Shop!]!
     stats: Stats!
     tagById(id: Int!): Tag
     tags(query: QueryTagsInput!): [Tag!]!

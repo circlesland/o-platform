@@ -1873,6 +1873,43 @@ query shops($ownerId:Int) {
   }
 }
 
+query shopsById($ids:[Int!]!) {
+  shopsById(ids: $ids) {
+    id
+    createdAt
+    name
+    description
+    smallBannerUrl
+    largeBannerUrl
+    openingHours
+    private
+    enabled
+    shopListingStyle
+    productListingStyle
+    sortOrder
+    ownerId
+    deliveryMethods {
+      id
+      name
+    }
+    owner {
+      id
+      name
+      avatarUrl
+      circlesAddress
+    }
+    pickupAddress {
+      name
+      street
+      house
+      zip
+      city
+      state
+      country
+    }
+  }
+}
+
 query clientAssertionJwt {
   clientAssertionJwt
 }
@@ -1889,3 +1926,4 @@ query offersByIdAndVersion($query:[OfferByIdAndVersionInput!]!){
     }
   }
 }
+
