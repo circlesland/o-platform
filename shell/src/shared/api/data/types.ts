@@ -734,6 +734,11 @@ export type Offer = {
   version: Scalars['Int'];
 };
 
+export type OfferByIdAndVersionInput = {
+  offerId: Scalars['Int'];
+  offerVersion: Scalars['Int'];
+};
+
 export type OfferInput = {
   createdByProfileId: Scalars['Int'];
   description?: Maybe<Scalars['String']>;
@@ -1018,6 +1023,7 @@ export type Query = {
   lastAcknowledgedAt?: Maybe<Scalars['Date']>;
   myInvitations: Array<CreatedInvitation>;
   myProfile?: Maybe<Profile>;
+  offersByIdAndVersion: Array<Offer>;
   organisations: Array<Organisation>;
   organisationsByAddress: Array<Organisation>;
   profilesById: Array<Profile>;
@@ -1088,6 +1094,11 @@ export type QueryInvoiceArgs = {
 
 export type QueryLastAcknowledgedAtArgs = {
   safeAddress: Scalars['String'];
+};
+
+
+export type QueryOffersByIdAndVersionArgs = {
+  query: Array<OfferByIdAndVersionInput>;
 };
 
 
@@ -3224,7 +3235,10 @@ export type ShopQuery = (
     & { owner: (
       { __typename?: 'Organisation' }
       & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
-    ), categories?: Maybe<Array<(
+    ), deliveryMethods?: Maybe<Array<(
+      { __typename?: 'DeliveryMethod' }
+      & Pick<DeliveryMethod, 'id' | 'name'>
+    )>>, categories?: Maybe<Array<(
       { __typename?: 'ShopCategory' }
       & Pick<ShopCategory, 'id' | 'name' | 'description' | 'sortOrder' | 'shopId' | 'smallBannerUrl' | 'largeBannerUrl' | 'private' | 'enabled' | 'createdAt' | 'productListingStyle'>
       & { entries?: Maybe<Array<(
@@ -3253,7 +3267,10 @@ export type ShopsQuery = (
   & { shops: Array<(
     { __typename?: 'Shop' }
     & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId'>
-    & { owner: (
+    & { deliveryMethods?: Maybe<Array<(
+      { __typename?: 'DeliveryMethod' }
+      & Pick<DeliveryMethod, 'id' | 'name'>
+    )>>, owner: (
       { __typename?: 'Organisation' }
       & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
     ), pickupAddress?: Maybe<(
@@ -3269,6 +3286,23 @@ export type ClientAssertionJwtQueryVariables = Exact<{ [key: string]: never; }>;
 export type ClientAssertionJwtQuery = (
   { __typename?: 'Query' }
   & Pick<Query, 'clientAssertionJwt'>
+);
+
+export type OffersByIdAndVersionQueryVariables = Exact<{
+  query: Array<OfferByIdAndVersionInput> | OfferByIdAndVersionInput;
+}>;
+
+
+export type OffersByIdAndVersionQuery = (
+  { __typename?: 'Query' }
+  & { offersByIdAndVersion: Array<(
+    { __typename?: 'Offer' }
+    & Pick<Offer, 'id' | 'title' | 'pictureUrl' | 'pricePerUnit'>
+    & { tags?: Maybe<Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'typeId' | 'value'>
+    )>> }
+  )> }
 );
 
 export type EventsSubscriptionVariables = Exact<{ [key: string]: never; }>;
@@ -5559,6 +5593,10 @@ export const ShopDocument = gql`
       avatarUrl
       circlesAddress
     }
+    deliveryMethods {
+      id
+      name
+    }
     categories {
       id
       name
@@ -5614,6 +5652,10 @@ export const ShopsDocument = gql`
     productListingStyle
     sortOrder
     ownerId
+    deliveryMethods {
+      id
+      name
+    }
     owner {
       id
       name
@@ -5635,6 +5677,20 @@ export const ShopsDocument = gql`
 export const ClientAssertionJwtDocument = gql`
     query clientAssertionJwt {
   clientAssertionJwt
+}
+    `;
+export const OffersByIdAndVersionDocument = gql`
+    query offersByIdAndVersion($query: [OfferByIdAndVersionInput!]!) {
+  offersByIdAndVersion(query: $query) {
+    id
+    title
+    pictureUrl
+    pricePerUnit
+    tags {
+      typeId
+      value
+    }
+  }
 }
     `;
 export const EventsDocument = gql`
@@ -5840,6 +5896,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     clientAssertionJwt(variables?: ClientAssertionJwtQueryVariables): Promise<ClientAssertionJwtQuery> {
       return withWrapper(() => client.request<ClientAssertionJwtQuery>(print(ClientAssertionJwtDocument), variables));
+    },
+    offersByIdAndVersion(variables: OffersByIdAndVersionQueryVariables): Promise<OffersByIdAndVersionQuery> {
+      return withWrapper(() => client.request<OffersByIdAndVersionQuery>(print(OffersByIdAndVersionDocument), variables));
     },
     events(variables?: EventsSubscriptionVariables): Promise<EventsSubscription> {
       return withWrapper(() => client.request<EventsSubscription>(print(EventsDocument), variables));

@@ -1793,6 +1793,10 @@ query shop($id: Int!) {
       avatarUrl
       circlesAddress
     }
+    deliveryMethods {
+      id
+      name
+    }
     categories {
       id
       name
@@ -1847,6 +1851,10 @@ query shops($ownerId:Int) {
     productListingStyle
     sortOrder
     ownerId
+    deliveryMethods {
+      id
+      name
+    }
     owner {
       id
       name
@@ -1867,4 +1875,17 @@ query shops($ownerId:Int) {
 
 query clientAssertionJwt {
   clientAssertionJwt
+}
+
+query offersByIdAndVersion($query:[OfferByIdAndVersionInput!]!){
+  offersByIdAndVersion(query: $query) {
+    id
+    title
+    pictureUrl
+    pricePerUnit
+    tags {
+      typeId
+      value
+    }
+  }
 }

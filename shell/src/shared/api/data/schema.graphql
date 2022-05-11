@@ -625,6 +625,7 @@ type Query {
     lastAcknowledgedAt(safeAddress: String!): Date
     myInvitations: [CreatedInvitation!]!
     myProfile: Profile
+    offersByIdAndVersion(query: [OfferByIdAndVersionInput!]!): [Offer!]!
     organisations(pagination: PaginationArgs): [Organisation!]!
     organisationsByAddress(addresses: [String!]!): [Organisation!]!
     profilesById(ids: [Int!]!): [Profile!]!
@@ -992,6 +993,11 @@ input CrcBalanceAggregateFilter {
 input CreateTagInput {
     typeId: String!
     value: String
+}
+
+input OfferByIdAndVersionInput {
+    offerId: Int!
+    offerVersion: Int!
 }
 
 input OfferInput {
