@@ -219,8 +219,6 @@ const createPurchaseService = async (context) => {
     linesGroupedByOffer[o.id] = linesGroupedByOffer[o.id] ? linesGroupedByOffer[o.id] + 1 : 1;
   });
 
-  const apiClient = await window.o.apiClient.client.subscribeToResult();
-
   const result = await ApiClient.mutate<Purchase, CreatePurchaseMutationVariables>(CreatePurchaseDocument, {
     deliveryMethodId: 1,
     lines: Object.entries(linesGroupedByOffer).map((o) => {
@@ -231,23 +229,8 @@ const createPurchaseService = async (context) => {
       };
     }),
   });
-/*
-  const result = await apiClient.mutate({
-    mutation: CreatePurchaseDocument,
-    variables: {
 
-      lines: Object.entries(linesGroupedByOffer).map((o) => {
-        return <PurchaseLineInput>{
-          offerId: parseInt(o[0]),
-          amount: o[1],
-          metadata: JSON.stringify(context.data.metadata),
-        };
-      }),
-    },
-  });
- */
-
-  context.data.invoices = <Invoice[]>result.invoices;
+  context.data.invoices = result;
   if (context.data.invoices.length > 0) {
     await myPurchases.findSingleItemFallback(
       [EventType.Purchased],
