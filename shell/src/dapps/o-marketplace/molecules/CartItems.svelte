@@ -51,10 +51,7 @@ function orderItems(items) {
 {#each groupedItems as { item }}
   <div class="flex items-center justify-between w-full pb-6 mb-6 border-b">
     <div class="flex items-center w-full">
-      <img
-        class="w-20 rounded-full mask mask-circle"
-        src="{item.item.pictureUrl}"
-        alt="{item.item.title}" />
+      <img class="w-16 rounded-full mask mask-circle" src="{item.item.pictureUrl}" alt="{item.item.title}" />
       <div class="flex flex-col items-start w-full ml-2 space-y-2">
         <div class="flex flex-row justify-between w-full">
           <div class="md:text-md">{item.item.title}</div>

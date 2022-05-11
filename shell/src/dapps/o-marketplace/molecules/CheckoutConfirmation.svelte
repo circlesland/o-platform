@@ -5,7 +5,7 @@ import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { Profile, Organisation } from "../../../shared/api/data/types";
 import { _ } from "svelte-i18n";
 import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";
-import {push} from "svelte-spa-router";
+import { push } from "svelte-spa-router";
 
 export let context: any;
 let profile: Profile | Organisation;
@@ -21,11 +21,11 @@ $: {
 
 let classes: string;
 
-function submit(redirectTo?:string) {
+function submit(redirectTo?: string) {
   const answer = new Continue();
   answer.data = {
     ...context.data,
-    redirectTo: redirectTo
+    redirectTo: redirectTo,
   };
   context.process.sendAnswer(answer);
 }
@@ -132,7 +132,7 @@ function orderItems(items) {
         {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode1")}<span class="text-primary-dark"
           >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode2")}</span
         >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode3")}
-        <a title="My Purchases" class="btn-link cursor-pointer" on:click={() => submit("#/marketplace/my-purchases")}>
+        <a title="My Purchases" class="cursor-pointer btn-link" on:click="{() => submit('#/marketplace/my-purchases')}">
           {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4")}
         </a>
         {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5")}

@@ -4,8 +4,9 @@ import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
+import CheckoutDelivery from "../../o-marketplace/molecules/CheckoutDelivery.svelte";
 import CheckoutSummary from "../../o-marketplace/molecules/CheckoutSummary.svelte";
-import CheckoutConfirm from "../../o-marketplace/molecules/CheckoutConfirm.svelte";
+import CheckoutConfirmation from "../../o-marketplace/molecules/CheckoutConfirmation.svelte";
 import {
   Profile,
   Offer,
@@ -32,7 +33,7 @@ import {setWindowLastError} from "../../../shared/processes/actions/setWindowLas
 import {ApiClient} from "../../../shared/apiConnection";
 
 export type PurchaseContextData = {
-  items: (Offer & {shopId:number})[];
+  items: (Offer & { shopId: number })[];
   metadata?: string;
   sellerProfile?: Profile;
   invoices: Invoice[];
@@ -46,11 +47,10 @@ export type PurchaseContextData = {
     invoice: Invoice;
     path: TransitivePath;
   }[];
-  redirectTo?: string
+  redirectTo?: string;
 };
 
 export type PurchaseContext = ProcessContext<PurchaseContextData>;
-
 
 const processDefinition = (processId: string) =>
   createMachine<PurchaseContext, any>({
@@ -65,10 +65,23 @@ const processDefinition = (processId: string) =>
           loadAndSetCartContents,
           // TODO: BOTH ACTIONS ASSUME ALL ITEMS ARE FROM THE SAME SELLER
           setFirstSellerAsSellerProfile,
-          loadAndSetFirstShopMetadata
+          loadAndSetFirstShopMetadata,
         ],
-        always: "#checkoutSummary"
+        always: "#checkoutDelivery",
       },
+
+      checkoutDelivery: prompt<PurchaseContext, any>({
+        id: "checkoutDelivery",
+        field: "delivery",
+        component: CheckoutDelivery,
+        params: {
+          view: editorContent.delivery,
+          submitButtonText: editorContent.delivery.submitButtonText,
+        },
+        navigation: {
+          next: "#checkoutSummary",
+        },
+      }),
 
       checkoutSummary: prompt<PurchaseContext, any>({
         id: "checkoutSummary",
@@ -80,15 +93,13 @@ const processDefinition = (processId: string) =>
         },
         navigation: {
           next: "#createPurchase",
+          canGoBack: () => true,
         },
       }),
 
       createPurchase: {
         id: "createPurchase",
-        entry: [
-          showCreatePurchaseWaitingMessage,
-          setShopMetadata
-        ],
+        entry: [showCreatePurchaseWaitingMessage, setShopMetadata],
         invoke: {
           src: createPurchaseService,
           onDone: "#calculatePaths",
@@ -104,10 +115,12 @@ const processDefinition = (processId: string) =>
         entry: showCalculatePathWaitingMessage,
         invoke: {
           src: calculatePathService,
-          onDone: [{
+          onDone: [
+            {
               cond: allInvoicesArePayable,
               target: "#pay",
-            }, {
+            },
+            {
               cond: notAllInvoicesArePayable,
               actions: setNotAllInvoicesArePayableError,
               target: "#showError",
@@ -115,7 +128,7 @@ const processDefinition = (processId: string) =>
           ],
           onError: {
             actions: setWindowLastError,
-            target: "#showError"
+            target: "#showError",
           },
         },
       },
@@ -128,31 +141,33 @@ const processDefinition = (processId: string) =>
         entry: showPaymentTransferWaitingMessage,
         invoke: {
           src: paySingleInvoiceAndRemoveItFromContext,
-          onDone: [{
+          onDone: [
+            {
               cond: allInvoicesArePayed,
               target: "#showSuccess",
-            }, {
+            },
+            {
               cond: notAllInvoicesArePayed,
               target: "#pay",
             },
           ],
           onError: {
             target: "#showError",
-            actions: setWindowLastError
+            actions: setWindowLastError,
           },
         },
       },
 
       showError: {
         id: "showError",
-        entry: showErrorView
+        entry: showErrorView,
       },
 
       showSuccess: prompt({
         id: "showSuccess",
         entry: resetCartContents,
         field: "redirectTo",
-        component: CheckoutConfirm,
+        component: CheckoutConfirmation,
         params: (context) => {
           return {
             view: {
@@ -187,7 +202,6 @@ const processDefinition = (processId: string) =>
     },
   });
 
-
 const editorContent: { [x: string]: EditorViewContext } = {
   summary: {
     title: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.title"),
@@ -195,22 +209,30 @@ const editorContent: { [x: string]: EditorViewContext } = {
     placeholder: "",
     submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.submitButtonText"),
   },
+  delivery: {
+    title: "Delivery options",
+    description: "Please select a delivery option",
+    placeholder: "",
+    submitButtonText: "Next",
+  },
 };
 
 const loadAndSetFirstShopMetadata = (context) => {
-  context.data.metadata = JSON.parse(context.data.items.length > 0
-    ? Environment.getShopMetadata(context.data.items[0].shopId)
-    : "undefined");
+  context.data.metadata = JSON.parse(
+    context.data.items.length > 0 ? Environment.getShopMetadata(context.data.items[0].shopId) : "undefined"
+  );
 };
 
-const setShopMetadata = (context) => context.data.metadata
-  ? Environment.setShopMetadata(context.data.items[0].shopId, JSON.stringify(context.data.metadata))
-  : "undefined";
+const setShopMetadata = (context) =>
+  context.data.metadata
+    ? Environment.setShopMetadata(context.data.items[0].shopId, JSON.stringify(context.data.metadata))
+    : "undefined";
 
-const showCreatePurchaseWaitingMessage = () => window.o.publishEvent(<PlatformEvent>{
-  type: "shell.progress",
-  message: window.i18n("dapps.o-marketplace.processes.purchases.createPurchase.message"),
-});
+const showCreatePurchaseWaitingMessage = () =>
+  window.o.publishEvent(<PlatformEvent>{
+    type: "shell.progress",
+    message: window.i18n("dapps.o-marketplace.processes.purchases.createPurchase.message"),
+  });
 
 const createPurchaseService = async (context) => {
   console.log("METADAATATATA: ", context.data.metadata);
@@ -232,10 +254,7 @@ const createPurchaseService = async (context) => {
 
   context.data.invoices = result;
   if (context.data.invoices.length > 0) {
-    await myPurchases.findSingleItemFallback(
-      [EventType.Purchased],
-      context.data.invoices[0].purchaseId.toString()
-    );
+    await myPurchases.findSingleItemFallback([EventType.Purchased], context.data.invoices[0].purchaseId.toString());
   }
   myPurchases.refresh();
 };
@@ -298,7 +317,7 @@ const showPaymentTransferWaitingMessage = () => {
 const allInvoicesArePayable = (context) => context.data.invoices.length == context.data.payableInvoices.length;
 const notAllInvoicesArePayable = (context) => context.data.invoices.length != context.data.payableInvoices.length;
 
-const setNotAllInvoicesArePayableError =(context, event) => {
+const setNotAllInvoicesArePayableError = (context, event) => {
   let invoices = JSON.parse(JSON.stringify(context.data.invoices));
   context.data.payableInvoices.forEach((pi) => {
     const pi_ = context.data.invoices.find((o) => o.id == pi.invoice.id);
@@ -341,10 +360,7 @@ const paySingleInvoiceAndRemoveItFromContext = async (context) => {
 
   context.data.invoices = <Invoice[]>context.data.invoices;
   if (context.data.invoices.length > 0) {
-    await myPurchases.findSingleItemFallback(
-      [EventType.Purchased],
-      context.data.invoices[0].purchaseId.toString()
-    );
+    await myPurchases.findSingleItemFallback([EventType.Purchased], context.data.invoices[0].purchaseId.toString());
   }
 
   myPurchases.refresh();
@@ -353,8 +369,7 @@ const paySingleInvoiceAndRemoveItFromContext = async (context) => {
     currentInvoice.invoice.buyerAddress,
     sessionStorage.getItem("circlesKey"),
     currentInvoice.path,
-    window.i18n("dapps.o-marketplace.processes.purchases.pay.paymentOfInvoice") +
-    `${currentInvoice.invoice.id}`
+    window.i18n("dapps.o-marketplace.processes.purchases.pay.paymentOfInvoice") + `${currentInvoice.invoice.id}`
   );
 
   context.data.paidInvoices.push(currentInvoice);
