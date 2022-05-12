@@ -215,19 +215,3 @@ onMount(() => {
     </div>
   {/if}
 </div>
-
-<style>
-form {
-  display: flex;
-  justify-content: center; /* Center on page */
-}
-
-.list {
-  display: flex;
-  flex-wrap: wrap; /* Will cause items/button to go to next line */
-}
-
-.item {
-  width: 100%;
-}
-</style>

@@ -341,9 +341,3 @@ async function createNewShop() {
     </div>
   </section>
 </div>
-
-<style>
-.table-row-group.is-active {
-  @apply bg-primary;
-}
-</style>

@@ -73,7 +73,7 @@ function onkeydown(e: KeyboardEvent) {
           <button
             class="mt-2 btn btn-sm btn-primary"
             on:click="{() => {
-              window.o.runProcess(upsertShippingAddress, {});
+              // window.o.runProcess(upsertShippingAddress, {});
             }}">Add Address</button>
         </div>
       </label>
@@ -81,19 +81,3 @@ function onkeydown(e: KeyboardEvent) {
   {/if}
 </div>
 <ProcessNavigation on:buttonClick="{() => submit(undefined)}" context="{context}" noSticky="{true}" />
-
-<style>
-form {
-  display: flex;
-  justify-content: center; /* Center on page */
-}
-
-.list {
-  display: flex;
-  flex-wrap: wrap; /* Will cause items/button to go to next line */
-}
-
-.item {
-  width: 100%;
-}
-</style>

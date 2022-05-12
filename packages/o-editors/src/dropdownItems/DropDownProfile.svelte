@@ -1,7 +1,7 @@
 <script>
 export let item = undefined;
 export const itemType = "profile";
-export let isActive = false;
+// export let isActive = false;
 export let isFirst = false;
 export let isHover = false;
 

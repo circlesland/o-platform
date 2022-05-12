@@ -51,18 +51,6 @@ onMount(() => {
       <br />
     </div>
   </div>
-  <!-- {#if error}
-    <textarea
-      name="input"
-      rows="1"
-      id="errormessage"
-      type="text"
-      value="{error.stack}"
-      class="w-full mt-5 mb-5 overflow-y-scroll errormessage textarea textarea-bordered input-error max-h-72"
-    ></textarea>
-  {:else}
-    {$_("shared.atoms.error.noErrorDetailsAvailable")}
-  {/if} -->
   <div class="mt-4">
     <a href="https://discord.gg/SACzRXa35v">
       {$_("shared.atoms.error.pleaseTryToReload")}<a
@@ -80,7 +68,7 @@ onMount(() => {
 </div>
 
 <style>
-textarea.errormessage {
+:global(textarea.errormessage) {
   font-size: 0.8rem;
   line-height: 1.2rem;
 }

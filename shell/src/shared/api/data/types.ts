@@ -1035,6 +1035,7 @@ export type Query = {
   sessionInfo: SessionInfo;
   shop?: Maybe<Shop>;
   shops: Array<Shop>;
+  shopsById: Array<Shop>;
   stats: Stats;
   tagById?: Maybe<Tag>;
   tags: Array<Tag>;
@@ -1149,6 +1150,11 @@ export type QueryShopArgs = {
 
 export type QueryShopsArgs = {
   ownerId?: Maybe<Scalars['Int']>;
+};
+
+
+export type QueryShopsByIdArgs = {
+  ids: Array<Scalars['Int']>;
 };
 
 
@@ -3265,6 +3271,29 @@ export type ShopsQueryVariables = Exact<{
 export type ShopsQuery = (
   { __typename?: 'Query' }
   & { shops: Array<(
+    { __typename?: 'Shop' }
+    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId'>
+    & { deliveryMethods?: Maybe<Array<(
+      { __typename?: 'DeliveryMethod' }
+      & Pick<DeliveryMethod, 'id' | 'name'>
+    )>>, owner: (
+      { __typename?: 'Organisation' }
+      & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
+    ), pickupAddress?: Maybe<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+    )> }
+  )> }
+);
+
+export type ShopsByIdQueryVariables = Exact<{
+  ids: Array<Scalars['Int']> | Scalars['Int'];
+}>;
+
+
+export type ShopsByIdQuery = (
+  { __typename?: 'Query' }
+  & { shopsById: Array<(
     { __typename?: 'Shop' }
     & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId'>
     & { deliveryMethods?: Maybe<Array<(
@@ -5674,6 +5703,44 @@ export const ShopsDocument = gql`
   }
 }
     `;
+export const ShopsByIdDocument = gql`
+    query shopsById($ids: [Int!]!) {
+  shopsById(ids: $ids) {
+    id
+    createdAt
+    name
+    description
+    smallBannerUrl
+    largeBannerUrl
+    openingHours
+    private
+    enabled
+    shopListingStyle
+    productListingStyle
+    sortOrder
+    ownerId
+    deliveryMethods {
+      id
+      name
+    }
+    owner {
+      id
+      name
+      avatarUrl
+      circlesAddress
+    }
+    pickupAddress {
+      name
+      street
+      house
+      zip
+      city
+      state
+      country
+    }
+  }
+}
+    `;
 export const ClientAssertionJwtDocument = gql`
     query clientAssertionJwt {
   clientAssertionJwt
@@ -5893,6 +5960,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     shops(variables?: ShopsQueryVariables): Promise<ShopsQuery> {
       return withWrapper(() => client.request<ShopsQuery>(print(ShopsDocument), variables));
+    },
+    shopsById(variables: ShopsByIdQueryVariables): Promise<ShopsByIdQuery> {
+      return withWrapper(() => client.request<ShopsByIdQuery>(print(ShopsByIdDocument), variables));
     },
     clientAssertionJwt(variables?: ClientAssertionJwtQueryVariables): Promise<ClientAssertionJwtQuery> {
       return withWrapper(() => client.request<ClientAssertionJwtQuery>(print(ClientAssertionJwtDocument), variables));
