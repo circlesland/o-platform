@@ -26,20 +26,7 @@ export class Liquidity {
   }
   private static _instance: Liquidity = new Liquidity();
 
-  constructor() {
-    // this.now = dayjs().unix();
-    // this.oneYearInSeconds = 31557600; // This is 365,25 Days in seconds.
-    // this.oneDayInSeconds = 86400;
-    // this.day0Unix = dayjs("2020-10-15T00:00:00.000Z").unix();
-    // this.transactionDateUnix = dayjs("2021-10-16T00:00:00.000Z").unix();
-    // this.yearsSinceDay0Unix = (this.transactionDateUnix - this.day0Unix) / this.oneYearInSeconds;
-    // this.daysSinceDay0Unix = (this.transactionDateUnix - this.day0Unix) / this.oneDayInSeconds;
-    // this.dayInCurrentCycle = Math.ceil(this.daysSinceDay0Unix % 365.25);
-    // this.baseCirclesPerDayValue = 8;
-    // this.previousCirclesPerDayValue = 8;
-    // this.circlesValue = (x: number) => x * 1.07;
-    // this.lerp = (x: number, y: number, a: number) => x * (1 - a) + y * a;
-  }
+  constructor() {}
 
   public static currencySymbol = { CRC: "c", TIME_CRC: "⦿", EURS: "€" };
 
