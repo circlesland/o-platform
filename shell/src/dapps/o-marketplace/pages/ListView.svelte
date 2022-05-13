@@ -27,7 +27,7 @@ onMount(async () => {
   if (shop) {
     categories = shop.categories;
   }
-  console.log("CATEGORIES", categories);
+  console.log("Shop", shop);
 });
 </script>
 
@@ -85,8 +85,23 @@ onMount(async () => {
           {/if}
         {/each}
         {#if shop}
-          <div class="p-6 text-center text-2xs">
-            Informationen über Zusatzstoffe und Allergene können auf der Physische Karte der {shop.name} eingesehen werden.
+          <div class="pb-6 text-center text-2xs">
+            <h4 class="mb-2">{shop.name}</h4>
+            <div class="flex flex-row justify-center space-x-4">
+              {#if shop.privacyPolicyLink}
+                <a href="{shop.privacyPolicyLink}" target="_blank" class="link link-primary" alt="Privacy Policy"
+                  >Privacy Policy</a>
+              {/if}
+              {#if shop.tosLink}
+                <a href="{shop.tosLink}" target="_blank" class="link link-primary" alt="Terms of Service"
+                  >Terms of Service</a>
+              {/if}
+
+              {#if shop.healthInfosLink}
+                <a href="{shop.healthInfosLink}" target="_blank" class="link link-primary" alt="Health Infos"
+                  >Health Information</a>
+              {/if}
+            </div>
           </div>
         {/if}
       </div>

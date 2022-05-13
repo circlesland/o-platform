@@ -1786,6 +1786,9 @@ query shop($id: Int!) {
     productListingStyle
     shopListingStyle
     purchaseMetaDataKeys
+    tosLink
+    privacyPolicyLink
+    healthInfosLink
     ownerId
     owner {
       id
@@ -1836,7 +1839,7 @@ query shop($id: Int!) {
   }
 }
 
-query shops($ownerId:Int) {
+query shops($ownerId: Int) {
   shops(ownerId: $ownerId) {
     id
     createdAt
@@ -1873,7 +1876,7 @@ query shops($ownerId:Int) {
   }
 }
 
-query shopsById($ids:[Int!]!) {
+query shopsById($ids: [Int!]!) {
   shopsById(ids: $ids) {
     id
     createdAt
@@ -1914,7 +1917,7 @@ query clientAssertionJwt {
   clientAssertionJwt
 }
 
-query offersByIdAndVersion($query:[OfferByIdAndVersionInput!]!){
+query offersByIdAndVersion($query: [OfferByIdAndVersionInput!]!) {
   offersByIdAndVersion(query: $query) {
     id
     title
@@ -1926,4 +1929,3 @@ query offersByIdAndVersion($query:[OfferByIdAndVersionInput!]!){
     }
   }
 }
-

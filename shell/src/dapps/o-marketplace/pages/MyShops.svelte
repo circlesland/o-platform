@@ -80,6 +80,7 @@ function toggleEditShop(shopId, index) {
     delete shops[index].createdAt;
     delete shops[index].pickupAddress;
     delete shops[index].__typename;
+    delete shops[index].deliveryMethods;
     currentShop = <ShopInput>shops[index];
     editShopId = shopId;
   }
@@ -161,6 +162,9 @@ async function createNewShop() {
     private: false,
     name: "",
     description: "",
+    tosLink: "",
+    privacyPolicyLink: "",
+    healthInfosLink: "",
     largeBannerUrl: "",
     smallBannerUrl: "",
     shopListingStyle: ShopListingStyle.Regular,
@@ -290,15 +294,71 @@ async function createNewShop() {
               </div>
             </div>
             {#if editShopId == shop.id}
-              <div class="flex flex-row w-full mt-2 space-x-2">
+              <div class="w-full mt-2 text-left label">Description</div>
+              <div class="flex flex-row w-full space-x-2">
                 <input
                   type="text"
                   class="flex-grow font-primary input"
-                  placeholder="{shop.description}"
+                  placeholder="Description"
                   bind:value="{shop.description}" />
                 <button class="inline btn btn-square btn-primary" on:click="{() => submit()}">
                   <Icon name="check" class="inline w-6 h-6 heroicon smallicon" />
                 </button>
+              </div>
+              <div class="w-full mt-2 text-left label">Terms of Service Link</div>
+              <div class="flex flex-row w-full space-x-2">
+                <input
+                  type="text"
+                  class="flex-grow font-primary input"
+                  placeholder="Terms of Service Link (start with https://)"
+                  bind:value="{shop.tosLink}" />
+                <button class="inline btn btn-square btn-primary" on:click="{() => submit()}">
+                  <Icon name="check" class="inline w-6 h-6 heroicon smallicon" />
+                </button>
+              </div>
+              <div class="w-full mt-2 text-left label">Privacy Policy Link</div>
+              <div class="flex flex-row w-full space-x-2">
+                <input
+                  type="text"
+                  class="flex-grow font-primary input"
+                  placeholder="Privacy Policy Link (start with https://)"
+                  bind:value="{shop.privacyPolicyLink}" />
+                <button class="inline btn btn-square btn-primary" on:click="{() => submit()}">
+                  <Icon name="check" class="inline w-6 h-6 heroicon smallicon" />
+                </button>
+              </div>
+              <div class="w-full mt-2 text-left label">Link to Health information</div>
+              <div class="flex flex-row w-full space-x-2">
+                <input
+                  type="text"
+                  class="flex-grow font-primary input"
+                  placeholder="Link to Health information (start with https://)"
+                  bind:value="{shop.healthInfosLink}" />
+                <button class="inline btn btn-square btn-primary" on:click="{() => submit()}">
+                  <Icon name="check" class="inline w-6 h-6 heroicon smallicon" />
+                </button>
+              </div>
+              <div class="w-full mt-2 text-left label">Methods of Delivery</div>
+              <div class="flex flex-row w-full space-x-2">
+                <label>
+                  <input
+                    type="checkbox"
+                    class="checkbox checkbox-primary"
+                    bind:group="{shop.deliveryMethods}"
+                    name="shop.deliveryMethods"
+                    value="{1}" />
+                  Delivery
+                </label>
+
+                <label>
+                  <input
+                    type="checkbox"
+                    class="checkbox checkbox-primary"
+                    bind:group="{shop.deliveryMethods}"
+                    name="shop.deliveryMethods"
+                    value="{2}" />
+                  Store Pick-Up
+                </label>
               </div>
             {:else}
               <div class="w-full mt-2 text-sm text-center">{shop.description}</div>

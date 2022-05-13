@@ -30,7 +30,7 @@ async function load() {
 
 export let shopId: Number;
 
-function addToCart(item:Offer, shopId:number) {
+function addToCart(item: Offer, shopId: number) {
   item.shopId = shopId;
   $cartContents = $cartContents ? [...$cartContents, item] : [item];
   push(`#/marketplace/cart`);
