@@ -1,5 +1,5 @@
 <script lang="ts">
-import { cartContents, totalPrice } from "../stores/shoppingCartStore";
+import { cartContents, totalPrice, cartContentsByShop } from "../stores/shoppingCartStore";
 import CartItems from "../molecules/CartItems.svelte";
 import { purchase } from "../processes/purchase";
 import { _ } from "svelte-i18n";
@@ -60,6 +60,7 @@ async function checkMaxTransferableAmount(sumsBySeller: { [sellerAddress: string
 
 async function checkFlow() {
   const itemsBySeller = $cartContents.groupBy((o) => o.createdByProfile.circlesAddress);
+
   const sumsBySeller: { [sellerAddress: string]: number } = {};
   Object.keys(itemsBySeller).map((sellerAddress) => {
     const items = itemsBySeller[sellerAddress];
@@ -70,6 +71,8 @@ async function checkFlow() {
     (o) => o.createdByProfile.circlesAddress,
     (o) => o.createdByProfile
   );
+  console.log("sellerProfiles", sellerProfiles);
+
   checkMaxTransferableAmount(sumsBySeller).then((maxAmountBySeller) => {
     const payableBySeller = maxAmountBySeller.map((maxAmount) => {
       return {
@@ -78,7 +81,9 @@ async function checkFlow() {
         maxAmount: maxAmount.maxFlow,
       };
     });
+
     const notPayable = payableBySeller.find((o) => !o.payable);
+
     if (notPayable && notPayable?.sellerProfile?.circlesAddress) {
       insufficientTrust = <{ sellerProfile: Profile; maxFlow: string; invoiceAmount: string }>{
         invoiceAmount: sumsBySeller[notPayable.sellerProfile.circlesAddress],
@@ -165,18 +170,18 @@ onMount(() => {
         <div class="md:flex">
           <div class="w-full">
             <div class="pt-6 md:grid">
-              <CartItems cartContents="{cartContents}" />
-              <div class="flex items-center justify-end">
+              <CartItems cartContents="{cartContents}" cartContentsByShop="{cartContentsByShop}" />
+              <!-- <div class="flex items-center justify-end">
                 <span class="mr-2 text-sm font-medium text-gray-400"
                   >{$_("dapps.o-marketplace.pages.shoppingCart.total")}</span
                 ><span class="text-lg font-bold"
                   >{$totalPrice.toFixed(2)}
                   <span class="font-enso">€</span></span>
-              </div>
+              </div> -->
               <div class="flex items-center justify-center mt-6">
                 <div class="flex flex-row w-full space-x-4">
                   <div class="flex-grow">
-                    {#if !checked}
+                    <!-- {#if !checked}
                       <button class="h-auto btn-block btn btn-disabled"
                         >{$_("dapps.o-marketplace.pages.shoppingCart.checkOut")}
                       </button>
@@ -195,8 +200,8 @@ onMount(() => {
                       </div>
                     {:else}
                       <button class="h-auto btn-block btn btn-primary" on:click="{() => checkout()}"
-                        >{$_("dapps.o-marketplace.pages.shoppingCart.checkOut")}</button>
-                    {/if}
+                        >{$_("dapps.o-marketplace.pages.shoppingCart.checkOut")}</button> 
+                    {/if} -->
                   </div>
                 </div>
               </div>
