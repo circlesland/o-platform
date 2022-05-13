@@ -46,7 +46,7 @@ function edit(dirtyFlags: { [field: string]: boolean }) {
 }
 
 function loadDetailPage() {
-  push("#/marketplace/detail/" + shopId + "/" + offer.id);
+  push("#/marketplace/offer/" + offer.id);
 }
 
 function buy() {
