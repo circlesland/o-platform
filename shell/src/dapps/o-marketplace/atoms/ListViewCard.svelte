@@ -46,14 +46,14 @@ function edit(dirtyFlags: { [field: string]: boolean }) {
 }
 
 function loadDetailPage() {
-  push("#/marketplace/offer/" + offer.id);
+  push("#/marketplace/detail/" + shopId + "/" + offer.id);
 }
 
 function buy() {
-  window.o.runProcess(purchase, {data:{shopId: shopId}});
+  window.o.runProcess(purchase, { data: { shopId: shopId } });
 }
 
-function addToCart(item:Offer, shopId:number) {
+function addToCart(item: Offer, shopId: number) {
   item.shopId = shopId;
   $cartContents = $cartContents ? [...$cartContents, item] : [item];
   push(`#/marketplace/cart`);

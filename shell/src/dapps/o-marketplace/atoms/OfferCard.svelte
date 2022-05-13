@@ -1,6 +1,6 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
-import {Offer, ShopCategoryEntry} from "../../../shared/api/data/types";
+import { Offer, ShopCategoryEntry } from "../../../shared/api/data/types";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 import { cartContents } from "../stores/shoppingCartStore";
@@ -10,12 +10,11 @@ import { _ } from "svelte-i18n";
 export let entry: ShopCategoryEntry;
 export let shopId: number;
 
-
 function loadDetailPage() {
   push("#/marketplace/detail/" + shopId + "/" + entry.id);
 }
 
-function addToCart(item:Offer & {shopId:number}) {
+function addToCart(item: Offer & { shopId: number }) {
   $cartContents = $cartContents ? [...$cartContents, item] : [item];
   push(`#/marketplace/cart`);
 }
@@ -69,7 +68,10 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
 
       <div class="flex flex-row space-x-4">
         <div class="">
-          <button type="submit" class="relative btn btn-primary btn-square" on:click="{() => addToCart({...entry.product, shopId: shopId})}">
+          <button
+            type="submit"
+            class="relative btn btn-primary btn-square"
+            on:click="{() => addToCart({ ...entry.product, shopId: shopId })}">
             <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
           </button>
         </div>

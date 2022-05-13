@@ -49,7 +49,7 @@ function edit(dirtyFlags: { [field: string]: boolean }) {
 }
 
 function loadDetailPage() {
-  push("#/marketplace/offer/" + offer.id);
+  push("#/marketplace/detail/" + shopId + "/" + offer.id);
 }
 
 function buy() {
