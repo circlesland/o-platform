@@ -55,7 +55,7 @@ onMount(async () => {
   <div class="grid grid-cols-1 mb-10 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid">
     {#if categoryEntries && categoryEntries.length}
       {#each categoryEntries as categoryEntry}
-        <OfferCard entry="{categoryEntry}" shopId="{shopId}" />
+        <OfferCard entry="{categoryEntry}" shopId="{shopId}" deliveryMethods="{shop.deliveryMethods}" />
       {/each}
     {:else if !loading}
       No offers

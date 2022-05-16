@@ -81,13 +81,16 @@ function addToCart(item: Offer & { shopId: number }) {
               <span class="inline-block">€</span>
             </div>
 
-            <div class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full top-20 bg-alert-lightest">
-              sssStore Pickup <Icon name="home" class="inline w-5 h-5 heroicon smallicon" />
-            </div>
-
-            <div class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full top-32 bg-alert-lightest">
-              Delivery <Icon name="truck" class="inline w-5 h-5 heroicon smallicon" />
-            </div>
+            {#if shop.deliveryMethods}
+              {#each shop.deliveryMethods as deliveryMethod, i}
+                <div
+                  class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full bg-alert-lightest"
+                  class:top-16="{i == 0}"
+                  class:top-28="{i > 0}">
+                  {deliveryMethod.name}
+                </div>
+              {/each}
+            {/if}
           </div>
         </header>
         <div
@@ -113,23 +116,31 @@ function addToCart(item: Offer & { shopId: number }) {
 
           <div class="flex flex-col space-y-1 text-right">
             <div class="pt-2 text-sm">
-              <div class="">
-                <span class="text-xs"
-                  >Available for delivery <Icon name="truck" class="inline w-5 h-5 heroicon smallicon" /></span>
-              </div>
-              <div class="pb-2 ">
-                <span class="text-xs"
-                  >Available for in-Store pickup
-                  <Icon name="home" class="inline w-5 h-5 heroicon smallicon" /></span>
-                <br />
-                <br />
-                Basic Income Lab GmbH<br />
-                Reifenstuelstrasse 6<br />
-                80469 München<br />
-                {#if shop && shop.openingHours}
-                  <span class="text-xs text-dark-lightest">Shop hours: {shop.openingHours}</span>
-                {/if}
-              </div>
+              {#if shop.deliveryMethods}
+                {#each shop.deliveryMethods as deliveryMethod, i}
+                  <div class="">
+                    <span class="text-xs"
+                      >Available for {deliveryMethod.name}
+                      {#if deliveryMethod.id == 1}
+                        <Icon name="home" class="inline w-5 h-5 heroicon smallicon" />
+                      {/if}
+                      {#if deliveryMethod.id == 2}
+                        <Icon name="truck" class="inline w-5 h-5 heroicon smallicon" />
+                      {/if}
+                    </span>
+                    {#if deliveryMethod.id == 1}
+                      <br />
+                      <br />
+                      Basic Income Lab GmbH<br />
+                      Reifenstuelstrasse 6<br />
+                      80469 München<br />
+                      {#if shop.openingHours}
+                        <span class="text-xs text-dark-lightest">Shop hours: {shop.openingHours}</span>
+                      {/if}
+                    {/if}
+                  </div>
+                {/each}
+              {/if}
             </div>
           </div>
         </div>
