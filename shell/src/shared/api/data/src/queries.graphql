@@ -1379,6 +1379,16 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
           timeCirclesPriceShare
         }
       }
+      ...on Erc721Tokens {
+        lastUpdatedAt
+        balances {
+          token_symbol
+          token_name
+          token_address
+          token_no
+          token_url
+        }
+      }
       ... on CrcBalances {
         lastUpdatedAt
         balances {
