@@ -22,6 +22,7 @@ import { assetBalances } from "../../../shared/stores/assetsBalances";
 import { BN } from "ethereumjs-util";
 import { Currency } from "../../../shared/currency";
 import { Liquidity } from "../functions/liquidity";
+
 export let cartContents;
 export let cartContentsByShop;
 
@@ -40,12 +41,15 @@ let insufficientTrust: { sellerProfile: Profile; maxFlow: string; invoiceAmount:
 // $: console.log("Content:", $cartContents);
 // $: groupedItems = $cartContents ? orderItems($cartContents) : {};
 $: {
-  $cartContentsByShop
-    .then((result) => {
-      shops = result;
-      console.log("RESUUU:", result);
-    })
-    .catch((err) => {});
+  if (cartContentsByShop) {
+    $cartContentsByShop
+            .then((result) => {
+              shops = result;
+              console.log("RESUUU:", result);
+            })
+            .catch((err) => {
+            });
+  }
 }
 
 onMount(async () => {});
