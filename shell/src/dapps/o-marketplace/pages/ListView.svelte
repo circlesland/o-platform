@@ -7,7 +7,13 @@ import { Subscription } from "rxjs";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-import { Shop, ShopCategory, ShopDocument, ShopQueryVariables } from "../../../shared/api/data/types";
+import {
+  Shop,
+  ShopCategory,
+  ShopCategoryEntry,
+  ShopDocument,
+  ShopQueryVariables,
+} from "../../../shared/api/data/types";
 
 import { ApiClient } from "../../../shared/apiConnection";
 
@@ -18,6 +24,7 @@ export let shopId: number;
 let shop: Shop | null = null;
 let categories: ShopCategory[] = [];
 let shellEventSubscription: Subscription;
+let categoryEntries: ShopCategoryEntry[] = [];
 
 onMount(async () => {
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
@@ -27,7 +34,8 @@ onMount(async () => {
   if (shop) {
     categories = shop.categories;
   }
-  console.log("Shop", shop);
+
+  categoryEntries = shop.categories.flatMap((o) => o.entries);
 });
 </script>
 
@@ -76,8 +84,8 @@ onMount(async () => {
                   <h1 class="px-4 mb-2 ml-2 ">{category.name}</h1>
                 {/if}
                 <div class="flex flex-col px-4 space-y-4">
-                  {#each category.entries.map((o) => o.product) as offer}
-                    <ListViewCard param="{offer}" shopId="{shopId}" deliveryMethods="{shop.deliveryMethods}" />
+                  {#each category.entries as entry}
+                    <ListViewCard entry="{entry}" shopId="{shopId}" deliveryMethods="{shop.deliveryMethods}" />
                   {/each}
                 </div>
               </div>

@@ -25,18 +25,23 @@ onMount(async () => {
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
     id: parseInt(shopId.toString()),
   });
+
   if (!shop || !shop.categories) {
     loading = false;
     return;
   }
 
-  const products = shop.categories.flatMap((o) => o.entries.filter((q) => q.id == entryId).flatMap((p) => p.product));
+  if (shop) {
+    const products = shop.categories.flatMap((o) =>
+      o.entries ? o.entries.filter((q) => q.id == entryId).flatMap((p) => p.product) : null
+    );
 
-  if (products.length > 0) {
-    offer = products[0];
+    if (products.length > 0) {
+      offer = products[0];
+    }
+
+    loading = false;
   }
-
-  loading = false;
 });
 
 function addToCart(item: Offer & { shopId: number }) {
@@ -81,7 +86,7 @@ function addToCart(item: Offer & { shopId: number }) {
               <span class="inline-block">€</span>
             </div>
 
-            {#if shop.deliveryMethods}
+            {#if shop && shop.deliveryMethods}
               {#each shop.deliveryMethods as deliveryMethod, i}
                 <div
                   class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full bg-alert-lightest"
@@ -130,13 +135,14 @@ function addToCart(item: Offer & { shopId: number }) {
                     </span>
                     {#if deliveryMethod.id == 1}
                       <br />
-                      <br />
+
                       Basic Income Lab GmbH<br />
                       Reifenstuelstrasse 6<br />
                       80469 München<br />
                       {#if shop.openingHours}
                         <span class="text-xs text-dark-lightest">Shop hours: {shop.openingHours}</span>
                       {/if}
+                      <br />
                     {/if}
                   </div>
                 {/each}

@@ -10,29 +10,23 @@ const toggle = () => (isOpen = !isOpen);
 
 /* we're currently ONLY showing the current key from localstorage! */
 let seedphrase =
-  sessionStorage.getItem("circlesKey") &&
-  sessionStorage.getItem("circlesKey") != "0x123"
+  sessionStorage.getItem("circlesKey") && sessionStorage.getItem("circlesKey") != "0x123"
     ? bip39.entropyToMnemonic(
-        sessionStorage
-          .getItem("circlesKey")
-          .substr(2, sessionStorage.getItem("circlesKey").length - 2)
+        sessionStorage.getItem("circlesKey").substr(2, sessionStorage.getItem("circlesKey").length - 2)
       )
     : "<no private key>";
 </script>
 
 <section class="mb-3">
-  <div
-    class="flex items-center w-full p-3 space-x-2 bg-white rounded-lg shadow-md">
+  <div class="flex items-center w-full p-3 space-x-2 bg-white rounded-lg shadow-md">
     <div class="flex-col flex-grow">
       <div class="flex flex-row items-center justify-between text-left">
         <div class="flex-grow min-w-0">
-          <h2
-            class="overflow-hidden text-base whitespace-nowrap overflow-ellipsis">
+          <h2 class="overflow-hidden text-base whitespace-nowrap overflow-ellipsis">
             {key.address.substr(0, 28) + "..."}
           </h2>
         </div>
-        <div
-          class="self-end justify-end pl-2 text-right whitespace-nowrap text-primary">
+        <div class="self-end justify-end pl-2 text-right whitespace-nowrap text-primary">
           <span>
             {#if key.encryptedPrivateKey}
               <div on:click="{toggle}">
@@ -81,9 +75,7 @@ let seedphrase =
       </div>
       {#if key.encryptedPrivateKey && key.encryptedPrivateKey.base64CypherText}
         {#if isOpen}
-          <div
-            class="flex flex-col w-full mt-4 space-y-1"
-            transition:slide="{{ duration: 300 }}">
+          <div class="flex flex-col w-full mt-4 space-y-1" transition:slide="{{ duration: 300 }}">
             <div class="mb-1 text-left text-2xs text-dark-lightest">
               {$_("dapps.o-passport.atoms.accountCard.secretRecoveryCode")}
             </div>

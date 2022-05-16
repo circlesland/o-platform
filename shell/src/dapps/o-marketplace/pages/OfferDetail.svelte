@@ -48,8 +48,6 @@ onMount(async () => {
 
   await load();
 
-  console.log("SHOP", shop);
-
   shellEventSubscription = window.o.events.subscribe(async (event: PlatformEvent) => {
     if (event.type != "shell.refresh" || (<any>event).dapp != "marketplace:1") {
       return;
@@ -99,13 +97,16 @@ onMount(async () => {
                 <span class="inline-block">€</span>
               </div>
 
-              <div class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full top-20 bg-alert-lightest">
-                Store Pickup <Icon name="home" class="inline w-5 h-5 heroicon smallicon" />
-              </div>
-
-              <div class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full top-32 bg-alert-lightest">
-                Delivery <Icon name="truck" class="inline w-5 h-5 heroicon smallicon" />
-              </div>
+              {#if shop && shop.deliveryMethods}
+                {#each shop.deliveryMethods as deliveryMethod, i}
+                  <div
+                    class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full bg-alert-lightest"
+                    class:top-16="{i == 0}"
+                    class:top-28="{i > 0}">
+                    {deliveryMethod.name}
+                  </div>
+                {/each}
+              {/if}
             </div>
           </header>
           <div
