@@ -136,7 +136,7 @@ function orderItems(items) {
           href="/#"
           alt="{$_('dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4')}"
           class="cursor-pointer btn-link"
-          on:click="{() => submit('#/marketplace/my-purchases')}">
+          on:click="{(e) => {submit('#/marketplace/my-purchases'); e.preventDefault()}}">
           {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4")}
         </a>
         {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5")}

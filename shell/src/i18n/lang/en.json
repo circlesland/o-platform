@@ -374,7 +374,8 @@
             "chat": "chat",
             "banking": "banking",
             "market": "market",
-            "verified": "verified"
+            "verified": "verified",
+            "gallery": "gallery"
           },
           "invites": {
             "invites": "Invites",

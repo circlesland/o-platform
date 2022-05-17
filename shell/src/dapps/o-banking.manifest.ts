@@ -114,7 +114,7 @@ const assets: Page<any, BankingDappState> = {
   icon: "assets",
   type: "page",
 };
-
+/*
 const nfts: Page<any, BankingDappState> = {
   routeParts: ["=nfts"],
   component: Erc721Detail,
@@ -122,6 +122,7 @@ const nfts: Page<any, BankingDappState> = {
   icon: "assets",
   type: "page",
 };
+ */
 
 const transferTrigger: Trigger<any, BankingDappState> = {
   routeParts: ["=send", ":amount", ":to"],
@@ -252,5 +253,5 @@ export const banking: DappManifest<BankingDappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [transactions, transactionDetail, assets, crcDetail, xdaiDetail, transferTrigger, transferTriggerRedirect, nfts],
+  routables: [transactions, transactionDetail, assets, crcDetail, xdaiDetail, transferTrigger, transferTriggerRedirect],
 };

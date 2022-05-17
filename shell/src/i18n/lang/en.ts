@@ -370,6 +370,7 @@ export const en = {
             banking: "banking",
             market: "market",
             verified: "verified",
+            "gallery": "gallery"
           },
           invites: {
             invites: "Invites",

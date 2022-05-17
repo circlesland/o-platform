@@ -1,107 +1,74 @@
 /*
  * displayCurrencies = { CRC, TIME_CRC, EURS }
  */
-import Web3 from "web3";
-import dayjs from "dayjs";
-import { BN } from "ethereumjs-util";
-// import { me } from "../../../shared/stores/me";
-import { ApiClient } from "../../../shared/apiConnection";
+import {ApiClient} from "../../../shared/apiConnection";
+import {TransitivePath} from "../../o-banking/processes/transferCircles";
+import {DirectPathDocument, QueryDirectPathArgs} from "../../../shared/api/data/types";
+import {Currency} from "../../../shared/currency";
+import {RpcGateway} from "@o-platform/o-circles/dist/rpcGateway";
 
-import Layout from "../../../shared/layouts/Layout.svelte";
-import { purchase } from "../processes/purchase";
-import Icons from "../../../shared/molecules/Icons.svelte";
-import Item from "../../../shared/molecules/Select/Item.svelte";
-import { _ } from "svelte-i18n";
-import { TransitivePath } from "../../o-banking/processes/transferCircles";
-import { DirectPathDocument, Profile, QueryDirectPathArgs } from "../../../shared/api/data/types";
-
-import { assetBalances } from "../../../shared/stores/assetsBalances";
-
-import { Currency } from "../../../shared/currency";
-import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
+export type PaymentAmountsBySeller = { [sellerAddress: string]: number };
+export type PaymentPathsBySeller = {
+  [sellerAddress: string]: {
+    from: string,
+    to: string,
+    amount: string,
+    path: TransitivePath
+  }
+};
+export type PayableStatusBySeller = {
+  [sellerAddress: string]: {
+    payable: boolean,
+    reason?: string
+  }
+};
 
 export class Liquidity {
-  public static instance() {
-    return this._instance;
-  }
-  private static _instance: Liquidity = new Liquidity();
+  private static async findPathsToSellers(
+    buyerAddress: string,
+    sumsBySeller: PaymentAmountsBySeller
+  ): Promise<PaymentPathsBySeller> {
+    const transitivePathPromises = Object.entries(sumsBySeller).map(async entry => {
+      const amountInCrc = (new Currency().convertTimeCirclesToCircles(entry[1], null) * 10).toFixed(8);
+      const amountInWei = RpcGateway.get()
+        .utils.toWei(amountInCrc, "ether")
+        .toString();
 
-  constructor() {}
-
-  public static currencySymbol = { CRC: "c", TIME_CRC: "⦿", EURS: "€" };
-
-  private insufficientFunds: boolean = false;
-  private insufficientTrust: { sellerAddress: string; maxFlow: BN; invoiceAmount: string } | undefined = undefined;
-  private invoiceAmount: number = 0;
-  public checked: Boolean = false;
-
-  private async checkMaxTransferableAmount(sumsBySeller: { [sellerAddress: string]: number }, myCirclesAddress) {
-    const maxTransferableAmounts: { sellerAddress: string; maxFlow: string | number }[] = await Promise.all(
-      Object.keys(sumsBySeller).map(async (sellerAddress) => {
-        const flow = await ApiClient.query<TransitivePath, QueryDirectPathArgs>(DirectPathDocument, {
-          from: myCirclesAddress,
-          to: sellerAddress,
-          amount: RpcGateway.get()
-            .utils.toWei(
-              (new Currency().convertTimeCirclesToCircles(sumsBySeller[sellerAddress], null) * 10).toString(),
-              "ether"
-            )
-            .toString(),
-        });
-
-        return {
-          sellerAddress: sellerAddress,
-          maxFlow: new Currency().displayAmount(flow.flow == "" ? "0" : flow.flow, null, "EURS"),
-        };
-      })
-    );
-
-    return maxTransferableAmounts;
-  }
-
-  public async checkFlow(sumsBySeller, myCirclesAddress) {
-    this.checkMaxTransferableAmount(sumsBySeller, myCirclesAddress).then((maxAmountBySeller) => {
-      const payableBySeller = maxAmountBySeller.map((maxAmount) => {
-        return {
-          sellerAddress: maxAmount.sellerAddress,
-          payable: parseFloat(maxAmount.maxFlow.toString()) >= sumsBySeller[maxAmount.sellerAddress],
-          maxAmount: maxAmount.maxFlow,
-        };
+      const path = await ApiClient.query<TransitivePath, QueryDirectPathArgs>(DirectPathDocument, {
+        from: buyerAddress,
+        to: entry[0],
+        amount: amountInWei
       });
-      const notPayable = payableBySeller.find((o) => !o.payable);
-      if (notPayable && notPayable?.sellerAddress) {
-        this.insufficientTrust = <{ sellerAddress: string; maxFlow: BN; invoiceAmount: string }>(<unknown>{
-          invoiceAmount: sumsBySeller[notPayable.sellerAddress],
-          maxFlow: notPayable.maxAmount,
-          sellerAddress: notPayable.sellerAddress,
-        });
-      } else {
-        this.insufficientTrust = undefined;
+
+      return {
+        from: buyerAddress,
+        to: entry[0],
+        amount: amountInWei,
+        path: {
+          ...path,
+          flow: path.flow == "" ? "0" : path.flow
+        }
       }
-      this.checked = true;
-      // console.log(`Max transferable amount per seller:`, o);
-      return true;
     });
+
+    const paymentPathsBySeller = await Promise.all(transitivePathPromises);
+    return paymentPathsBySeller.toLookup(o => o.to, o => o);
   }
 
-  public refresh(crcBalances, sellerAddress, sumsBySeller, myCirclesAddress) {
-    if (crcBalances.length > 0 && sumsBySeller && sumsBySeller > 0) {
-      const totalCrcBalance = crcBalances.reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0")).toString();
+  public static async getPayableStatusBySeller(buyerAddress: string, paymentAmountBySeller: PaymentAmountsBySeller): Promise<PayableStatusBySeller> {
+    const pathsToSellers = await this.findPathsToSellers(buyerAddress, paymentAmountBySeller);
 
-      const balance: any = Currency.instance().displayAmount(totalCrcBalance, null, "EURS", null);
+    return Object.entries(pathsToSellers).reduce((p, c) => {
+      const payable = parseFloat(c[1].amount) <= parseFloat(c[1].path.flow);
+      const reason = !payable
+        ? window.i18n("dapps.o-marketplace.functions.liquidity.maxLiquidityToSellerExceeded")
+        : undefined;
 
-      this.insufficientFunds = balance - parseFloat(sumsBySeller.toFixed(2)) <= 0;
-
-      this.checked = this.insufficientFunds;
-      const sellersumArray = {
-        sellerAddress: sumsBySeller,
+      p[c[0]] = {
+        payable: payable,
+        reason: reason
       };
-      if (!this.insufficientFunds) {
-        this.checkFlow(sellersumArray, myCirclesAddress);
-      } else {
-        this.insufficientTrust = undefined;
-      }
-    }
-    return this.checked;
+      return p;
+    }, <PayableStatusBySeller>{});
   }
 }

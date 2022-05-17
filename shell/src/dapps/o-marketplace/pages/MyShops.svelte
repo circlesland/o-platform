@@ -340,64 +340,66 @@ async function createNewShop() {
               </div>
               <div class="w-full mt-2 text-left label">Methods of Delivery</div>
               <div class="flex flex-row w-full space-x-2">
-                <label>
-                  <input
-                    type="checkbox"
-                    class="checkbox checkbox-primary"
-                    bind:group="{shop.deliveryMethods}"
-                    name="shop.deliveryMethods"
-                    value="{1}" />
-                  Delivery
-                </label>
+                <!--
+              <label>
+                <input
+                  type="checkbox"
+                  class="checkbox checkbox-primary"
+                  bind:group="{shop.deliveryMethods}"
+                  name="shop.deliveryMethods"
+                  value="{1}" />
+                Delivery
+              </label>
 
-                <label>
-                  <input
-                    type="checkbox"
-                    class="checkbox checkbox-primary"
-                    bind:group="{shop.deliveryMethods}"
-                    name="shop.deliveryMethods"
-                    value="{2}" />
-                  Store Pick-Up
-                </label>
-              </div>
-            {:else}
-              <div class="w-full mt-2 text-sm text-center">{shop.description}</div>
-            {/if}
-          </header>
+              <label>
+                <input
+                  type="checkbox"
+                  class="checkbox checkbox-primary"
+                  bind:group="{shop.deliveryMethods}"
+                  name="shop.deliveryMethods"
+                  value="{2}" />
+                Store Pick-Up
+              </label>
+              -->
+            </div>
+          {:else}
+            <div class="w-full mt-2 text-sm text-center">{shop.description}</div>
+          {/if}
+        </header>
+      </div>
+    </section>
+  {/each}
+  {#if showModal}
+    <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
+      {#if editImage}
+        <div class="p4">
+          <center>
+            <button class="self-center m-4 btn btn-primary btn-sm" on:click="{removeImage}">No Image</button>
+          </center>
         </div>
-      </section>
-    {/each}
-    {#if showModal}
-      <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
-        {#if editImage}
-          <div class="p4">
-            <center>
-              <button class="self-center m-4 btn btn-primary btn-sm" on:click="{removeImage}">No Image</button>
-            </center>
-          </div>
-          <ImageUpload
-            on:submit="{handleImageUpload}"
-            aspect="{editType == 'smallBannerUrl' ? 750 / 216 : 262 / 175}" />
-        {:else}
-          <div class="flex flex-col w-full h-full p-4">
-            <button
-              class="self-center mb-4 btn btn-primary btn-sm"
-              on:click="{() => {
-                editImage = true;
-              }}">Remove Image</button>
-            <div class="text-center">
-              <div class="inline-flex">
-                <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
-              </div>
+        <ImageUpload
+          on:submit="{handleImageUpload}"
+          aspect="{editType == 'smallBannerUrl' ? 750 / 216 : 262 / 175}" />
+      {:else}
+        <div class="flex flex-col w-full h-full p-4">
+          <button
+            class="self-center mb-4 btn btn-primary btn-sm"
+            on:click="{() => {
+              editImage = true;
+            }}">Remove Image</button>
+          <div class="text-center">
+            <div class="inline-flex">
+              <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
             </div>
           </div>
-        {/if}
-      </Center>
-    {/if}
+        </div>
+      {/if}
+    </Center>
   {/if}
-  <section class="flex items-start px-4 mx-auto mb-20 md:w-2/3 xl:w-1/2 rounded-xl">
-    <div class="flex flex-col w-full space-y-2">
-      <button class=" btn btn-large btn-primary" on:click="{() => createNewShop()}"> Create new Shop </button>
-    </div>
-  </section>
+{/if}
+<section class="flex items-start px-4 mx-auto mb-20 md:w-2/3 xl:w-1/2 rounded-xl">
+  <div class="flex flex-col w-full space-y-2">
+    <button class=" btn btn-large btn-primary" on:click="{() => createNewShop()}"> Create new Shop </button>
+  </div>
+</section>
 </div>

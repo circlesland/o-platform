@@ -1,80 +1,96 @@
 <script lang="ts">
-import { onMount } from "svelte";
-
-import { ApiClient } from "../../../shared/apiConnection";
-import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
-import Layout from "../../../shared/layouts/Layout.svelte";
 import { purchase } from "../processes/purchase";
 import Icons from "../../../shared/molecules/Icons.svelte";
-import Item from "../../../shared/molecules/Select/Item.svelte";
 import { _ } from "svelte-i18n";
-import { TransitivePath } from "../../o-banking/processes/transferCircles";
 import {
-  DirectPathDocument,
-  Profile,
-  QueryDirectPathArgs,
-  Shop,
-  ShopDocument,
-  ShopQueryVariables,
+  Profile, Shop
 } from "../../../shared/api/data/types";
 import { me } from "../../../shared/stores/me";
-import { assetBalances } from "../../../shared/stores/assetsBalances";
-import { BN } from "ethereumjs-util";
-import { Currency } from "../../../shared/currency";
-import { Liquidity } from "../functions/liquidity";
+import {Liquidity, PayableStatusBySeller, PaymentAmountsBySeller} from "../functions/liquidity";
+import {onMount} from "svelte";
+import {assetBalances} from "../../../shared/stores/assetsBalances";
+import {Currency} from "../../../shared/currency";
+import {BN} from "ethereumjs-util";
 
 export let cartContents;
 export let cartContentsByShop;
-
 export let editable: boolean = true;
+
 let shops: any = [];
+let payableStatusBySeller: PayableStatusBySeller;
+let payable: boolean = false;
+
 let isLoading: Boolean = true;
-let totals = {};
 let checked: boolean = false;
 let balance: number = 0;
-let invoiceAmount: number = 0;
-let shippingAddressId: number;
-let initialized: boolean = false;
 
 let insufficientFunds: boolean = false;
 let insufficientTrust: { sellerProfile: Profile; maxFlow: string; invoiceAmount: string } | undefined = undefined;
-// $: console.log("Content:", $cartContents);
-// $: groupedItems = $cartContents ? orderItems($cartContents) : {};
-$: {
-  if (cartContentsByShop) {
-    $cartContentsByShop
-            .then((result) => {
-              shops = result;
-              console.log("RESUUU:", result);
-            })
-            .catch((err) => {
-            });
-  }
+
+
+function getTotalCrcBalance() {
+  const totalCrcBalance = $assetBalances.crcBalances.reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0")).toString();
+  const balance = Currency.instance().displayAmount(totalCrcBalance, null, "EURS", null);
+
+  return parseFloat(balance.toString());
 }
 
-onMount(async () => {});
-function removeAllItems(id) {
-  let filteredContent = [];
-  for (let i = 0; i < $cartContents.length; i++) {
-    if ($cartContents[i].id !== id) {
-      filteredContent.push($cartContents[i]);
-    }
-  }
-  $cartContents = filteredContent;
+function hasSufficientFunds(paymentAmountBySeller: PaymentAmountsBySeller) {
+  const totalCrcBalance = getTotalCrcBalance();
+  const totalPaymentAmount = Object.values(paymentAmountBySeller).reduce((p, c) => p + c, 0);
+  return parseFloat(totalPaymentAmount.toFixed(8)) <= parseFloat(totalCrcBalance.toFixed(8));
 }
-onMount(() => {
-  const sub2 = assetBalances.subscribe(($assetBalances) => {
-    if ($assetBalances.crcBalances.length > 0 && !initialized) {
-      initialized = true;
+
+async function refresh() {
+  isLoading = true;
+  const data = await $cartContentsByShop;
+  const contentsByShop:{[shopId:number]:{
+    items:any[],
+    shop:Shop
+  }} = data.toLookup(o => o.shop.owner.circlesAddress, o => {
+    return {
+      items: o.items,
+      shop: o.shop
     }
   });
-  return () => {
-    sub2();
-  };
+
+  const amountsBySeller = Object.entries(contentsByShop).reduce((p,c) => {
+    p[c[0]] = c[1].items.reduce((q, d) => q + d.item.qty * d.item.item.pricePerUnit, 0);
+    return p;
+  }, {});
+
+  shops = Object.values(contentsByShop).map(o => {
+    return {
+      ...o,
+      total: amountsBySeller[o.shop.owner.circlesAddress]
+    };
+  });
+
+  payableStatusBySeller = await Liquidity.getPayableStatusBySeller($me.circlesAddress, amountsBySeller);
+  insufficientFunds = !hasSufficientFunds(amountsBySeller);
+  isLoading = false;
+}
+
+onMount(() => {
+  if (!cartContentsByShop) {
+    return;
+  }
+  refresh();
 });
+
+
 function checkout() {
   window.o.runProcess(purchase, {});
 }
+
+function addOneItem(id) {
+  let filteredContent = $cartContents;
+  filteredContent.push(filteredContent.find((x) => x.id === id));
+  $cartContents = filteredContent;
+  shops = shops;
+  refresh();
+}
+
 function removeOneItem(id) {
   let filteredContent = $cartContents;
   filteredContent.splice(
@@ -84,39 +100,25 @@ function removeOneItem(id) {
     1
   );
   $cartContents = filteredContent;
+  shops = shops;
+  refresh();
 }
 
-function addOneItem(id) {
-  let filteredContent = $cartContents;
-  filteredContent.push(filteredContent.find((x) => x.id === id));
+function removeAllItems(id) {
+  let filteredContent = [];
+  for (let i = 0; i < $cartContents.length; i++) {
+    if ($cartContents[i].id !== id) {
+      filteredContent.push($cartContents[i]);
+    }
+  }
   $cartContents = filteredContent;
-}
-
-function calculateTotal(items, index) {
-  let pricePerUnit = 0;
-  items.forEach((e) => (pricePerUnit = pricePerUnit + parseFloat(e.item.item.pricePerUnit)));
-  totals[index] = pricePerUnit;
-  console.log("TOTOA", totals[index]);
-  return totals[index];
-}
-
-async function refresh(displayShop) {
-  insufficientFunds = <boolean>(
-    Liquidity.instance().refresh(
-      $assetBalances.crcBalances,
-      displayShop.shop.owner.circlesAddress,
-      displayShop.total,
-      $me.circlesAddress
-    )
-  );
-  console.log("DIESER WERT", insufficientFunds);
-  return insufficientFunds;
+  shops = shops;
+  refresh();
 }
 </script>
 
 {#if shops.length}
   {#each shops as displayShop, index}
-    {console.log("SHOPPENS", shops)}
     {#if displayShop}
       <div class="flex flex-col w-full" class:mt-8="{index >= 1}">
         <header class=" rounded-xl headerImageContainer">
@@ -179,13 +181,13 @@ async function refresh(displayShop) {
           >{displayShop.total.toFixed(2)}
           <span class="font-enso">€</span></span>
       </div>
-      {#if refresh(displayShop) == true}
+      {#if isLoading}
         <button class="h-auto btn-block btn btn-disabled"
           >{$_("dapps.o-marketplace.pages.shoppingCart.checkOut")}
         </button>
       {:else if insufficientFunds}
         <div class="w-full text-center text-alert">
-          Oops, it looks like your balance of {balance} € is not enough to cover this order.
+          Oops, it looks like your balance of {getTotalCrcBalance().toFixed(2)} € is not enough to cover this order.
           <br />
           Try to remove some items or have a friend send you some circles :)
         </div>

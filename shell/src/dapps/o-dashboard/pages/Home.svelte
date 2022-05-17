@@ -134,8 +134,22 @@ async function fetchStats() {
       </section>
       {#if canVerify}
         <section
-          class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-          on:click="{() => loadLink('/verification/verifications')}">
+                class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+                on:click="{() => loadLink('/gallery/nfts')}">
+          <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+            <div class="pt-2 text-primary">
+              <Icon name="photograph" class="w-20 h-20 heroicon" />
+            </div>
+            <div class="mt-4 text-3xl font-heading text-dark">
+              {$_("dapps.o-dashboard.pages.home.gallery")}
+            </div>
+          </div>
+        </section>
+      {/if}
+      {#if canVerify}
+        <section
+                class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+                on:click="{() => loadLink('/verification/verifications')}">
           <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
             <div class="pt-2 text-primary">
               <Icon name="badge-check" class="w-20 h-20 heroicon" />

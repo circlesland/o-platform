@@ -3059,7 +3059,11 @@ export type AggregatesQuery = (
       & Pick<Erc721Tokens, 'lastUpdatedAt'>
       & { balances: Array<(
         { __typename?: 'Erc721Token' }
-        & Pick<Erc721Token, 'token_symbol' | 'token_name' | 'token_address' | 'token_no' | 'token_url'>
+        & Pick<Erc721Token, 'token_no' | 'token_symbol' | 'token_name' | 'token_address' | 'token_url'>
+        & { token_owner_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'circlesAddress' | 'displayName' | 'avatarUrl' | 'firstName' | 'lastName'>
+        )> }
       )> }
     ) | (
       { __typename?: 'Members' }
@@ -5239,9 +5243,18 @@ export const AggregatesDocument = gql`
       ... on Erc721Tokens {
         lastUpdatedAt
         balances {
+          token_no
           token_symbol
           token_name
           token_address
+          token_owner_profile {
+            id
+            circlesAddress
+            displayName
+            avatarUrl
+            firstName
+            lastName
+          }
           token_no
           token_url
         }
