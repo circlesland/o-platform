@@ -233,7 +233,7 @@ $: {
 
           if (!keepItem) return false;
           if (filterText.length < 1) return true;
-          console.log("HIER:", filterText);
+
           return itemFilter(getOptionLabel(item, filterText), filterText, item, {
             filter: loadOptions,
           });
