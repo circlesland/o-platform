@@ -755,7 +755,7 @@ export type Offer = {
 
 export type OfferByIdAndVersionInput = {
   offerId: Scalars['Int'];
-  offerVersion: Scalars['Int'];
+  offerVersion?: Maybe<Scalars['Int']>;
 };
 
 export type OfferInput = {
@@ -1353,6 +1353,7 @@ export type SessionInfo = {
   isLoggedOn: Scalars['Boolean'];
   profile?: Maybe<Profile>;
   profileId?: Maybe<Scalars['Int']>;
+  useShortSignup?: Maybe<Scalars['Boolean']>;
 };
 
 export type Shop = {
@@ -2108,7 +2109,7 @@ export type InitQuery = (
   { __typename?: 'Query' }
   & { init: (
     { __typename?: 'SessionInfo' }
-    & Pick<SessionInfo, 'isLoggedOn' | 'hasProfile' | 'profileId'>
+    & Pick<SessionInfo, 'isLoggedOn' | 'hasProfile' | 'profileId' | 'useShortSignup'>
     & { capabilities: Array<(
       { __typename?: 'Capability' }
       & Pick<Capability, 'type'>
@@ -2174,7 +2175,7 @@ export type SessionInfoQuery = (
   { __typename?: 'Query' }
   & { sessionInfo: (
     { __typename?: 'SessionInfo' }
-    & Pick<SessionInfo, 'isLoggedOn' | 'hasProfile' | 'profileId'>
+    & Pick<SessionInfo, 'isLoggedOn' | 'hasProfile' | 'profileId' | 'useShortSignup'>
     & { capabilities: Array<(
       { __typename?: 'Capability' }
       & Pick<Capability, 'type'>
@@ -3887,6 +3888,7 @@ export const InitDocument = gql`
     capabilities {
       type
     }
+    useShortSignup
     profile {
       id
       circlesAddress
@@ -3990,6 +3992,7 @@ export const SessionInfoDocument = gql`
     capabilities {
       type
     }
+    useShortSignup
   }
 }
     `;

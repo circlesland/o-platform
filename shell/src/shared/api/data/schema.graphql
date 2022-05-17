@@ -753,6 +753,7 @@ type SessionInfo {
     isLoggedOn: Boolean!
     profile: Profile
     profileId: Int
+    useShortSignup: Boolean
 }
 
 type Shop {
@@ -1018,7 +1019,7 @@ input CreateTagInput {
 
 input OfferByIdAndVersionInput {
     offerId: Int!
-    offerVersion: Int!
+    offerVersion: Int
 }
 
 input OfferInput {

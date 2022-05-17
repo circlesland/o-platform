@@ -29,7 +29,7 @@ $: {
   <div class="flex items-center w-full p-0 space-x-2 sm:space-x-6 item-body ">
     <div class="relative flex-grow p-3 text-left truncate">
       <div class="max-w-full -mt-1 leading-8 cursor-pointer truncateThis">
-        {`${item.name}`}
+        {@html item.name}
       </div>
       <div class="text-xs text-left text-dark-lightest">
         {item.country}

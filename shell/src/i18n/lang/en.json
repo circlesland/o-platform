@@ -1150,6 +1150,11 @@
                 "description": "So we make it count! Your passionate heart generates 24 Circles a day. Welcome to a world where your life time buys goods and services! Enjoy your freedom to spend your time however you want!",
                 "submitButtonText": "Be free!"
               },
+              "mint": {
+                "title": "Mint your NFT",
+                "description": "Write something nice here ...",
+                "submitButtonText": "Do it!"
+              },
               "firstName": {
                 "title": "What is your first name?",
                 "description": "Hello you beautiful creature!",

@@ -30,6 +30,7 @@ import { push } from "svelte-spa-router";
 import { ApiClient } from "../../../shared/apiConnection";
 import { Environment } from "../../../shared/environment";
 import {me} from "../../../shared/stores/me";
+import { upsertIdentityShort } from "../../o-passport/processes/upsertIdentityShort";
 
 export function goToPreviouslyDesiredRouteIfExisting() {
   try {
@@ -723,14 +724,20 @@ export const initMachine = createMachine<InitContext, InitEvent>(
         });
       },
       upsertIdentityAndRestart: (context) => {
-        window.o.runProcess(upsertIdentity, {
-          ...context.profile,
-          firstName: null,
-          lastName: null,
-          successAction: (data) => {
-            (<any>window).runInitMachine(context);
+        const process = context.session.useShortSignup
+          ? upsertIdentityShort
+          : upsertIdentity;
+
+        window.o.runProcess(process, {
+            ...context.profile,
+            firstName: null,
+            lastName: null,
+            successAction: (data) => {
+              (<any>window).runInitMachine(context);
+            },
           },
-        });
+          {},
+          );
       },
       unlockEoaAndRestart: (context) => {
         window.o.runProcess(unlockKey, {

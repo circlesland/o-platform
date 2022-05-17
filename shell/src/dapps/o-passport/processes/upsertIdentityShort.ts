@@ -45,17 +45,16 @@ const editorContent: { [x: string]: EditorViewContext } = {
     description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.info.description"),
     submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.info.submitButtonText"),
   },
+  mint: {
+    title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.mint.title"),
+    description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.mint.description"),
+    submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.mint.submitButtonText"),
+  },
   firstName: {
     title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.title"),
     description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.description"),
     placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.placeholder"),
     submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.submitButtonText"),
-  },
-  lastName: {
-    title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.lastName.title"),
-    description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.lastName.description"),
-    placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.lastName.placeholder"),
-    submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.lastName.submitButtonText"),
   },
   emailAddress: {
     title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.title"),
@@ -64,18 +63,6 @@ const editorContent: { [x: string]: EditorViewContext } = {
     submitButtonText: window.i18n(
       "dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.submitButtonText"
     ),
-  },
-  city: {
-    title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.city.title"),
-    description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.city.description"),
-    placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.city.placeholder"),
-    submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.city.submitButtonText"),
-  },
-  imageView: {
-    title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.title"),
-    description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.description"),
-    placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.placeholder"),
-    submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.submitButtonText"),
   },
   newsletter: {
     title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.title"),
@@ -177,49 +164,24 @@ const processDefinition = (processId: string) =>
         navigation: {
           canGoBack: () => true,
           previous: "#newsletter",
-          next: "#lastName",
+          next: "#mint",
         },
       }),
 
-      lastName: prompt<UpsertIdentityContext, any>({
-        field: "lastName",
-        component: TextEditor,
+      mint: prompt({
+        id: "mint",
+        field: "mint",
+        component: HtmlViewer,
         params: {
-          view: editorContent.lastName,
+          view: editorContent.mint,
+          html: () => "",
+          hideNav: false,
         },
         navigation: {
-          next: "#country",
+          canSkip: () => false,
+          canGoBack: () => true,
           previous: "#firstName",
-          canSkip: () => true,
-        },
-      }),
-
-      country: promptCity<UpsertIdentityContext, any>({
-        id: "country",
-        field: "cityGeonameid",
-        params: {
-          view: editorContent.city,
-        },
-        navigation: {
-          next: "#avatarUrl",
-          previous: "#lastName",
-          canSkip: () => true,
-        },
-      }),
-
-      avatarUrl: promptFile<UpsertIdentityContext, any>({
-        field: "avatarUrl",
-        uploaded: (context, event) => {
-          context.data.avatarUrl = event.data?.url;
-          context.data.avatarMimeType = event.data?.mimeType;
-        },
-        params: {
-          view: editorContent.imageView,
-        },
-        navigation: {
           next: "#upsertIdentity",
-          previous: "#country",
-          canSkip: () => true,
         },
       }),
 
@@ -285,7 +247,7 @@ const processDefinition = (processId: string) =>
   });
 
 
-export const upsertIdentity: ProcessDefinition<void, UpsertIdentityContextData> = {
-  name: "upsertIdentity",
+export const upsertIdentityShort: ProcessDefinition<void, UpsertIdentityContextData> = {
+  name: "upsertIdentityShort",
   stateMachine: <any>processDefinition,
 };
