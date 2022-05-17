@@ -50,16 +50,7 @@ const settings: Page<any, DappState> = {
   type: "page",
 };
 
-const logmeout: Trigger<{}, DappState> = {
-  isSystem: true,
-  anonymous: true,
-  routeParts: ["=actions", "=logout"],
-  title: "Log Out",
-  type: "trigger",
-  action: async (params) => {
-    window.o.runProcess(logout, {});
-  },
-};
+
 
 const logmeout: Trigger<{}, DappState> = {
   isSystem: true,

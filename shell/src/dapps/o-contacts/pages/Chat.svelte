@@ -6,6 +6,8 @@
 
   import { _ } from "svelte-i18n";
   import {Contact} from "../../../shared/api/data/types";
+  import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte"
+  import ChatListCard from "../atoms/ChatListCard.svelte";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;

@@ -131,7 +131,7 @@ onMount(async () => {
             {/if}
 
             <!-- {#if o.deliveryTermsTag} -->
-            <!-- <div class="flex flex-col space-y-1 text-right">
+            <div class="flex flex-col space-y-1 text-right">
               <div class="pt-2 text-sm">
                 <div class="">
                   <span class="text-xs"

@@ -13,15 +13,16 @@ import CitizensProgressBar from "../atoms/CitizensProgressBar.svelte";
 import DashboardEventsWidget from "../molecules/DashboardEventsWidget.svelte";
 import DashboardInvitesWidget from "../molecules/DashboardInvitesWidget.svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import Label from "../../../shared/atoms/Label.svelte";
 
-  import Label from "../../../shared/atoms/Label.svelte";
-  import LangSwitcher from "../../../shared/atoms/LangSwitcher.svelte";
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
+export let capabilities: Capability[] | undefined = [];
 
-  export let runtimeDapp: RuntimeDapp<any>;
-  export let routable: Routable;
-  export let capabilities: Capability[] | undefined = [];
+$: me;
 
-  $: me;
+let disableBanking: boolean = false;
+let canVerify: boolean = false;
 
 let showInviteButton = false;
 
@@ -44,32 +45,21 @@ const init = async () => {
 
 onMount(init);
 
-    statsResult = await fetchStats();
-    profilesCount = statsResult.data.stats.profilesCount;
-
-    console.log("STATS", statsResult.data);
-  };
-
-  onMount(init);
-
-  function loadLink(link, external = false) {
-    if (external) {
-      window.open(link, "_blank").focus();
-    } else {
-      push(link);
-    }
+function loadLink(link, external = false) {
+  if (external) {
+    window.open(link, "_blank").focus();
+  } else {
+    push(link);
   }
+}
 
-  async function fetchStats() {
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const result = await apiClient.query({
-      query: StatsDocument,
-    });
-    if (result.errors) {
-      throw new Error(`Couldn't load stats': ${JSON.stringify(result.errors)}`);
-    }
-
-    return result;
+async function fetchStats() {
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
+  const result = await apiClient.query({
+    query: StatsDocument,
+  });
+  if (result.errors) {
+    throw new Error(`Couldn't load stats': ${JSON.stringify(result.errors)}`);
   }
 
   return result;
@@ -91,7 +81,7 @@ onMount(init);
             <Icon name="identification" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            <Label key="dapps.o-dashboard.pages.home.passport" />
+            {$_("dapps.o-dashboard.pages.home.passport")}
           </div>
         </div>
       </section>
@@ -103,7 +93,7 @@ onMount(init);
             <Icon name="users" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            <Label key="dapps.o-dashboard.pages.home.contacts" />
+            {$_("dapps.o-dashboard.pages.home.contacts")}
           </div>
         </div>
       </section>
@@ -115,7 +105,7 @@ onMount(init);
             <Icon name="chat" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            <Label key="dapps.o-dashboard.pages.home.chat" />
+            {$_("dapps.o-dashboard.pages.home.chat")}
           </div>
         </div>
       </section>
@@ -127,7 +117,7 @@ onMount(init);
             <Icon name="cash" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            <Label key="dapps.o-dashboard.pages.home.banking" />
+            {$_("dapps.o-dashboard.pages.home.banking")}
           </div>
         </div>
       </section>
@@ -139,29 +129,41 @@ onMount(init);
             <Icon name="shopping-cart" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            <Label key="dapps.o-dashboard.pages.home.market" />
+            {$_("dapps.o-dashboard.pages.home.market")}
           </div>
         </div>
       </section>
-        <section
-                class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-                on:click="{() => loadLink('/gallery/nfts')}">
-          <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
-            <div class="pt-2 text-primary">
-              <Icon name="photograph" class="w-20 h-20 heroicon" />
-            </div>
-            <div class="mt-4 text-3xl font-heading text-dark">
-              {$_("dapps.o-dashboard.pages.home.gallery")}
-            </div>
+      <section
+        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+        on:click="{() => loadLink('/gallery/nfts')}">
+        <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+          <div class="pt-2 text-primary">
+            <Icon name="photograph" class="w-20 h-20 heroicon" />
           </div>
-        </section>
+          <div class="mt-4 text-3xl font-heading text-dark">
+            {$_("dapps.o-dashboard.pages.home.gallery")}
+          </div>
+        </div>
+      </section>
       {#if canVerify}
         <section
-                class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-                on:click="{() => loadLink('/verification/verifications')}">
+          class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+          on:click="{() => loadLink('/verification/verifications')}">
           <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
             <div class="pt-2 text-primary">
               <Icon name="badge-check" class="w-20 h-20 heroicon" />
+            </div>
+            <div class="mt-4 text-3xl font-heading text-dark">
+              {$_("dapps.o-dashboard.pages.home.verified")}
+            </div>
+          </div>
+        </section>
+        <section
+          class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+          on:click="{() => loadLink('/translations')}">
+          <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+            <div class="pt-2 text-primary">
+              <Icons icon="check" size="{12}" />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
               <Label key="dapps.o-dashboard.pages.home.verified" />
