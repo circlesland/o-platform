@@ -10,6 +10,7 @@ export let context: any;
 let profile: Profile | Organisation;
 let groupedItems;
 
+console.log("CONTEXT", context);
 $: {
   context = context;
 
@@ -136,7 +137,10 @@ function orderItems(items) {
           href="/#"
           alt="{$_('dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4')}"
           class="cursor-pointer btn-link"
-          on:click="{(e) => {submit('#/marketplace/my-purchases'); e.preventDefault()}}">
+          on:click="{(e) => {
+            submit('#/marketplace/my-purchases');
+            e.preventDefault();
+          }}">
           {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4")}
         </a>
         {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5")}

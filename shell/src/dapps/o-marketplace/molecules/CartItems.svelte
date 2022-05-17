@@ -2,15 +2,13 @@
 import { purchase } from "../processes/purchase";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { _ } from "svelte-i18n";
-import {
-  Profile, Shop
-} from "../../../shared/api/data/types";
+import { Profile, Shop } from "../../../shared/api/data/types";
 import { me } from "../../../shared/stores/me";
-import {Liquidity, PayableStatusBySeller, PaymentAmountsBySeller} from "../functions/liquidity";
-import {onMount} from "svelte";
-import {assetBalances} from "../../../shared/stores/assetsBalances";
-import {Currency} from "../../../shared/currency";
-import {BN} from "ethereumjs-util";
+import { Liquidity, PayableStatusBySeller, PaymentAmountsBySeller } from "../functions/liquidity";
+import { onMount } from "svelte";
+import { assetBalances } from "../../../shared/stores/assetsBalances";
+import { Currency } from "../../../shared/currency";
+import { BN } from "ethereumjs-util";
 
 export let cartContents;
 export let cartContentsByShop;
@@ -27,9 +25,10 @@ let balance: number = 0;
 let insufficientFunds: boolean = false;
 let insufficientTrust: { sellerProfile: Profile; maxFlow: string; invoiceAmount: string } | undefined = undefined;
 
-
 function getTotalCrcBalance() {
-  const totalCrcBalance = $assetBalances.crcBalances.reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0")).toString();
+  const totalCrcBalance = $assetBalances.crcBalances
+    .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
+    .toString();
   const balance = Currency.instance().displayAmount(totalCrcBalance, null, "EURS", null);
 
   return parseFloat(balance.toString());
@@ -44,29 +43,35 @@ function hasSufficientFunds(paymentAmountBySeller: PaymentAmountsBySeller) {
 async function refresh() {
   isLoading = true;
   const data = await $cartContentsByShop;
-  const contentsByShop:{[shopId:number]:{
-    items:any[],
-    shop:Shop
-  }} = data.toLookup(o => o.shop.owner.circlesAddress, o => {
-    return {
-      items: o.items,
-      shop: o.shop
+  const contentsByShop: {
+    [shopId: number]: {
+      items: any[];
+      shop: Shop;
+    };
+  } = data.toLookup(
+    (o) => o.shop.owner.circlesAddress,
+    (o) => {
+      return {
+        items: o.items,
+        shop: o.shop,
+      };
     }
-  });
+  );
 
-  const amountsBySeller = Object.entries(contentsByShop).reduce((p,c) => {
+  const amountsBySeller = Object.entries(contentsByShop).reduce((p, c) => {
     p[c[0]] = c[1].items.reduce((q, d) => q + d.item.qty * d.item.item.pricePerUnit, 0);
     return p;
   }, {});
 
-  shops = Object.values(contentsByShop).map(o => {
+  shops = Object.values(contentsByShop).map((o) => {
     return {
       ...o,
-      total: amountsBySeller[o.shop.owner.circlesAddress]
+      total: amountsBySeller[o.shop.owner.circlesAddress],
     };
   });
 
   payableStatusBySeller = await Liquidity.getPayableStatusBySeller($me.circlesAddress, amountsBySeller);
+
   insufficientFunds = !hasSufficientFunds(amountsBySeller);
   isLoading = false;
 }
@@ -78,8 +83,10 @@ onMount(() => {
   refresh();
 });
 
+async function checkout(shopIndex) {
+  const cartContents = await $cartContentsByShop;
+  // context.data.items = cartContents[shopIndex].items;
 
-function checkout() {
   window.o.runProcess(purchase, {});
 }
 
@@ -118,9 +125,9 @@ function removeAllItems(id) {
 </script>
 
 {#if shops.length}
-  {#each shops as displayShop, index}
+  {#each shops as displayShop, shopIndex}
     {#if displayShop}
-      <div class="flex flex-col w-full" class:mt-8="{index >= 1}">
+      <div class="flex flex-col w-full" class:mt-8="{shopIndex >= 1}">
         <header class=" rounded-xl headerImageContainer">
           <div class="relative rounded-xl image-wrapper">
             <img src="{displayShop.shop.smallBannerUrl}" alt="" class="w-full rounded-xl" />
@@ -157,11 +164,13 @@ function removeAllItems(id) {
                     class:hidden="{!editable}">
                     -
                   </div>
-                  <input
-                    class="w-8 h-6 px-2 mx-2 text-sm text-center bg-gray-100 border rounded focus:outline-none"
+                  <div
+                    class="w-8 h-6 mx-2 text-sm text-center bg-gray-100 border rounded focus:outline-none "
                     type="text"
-                    value="{item.qty}"
-                    disabled="{!editable}" /><span
+                    value="{item.qty}">
+                    {item.qty}
+                  </div>
+                  <span
                     class="font-semibold cursor-pointer"
                     on:click="{() => addOneItem(item.item.id)}"
                     class:hidden="{!editable}">+</span>
@@ -185,22 +194,13 @@ function removeAllItems(id) {
         <button class="h-auto btn-block btn btn-disabled"
           >{$_("dapps.o-marketplace.pages.shoppingCart.checkOut")}
         </button>
-      {:else if insufficientFunds}
-        <div class="w-full text-center text-alert">
-          Oops, it looks like your balance of {getTotalCrcBalance().toFixed(2)} € is not enough to cover this order.
-          <br />
-          Try to remove some items or have a friend send you some circles :)
-        </div>
-      {:else if insufficientTrust}
-        <div class="w-full text-center text-alert">
-          Oops, it looks like {insufficientTrust.sellerProfile.displayName}
-          only accepts {insufficientTrust.maxFlow} € of your Circles.
-          <br />
-          Try to remove some items.
-        </div>
-      {:else}
-        <button class="h-auto btn-block btn btn-primary" on:click="{() => checkout()}"
+      {:else if payableStatusBySeller[displayShop.shop.owner.circlesAddress].payable}
+        <button class="h-auto btn-block btn btn-primary" on:click="{() => checkout(shopIndex)}"
           >{$_("dapps.o-marketplace.pages.shoppingCart.checkOut")}</button>
+      {:else if payableStatusBySeller[displayShop.shop.owner.circlesAddress].payable === false}
+        <div class="w-full text-center text-alert">
+          {@html $_(payableStatusBySeller[displayShop.shop.owner.circlesAddress].reason)}
+        </div>
       {/if}
     {/if}
   {/each}

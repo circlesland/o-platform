@@ -135,7 +135,7 @@ export const en = {
               success: {
                 title: "Transfer successful",
                 submitButtonText: "Close",
-              }
+              },
             },
             recipientAddress: {
               submitButtonText: "Check send limit",
@@ -159,7 +159,7 @@ export const en = {
             },
             findTransferPath: {
               entry: {
-                message: "Finding your paths to the payment receiver .."
+                message: "Finding your paths to the payment receiver ..",
               },
               invoke: "Finding your paths to the payment receiver ..",
             },
@@ -351,7 +351,7 @@ export const en = {
             deployOrganisation: {
               progress: "Deploying your organisation.. This can take a moment.",
             },
-          }
+          },
         },
       },
       "o-dashboard": {
@@ -370,7 +370,7 @@ export const en = {
             banking: "banking",
             market: "market",
             verified: "verified",
-            "gallery": "gallery"
+            gallery: "gallery",
           },
           invites: {
             invites: "Invites",
@@ -630,6 +630,12 @@ export const en = {
             checkOut: "Check Out",
             yourCartIsEmpty: "Your cart is empty!",
             continueShopping: "Continue Shopping",
+          },
+        },
+        functions: {
+          liquidity: {
+            maxLiquidityToSellerExceeded:
+              "Oops, it looks like your balance is not enough to cover this order. <br />Try to remove some items or have a friend send you some circles :)",
           },
         },
         processes: {
