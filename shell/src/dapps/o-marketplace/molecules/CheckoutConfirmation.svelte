@@ -106,57 +106,60 @@ function orderItems(items) {
         </div>
       </div>
     {/each}
-
-    <div class="flex flex-col w-full mb-6 space-y-4 text-left ">
-      <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
-        <h1 class="p-2 text-white uppercase bg-dark-dark">
-          <div class="text-sm">
-            {$_("dapps.o-marketplace.molecules.checkoutConfirm.yourPickupCode")}: &nbsp;{context.params
-              .simplePickupCode}
-          </div>
-        </h1>
-      </div>
-
-      <div>
-        {$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup1")}
-      </div>
-
-      <div class="w-full mt-6 text-center">
-        <div class="container">
-          <center>
-            <QrCode value="{context.params.pickupCode}" />
-          </center>
+    {#if context.data.deliveryMethod == 1}
+      This order is being delivered to you.
+    {:else}
+      <div class="flex flex-col w-full mb-6 space-y-4 text-left ">
+        <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
+          <h1 class="p-2 text-white uppercase bg-dark-dark">
+            <div class="text-sm">
+              {$_("dapps.o-marketplace.molecules.checkoutConfirm.yourPickupCode")}: &nbsp;{context.params
+                .simplePickupCode}
+            </div>
+          </h1>
         </div>
-      </div>
-      <div class="text-sm">
-        {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode1")}<span class="text-primary-dark"
-          >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode2")}</span
-        >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode3")}
-        <a
-          title="My Purchases"
-          href="/#"
-          alt="{$_('dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4')}"
-          class="cursor-pointer btn-link"
-          on:click="{(e) => {
-            submit('#/marketplace/my-purchases');
-            e.preventDefault();
-          }}">
-          {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4")}
-        </a>
-        {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5")}
-      </div>
 
-      <div class="pt-2 text-sm font-bold">
-        {$_("dapps.o-marketplace.molecules.checkoutConfirm.pickupLocation")}
-      </div>
-      <!-- <div class="pt-2 text-sm">
+        <div>
+          {$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup1")}
+        </div>
+
+        <div class="w-full mt-6 text-center">
+          <div class="container">
+            <center>
+              <QrCode value="{context.params.pickupCode}" />
+            </center>
+          </div>
+        </div>
+        <div class="text-sm">
+          {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode1")}<span class="text-primary-dark"
+            >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode2")}</span
+          >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode3")}
+          <a
+            title="My Purchases"
+            href="/#"
+            alt="{$_('dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4')}"
+            class="cursor-pointer btn-link"
+            on:click="{(e) => {
+              submit('#/marketplace/my-purchases');
+              e.preventDefault();
+            }}">
+            {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4")}
+          </a>
+          {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5")}
+        </div>
+
+        <div class="pt-2 text-sm font-bold">
+          {$_("dapps.o-marketplace.molecules.checkoutConfirm.pickupLocation")}
+        </div>
+        <!-- <div class="pt-2 text-sm">
         <span class="font-bold">Basic Income Lab GmbH</span><br />
         Reifenstuelstrasse 6<br />
         80469 München<br />
         <span class="text-sm font-thin"
           >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
       </div> -->
-    </div>
+      </div>
+    {/if}
   </div>
   <ProcessNavigation on:buttonClick="{() => submit(undefined)}" context="{context}" noSticky="{true}" />
 {/if}

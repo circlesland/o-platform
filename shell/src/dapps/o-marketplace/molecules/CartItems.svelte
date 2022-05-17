@@ -132,7 +132,7 @@ function removeAllItems(id) {
           <div class="relative rounded-xl image-wrapper">
             <img src="{displayShop.shop.smallBannerUrl}" alt="" class="w-full rounded-xl" />
             <div
-              class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-3xl rounded-l-full font-heading top-2 bg-light-lightest">
+              class="absolute right-0 px-2 mt-2 text-lg rounded-l-full sm:text-xl lg:pb-2 lg:pt-3 lg:pl-4 lg:pr-2 lg:text-3xl font-heading top-2 bg-light-lightest">
               <span class="inline-block">{displayShop.shop.name}</span>
             </div>
           </div>
