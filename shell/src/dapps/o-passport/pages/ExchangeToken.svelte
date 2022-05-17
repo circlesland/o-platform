@@ -29,7 +29,7 @@ onMount(async () => {
     <div class="m-auto h-auto grid">
       <img class="inline m-auto w-12 h-12 -mb-6 z-30" src="/images/common/circles.png" alt="circles.land" />
       <div class="card shadow bg-white z-0">
-        <Label key="dapps.o-passport.pages.exchangeToken.pleaseWait" />
+        {$_("dapps.o-passport.pages.exchangeToken.pleaseWait")}
       </div>
     </div>
   </div>

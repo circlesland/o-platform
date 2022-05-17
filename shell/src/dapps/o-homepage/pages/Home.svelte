@@ -4,8 +4,6 @@
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
   import VideoHeader from "../components/VideoHeader.svelte";
-  import {push} from "svelte-spa-router";
-  import {performOauth} from "../../o-humanode/processes/performOauth";
 
   export let runtimeDapp: RuntimeDapp<any>;
   export let routable: Routable;
@@ -24,5 +22,4 @@
       <VideoHeader/>
     </div>
   </main>
-  <!--<Progress />-->
 </div>

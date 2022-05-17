@@ -8,7 +8,8 @@ import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { contacts } from "./dapps/o-contacts.manifest";
 import { coop } from "./dapps/o-coop.manifest";
 import { verification } from "./dapps/o-verification.manifest";
-import {translation} from "./dapps/o-translation.manifest";
+import {welcome} from "./dapps/o-welcome.manifest";
+import {gallery} from "./dapps/o-gallery.manifest";
 
 export const dapps: DappManifest<any>[] = [
   homepage,
@@ -20,5 +21,6 @@ export const dapps: DappManifest<any>[] = [
   contacts,
   coop,
   verification,
-  translation
+  welcome,
+  gallery
 ];

@@ -15,6 +15,7 @@ import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import TrustChangeConfirmation from "../../o-banking/molecules/TrustChangeConfirmation.svelte";
 import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import {setWindowLastError} from "../../../shared/processes/actions/setWindowLastError";
 
 export type AddOwnerContextData = {
   successAction: (data: AddOwnerContextData) => void;
@@ -80,9 +81,7 @@ const processDefinition = (processId: string) =>
           },
           onDone: "#showSuccess",
           onError: {
-            actions: (context, event) => {
-              window.o.lastError = event.data;
-            },
+            actions: setWindowLastError,
             target: "#showError",
           },
         },

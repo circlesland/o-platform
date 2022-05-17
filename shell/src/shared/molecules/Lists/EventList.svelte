@@ -53,26 +53,32 @@ const handleChange = async (e) => {
           // is not a custom scroll position from the Center's scrollPositionStack
           scrollToBottom();
         }
-        lastBottomPosition = lastElement.offsetTop;
+        if (lastElement) {
+          lastBottomPosition = lastElement.offsetTop;
+        }
       });
       initialScrollToBottom = true;
     } else {
       // store and list were already initialized before
       hasMore = await store.next();
-      const scrollPosition = lastElement.offsetTop - lastBottomPosition;
+      const scrollPosition = (lastElement ? lastElement.offsetTop : 0) - lastBottomPosition;
 
       if (reverse) {
         setTimeout(() => {
           scrollToPosition(scrollPosition);
         });
       }
-      lastBottomPosition = lastElement.offsetTop;
+      if (lastElement) {
+        lastBottomPosition = lastElement.offsetTop;
+      }
     }
     if (!initialScrollToBottom && reverse) {
       // list wasn't initialized before
       setTimeout(() => {
         scrollToBottom()
-        lastBottomPosition = lastElement.offsetTop;
+        if (lastElement) {
+          lastBottomPosition = lastElement.offsetTop;
+        }
       });
       initialScrollToBottom = true;
     }

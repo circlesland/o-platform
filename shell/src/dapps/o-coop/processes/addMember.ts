@@ -9,6 +9,7 @@ import {promptProfileId} from "../../../shared/api/promptProfileId";
 import {loadProfileByProfileId} from "../../../shared/api/loadProfileByProfileId";
 import {promptCirclesSafe} from "../../../shared/api/promptCirclesSafe";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {setWindowLastError} from "../../../shared/processes/actions/setWindowLastError";
 
 export type AddMemberContextData = {
   successAction: (data:AddMemberContextData) => void,
@@ -59,9 +60,7 @@ const processDefinition = (processId: string) =>
           },
           onDone: "#success",
           onError: {
-            actions: (context, event) => {
-              window.o.lastError = event.data;
-            },
+            actions: setWindowLastError,
             target: "#showError",
           },
         }

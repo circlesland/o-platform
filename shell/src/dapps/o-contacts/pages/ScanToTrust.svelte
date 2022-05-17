@@ -1,5 +1,6 @@
 <script type="ts">
 import {
+  ProfileEvent,
   Profile,
   Contact,
   CommonTrust,
@@ -11,7 +12,10 @@ import {
 } from "../../../shared/api/data/types";
 import QrScanner from "qr-scanner";
 import { onDestroy, onMount } from "svelte";
+import { push } from "svelte-spa-router";
+import { showToast } from "../../../shared/toast";
 import { _ } from "svelte-i18n";
+import { mySales } from "../../../shared/stores/mySales";
 import { contacts } from "../../../shared/stores/contacts";
 import { me } from "../../../shared/stores/me";
 import { ApiClient } from "../../../shared/apiConnection";

@@ -1,5 +1,6 @@
 import { Jumplist } from "./jumplist";
 import { Routable } from "../routable";
+import {ProfileType} from "@o-platform/shell/src/shared/api/data/types";
 
 /**
  * A regular page to which a user can navigate.
@@ -12,6 +13,7 @@ export interface Page<
   TDappState extends { [x: string]: any }
 > extends Routable {
   type: "page";
+  audience?: ProfileType;
   position?: "main" | "modal";
   /**
    * The route parts to the base page if the "position" of this page is "modal"

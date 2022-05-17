@@ -2,8 +2,10 @@
 import {
   EventType,
   Invoice,
+  InvoiceDocument,
   Profile,
   ProfileEvent,
+  QueryInvoiceArgs,
   SaleEvent,
 } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
@@ -12,8 +14,9 @@ import { push } from "svelte-spa-router";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-import Label from "../../../shared/atoms/Label.svelte";
-import {_} from "svelte-i18n";
+import { saveBufferAs } from "../../../shared/saveBufferAs";
+import { ApiClient } from "../../../shared/apiConnection";
+import { _ } from "svelte-i18n";
 import { mySales } from "../../../shared/stores/mySales";
 import { contacts } from "../../../shared/stores/contacts";
 import relativeTimeString from "../../../shared/functions/relativeTimeString";
@@ -153,7 +156,7 @@ onMount(async () => {
     <div class="w-full text-center">
       {#if invoice}
         <span class="text-dark-lightest"
-          ><Label key="dapps.o-marketplace.pages.mySaleDetail.saleDate" />
+          >{$_("dapps.o-marketplace.pages.mySaleDetail.saleDate")}
           {relativeTimeString(invoice.createdAt, 1, true)}</span>
       {/if}
     </div>
@@ -167,9 +170,9 @@ onMount(async () => {
             <span>{$_("dapps.o-marketplace.pages.mySales.paid")}</span>
             <Icons icon="check" size="{4}" customClass="inline" />
           {:else if invoice.cancelledAt}
-            <span><Label key="dapps.o-marketplace.pages.mySales.cancelled" /></span>
+            <span>{$_("dapps.o-marketplace.pages.mySales.cancelled")}</span>
           {:else}
-            <span><Label key="dapps.o-marketplace.pages.mySales.paymentPending" /></span>
+            <span>{$_("dapps.o-marketplace.pages.mySales.paymentPending")}</span>
           {/if}
         </div>
 
@@ -177,7 +180,7 @@ onMount(async () => {
           class="inline-block text-xs "
           class:text-inactive="{!invoice.pickupCode}"
           class:text-success="{invoice.pickupCode}">
-          <span><Label key="dapps.o-marketplace.pages.mySales.pickupCode" /></span>
+          <span>{$_("dapps.o-marketplace.pages.mySales.pickupCode")}</span>
           {#if invoice.pickupCode}
             <Icons icon="check" size="{4}" customClass="inline" />
           {/if}
@@ -186,7 +189,7 @@ onMount(async () => {
           class="inline-block text-xs"
           class:text-inactive="{!invoice.sellerSignature}"
           class:text-success="{invoice.sellerSignature}">
-          <span><Label key="dapps.o-marketplace.pages.mySales.pickedUp" /></span>
+          <span>{$_("dapps.o-marketplace.pages.mySales.pickedUp")}</span>
           {#if invoice.sellerSignature}
             <Icons icon="check" size="{4}" customClass="inline" />
           {:else}

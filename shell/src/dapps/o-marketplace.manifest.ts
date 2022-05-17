@@ -6,6 +6,8 @@ import OfferDetail from "./o-marketplace/pages/OfferDetail.svelte";
 import CategoryDetail from "./o-marketplace/pages/CategoryDetail.svelte";
 import Favorites from "./o-marketplace/pages/Favorites.svelte";
 import MyOffers from "./o-marketplace/pages/MyOffers.svelte";
+import MyCategories from "./o-marketplace/pages/MyCategories.svelte";
+import MyShops from "./o-marketplace/pages/MyShops.svelte";
 import MyPurchases from "./o-marketplace/pages/MyPurchases.svelte";
 import ScanPurchase from "./o-marketplace/pages/ScanPurchase.svelte";
 import MySales from "./o-marketplace/pages/MySales.svelte";
@@ -18,19 +20,20 @@ import ShoppingCart from "./o-marketplace/pages/ShoppingCart.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { cartContents } from "./o-marketplace/stores/shoppingCartStore";
-import { Offer } from "../shared/api/data/types";
+import { Offer, ProfileType } from "../shared/api/data/types";
 import { offers } from "../shared/stores/offers";
 import { push } from "svelte-spa-router";
 import { me } from "../shared/stores/me";
+import CategoryEntryDetail from "./o-marketplace/pages/CategoryEntryDetail.svelte";
 
 const addToCart: Trigger<{ id: Number }, DappState> = {
   isSystem: true,
-  routeParts: ["=actions", "=addToCart", ":id"],
+  routeParts: ["=actions", "=addToCart", ":id", ":shopId"],
   title: "Add to Cart",
   type: "trigger",
   action: async (params) => {
-    let offer: Offer;
-    let cart: Offer[] = [];
+    let offer: Offer & { shopId: number };
+    let cart: (Offer & { shopId: number })[] = [];
     let authenticated: boolean = false;
     if (!params.id) {
       return;
@@ -47,7 +50,10 @@ const addToCart: Trigger<{ id: Number }, DappState> = {
       const o = await offers.findById(parseInt(params.id.toString()));
 
       if (o) {
-        offer = o;
+        offer = {
+          ...o,
+          shopId: 0,
+        };
 
         const unsubCart = cartContents.subscribe((o) => {
           cart = o ? o : [];
@@ -68,7 +74,7 @@ const addToCart: Trigger<{ id: Number }, DappState> = {
 
 const market: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["=market", ":storeId"],
+  routeParts: ["=market", ":shopId"],
   component: Home,
   title: "Market",
   type: "page",
@@ -76,7 +82,7 @@ const market: Page<any, DappState> = {
 
 const list: Page<any, DappState> = {
   isSystem: true,
-  routeParts: ["=list", ":storeId"],
+  routeParts: ["=list", ":shopId"],
   component: ListView,
   title: "List",
   type: "page",
@@ -102,6 +108,14 @@ const offerDetail: Page<any, DappState> = {
   position: "modal",
   routeParts: ["=offer", ":id"],
   component: OfferDetail,
+  title: "Offer detail",
+  type: "page",
+};
+const categoryEntryDetail: Page<any, DappState> = {
+  isSystem: true,
+  position: "modal",
+  routeParts: ["=detail", ":shopId", ":entryId"],
+  component: CategoryEntryDetail,
   title: "Offer detail",
   type: "page",
 };
@@ -133,10 +147,25 @@ const favorites: Page<any, DappState> = {
   title: "Favorites",
   type: "page",
 };
+const myShops: Page<any, DappState> = {
+  routeParts: ["=my-shops"],
+  component: MyShops,
+  audience: ProfileType.Organisation,
+  title: "My Shops",
+  type: "page",
+};
 const myOffers: Page<any, DappState> = {
   routeParts: ["=my-offers"],
   component: MyOffers,
-  title: "My offers",
+  audience: ProfileType.Organisation,
+  title: "My Offers",
+  type: "page",
+};
+const myCategories: Page<any, DappState> = {
+  routeParts: ["=my-categories"],
+  component: MyCategories,
+  audience: ProfileType.Organisation,
+  title: "My Categories",
   type: "page",
 };
 const myOffersDetail: Page<any, DappState> = {
@@ -164,6 +193,7 @@ const scanPurchase: Page<any, DappState> = {
 const mySales: Page<any, DappState> = {
   routeParts: ["=my-sales"],
   component: MySales,
+  audience: ProfileType.Organisation,
   title: "My sales",
   type: "page",
 };
@@ -217,6 +247,7 @@ export const marketplace: DappManifest<DappState> = {
   isEnabled: true,
   initialize: async (stack, runtimeDapp) => {
     // Do init stuff here
+
     return {
       initialRoutable: market,
       cancelDependencyLoading: false,
@@ -230,14 +261,17 @@ export const marketplace: DappManifest<DappState> = {
     addToCart,
     pleaseSignIn,
     // favorites,
-    // myOffers,
     offerDetail,
     // myOffersDetail,
     shoppingCart,
     myPurchases,
     myPurchasesDetail,
     scanPurchase,
-    mySales,
     mySaleDetail,
+    categoryEntryDetail,
+    myShops,
+    myOffers,
+    myCategories,
+    mySales,
   ],
 };

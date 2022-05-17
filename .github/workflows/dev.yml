@@ -1,0 +1,18 @@
+name: check svelte-18n keys
+on:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
+jobs:
+  check-svelte-i18n-keys:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v1
+    - name: Check svelte-i18n-keys
+      uses: circlesland/CheckI18NKeys@v0.1.6-1
+      with:
+        master_json: './shell/src/i18n/lang/en.json'
+        file_types: 'ts,svelte'
+        default_language_prefix: 'en.'

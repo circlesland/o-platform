@@ -541,3 +541,8 @@ svg.heroicon path {
 svg.heroicon.smallicon path {
   stroke-width: 1.5;
 }
+
+input[type="radio"],
+input[type="checkbox"] {
+  vertical-align: sub;
+}

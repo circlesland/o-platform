@@ -5,10 +5,12 @@ type Server {
   version: String!
 }
 
-enum ProfileOrigin {
-  CirclesGarden
-  CirclesLand
-  Unknown
+directive @cost(value: Int) on FIELD_DEFINITION
+
+directive @costFactor(value: Int) on FIELD_DEFINITION
+
+interface IAggregatePayload {
+    lastUpdatedAt: String
 }
 
 enum ProfileType {
@@ -22,10 +24,7 @@ enum ProductListingType {
   LIST
 }
 
-enum ShopListingStyle {
-  REGULAR
-  FEATURED
-}
+union AggregatePayload = Contacts | CrcBalances | Erc20Balances | Erc721Tokens | Members | Memberships | Offers | Purchases | Sales
 
 type Profile {
   id: Int!
@@ -102,15 +101,11 @@ type ProfileEvent {
   tags: [Tag!]
 }
 
-type Membership {
-  createdAt: String!
-  createdBy: Profile
-  createdByProfileId: Int!
-  acceptedAt: String
-  rejectedAt: String
-  validTo: String
-  isAdmin: Boolean!
-  organisation: Organisation!
+type AnnouncePaymentResult {
+    invoiceId: Int!
+    pickupCode: String!
+    simplePickupCode: String
+    transactionHash: String!
 }
 
 enum DisplayCurrency {
@@ -181,15 +176,11 @@ type Contact {
   contactAddress_Profile: Profile
 }
 
-type CrcBalances implements IAggregatePayload {
-  lastUpdatedAt: String!
-  total: String
-  balances: [AssetBalance!]!
-}
-
-type Erc20Balances implements IAggregatePayload {
-  lastUpdatedAt: String!
-  balances: [AssetBalance!]!
+type Contact {
+    contactAddress: String!
+    contactAddress_Profile: Profile
+    lastContactAt: String!
+    metadata: [ContactPoint!]!
 }
 
 type Organisation {
@@ -294,21 +285,14 @@ type Capability {
   type: CapabilityType
 }
 
-enum CapabilityType {
-  Verify
-  Invite
-  Translate
-  PreviewFeatures
+type DeliveryMethod {
+    id: Int!
+    name: String!
 }
 
-type Version {
-  major: Int!
-  minor: Int!
-  revision: Int!
-}
-
-input RequestUpdateSafeInput {
-  newSafeAddress: String!
+type Erc20Balances implements IAggregatePayload {
+    balances: [AssetBalance!]!
+    lastUpdatedAt: String!
 }
 
 type RequestUpdateSafeResponse {
@@ -317,8 +301,29 @@ type RequestUpdateSafeResponse {
   challenge: String
 }
 
-input UpdateSafeInput {
-  signature: String!
+type Erc721Token {
+    token_address: String!
+    token_name: String
+    token_no: String!
+    token_owner_address: String!
+    token_owner_profile: Profile
+    token_symbol: String
+    token_url: String!
+}
+
+type Erc721Tokens implements IAggregatePayload {
+    balances: [Erc721Token!]!
+    lastUpdatedAt: String!
+}
+
+type EthTransfer implements IEventPayload {
+    from: String!
+    from_profile: Profile
+    tags: [Tag!]!
+    to: String!
+    to_profile: Profile
+    transaction_hash: String!
+    value: String!
 }
 
 type UpdateSafeResponse {
@@ -327,9 +332,21 @@ type UpdateSafeResponse {
   newSafeAddress: String
 }
 
-input QueryCitiesByNameInput {
-  name_like: String!
-  languageCode: String
+type FibonacciGoals {
+    currentValue: Int!
+    lastGoal: Int!
+    nextGoal: Int!
+}
+
+type GnosisSafeEthTransfer implements IEventPayload {
+    from: String!
+    from_profile: Profile
+    initiator: String!
+    tags: [Tag!]!
+    to: String!
+    to_profile: Profile
+    transaction_hash: String!
+    value: String!
 }
 
 input QueryCitiesByGeonameIdInput {
@@ -358,27 +375,27 @@ type SalesLine {
 }
 
 type Invoice {
-  id: Int!
-  purchaseId: Int!
-  purchase: Purchase
-  sellerAddress: String!
-  sellerProfile: Profile
-  buyerAddress: String!
-  buyerProfile: Profile
-  createdAt: String
-  lines: [InvoiceLine!]
-  invoiceNo: String!
-  pickupCode: String
-  simplePickupCode: String
-  buyerSignature: Boolean
-  buyerSignedDate: String
-  sellerSignature: Boolean
-  sellerSignedDate: String
-  paymentTransactionHash: String
-  paymentTransaction: ProfileEvent
-  cancelledAt: String
-  cancelReason: String
-  cancelledBy: Profile
+    buyerAddress: String!
+    buyerProfile: Profile
+    buyerSignature: Boolean
+    buyerSignedDate: String
+    cancelReason: String
+    cancelledAt: String
+    cancelledBy: Profile
+    createdAt: String
+    id: Int!
+    invoiceNo: String!
+    lines: [InvoiceLine!]
+    paymentTransaction: ProfileEvent
+    paymentTransactionHash: String
+    pickupCode: String
+    purchase: Purchase
+    purchaseId: Int!
+    sellerAddress: String!
+    sellerProfile: Profile
+    sellerSignature: Boolean
+    sellerSignedDate: String
+    simplePickupCode: String
 }
 
 type PurchaseLine {
@@ -388,14 +405,21 @@ type PurchaseLine {
 }
 
 type InvoiceLine {
-  id: Int!
-  amount: Int!
-  offer: Offer
+    amount: Int!
+    id: Int!
+    metadata: String
+    offer: Offer
 }
 
-input QueryTagsInput {
-  typeId_in: [String!]!
-  value_like: String
+type LeaderboardEntry {
+    createdByCirclesAddress: String!
+    createdByProfile: Profile
+    inviteCount: Int!
+}
+
+type LogoutResponse {
+    errorMessage: String
+    success: Boolean!
 }
 
 interface IEventPayload {
@@ -459,55 +483,45 @@ type CrcMinting implements IEventPayload {
   token: String!
 }
 
-type EthTransfer implements IEventPayload {
-  transaction_hash: String!
-  from: String!
-  from_profile: Profile
-  to: String!
-  to_profile: Profile
-  value: String!
-  tags: [Tag!]!
+type Mutation {
+    acceptMembership(membershipId: Int!): AcceptMembershipResult
+    acknowledge(safeAddress: String, until: Date!): Boolean!
+    addMember(groupId: String!, memberAddress: String!): AddMemberResult
+    announcePayment(invoiceId: Int!, transactionHash: String!): AnnouncePaymentResult!
+    claimInvitation(code: String!): ClaimInvitationResult!
+    completePurchase(invoiceId: Int!, revoke: Boolean): Invoice!
+    completeSale(invoiceId: Int!, revoke: Boolean): Invoice!
+    createTestInvitation: CreateInvitationResult!
+    deleteShippingAddress(id: Int!): PostAddress
+    importOrganisationsOfAccount: [Organisation!]!
+    logout: LogoutResponse!
+    proofUniqueness(humanodeToken: String!): ProofUniquenessResult!
+    purchase(deliveryMethodId: Int!, lines: [PurchaseLineInput!]!): [Invoice!]!
+    redeemClaimedInvitation: RedeemClaimedInvitationResult!
+    rejectMembership(membershipId: Int!): RejectMembershipResult
+    removeMember(groupId: String!, memberAddress: String!): RemoveMemberResult
+    requestSessionChallenge(address: String!): String!
+    requestUpdateSafe(data: RequestUpdateSafeInput!): RequestUpdateSafeResponse!
+    revokeSafeVerification(safeAddress: String!): VerifySafeResult!
+    sendMessage(content: String!, fromSafeAddress: String, toSafeAddress: String!): SendMessageResult!
+    tagTransaction(tag: CreateTagInput!, transactionHash: String!): TagTransactionResult!
+    updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
+    upsertOffer(offer: OfferInput!): Offer!
+    upsertOrganisation(organisation: UpsertOrganisationInput!): CreateOrganisationResult!
+    upsertProfile(data: UpsertProfileInput!): Profile!
+    upsertRegion(organisation: UpsertOrganisationInput!): CreateOrganisationResult!
+    upsertShippingAddress(data: PostAddressInput!): PostAddress
+    upsertShop(shop: ShopInput!): Shop!
+    upsertShopCategories(shopCategories: [ShopCategoryInput!]!): UpsertShopCategoriesResult!
+    upsertShopCategoryEntries(shopCategoryEntries: [ShopCategoryEntryInput!]!): UpsertShopCategoryEntriesResult!
+    upsertTag(data: UpsertTagInput!): Tag!
+    verifySafe(safeAddress: String!): VerifySafeResult!
+    verifySessionChallenge(challenge: String!, signature: String!): ExchangeTokenResponse
 }
 
-type GnosisSafeEthTransfer implements IEventPayload {
-  transaction_hash: String!
-  initiator: String!
-  from: String!
-  from_profile: Profile
-  to: String!
-  to_profile: Profile
-  value: String!
-  tags: [Tag!]!
-}
-
-type ChatMessage implements IEventPayload {
-  id: Int!
-  transaction_hash: String
-  from: String!
-  from_profile: Profile
-  to: String!
-  to_profile: Profile
-  text: String!
-}
-
-type MembershipOffer implements IEventPayload {
-  transaction_hash: String
-  createdBy: String!
-  createdBy_profile: Profile
-  isAdmin: Boolean!
-  organisation: String!
-  organisation_profile: Organisation
-}
-
-type MemberAdded implements IEventPayload {
-  transaction_hash: String
-  createdBy: String!
-  createdBy_profile: Profile
-  member: String!
-  member_profile: Profile
-  isAdmin: Boolean!
-  organisation: String!
-  organisation_profile: Organisation
+type MyInviteRank {
+    rank: Int!
+    redeemedInvitationsCount: Int!
 }
 
 type NewUser implements IEventPayload {
@@ -525,12 +539,20 @@ type MembershipAccepted implements IEventPayload {
   organisation_profile: Organisation
 }
 
-type MembershipRejected implements IEventPayload {
-  transaction_hash: String
-  member: String!
-  member_profile: Profile
-  organisation: String!
-  organisation_profile: Organisation
+type Offer {
+    allergens: String
+    createdAt: String!
+    createdByAddress: String!
+    createdByProfile: Profile
+    description: String
+    id: Int!
+    pictureMimeType: String!
+    pictureUrl: String!
+    pricePerUnit: String!
+    tags: [Tag!]
+    timeCirclesPriceShare: Int!
+    title: String!
+    version: Int!
 }
 
 type InvitationCreated implements IEventPayload {
@@ -539,12 +561,27 @@ type InvitationCreated implements IEventPayload {
   code: String!
 }
 
-type InvitationRedeemed implements IEventPayload {
-  transaction_hash: String
-  name: String!
-  code: String!
-  redeemedBy: String
-  redeemedBy_profile: Profile
+type Organisation {
+    avatarMimeType: String
+    avatarUrl: String
+    circlesAddress: String
+    circlesSafeOwner: String
+    city: City
+    cityGeonameid: Int
+    createdAt: String!
+    description: String
+    displayCurrency: DisplayCurrency
+    displayName: String
+    id: Int!
+    largeBannerUrl: String
+    members: [ProfileOrOrganisation!]
+    name: String!
+    offers: [Offer!]
+    productListingType: ProductListingType
+    shopEnabled: Boolean
+    shops: [Shop!]
+    smallBannerUrl: String
+    trustsYou: Int
 }
 
 type WelcomeMessage implements IEventPayload {
@@ -553,10 +590,58 @@ type WelcomeMessage implements IEventPayload {
   invitedBy_profile: Profile
 }
 
-type OrganisationCreated implements IEventPayload {
-  transaction_hash: String
-  organisation: String!
-  organisation_profile: Organisation
+type PostAddress {
+    city: String!
+    cityGeonameid: Int
+    country: String!
+    house: String!
+    id: Int!
+    name: String
+    state: String
+    street: String!
+    zip: String!
+}
+
+type Profile {
+    askedForEmailAddress: Boolean!
+    avatarCid: String
+    avatarMimeType: String
+    avatarUrl: String
+    balances: ProfileBalances
+    circlesAddress: String
+    circlesSafeOwner: String
+    circlesTokenAddress: String
+    city: City
+    cityGeonameid: Int
+    claimedInvitation: ClaimedInvitation
+    contacts: [Contact!]
+    country: String
+    displayCurrency: DisplayCurrency
+    displayName: String
+    displayTimeCircles: Boolean
+    dream: String
+    emailAddress: String
+    firstName: String!
+    id: Int!
+    invitationLink: String
+    invitationTransaction: ProfileEvent
+    largeBannerUrl: String
+    lastName: String
+    members: [Profile!]
+    memberships: [Membership!]
+    newsletter: Boolean
+    offers: [Offer!]
+    origin: ProfileOrigin
+    productListingType: ProductListingType
+    purchases: [Purchase!]
+    sales: [Sale!]
+    shippingAddresses: [PostAddress!]
+    shops: [Shop!]
+    smallBannerUrl: String
+    status: String
+    successorOfCirclesAddress: String
+    type: ProfileType
+    verifications: [Verification!]
 }
 
 type SaleEvent implements IEventPayload {
@@ -584,19 +669,37 @@ interface IAggregatePayload {
   lastUpdatedAt: String
 }
 
-type Contacts implements IAggregatePayload {
-  lastUpdatedAt: String!
-  contacts: [Contact!]!
+type ProofUniquenessResult {
+    existingSafe: String
 }
 
-type Memberships implements IAggregatePayload {
-  lastUpdatedAt: String!
-  organisations: [Organisation!]!
+type PublicEvent {
+    block_number: Int
+    contact_address: String
+    contact_address_profile: Profile
+    payload: EventPayload
+    timestamp: String!
+    transaction_hash: String
+    transaction_index: Int
+    type: String!
 }
 
-type Members implements IAggregatePayload {
-  lastUpdatedAt: String!
-  members: [ProfileOrOrganisation!]!
+type Purchase {
+    createdAt: String!
+    createdByAddress: String!
+    createdByProfile: Profile
+    deliveryMethod: DeliveryMethod!
+    id: Int!
+    invoices: [Invoice!]
+    lines: [PurchaseLine!]
+    total: String!
+}
+
+type PurchaseLine {
+    amount: Int!
+    id: Int!
+    metadata: String
+    offer: Offer
 }
 
 type Offers implements IAggregatePayload {
@@ -609,9 +712,42 @@ type Purchases implements IAggregatePayload {
   purchases: [Purchase!]!
 }
 
-type Sales implements IAggregatePayload {
-  lastUpdatedAt: String!
-  sales: [Sale!]!
+type Query {
+    aggregates(filter: ProfileAggregateFilter, safeAddress: String!, types: [AggregateType!]!): [ProfileAggregate!]!
+    cities(query: QueryCitiesInput!): [City!]!
+    claimedInvitation: ClaimedInvitation
+    clientAssertionJwt: String!
+    commonTrust(safeAddress1: String!, safeAddress2: String!): [CommonTrust!]!
+    directPath(amount: String!, from: String!, to: String!): TransitivePath!
+    events(filter: ProfileEventFilter, pagination: PaginationArgs!, safeAddress: String!, types: [EventType!]!): [ProfileEvent!]!
+    findInvitationCreator(code: String!): Profile
+    findSafesByOwner(owner: String!): [SafeInfo!]!
+    hubSignupTransaction: ProfileEvent
+    init: SessionInfo!
+    invitationTransaction: ProfileEvent
+    invoice(invoiceId: Int!): String
+    lastAcknowledgedAt(safeAddress: String!): Date
+    myInvitations: [CreatedInvitation!]!
+    myProfile: Profile
+    offersByIdAndVersion(query: [OfferByIdAndVersionInput!]!): [Offer!]!
+    organisations(pagination: PaginationArgs): [Organisation!]!
+    organisationsByAddress(addresses: [String!]!): [Organisation!]!
+    profilesById(ids: [Int!]!): [Profile!]!
+    profilesBySafeAddress(safeAddresses: [String!]!): [Profile!]!
+    recentProfiles(pagination: PaginationArgs): [Profile!]!
+    regions(pagination: PaginationArgs): [Organisation!]!
+    safeInfo(safeAddress: String): SafeInfo
+    search(query: SearchInput!): [Profile!]!
+    sessionInfo: SessionInfo!
+    shop(id: Int!): Shop
+    shops(ownerId: Int): [Shop!]!
+    shopsById(ids: [Int!]!): [Shop!]!
+    stats: Stats!
+    tagById(id: Int!): Tag
+    tags(query: QueryTagsInput!): [Tag!]!
+    trustRelations(safeAddress: String!): [TrustRelation!]!
+    verifications(filter: VerifiedSafesFilter, pagination: PaginationArgs): [Verification!]!
+    version: Version!
 }
 
 union EventPayload =
@@ -746,10 +882,11 @@ type ClaimInvitationResult {
   claimedInvitation: ClaimedInvitation
 }
 
-type RedeemClaimedInvitationResult {
-  success: Boolean!
-  error: String
-  transactionHash: String
+type SalesLine {
+    amount: Int!
+    id: Int!
+    metadata: String
+    offer: Offer!
 }
 
 type CreatedInviteEoa {
@@ -764,16 +901,73 @@ type CreateInvitationResult {
   createdInviteEoas: [CreatedInvitation!]!
 }
 
-type SendMessageResult {
-  success: Boolean!
-  error: String
-  event: ProfileEvent
+type SessionInfo {
+    capabilities: [Capability!]!
+    hasProfile: Boolean
+    isLoggedOn: Boolean!
+    profile: Profile
+    profileId: Int
 }
 
-enum TrustDirection {
-  IN
-  OUT
-  MUTUAL
+type Shop {
+    categories: [ShopCategory!]
+    createdAt: Date!
+    deliveryMethods: [DeliveryMethod!]
+    description: String!
+    enabled: Boolean
+    healthInfosLink: String
+    id: Int!
+    largeBannerUrl: String!
+    name: String!
+    openingHours: String
+    owner: Organisation!
+    ownerId: Int
+    pickupAddress: PostAddress
+    privacyPolicyLink: String
+    private: Boolean
+    productListingStyle: ProductListingType!
+    purchaseMetaDataKeys: String
+    shopListingStyle: ShopListingStyle!
+    smallBannerUrl: String!
+    sortOrder: Int
+    tosLink: String
+}
+
+type ShopCategory {
+    createdAt: Date
+    description: String
+    enabled: Boolean
+    entries: [ShopCategoryEntry!]
+    id: Int!
+    largeBannerUrl: String
+    name: String!
+    private: Boolean
+    productListingStyle: ProductListingType
+    shop: Shop
+    shopId: Int!
+    smallBannerUrl: String
+    sortOrder: Int
+}
+
+type ShopCategoryEntry {
+    createdAt: Date!
+    enabled: Boolean
+    id: Int!
+    private: Boolean
+    product: Offer
+    productId: Int!
+    productVersion: Int!
+    shopCategory: ShopCategory
+    shopCategoryId: Int!
+    sortOrder: Int
+}
+
+type Stats {
+    goals: FibonacciGoals!
+    leaderboard: [LeaderboardEntry!]!
+    myRank: MyInviteRank!
+    profilesCount: Int!
+    verificationsCount: Int!
 }
 
 type TrustRelation {
@@ -784,11 +978,11 @@ type TrustRelation {
   direction: TrustDirection!
 }
 
-type CommonTrust {
-  type: String!
-  safeAddress1: String!
-  safeAddress2: String!
-  profile: Profile
+type Tag {
+    id: Int!
+    order: Int
+    typeId: String!
+    value: String
 }
 
 type TagTransactionResult {
@@ -827,9 +1021,26 @@ type AcceptMembershipResult {
   error: String
 }
 
-type RejectMembershipResult {
-  success: Boolean!
-  error: String
+type UpsertShopCategoriesResult {
+    inserted: Int!
+    updated: Int!
+}
+
+type UpsertShopCategoryEntriesResult {
+    inserted: Int!
+    updated: Int!
+}
+
+type Verification {
+    createdAt: String!
+    revokedAt: String
+    revokedProfile: Profile
+    verificationRewardTransaction: ProfileEvent
+    verificationRewardTransactionHash: String!
+    verifiedProfile: Profile
+    verifiedSafeAddress: String!
+    verifierProfile: Organisation
+    verifierSafeAddress: String!
 }
 
 type RemoveMemberResult {
@@ -853,10 +1064,23 @@ type AnnouncePaymentResult {
   simplePickupCode: String
 }
 
-type VerifySafeResult {
-  success: Boolean!
+enum AggregateType {
+    Contacts
+    CrcBalances
+    Erc20Balances
+    Erc721Tokens
+    Members
+    Memberships
+    Offers
+    Purchases
+    Sales
 }
 
+enum CapabilityType {
+    Invite
+    PreviewFeatures
+    Translate
+    Verify
 type i18n {
   lang: String
   key: String
@@ -891,8 +1115,15 @@ input SaleEventFilter {
   pickupCode: String
 }
 
-input ChatMessageEventFilter {
-  id: Int!
+enum ProductListingType {
+    LIST
+    TILES
+}
+
+enum ProfileOrigin {
+    CirclesGarden
+    CirclesLand
+    Unknown
 }
 
 input ProfileEventFilter {
@@ -906,17 +1137,25 @@ input ProfileEventFilter {
   chatMessage: ChatMessageEventFilter
 }
 
-input ContactAggregateFilter {
-  addresses: [String!]!
+enum ShopListingStyle {
+    FEATURED
+    REGULAR
+}
+
+enum SortOrder {
+    ASC
+    DESC
 }
 
 input CrcBalanceAggregateFilter {
   tokenAddresses: [String!]!
 }
 
-input OffersAggregateFilter {
-  createdByAddresses: [String!]
-  offerIds: [Int!]
+"A date and time value in JSON format."
+scalar Date
+
+input ChatMessageEventFilter {
+    id: Int!
 }
 
 input PurchasesAggregateFilter {
@@ -939,18 +1178,26 @@ input ProfileAggregateFilter {
   sales: SalesAggregateFilter
 }
 
-enum AccountType {
-  Person
-  Organisation
+input OfferByIdAndVersionInput {
+    offerId: Int!
+    offerVersion: Int!
 }
 
-type SafeInfo {
-  type: AccountType!
-  safeAddress: String!
-  lastUbiAt: String
-  tokenAddress: String
-  randomValue: String
-  safeProfile: Profile
+input OfferInput {
+    allergens: String
+    createdByProfileId: Int!
+    description: String
+    id: Int
+    pictureMimeType: String!
+    pictureUrl: String!
+    pricePerUnit: String!
+    timeCirclesPriceShare: Int!
+    title: String!
+}
+
+input OffersAggregateFilter {
+    createdByAddresses: [String!]
+    offerIds: [Int!]
 }
 
 type SafeAddressByOwnerResult {
@@ -958,20 +1205,38 @@ type SafeAddressByOwnerResult {
   safeAddress: String!
 }
 
-input VerifiedSafesFilter {
-  addresses: [String!]
+input PostAddressInput {
+    cityGeonameid: Int!
+    house: String!
+    id: Int
+    name: String
+    street: String!
+    zip: String!
 }
 
-type LeaderboardEntry {
-  createdByCirclesAddress: String!
-  createdByProfile: Profile
-  inviteCount: Int!
+input ProfileAggregateFilter {
+    contacts: ContactAggregateFilter
+    crcBalance: CrcBalanceAggregateFilter
+    offers: OffersAggregateFilter
+    purchases: PurchasesAggregateFilter
+    sales: SalesAggregateFilter
 }
 
-type FibonacciGoals {
-  lastGoal: Int!
-  currentValue: Int!
-  nextGoal: Int!
+input ProfileEventFilter {
+    chatMessage: ChatMessageEventFilter
+    direction: Direction
+    from: String
+    purchased: PurchasedEventFilter
+    sale: SaleEventFilter
+    to: String
+    transactionHash: String
+    with: String
+}
+
+input PurchaseLineInput {
+    amount: Int!
+    metadata: String
+    offerId: Int!
 }
 
 type MyInviteRank {
@@ -1071,16 +1336,15 @@ input ShopCategoryInput {
   productListingStyle: ProductListingType
 }
 
-type ShopCategoryEntry {
-  id: Int!
-  createdAt: Date!
-  private: Boolean
-  product: Offer
-  productId: Int!
-  productVersion: Int!
-  sortOrder: Int
-  shopCategory: ShopCategory
-  shopCategoryId: Int!
+input SaleEventFilter {
+    invoiceId: Int
+    pickupCode: String
+}
+
+input SalesAggregateFilter {
+    createdByAddresses: [String!]
+    pickupCode: String
+    salesIds: [Int!]
 }
 
 input ShopCategoryEntryInput {
@@ -1093,14 +1357,64 @@ input ShopCategoryEntryInput {
   sortOrder: Int
 }
 
-type UpsertShopCategoriesResult {
-  inserted: Int!
-  updated: Int!
+input ShopCategoryEntryInput {
+    enabled: Boolean
+    id: Int
+    name: String
+    private: Boolean
+    productId: Int!
+    productVersion: Int!
+    shopCategoryId: Int!
+    sortOrder: Int
 }
 
-type UpsertShopCategoryEntriesResult {
-  inserted: Int!
-  updated: Int!
+input ShopCategoryInput {
+    description: String
+    enabled: Boolean
+    id: Int
+    largeBannerUrl: String
+    name: String!
+    private: Boolean
+    productListingStyle: ProductListingType
+    shopId: Int!
+    smallBannerUrl: String
+    sortOrder: Int
+}
+
+input ShopInput {
+    description: String!
+    enabled: Boolean!
+    healthInfosLink: String
+    id: Int
+    largeBannerUrl: String!
+    name: String!
+    openingHours: String
+    ownerId: Int!
+    privacyPolicyLink: String
+    private: Boolean
+    productListingStyle: ProductListingType!
+    shopListingStyle: ShopListingStyle!
+    smallBannerUrl: String!
+    sortOrder: Int
+    tosLink: String
+}
+
+input UpdateSafeInput {
+    signature: String!
+}
+
+input UpsertOrganisationInput {
+    avatarMimeType: String
+    avatarUrl: String
+    circlesAddress: String
+    cityGeonameid: Int
+    description: String
+    displayCurrency: DisplayCurrency
+    id: Int
+    largeBannerUrl: String
+    name: String!
+    productListingType: ProductListingType
+    smallBannerUrl: String
 }
 
 type Mutation {

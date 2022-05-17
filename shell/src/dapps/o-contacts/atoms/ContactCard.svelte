@@ -2,7 +2,10 @@
 import { push } from "svelte-spa-router";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import {
-  Contact
+  Contact,
+  ContactDirection,
+  ContactPoint,
+  ContactPointSource,
 } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 

@@ -3,10 +3,11 @@ import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processCon
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-
+import { show } from "@o-platform/o-process/dist/actions/show";
 import { push } from "svelte-spa-router";
 import { LogoutDocument } from "../../../shared/api/data/types";
 import { getOpenLogin } from "../../../shared/openLogin";
+import ErrorView from "../../../shared/atoms/Error.svelte";
 
 export type LogoutContextData = {
   successAction: (data: LogoutContextData) => void;
@@ -84,10 +85,18 @@ const processDefinition = (processId: string) =>
 
             return result.data.logout.success;
           },
-          onDone: "#success",
-          onError: "#error",
+          onDone: {
+            target: "success",
+          },
+          onError: {
+            target: "success",
+          }, // Yes, well.... we'll have to dig into this again some time.
+          data: (context, event: any) => {
+            return "you're not serious?";
+          },
         },
       },
+
       success: {
         type: "final",
         id: "success",
@@ -95,13 +104,10 @@ const processDefinition = (processId: string) =>
           if (context.data.successAction) {
             context.data.successAction(context.data);
           }
-        },
-        data: (context, event: any) => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.loggedOut",
           });
           push("/");
-          return event.data;
         },
       },
     },

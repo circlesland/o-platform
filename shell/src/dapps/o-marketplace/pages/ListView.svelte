@@ -4,39 +4,38 @@ import ListViewCard from "../atoms/ListViewCard.svelte";
 import { onMount } from "svelte";
 import { Subscription } from "rxjs";
 
-import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
 import {
   Shop,
-  ShopCategory, ShopDocument, ShopQueryVariables,
+  ShopCategory,
+  ShopCategoryEntry,
+  ShopDocument,
+  ShopQueryVariables,
 } from "../../../shared/api/data/types";
 
-import {ApiClient} from "../../../shared/apiConnection";
+import { ApiClient } from "../../../shared/apiConnection";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
-export let storeId:number;
+export let shopId: number;
 
-let shop: Shop|null = null;
+let shop: Shop | null = null;
 let categories: ShopCategory[] = [];
 let shellEventSubscription: Subscription;
+let categoryEntries: ShopCategoryEntry[] = [];
 
 onMount(async () => {
-  shop = await ApiClient.query<Shop, ShopQueryVariables>(
-          ShopDocument,
-          {
-            id: parseInt(storeId.toString())
-          }
-  );
+  shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
+    id: parseInt(shopId.toString()),
+  });
 
-  if (!shop){
-    await push("/not-found");
-    return;
+  if (shop) {
+    categories = shop.categories;
   }
 
-  categories = shop.categories;
+  categoryEntries = shop.categories.flatMap((o) => o.entries);
 });
 </script>
 
@@ -58,6 +57,7 @@ onMount(async () => {
               <span class="inline-block">{shop.name}</span>
             </div>
           </div>
+          <div class="w-full mt-2 text-sm text-center">{shop.description}</div>
         </header>
       </div>
     </section>
@@ -66,21 +66,50 @@ onMount(async () => {
     {#if categories.length > 0}
       <div class="flex flex-col space-y-4">
         {#each categories as category, i}
-          <div class="pt-4 pb-10" class:bg-gray-300="{i % 2 == 1}">
-            <div class="mx-auto space-y-4 xl:w-1/2 md:w-2/3">
-              <h1 class="px-4 mb-2 ml-2 ">{category.name}</h1>
-              <div class="flex flex-col px-4 space-y-4">
-                {#each category.entries.map(o => o.product) as offer}
-                  <ListViewCard param="{offer}" />
-                {/each}
+          {#if category.entries && category.enabled}
+            <div class="pt-4 pb-10">
+              <div class="mx-auto space-y-4 xl:w-1/2 md:w-2/3">
+                {#if category.largeBannerUrl}
+                  <div class="relative mx-4 overflow-hidden bg-white rounded-xl image-wrapper">
+                    <img
+                      src="{category.largeBannerUrl}"
+                      alt="{category.name}"
+                      class="w-full rounded-xl opacity-60 object-position: center center;  " />
+                    <div
+                      class="absolute left-0 pt-1 pb-1 pl-2 pr-4 mt-2 text-xl rounded-r-full sm:pb-2 sm:pt-3 sm:text-3xl font-heading bottom-4 bg-light-lightest">
+                      <span class="inline-block">{category.name}</span>
+                    </div>
+                  </div>
+                {:else}
+                  <h1 class="px-4 mb-2 ml-2 ">{category.name}</h1>
+                {/if}
+                <div class="flex flex-col px-4 space-y-4">
+                  {#each category.entries as entry}
+                    <ListViewCard entry="{entry}" shopId="{shopId}" deliveryMethods="{shop.deliveryMethods}" />
+                  {/each}
+                </div>
               </div>
             </div>
-          </div>
+          {/if}
         {/each}
         {#if shop}
-          <div class="p-6 text-center text-2xs">
-            Informationen über Zusatzstoffe und Allergene können auf der Physische Karte der {shop.name} eingesehen
-            werden.
+          <div class="pb-6 text-center text-2xs">
+            <h4 class="mb-2">{shop.name}</h4>
+            <div class="flex flex-row justify-center space-x-4">
+              {#if shop.privacyPolicyLink}
+                <a href="{shop.privacyPolicyLink}" target="_blank" class="link link-primary" alt="Privacy Policy"
+                  >Privacy Policy</a>
+              {/if}
+              {#if shop.tosLink}
+                <a href="{shop.tosLink}" target="_blank" class="link link-primary" alt="Terms of Service"
+                  >Terms of Service</a>
+              {/if}
+
+              {#if shop.healthInfosLink}
+                <a href="{shop.healthInfosLink}" target="_blank" class="link link-primary" alt="Health Infos"
+                  >Health Information</a>
+              {/if}
+            </div>
           </div>
         {/if}
       </div>

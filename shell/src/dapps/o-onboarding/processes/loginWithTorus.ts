@@ -19,10 +19,11 @@ import {
   Profile,
   ProfilesDocument,
   ProfilesQueryVariables,
-  QueryFindInvitationCreatorArgs
+  QueryFindInvitationCreatorArgs,
 } from "../../../shared/api/data/types";
-import {ApiClient} from "../../../shared/apiConnection";
-import {AvataarGenerator} from "../../../shared/avataarGenerator";
+import { ApiClient } from "../../../shared/apiConnection";
+import { AvataarGenerator } from "../../../shared/avataarGenerator";
+import {setWindowLastError} from "../../../shared/processes/actions/setWindowLastError";
 
 export type LoginWithTorusContextData = {
   chooseFlow?: {
@@ -88,18 +89,21 @@ const processDefinition = (processId: string) =>
                 context.data.inviterProfile = await ApiClient.query<Profile, QueryFindInvitationCreatorArgs>(
                   FindInvitationCreatorDocument,
                   {
-                    code: invitationCode
+                    code: invitationCode,
                   }
                 );
               }
             },
-            onDone: [{
-              cond: (context) => !!context.data.inviterProfile,
-              target: "showInviterMessage"
-            }, {
-              target: "init"
-            }]
-          }
+            onDone: [
+              {
+                cond: (context) => !!context.data.inviterProfile,
+                target: "showInviterMessage",
+              },
+              {
+                target: "init",
+              },
+            ],
+          },
         },
 
         showInviterMessage: prompt({
@@ -109,12 +113,18 @@ const processDefinition = (processId: string) =>
           params: {
             view: {
               title: window.i18n("dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.title"),
-              submitButtonText: window.i18n("dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.submitButtonText"),
+              submitButtonText: window.i18n(
+                "dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.submitButtonText"
+              ),
             },
-            html: (context) => `<img style="max-width:128px;" src="${
-              !context.data.inviterProfile.avatarUrl 
-                ? AvataarGenerator.generate(context.data.inviterProfile.circlesAddress) 
-                : context.data.inviterProfile.avatarUrl}" /> <b>${context.data.inviterProfile.displayName}${window.i18n("dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.htmlContext")}`,
+            html: (context) =>
+              `<img style="max-width:128px;" src="${
+                !context.data.inviterProfile.avatarUrl
+                  ? AvataarGenerator.generate(context.data.inviterProfile.circlesAddress)
+                  : context.data.inviterProfile.avatarUrl
+              }" /> <b>${context.data.inviterProfile.displayName}${window.i18n(
+                "dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.htmlContext"
+              )}`,
             submitButtonText: window.i18n("dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.loginButton"),
             hideNav: false,
           },
@@ -206,7 +216,7 @@ const processDefinition = (processId: string) =>
               const userInfo = await openLogin.getUserInfo();
               return {
                 privateKey: privateKey.privKey,
-                userInfo: userInfo
+                userInfo: userInfo,
               };
             },
             onDone: {
@@ -216,15 +226,12 @@ const processDefinition = (processId: string) =>
             onError: [
               {
                 // user closed popup
-                cond: (context, event) =>
-                  event.data.message == "user closed popup",
+                cond: (context, event) => event.data.message == "user closed popup",
                 target: "#chooseFlow",
               },
               {
                 cond: (context, event) => (window.o.lastError = event.data),
-                actions: (context, event) => {
-                  window.o.lastError = event.data;
-                },
+                actions: setWindowLastError,
                 target: "#showError",
               },
             ],
@@ -262,15 +269,12 @@ const processDefinition = (processId: string) =>
             onError: [
               {
                 // user closed popup
-                cond: (context, event) =>
-                  event.data.message == "user closed popup",
+                cond: (context, event) => event.data.message == "user closed popup",
                 target: "#chooseFlow",
               },
               {
                 cond: (context, event) => (window.o.lastError = event.data),
-                actions: (context, event) => {
-                  window.o.lastError = event.data;
-                },
+                actions: setWindowLastError,
                 target: "#showError",
               },
             ],
@@ -307,15 +311,12 @@ const processDefinition = (processId: string) =>
             onError: [
               {
                 // user closed popup
-                cond: (context, event) =>
-                  event.data.message == "user closed popup",
+                cond: (context, event) => event.data.message == "user closed popup",
                 target: "#chooseFlow",
               },
               {
                 cond: (context, event) => (window.o.lastError = event.data),
-                actions: (context, event) => {
-                  window.o.lastError = event.data;
-                },
+                actions: setWindowLastError,
                 target: "#showError",
               },
             ],
@@ -371,14 +372,23 @@ const processDefinition = (processId: string) =>
           params: {
             view: {
               title: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.title"),
-              description: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.description"),
-              placeholder: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.placeholder"),
-              submitButtonText: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.submitButtonText"),
+              description: window.i18n(
+                "dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.description"
+              ),
+              placeholder: window.i18n(
+                "dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.placeholder"
+              ),
+              submitButtonText: window.i18n(
+                "dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.submitButtonText"
+              ),
             },
+            hideForgotLink: true,
           },
           dataSchema: yup
             .string()
-            .required(window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.stringRequired")),
+            .required(
+              window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterEncryptionPinParams.stringRequired")
+            ),
           navigation: {
             next: "#storeKey",
           },
@@ -391,9 +401,15 @@ const processDefinition = (processId: string) =>
           params: {
             view: {
               title: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterDecryptionPinParams.title"),
-              description: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterDecryptionPinParams.description"),
-              placeholder: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterDecryptionPinParams.placeholder"),
-              submitButtonText: window.i18n("dapps.o-onboarding.processes.loginWithTorus.enterDecryptionPinParams.submitButtonText"),
+              description: window.i18n(
+                "dapps.o-onboarding.processes.loginWithTorus.enterDecryptionPinParams.description"
+              ),
+              placeholder: window.i18n(
+                "dapps.o-onboarding.processes.loginWithTorus.enterDecryptionPinParams.placeholder"
+              ),
+              submitButtonText: window.i18n(
+                "dapps.o-onboarding.processes.loginWithTorus.enterDecryptionPinParams.submitButtonText"
+              ),
             },
           },
           dataSchema: yup
@@ -416,19 +432,20 @@ const processDefinition = (processId: string) =>
               await km.load();
               let privateKey: string | null = null;
               try {
-                privateKey = await km.getKey(
-                  context.data.accountAddress,
-                  context.data.decryptionPin
-                );
+                privateKey = await km.getKey(context.data.accountAddress, context.data.decryptionPin);
               } catch (e) {
-                context.messages["decryptionPin"] = window.i18n("dapps.o-onboarding.processes.loginWithTorus.invalidPin");
+                context.messages["decryptionPin"] = window.i18n(
+                  "dapps.o-onboarding.processes.loginWithTorus.invalidPin"
+                );
                 throw e;
               }
 
               if (!privateKey || privateKey == "") {
                 delete context.data.decryptionPin;
                 delete context.data.privateKey;
-                context.messages["decryptionPin"] = window.i18n("dapps.o-onboarding.processes.loginWithTorus.invalidPin");
+                context.messages["decryptionPin"] = window.i18n(
+                  "dapps.o-onboarding.processes.loginWithTorus.invalidPin"
+                );
                 throw new Error(context.messages["decryptionPin"]);
               }
 
@@ -448,16 +465,9 @@ const processDefinition = (processId: string) =>
           invoke: {
             src: async (context) => {
               const km = new KeyManager(null);
-              const account = RpcGateway.get().eth.accounts.privateKeyToAccount(
-                context.data.privateKey
-              );
+              const account = RpcGateway.get().eth.accounts.privateKeyToAccount(context.data.privateKey);
 
-              await km.addEoa(
-                account.address,
-                account.privateKey,
-                context.data.encryptionPin,
-                "torus"
-              );
+              await km.addEoa(account.address, account.privateKey, context.data.encryptionPin, "torus");
 
               context.data.accountAddress = account.address;
               sessionStorage.setItem("circlesKey", account.privateKey);
@@ -467,9 +477,7 @@ const processDefinition = (processId: string) =>
             },
             onDone: "#success",
             onError: {
-              actions: (context, event) => {
-                window.o.lastError = event.data;
-              },
+              actions: setWindowLastError,
               target: "#showError",
             },
           },

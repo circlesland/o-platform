@@ -1,9 +1,12 @@
 <script lang="ts">
+import DetailActionBar from "../../../../shared/molecules/DetailActionBar.svelte";
+import Icons from "../../../../shared/molecules/Icons.svelte";
 import { Currency } from "../../../../shared/currency";
 import {
   CrcHubTransfer,
   ProfileEvent,
 } from "../../../../shared/api/data/types";
+import { displayCirclesAmount } from "../../../../shared/functions/displayCirclesAmount";
 import { me } from "../../../../shared/stores/me";
 import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { onMount } from "svelte";

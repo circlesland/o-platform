@@ -1,18 +1,18 @@
 <script lang="ts">
-  import {me} from "../../../shared/stores/me";
-  import {onMount} from "svelte";
-  import {push} from "svelte-spa-router";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  import {Capability, CapabilityType, StatsDocument} from "../../../shared/api/data/types";
-  import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
-  import Icons from "../../../shared/molecules/Icons.svelte";
-  import {Environment} from "../../../shared/environment";
-  import {_} from "svelte-i18n";
-  import CitizensProgressBar from "../atoms/CitizensProgressBar.svelte";
-  import DashboardEventsWidget from "../molecules/DashboardEventsWidget.svelte";
-  import DashboardInvitesWidget from "../molecules/DashboardInvitesWidget.svelte";
-  import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import { me } from "../../../shared/stores/me";
+import { onMount } from "svelte";
+import { push } from "svelte-spa-router";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import { Capability, CapabilityType, StatsDocument } from "../../../shared/api/data/types";
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
+import Icons from "../../../shared/molecules/Icons.svelte";
+import { Environment } from "../../../shared/environment";
+import { _ } from "svelte-i18n";
+import CitizensProgressBar from "../atoms/CitizensProgressBar.svelte";
+import DashboardEventsWidget from "../molecules/DashboardEventsWidget.svelte";
+import DashboardInvitesWidget from "../molecules/DashboardInvitesWidget.svelte";
+import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 
   import Label from "../../../shared/atoms/Label.svelte";
   import LangSwitcher from "../../../shared/atoms/LangSwitcher.svelte";
@@ -23,21 +23,26 @@
 
   $: me;
 
-  let disableBanking: boolean = false;
-  let canVerify: boolean = false;
+let showInviteButton = false;
 
-  let showInviteButton = false;
+let profilesCount: number;
+let statsResult: any;
 
-  let profilesCount: number;
-  let statsResult: any;
+const init = async () => {
+  const pk = sessionStorage.getItem("circlesKey");
+  disableBanking = !pk;
 
-  const init = async () => {
-    const pk = sessionStorage.getItem("circlesKey");
-    disableBanking = !pk;
+  const sessionInfo = await me.getSessionInfo();
+  capabilities = sessionInfo.capabilities;
+  canVerify = capabilities && capabilities.find((o) => o.type == CapabilityType.Verify) && Environment.allowVerify;
 
-    const sessionInfo = await me.getSessionInfo();
-    capabilities = sessionInfo.capabilities;
-    canVerify = capabilities && capabilities.find((o) => o.type == CapabilityType.Verify) && Environment.allowVerify;
+  statsResult = await fetchStats();
+  profilesCount = statsResult.data.stats.profilesCount;
+
+  console.log("STATS", statsResult.data);
+};
+
+onMount(init);
 
     statsResult = await fetchStats();
     profilesCount = statsResult.data.stats.profilesCount;
@@ -66,6 +71,9 @@
 
     return result;
   }
+
+  return result;
+}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -74,17 +82,6 @@
     <DashboardInvitesWidget stats="{statsResult}" />
     <!-- <DashboardEventsWidget profilesCount="{profilesCount}" /> -->
     <div class="grid grid-cols-2 gap-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
-      <section class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card">
-        <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
-          <div class="pt-2 text-primary">
-            <!-- <Icons icon="dashpassport" /> -->
-            <Icon name="identification" class="w-20 h-20 heroicon" />
-          </div>
-          <div class="mt-4 text-3xl font-heading text-dark">
-            <LangSwitcher />
-          </div>
-        </div>
-      </section>
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
         on:click="{() => loadLink('/passport/profile')}">
@@ -146,10 +143,22 @@
           </div>
         </div>
       </section>
+        <section
+                class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+                on:click="{() => loadLink('/gallery/nfts')}">
+          <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+            <div class="pt-2 text-primary">
+              <Icon name="photograph" class="w-20 h-20 heroicon" />
+            </div>
+            <div class="mt-4 text-3xl font-heading text-dark">
+              {$_("dapps.o-dashboard.pages.home.gallery")}
+            </div>
+          </div>
+        </section>
       {#if canVerify}
         <section
-          class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-          on:click="{() => loadLink('/verification/verifications')}">
+                class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+                on:click="{() => loadLink('/verification/verifications')}">
           <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
             <div class="pt-2 text-primary">
               <Icon name="badge-check" class="w-20 h-20 heroicon" />

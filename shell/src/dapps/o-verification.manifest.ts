@@ -5,9 +5,10 @@ import RecentProfiles from "./o-verification/pages/RecentProfiles.svelte";
 import TrustToDo from "./o-verification/pages/TrustToDo.svelte";
 import { ContactsDappState } from "./o-contacts.manifest";
 import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
-import { UniquenessCheck } from "../shared/facetec/uniquenessCheck";
 import { Environment } from "../shared/environment";
 import { performOauth } from "./o-humanode/processes/performOauth";
+import {CapabilityType} from "../shared/api/data/types";
+import {me} from "../shared/stores/me";
 
 const verifications: Page<any, ContactsDappState> = {
   routeParts: ["=verifications"],
@@ -36,26 +37,18 @@ const verificationJumplist: Jumplist<any, ContactsDappState> = {
   isSystem: false,
   routeParts: ["=actions"],
   items: async (params, runtimeDapp) => {
-    if (Environment.allowVerify) {
+    const sessionInfo = await me.getSessionInfo();
+    const capabilities = sessionInfo.capabilities;
+    const canVerify = capabilities && capabilities.find((o) => o.type == CapabilityType.Verify) && Environment.allowVerify;
+    if (canVerify) {
       return [
         {
           key: "verify-self",
           icon: "check",
           title: "Verify yourself",
-          action: async () => {
-            //const isUnique = await new UniquenessCheck().isFaceUniqueInGroup("f398jpwoef23rwfß3fiocöafawkpwf")
-            //console.log("IsUnique:", isUnique);
+          action: () => {
             window.o.runProcess(performOauth, {
               origin: "dashboard",
-              oauthRequest: {
-                clientId:
-                  "1087329459459-3t3i510j124ni65r96g4fjoflnelnj3v.apps.googleusercontent.com",
-                redirectUri: "https://localhost:5000/",
-                scope: "https://www.googleapis.com/auth/drive",
-                accessType: "offline",
-                responseType: "code",
-                prompt: "consent",
-              },
               successAction: () => {},
             });
           },

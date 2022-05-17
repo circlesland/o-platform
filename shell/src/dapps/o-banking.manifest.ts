@@ -18,6 +18,8 @@ import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { loadProfileByProfileId } from "../shared/api/loadProfileByProfileId";
 import { Profile } from "../shared/api/data/types";
 import {push} from "svelte-spa-router";
+import Erc721Detail from "./o-banking/pages/Erc721Detail.svelte";
+// import {getUbi, getUbiInfo} from "../shared/ubiTimer2";
 
 const transactions: Page<any, BankingDappState> = {
   routeParts: ["=transactions"],
@@ -77,6 +79,20 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
           });
         },
       },
+      /*{
+        key: "requestUBI",
+        icon: "cash",
+        title: "Request UBI",
+        displayHint: "encouraged",
+        category: "Banking",
+        action: async () => {
+          const safeInfo = await getUbiInfo();
+          await getUbi({
+            nextUbiAt: Date.now(),
+            tokenAddress: safeInfo.tokenAddress
+          });
+        },
+      }*/
     ];
   },
 };
@@ -98,6 +114,15 @@ const assets: Page<any, BankingDappState> = {
   icon: "assets",
   type: "page",
 };
+/*
+const nfts: Page<any, BankingDappState> = {
+  routeParts: ["=nfts"],
+  component: Erc721Detail,
+  title: "NFTs",
+  icon: "assets",
+  type: "page",
+};
+ */
 
 const transferTrigger: Trigger<any, BankingDappState> = {
   routeParts: ["=send", ":amount", ":to"],
@@ -130,6 +155,8 @@ const transferTriggerRedirect: Trigger<any, BankingDappState> = {
       },
       successAction:(context) => {
         window.location = params.redirectUrl;
+        /*console.log("Transfer completed");
+        window.close();*/
       }
     });
   },

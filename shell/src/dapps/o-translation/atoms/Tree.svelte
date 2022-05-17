@@ -1,20 +1,17 @@
 <script lang="ts">
 import { CTreeNode } from "../classes/treenode";
 
-
-
 import StringEditor from "./StringEditor.svelte";
 
 export let rootNode: CTreeNode;
-
-
 </script>
 
-<span on:click={() => {
-    rootNode.toggleExpanded(); 
+<span
+  on:click="{() => {
+    rootNode.toggleExpanded();
     rootNode = rootNode;
-    }}>
-    {rootNode.key}:
+  }}">
+  {rootNode.key}:
 </span>
 
 {#if rootNode.isExpanded}

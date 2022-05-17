@@ -28,9 +28,23 @@ query init {
       displayTimeCircles
       displayCurrency
       cityGeonameid
+      shops {
+        id
+      }
       city {
         geonameid
         name
+        country
+      }
+      shippingAddresses {
+        id
+        name
+        street
+        house
+        city
+        cityGeonameid
+        zip
+        state
         country
       }
       memberships {
@@ -248,6 +262,9 @@ query myProfile {
     displayTimeCircles
     displayCurrency
     cityGeonameid
+    shops {
+      id
+    }
     city {
       geonameid
       name
@@ -268,6 +285,9 @@ query myProfile {
         description
         avatarUrl
         cityGeonameid
+        shops {
+          id
+        }
         city {
           geonameid
           country
@@ -743,6 +763,13 @@ query organisations($pagination: PaginationArgs) {
       name
       country
     }
+    shops {
+      id
+      name
+      description
+      largeBannerUrl
+      smallBannerUrl
+    }
   }
 }
 
@@ -770,10 +797,18 @@ query organisationsByAddress($addresses: [String!]!) {
     createdAt
     name
     avatarUrl
+    displayName
     city {
       geonameid
       name
       country
+    }
+    shops {
+      id
+      name
+      description
+      smallBannerUrl
+      largeBannerUrl
     }
     members {
       ... on Organisation {
@@ -1171,6 +1206,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           simplePickupCode
           lines {
             amount
+            metadata
             offer {
               id
               title
@@ -1199,9 +1235,14 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           createdAt
           createdByAddress
           total
+          deliveryMethod {
+            id
+            name
+          }
           lines {
             id
             amount
+            metadata
             offer {
               id
               pictureUrl
@@ -1336,6 +1377,25 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
           description
           pricePerUnit
           timeCirclesPriceShare
+        }
+      }
+      ...on Erc721Tokens {
+        lastUpdatedAt
+        balances {
+          token_no
+          token_symbol
+          token_name
+          token_address
+          token_owner_profile {
+            id
+            circlesAddress
+            displayName
+            avatarUrl
+            firstName
+            lastName
+          }
+          token_no
+          token_url
         }
       }
       ... on CrcBalances {
@@ -1501,10 +1561,15 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             circlesAddress
             displayCurrency
           }
+          deliveryMethod {
+            id
+            name
+          }
           total
           lines {
             id
             amount
+            metadata
             offer {
               id
               version
@@ -1598,6 +1663,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
           lines {
             id
             amount
+            metadata
             offer {
               id
               version
@@ -1726,73 +1792,8 @@ query findInvitationCreator($code: String!) {
   }
 }
 
-query getAllStrings {
-  getAllStrings {
-    lang
-    key
-    version
-    value
-  }
-}
-
-query getAllStringsByLanguage($lang: String) {
-  getAllStringsByLanguage(lang: $lang) {
-    lang
-    key
-    createdBy
-    version
-    value
-  }
-}
-
-query getAllStringsByMaxVersion {
-  getAllStringsByMaxVersion {
-    lang
-    key
-    createdBy
-    version
-    value
-  }
-}
-
-query getStringByMaxVersion($lang: String, $key: String) {
-  getStringByMaxVersion(lang: $lang, key: $key) {
-    lang
-    key
-    createdBy
-    version  
-    value
-  }
-}
-
-query getOlderVersionsByKeyAndLang($key: String, $lang: String) {
-  getOlderVersionsByKeyAndLang(lang: $lang, key: $key) {
-    lang
-    key
-    createdBy
-    version
-    value
-  }
-}
-
-query getStringByLanguage($lang: String) {
-  getStringByLanguage(lang: $lang) {
-    lang
-    key
-    createdBy
-    version
-    value
-  }
-}
-
-query getAvailableLanguages {
-  getAvailableLanguages {
-    lang
-  }
-}
-
-query shop($id:Int!) {
-  shop(id:$id) {
+query shop($id: Int!) {
+  shop(id: $id) {
     id
     name
     description
@@ -1800,21 +1801,44 @@ query shop($id:Int!) {
     largeBannerUrl
     openingHours
     private
+    enabled
     productListingStyle
+    shopListingStyle
+    purchaseMetaDataKeys
+    tosLink
+    privacyPolicyLink
+    healthInfosLink
+    ownerId
     owner {
       id
       name
       avatarUrl
       circlesAddress
     }
+    deliveryMethods {
+      id
+      name
+    }
     categories {
       id
       name
       description
       sortOrder
+      shopId
+      smallBannerUrl
+      largeBannerUrl
+      private
+      enabled
+      createdAt
+      productListingStyle
       entries {
         id
         sortOrder
+        private
+        productId
+        productVersion
+        shopCategoryId
+        enabled
         product {
           id
           version
@@ -1834,8 +1858,8 @@ query shop($id:Int!) {
   }
 }
 
-query shops {
-  shops {
+query shops($ownerId: Int) {
+  shops(ownerId: $ownerId) {
     id
     createdAt
     name
@@ -1844,9 +1868,15 @@ query shops {
     largeBannerUrl
     openingHours
     private
+    enabled
     shopListingStyle
     productListingStyle
     sortOrder
+    ownerId
+    deliveryMethods {
+      id
+      name
+    }
     owner {
       id
       name
@@ -1857,12 +1887,64 @@ query shops {
       name
       street
       house
-      city {
-        name
-        country
-      }
       zip
+      city
       state
+      country
+    }
+  }
+}
+
+query shopsById($ids: [Int!]!) {
+  shopsById(ids: $ids) {
+    id
+    createdAt
+    name
+    description
+    smallBannerUrl
+    largeBannerUrl
+    openingHours
+    private
+    enabled
+    shopListingStyle
+    productListingStyle
+    sortOrder
+    ownerId
+    deliveryMethods {
+      id
+      name
+    }
+    owner {
+      id
+      name
+      avatarUrl
+      circlesAddress
+    }
+    pickupAddress {
+      name
+      street
+      house
+      zip
+      city
+      state
+      country
+    }
+  }
+}
+
+query clientAssertionJwt {
+  clientAssertionJwt
+}
+
+query offersByIdAndVersion($query: [OfferByIdAndVersionInput!]!) {
+  offersByIdAndVersion(query: $query) {
+    id
+    title
+    pictureUrl
+    pricePerUnit
+    tags {
+      typeId
+      value
     }
   }
 }

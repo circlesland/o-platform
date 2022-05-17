@@ -118,7 +118,7 @@ function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
         </div>
         <div class="">
           <div class="w-full form-control">
-            <label class="pl-0 label" for="newsletter">
+            <label class="pl-0 label" for="emailAddress">
               <div
                 class="w-full text-left cursor-pointer"
                 on:click="{() =>

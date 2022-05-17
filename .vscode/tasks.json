@@ -1,0 +1,14 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "build:libs",
+      "path": "shell/",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "npm: build:libs - shell",
+      "detail": "cd ../ && sh build_libs.sh && cd shell && npm run devs"
+    }
+  ]
+}

@@ -4,8 +4,7 @@ import QrScanner from "qr-scanner";
 import { onDestroy, onMount } from "svelte";
 import { push } from "svelte-spa-router";
 import { showToast } from "../../../shared/toast";
-import Label from "../../../shared/atoms/Label.svelte";
-import {_} from "svelte-i18n";
+import { _ } from "svelte-i18n";
 import { mySales } from "../../../shared/stores/mySales";
 
 let saleEvent: ProfileEvent;

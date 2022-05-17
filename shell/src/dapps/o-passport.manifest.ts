@@ -3,7 +3,6 @@ import Account from "./o-passport/pages/Account.svelte";
 import VerifyEmail from "./o-passport/pages/VerifyEmail.svelte";
 
 import Settings from "./o-passport/pages/Settings.svelte";
-import Login from "./o-passport/pages/Login.svelte";
 import { logout } from "./o-passport/processes/logout";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
@@ -51,13 +50,15 @@ const settings: Page<any, DappState> = {
   type: "page",
 };
 
-// Same as 'index' but accepts a ':code' parameter that will be passed to 'Home'
-const login: Page<any, DappState> = {
+const logmeout: Trigger<{}, DappState> = {
   isSystem: true,
-  routeParts: ["=login", ":code"],
-  component: Login,
-  title: "Login with Circles",
-  type: "page",
+  anonymous: true,
+  routeParts: ["=actions", "=logout"],
+  title: "Log Out",
+  type: "trigger",
+  action: async (params) => {
+    window.o.runProcess(logout, {});
+  },
 };
 
 const logmeout: Trigger<{}, DappState> = {
@@ -163,5 +164,5 @@ export const passport: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, profile, account, settings, login, verifyEmail, logmeout],
+  routables: [index, profile, account, settings, verifyEmail, logmeout],
 };

@@ -4,42 +4,32 @@ import OfferCard from "../atoms/OfferCard.svelte";
 import { onMount } from "svelte";
 import { Subscription } from "rxjs";
 
-import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-import { offers } from "../../../shared/stores/offers";
+import { Shop, ShopCategoryEntry, ShopDocument, ShopQueryVariables } from "../../../shared/api/data/types";
 
-import {
-  Offer,
-  Shop,
-  ShopDocument, ShopQueryVariables,
-} from "../../../shared/api/data/types";
-
-import {ApiClient} from "../../../shared/apiConnection";
+import { ApiClient } from "../../../shared/apiConnection";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
-export let storeId:number;
+export let shopId: number;
 
-let shop: Shop|null = null;
-let offers: Offer[] = [];
+let shop: Shop | null = null;
+let categoryEntries: ShopCategoryEntry[] = [];
 let shellEventSubscription: Subscription;
+let loading = true;
 
 onMount(async () => {
-  shop = await ApiClient.query<Shop, ShopQueryVariables>(
-          ShopDocument,
-          {
-            id: parseInt(storeId.toString())
-          }
-  );
-
-  if (!shop || !shop.categories){
-    await push("/not-found");
+  shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
+    id: parseInt(shopId.toString()),
+  });
+  if (!shop || !shop.categories) {
+    loading = false;
     return;
   }
-
-  offers = shop.categories.flatMap(o => o.entries.flatMap(o => o.product));
+  categoryEntries = shop.categories.flatMap((o) => o.entries);
+  loading = false;
 });
 </script>
 
@@ -51,35 +41,45 @@ onMount(async () => {
       <header class=" rounded-xl">
         <div class="relative overflow-hidden bg-white rounded-xl image-wrapper">
           <img
-            src="/images/market/circlesShopsm.jpg"
-            alt="
-                "
+            src="{shop ? shop.smallBannerUrl : ''}"
+            alt="{shop ? shop.name : ''}"
             class="w-full rounded-xl opacity-60 object-position: center center;  " />
           <div
             class="absolute right-0 pt-1 pb-1 pl-4 pr-2 mt-2 text-xl rounded-l-full sm:pb-2 sm:pt-3 sm:text-3xl font-heading top-2 bg-light-lightest">
-            <span class="inline-block">CIRCLES.LAND SHOP</span>
+            <span class="inline-block">{shop ? shop.name : ""}</span>
           </div>
         </div>
       </header>
     </div>
   </section>
-  <!-- <div class="flex flex-wrap items-stretch space-x-4 space-y-8"> -->
-  <div
-    class="grid grid-cols-1 mb-20 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid">
-    <!--
-    <List
-      listItemType="{Offer}"
-      listItemComponent="{OfferCard}"
-      fetchQuery="{OffersDocument}"
-      fetchQueryArguments="{listArguments}"
-      dataKey="offers"
-      dataLimit="{100}" />-->
-    {#if offers}
-      {#each offers as offer}
-        <OfferCard param="{offer}" />
+  <div class="grid grid-cols-1 mb-10 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid">
+    {#if categoryEntries && categoryEntries.length}
+      {#each categoryEntries as categoryEntry}
+        <OfferCard entry="{categoryEntry}" shopId="{shopId}" deliveryMethods="{shop.deliveryMethods}" />
       {/each}
+    {:else if !loading}
+      No offers
     {/if}
   </div>
+  {#if shop}
+    <div class="mb-20 text-center text-2xs">
+      <h4 class="mb-2">{shop.name}</h4>
+      <div class="flex flex-row justify-center space-x-4">
+        {#if shop.privacyPolicyLink}
+          <a href="{shop.privacyPolicyLink}" target="_blank" class="link link-primary" alt="Privacy Policy"
+            >Privacy Policy</a>
+        {/if}
+        {#if shop.tosLink}
+          <a href="{shop.tosLink}" target="_blank" class="link link-primary" alt="Terms of Service">Terms of Service</a>
+        {/if}
+
+        {#if shop.healthInfosLink}
+          <a href="{shop.healthInfosLink}" target="_blank" class="link link-primary" alt="Health Infos"
+            >Health Information</a>
+        {/if}
+      </div>
+    </div>
+  {/if}
 </div>
 
 <style>

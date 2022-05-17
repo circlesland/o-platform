@@ -9,9 +9,11 @@ import { ApiClient } from "../../../shared/apiConnection";
 import Tree from "../atoms/Tree.svelte";
 import { CTreeNode } from "../classes/treenode";
 
-
 let fullI18nData: I18n[] = [];
 let displayedTree: CTreeNode = new CTreeNode("root");
+let keyFilter: string = "";
+let valueFilter: string = "";
+let completeTree;
 
 async function createTree(rootData: I18n[]): Promise<CTreeNode> {
   let cTreenode = new CTreeNode("root");
@@ -28,7 +30,7 @@ async function createTree(rootData: I18n[]): Promise<CTreeNode> {
       }
     }
   }
-
+  console.log(cTreenode)
   return cTreenode;
 }
 
@@ -53,10 +55,31 @@ async function filterItems(keyFilter: string, valueFilter: string, i18nData: I18
 async function refreshView() {
   let filteredI18nData = await filterItems(keyFilter, valueFilter, fullI18nData);
   displayedTree = await createTree(filteredI18nData);
+  console.log("blablabal", displayedTree)
 }
 
-let keyFilter: string = "";
-let valueFilter: string = "";
+async function logTree() {
+  let childTree = {};
+  let data = await getI18nData();
+  completeTree = await createTree(data);
+
+  console.log(completeTree);
+
+  loppOverChildren(completeTree);
+
+  function loppOverChildren(tree) {
+    if (tree._children.length == 0) {
+      console.log("end");
+    } else {
+      for (let i = 0; i < tree._children.length; i++) {
+        console.log(tree._key);
+        loppOverChildren(tree._children[i]);
+      }
+    }
+  }
+}
+
+logTree();
 </script>
 
 <section>

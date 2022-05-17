@@ -63,11 +63,11 @@ export class CTreeNode {
     return this.children.find((o) => o.key == keyPart);
   }
 
-  public createSatateSnapshot(): StateSnapshot{
+  public createStateSnapshot(): StateSnapshot{
     return "";
   }
 
-  public restroeStateSnapshot(stateSnapshot: StateSnapshot) {
+  public restoreStateSnapshot(stateSnapshot: StateSnapshot) {
 
   }
 }

@@ -1,8 +1,8 @@
 import {
   AggregateType,
-  CompletePurchaseDocument,
+  CompletePurchaseDocument, CompletePurchaseMutationVariables,
   EventPayload,
-  EventType,
+  EventType, Invoice,
   ProfileEvent,
   ProfileEventFilter,
   Purchased, Purchases,
@@ -57,18 +57,10 @@ export class MyPurchases extends PagedEventQuery {
   }
 
   async completePurchase(invoiceId: number) {
-    const apiClient = await window.o.apiClient.client.subscribeToResult();
-    const completedInvoice = await apiClient.mutate({
-      mutation: CompletePurchaseDocument,
-      variables: {
-        invoiceId: invoiceId
-      }
+    const completedInvoice = await ApiClient.mutate<Invoice, CompletePurchaseMutationVariables>(CompletePurchaseDocument, {
+      invoiceId: invoiceId
     });
-    if (!completedInvoice.data?.completePurchase) {
-      throw new Error(window.i18n("shared.stores.purchases.errors.couldNotComplete"));
-    }
-
-    await this.findSingleItemFallback([AggregateType.Purchases], completedInvoice.data.purchase.id);
+    await this.findSingleItemFallback([AggregateType.Purchases], completedInvoice.purchaseId.toString());
     this.refresh();
   }
 

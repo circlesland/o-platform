@@ -1,5 +1,5 @@
-import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
 import {
   normalizePromptField,
   prompt,
@@ -7,9 +7,9 @@ import {
 } from "@o-platform/o-process/dist/states/prompt";
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import DropDownProfile from "@o-platform/o-editors/src/dropdownItems/DropDownProfile.svelte";
-import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelectEditorContext";
-import { AvataarGenerator } from "../avataarGenerator";
-import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
+import {DropdownSelectorParams} from "@o-platform/o-editors/src/DropdownSelectEditorContext";
+import {AvataarGenerator} from "../avataarGenerator";
+import {EditorViewContext} from "@o-platform/o-editors/src/shared/editorViewContext";
 import {
   Contact,
   Profile,
@@ -17,13 +17,12 @@ import {
   ProfilesByNameDocument, ProfilesByNameQueryVariables,
 } from "./data/types";
 import {ApiClient} from "../apiConnection";
-import {Observable, TeardownLogic} from "rxjs";
+import {Observable} from "rxjs";
 import {contacts} from "../stores/contacts";
+import {trustFromContactMetadata} from "../functions/trustFromContactMetadata";
 
-export function promptCirclesSafe<
-  TContext extends ProcessContext<any>,
-  TEvent extends PlatformEvent
->(spec: {
+export function promptCirclesSafe<TContext extends ProcessContext<any>,
+  TEvent extends PlatformEvent>(spec: {
   field: PromptField<TContext>;
   onlyWhenDirty?: boolean;
   id?: string;
@@ -49,7 +48,8 @@ export function promptCirclesSafe<
   };
 }) {
   const field = normalizePromptField(spec.field);
-  function resultComparer(a:Profile,b:Profile) {
+
+  function sortByNameComparer(a: Profile, b: Profile) {
     let firstNameOrder = 0;
     if (a.firstName > b.firstName)
       firstNameOrder = 1;
@@ -72,6 +72,44 @@ export function promptCirclesSafe<
       return lastNameOrder;
     }
   }
+
+  function sortByDistanceComparer(contacts: Contact[]) {
+    const contactsBySafeAddress = contacts.toLookup(o => o.contactAddress, o => o);
+    return (a: Profile, b: Profile) => {
+      // A profile is considered near when it is a contact of mine
+      const aContact = contactsBySafeAddress[a.circlesAddress];
+      const bContact = contactsBySafeAddress[b.circlesAddress];
+      if (aContact && !bContact) {
+        return 1;
+      } else if (bContact && !aContact) {
+        return -1;
+      } else if (!aContact && !bContact) {
+        return 0;
+      }
+
+      const aTrust = trustFromContactMetadata(aContact);
+      const bTrust = trustFromContactMetadata(bContact)
+
+      if (aTrust.trustIn && !bTrust.trustIn) {
+        return 1;
+      } else if (!aTrust.trustIn && bTrust.trustIn) {
+        return -1;
+      }
+
+      if (aTrust.trustOut && !bTrust.trustOut) {
+        return 1;
+      } else if (!aTrust.trustOut && bTrust.trustOut) {
+        return -1;
+      }
+
+      return aContact.metadata.length > bContact.metadata.length
+        ? 1
+        : aContact.metadata.length < bContact.metadata.length
+          ? -1
+          : 0;
+    };
+  }
+
   return prompt<TContext, any>({
     id: spec.id ?? field.name,
     field: spec.field,
@@ -95,16 +133,19 @@ export function promptCirclesSafe<
             : undefined;
         },
         find: (filter?: string) => {
+          let _contacts: Contact[] = [];
           const resultsObservable = new Observable<Profile[]>((observer) => {
             contacts.subscribe(c => {
+              _contacts = c;
               const filteredCachedContacts = c.filter(contact =>
                 ((contact.contactAddress_Profile?.firstName ?? "")
-                + (contact.contactAddress_Profile?.firstName ?? "")
-                + (contact.contactAddress_Profile?.circlesAddress ?? ""))
+                  + (contact.contactAddress_Profile?.firstName ?? "")
+                  + (contact.contactAddress_Profile?.circlesAddress ?? ""))
                   .toLowerCase()
                   .indexOf(filter.toLowerCase()) > -1
-              ).sort((a,b) => resultComparer(a.contactAddress_Profile, b.contactAddress_Profile));
-              observer.next(filteredCachedContacts.map(o => o.contactAddress_Profile));
+              ).sort((a, b) => sortByNameComparer(a.contactAddress_Profile, b.contactAddress_Profile));
+              const sortByDistanceCmp = sortByDistanceComparer(_contacts);
+              observer.next(filteredCachedContacts.map(o => o.contactAddress_Profile).sort(sortByDistanceCmp));
             })();
 
             ApiClient.query<Profile[], ProfilesByNameQueryVariables>(ProfilesByNameDocument, {
@@ -123,9 +164,10 @@ export function promptCirclesSafe<
                     };
                   })
                   .reverse()
-                : []).sort(resultComparer);
+                : []).sort(sortByNameComparer);
 
-              observer.next(searchResult);
+              const sortByDistanceCmp = sortByDistanceComparer(_contacts);
+              observer.next(searchResult.sort(sortByDistanceCmp));
               observer.complete();
             });
           });
