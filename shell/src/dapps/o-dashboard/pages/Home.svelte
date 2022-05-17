@@ -132,7 +132,6 @@ async function fetchStats() {
           </div>
         </div>
       </section>
-      {#if canVerify}
         <section
                 class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
                 on:click="{() => loadLink('/gallery/nfts')}">
@@ -145,7 +144,6 @@ async function fetchStats() {
             </div>
           </div>
         </section>
-      {/if}
       {#if canVerify}
         <section
                 class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
