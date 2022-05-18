@@ -36,6 +36,10 @@ const imageCache = {
   "https://ipfs.io/ipfs/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC": {
     "preview": "/images/nfts/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC_preview.jpg",
     "full": "/images/nfts/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC.png"
+  },
+  "ipfs://Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC": {
+    "preview": "/images/nfts/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC_preview.jpg",
+    "full": "/images/nfts/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC.png"
   }
 };
 
