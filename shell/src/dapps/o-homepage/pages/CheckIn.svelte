@@ -3,50 +3,22 @@ import "../../../shared/css/tailwind.css";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { onMount } from "svelte";
-import { ApiClient } from "../../../shared/apiConnection";
 import {
-  Organisation,
-  OrganisationsByAddressDocument,
-  OrganisationsByAddressQueryVariables,
-  SessionInfo,
   Shop,
 } from "../../../shared/api/data/types";
 import { getSessionInfo } from "../../o-passport/processes/identify/services/getSessionInfo";
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
-import { Environment } from "../../../shared/environment";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
-
 export let address = "";
-export let table = "";
 
 let loading = true;
-let hostProfile: Organisation;
 let shop: Shop;
 
 onMount(async () => {
   sessionStorage.removeItem("desiredRoute");
-
-  const queryResults = await Promise.all([
-    ApiClient.query<Organisation[], OrganisationsByAddressQueryVariables>(OrganisationsByAddressDocument, {
-      addresses: [address],
-    }),
-    getSessionInfo(),
-  ]);
-
-  const hostProfileResult = <Organisation[]>queryResults[0];
-  const sessionInfo = <SessionInfo>queryResults[1];
-
-  hostProfile = hostProfileResult.length > 0 ? hostProfileResult[0] : undefined;
-
-  shop = hostProfile?.shops?.length > 0 ? hostProfile.shops[0] : undefined;
-
-  loading = false;
-
-  if (!shop) {
-    return;
-  }
+  const sessionInfo = await getSessionInfo();
 
   sessionStorage.setItem(
     "desiredRoute",
@@ -56,12 +28,11 @@ onMount(async () => {
     })
   );
 
-  Environment.setShopMetadata(shop.id, JSON.stringify({ minted: false, mintedAt: undefined }));
-
-  if (sessionInfo.hasProfile && hostProfile?.shops.length > 0) {
+  if (!sessionStorage.getItem("notFirst")) {
     window.runInitMachine();
-    return;
   }
+
+  sessionStorage.setItem("notFirst", "true");
 });
 </script>
 
