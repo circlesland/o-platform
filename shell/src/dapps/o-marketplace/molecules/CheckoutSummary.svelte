@@ -58,7 +58,7 @@ onMount(async () => {
 let classes: string;
 
 function submit() {
-  if (shop.purchaseMetaDataKeys && metadataError) {
+  if (context.data.shop.shop.purchaseMetaDataKeys && metadataError) {
     return;
   }
 
