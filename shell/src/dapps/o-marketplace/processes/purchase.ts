@@ -17,6 +17,10 @@ import {
   EventType,
   CreatePurchaseMutationVariables,
   Purchase,
+  OffersByIdAndVersionQuery,
+  OffersByIdAndVersionDocument,
+  OfferByIdAndVersionInput,
+  QueryOffersByIdAndVersionArgs,
 } from "../../../shared/api/data/types";
 import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
@@ -33,19 +37,20 @@ import { myPurchases } from "../../../shared/stores/myPurchases";
 import { Environment } from "../../../shared/environment";
 import { setWindowLastError } from "../../../shared/processes/actions/setWindowLastError";
 import { ApiClient } from "../../../shared/apiConnection";
+import { ShoppingCartItem } from "../types/ShoppingCartItem";
 
 export type PurchaseContextData = {
-  items: (Offer & { shopId: number })[];
+  items: ShoppingCartItem[];
   metadata?: string;
   sellerProfile?: Profile;
-  invoices: Invoice[];
-  pickupCode: string;
-  simplePickupCode: string;
-  payableInvoices: {
+  invoices?: Invoice[];
+  pickupCode?: string;
+  simplePickupCode?: string;
+  payableInvoices?: {
     invoice: Invoice;
     path: TransitivePath;
   }[];
-  paidInvoices: {
+  paidInvoices?: {
     invoice: Invoice;
     path: TransitivePath;
   }[];
@@ -69,7 +74,24 @@ const processDefinition = (processId: string) =>
           setFirstSellerAsSellerProfile,
           loadAndSetFirstShopMetadata,
         ],
-        always: "#checkoutDelivery",
+        invoke: {
+          src: async (context: PurchaseContext) => {
+            // context.data.items[0].offerId = 8273642837462;
+            let offers = await ApiClient.query<Offer[], QueryOffersByIdAndVersionArgs>(OffersByIdAndVersionDocument, {
+              query: context.data.items.map((o) => {
+                return <OfferByIdAndVersionInput>{
+                  offerId: o.offerId,
+                  offerVersion: o.version,
+                };
+              }),
+            });
+
+            console.log("ITEM", offers);
+
+            return context.data;
+          },
+          onDone: "#checkoutDelivery",
+        },
       },
 
       checkoutDelivery: prompt<PurchaseContext, any>({

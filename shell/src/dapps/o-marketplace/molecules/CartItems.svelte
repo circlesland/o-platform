@@ -9,6 +9,10 @@ import { onMount } from "svelte";
 import { assetBalances } from "../../../shared/stores/assetsBalances";
 import { Currency } from "../../../shared/currency";
 import { BN } from "ethereumjs-util";
+import { ShoppingCartItem } from "../types/ShoppingCartItem";
+import { PurchaseContext } from "../processes/purchase";
+import { Continue } from "@o-platform/o-process/dist/events/continue";
+import Item from "../../../shared/molecules/Select/Item.svelte";
 
 export let cartContents;
 export let cartContentsByShop;
@@ -40,43 +44,48 @@ function hasSufficientFunds(paymentAmountBySeller: PaymentAmountsBySeller) {
   return parseFloat(totalPaymentAmount.toFixed(8)) <= parseFloat(totalCrcBalance.toFixed(8));
 }
 
+$: shops = shops;
+
 async function refresh() {
   isLoading = true;
-  const data = await $cartContentsByShop;
-  const contentsByShop: {
-    [shopId: number]: {
-      items: any[];
-      shop: Shop;
-    };
-  } = data.toLookup(
-    (o) => o.shop.owner.circlesAddress,
-    (o) => {
-      return {
-        items: o.items,
-        shop: o.shop,
-      };
-    }
-  );
+  shops = await $cartContentsByShop;
+  console.log("SHIPS", shops);
 
-  const amountsBySeller = Object.entries(contentsByShop).reduce((p, c) => {
-    p[c[0]] = c[1].items.reduce((q, d) => q + d.item.qty * d.item.item.pricePerUnit, 0);
-    return p;
-  }, {});
+  // const contentsByShop: {
+  //   [shopId: number]: {
+  //     items: any[];
+  //     shop: Shop;
+  //   };
+  // } = data.toLookup(
+  //   (o) => o.shop.owner.circlesAddress,
+  //   (o) => {
+  //     return {
+  //       items: o.items,
+  //       shop: o.shop,
+  //     };
+  //   }
+  // );
 
-  shops = Object.values(contentsByShop).map((o) => {
-    return {
-      ...o,
-      total: amountsBySeller[o.shop.owner.circlesAddress],
-    };
-  });
+  // const amountsBySeller =
+  // Object.entries(contentsByShop).reduce((p, c) => {
+  //   p[c[0]] = c[1].items.reduce((q, d) => q + d.item.qty * d.item.pricePerUnit, 0);
+  //   return p;
+  // }, {});
 
-  payableStatusBySeller = await Liquidity.getPayableStatusBySeller($me.circlesAddress, amountsBySeller);
+  // shops = Object.values(contentsByShop).map((o) => {
+  //   return {
+  //     ...o,
+  //     total: o.total,
+  //   };
+  // });
 
-  insufficientFunds = !hasSufficientFunds(amountsBySeller);
+  // payableStatusBySeller = await Liquidity.getPayableStatusBySeller($me.circlesAddress, amountsBySeller);
+
+  // insufficientFunds = !hasSufficientFunds(amountsBySeller);
   isLoading = false;
 }
 
-onMount(() => {
+onMount(async () => {
   if (!cartContentsByShop) {
     return;
   }
@@ -85,9 +94,20 @@ onMount(() => {
 
 async function checkout(shopIndex) {
   const cartContents = await $cartContentsByShop;
-  // context.data.items = cartContents[shopIndex].items;
 
-  window.o.runProcess(purchase, {});
+  const shoppinCartItems: ShoppingCartItem[] = cartContents[shopIndex].items
+    .flatMap((o) => o.item)
+    .map((o) => {
+      return {
+        offerId: o.item.id,
+        shopId: o.shopId,
+        qty: o.qty,
+        version: o.item.version,
+        title: o.item.title,
+      };
+    });
+
+  window.o.runProcess(purchase, { items: shoppinCartItems });
 }
 
 function addOneItem(id) {
@@ -124,8 +144,12 @@ function removeAllItems(id) {
 }
 </script>
 
-{#if shops.length}
+{#if isLoading}
+  Loading..
+{:else}
+  {console.log("THE SHOPS DRIN: ", shops)}
   {#each shops as displayShop, shopIndex}
+    {console.log("DISPLAYSHOP", displayShop)}
     {#if displayShop}
       <div class="flex flex-col w-full" class:mt-8="{shopIndex >= 1}">
         <header class=" rounded-xl headerImageContainer">
@@ -142,25 +166,25 @@ function removeAllItems(id) {
       {#each displayShop.items as { item }, index}
         <div class="flex items-center justify-between w-full pb-6 mb-6 border-b" class:mt-8="{index == 0}">
           <div class="flex items-center w-full">
-            <img class="w-16 rounded-full mask mask-circle" src="{item.item.pictureUrl}" alt="{item.item.title}" />
+            <img class="w-16 rounded-full mask mask-circle" src="{item.pictureUrl}" alt="{item.title}" />
             <div class="flex flex-col items-start w-full ml-2 space-y-2">
               <div class="flex flex-row justify-between w-full">
-                <div class="md:text-md">{item.item.title}</div>
+                <div class="md:text-md">{item.title}</div>
                 <div
                   class="self-center cursor-pointer text-dark"
-                  on:click="{() => removeAllItems(item.item.id)}"
+                  on:click="{() => removeAllItems(item.id)}"
                   class:hidden="{!editable}">
                   <Icons icon="trash" size="4" />
                 </div>
               </div>
               <div class="flex items-center justify-end w-full">
                 <div class="flex-grow text-sm text-left text-dark-lightest">
-                  1 {item.item.unitTag ? item.item.unitTag.value : "item"}
+                  1 {item.unitTag ? item.unitTag.value : "item"}
                 </div>
                 <div class="flex pr-8">
                   <div
                     class="font-semibold cursor-pointer span"
-                    on:click="{() => removeOneItem(item.item.id)}"
+                    on:click="{() => removeOneItem(item.id)}"
                     class:hidden="{!editable}">
                     -
                   </div>
@@ -172,12 +196,12 @@ function removeAllItems(id) {
                   </div>
                   <span
                     class="font-semibold cursor-pointer"
-                    on:click="{() => addOneItem(item.item.id)}"
+                    on:click="{() => addOneItem(item.id)}"
                     class:hidden="{!editable}">+</span>
                 </div>
                 <div class="items-center">
                   <span class="inline-block whitespace-nowrap"
-                    >{item.item.pricePerUnit} <span class="font-enso"> €</span></span>
+                    >{item.pricePerUnit} <span class="font-enso"> €</span></span>
                 </div>
               </div>
             </div>
