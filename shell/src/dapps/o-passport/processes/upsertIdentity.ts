@@ -163,7 +163,7 @@ const processDefinition = (processId: string) =>
           canGoBack: () => true,
           previous: "#emailAddress",
           canSkip: () => false,
-          // skip: "#firstName",
+          skip: "#firstName",
         },
       }),
 

@@ -122,7 +122,8 @@ const processDefinition = (processId: string) =>
         navigation: {
           canGoBack: () => true,
           previous: "#emailAddress",
-          canSkip: () => false
+          canSkip: () => false,
+          skip: "#firstName",
         },
       }),
 
