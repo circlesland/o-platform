@@ -28,6 +28,17 @@ let loading = true;
 let balances: Erc721Token[] = [];
 let issuerProfile: Profile | Organisation;
 
+const imageCache = {
+  "https://staging.circles.land/images/events/stroke.png": {
+    "preview": "/images/nfts/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC_preview.jpg",
+    "full": "/images/nfts/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC.png"
+  },
+  "https://ipfs.io/ipfs/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC": {
+    "preview": "/images/nfts/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC_preview.jpg",
+    "full": "/images/nfts/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC.png"
+  }
+};
+
 onMount(async () => {
   const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
     types: [AggregateType.Erc721Tokens],
@@ -42,11 +53,27 @@ onMount(async () => {
   issuerProfile = await ApiClient.query<Profile, ProfileBySafeAddressQueryVariables>(ProfileBySafeAddressDocument, {
     safeAddress: "0xf9342ea6f2585d8c2c1e5e78b247ba17c32af46a",
   });
-  console.log("alskdjasld", issuerProfile);
 
   balances = erc721Balances.payload.balances;
   loading = false;
 });
+
+function findCachedImage(url?:string) {
+  if (!url) {
+    return '/images/market/circles-no-image.jpg';
+  }
+  return imageCache[url];
+}
+
+function getPreviewUrl(token: Erc721Token) {
+  const cached = findCachedImage(token.token_url);
+  return cached ? cached.preview : token.token_url;
+}
+
+function getFullUrl(token: Erc721Token) {
+  const cached = findCachedImage(token.token_url);
+  return cached ? cached.full : token.token_url;
+}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -65,7 +92,7 @@ onMount(async () => {
             <header class="rounded-t-xl headerImageContainer">
               <div class="relative rounded-t-xl image-wrapper">
                 <img
-                  src="{token.token_url ? token.token_url : '/images/market/circles-no-image.jpg'}"
+                  src="{getPreviewUrl(token.token_url)}"
                   alt=""
                   class="rounded-t-xl" />
                 <div
