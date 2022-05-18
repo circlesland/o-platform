@@ -13,9 +13,8 @@ import { ShoppingCartItem } from "../types/ShoppingCartItem";
 import { PurchaseContext } from "../processes/purchase";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import Item from "../../../shared/molecules/Select/Item.svelte";
+import { cartContents, cartContentsByShop } from "../stores/shoppingCartStore";
 
-export let cartContents;
-export let cartContentsByShop;
 export let editable: boolean = true;
 
 let shops: any = [];
@@ -49,39 +48,30 @@ $: shops = shops;
 async function refresh() {
   isLoading = true;
   shops = await $cartContentsByShop;
-  console.log("SHIPS", shops);
 
-  // const contentsByShop: {
-  //   [shopId: number]: {
-  //     items: any[];
-  //     shop: Shop;
-  //   };
-  // } = data.toLookup(
-  //   (o) => o.shop.owner.circlesAddress,
-  //   (o) => {
-  //     return {
-  //       items: o.items,
-  //       shop: o.shop,
-  //     };
-  //   }
-  // );
+  const contentsByShop: {
+    [shopId: number]: {
+      items: any[];
+      shop: Shop;
+    };
+  } = shops.toLookup(
+    (o) => o.shop.owner.circlesAddress,
+    (o) => {
+      return {
+        items: o.items,
+        shop: o.shop,
+      };
+    }
+  );
 
-  // const amountsBySeller =
-  // Object.entries(contentsByShop).reduce((p, c) => {
-  //   p[c[0]] = c[1].items.reduce((q, d) => q + d.item.qty * d.item.pricePerUnit, 0);
-  //   return p;
-  // }, {});
+  const amountsBySeller = Object.entries(contentsByShop).reduce((p, c) => {
+    p[c[0]] = c[1].items.reduce((q, d) => q + d.total, 0);
+    return p;
+  }, {});
 
-  // shops = Object.values(contentsByShop).map((o) => {
-  //   return {
-  //     ...o,
-  //     total: o.total,
-  //   };
-  // });
+  payableStatusBySeller = await Liquidity.getPayableStatusBySeller($me.circlesAddress, amountsBySeller);
 
-  // payableStatusBySeller = await Liquidity.getPayableStatusBySeller($me.circlesAddress, amountsBySeller);
-
-  // insufficientFunds = !hasSufficientFunds(amountsBySeller);
+  insufficientFunds = !hasSufficientFunds(amountsBySeller);
   isLoading = false;
 }
 
@@ -89,25 +79,15 @@ onMount(async () => {
   if (!cartContentsByShop) {
     return;
   }
+
   refresh();
 });
 
 async function checkout(shopIndex) {
   const cartContents = await $cartContentsByShop;
+  console.log("ITEIET", cartContents[shopIndex].items);
 
-  const shoppinCartItems: ShoppingCartItem[] = cartContents[shopIndex].items
-    .flatMap((o) => o.item)
-    .map((o) => {
-      return {
-        offerId: o.item.id,
-        shopId: o.shopId,
-        qty: o.qty,
-        version: o.item.version,
-        title: o.item.title,
-      };
-    });
-
-  window.o.runProcess(purchase, { items: shoppinCartItems });
+  window.o.runProcess(purchase, { items: cartContents[shopIndex] });
 }
 
 function addOneItem(id) {
@@ -142,14 +122,16 @@ function removeAllItems(id) {
   shops = shops;
   refresh();
 }
+function handleClickOutside(event) {
+  event.preventDefault();
+  window.o.publishEvent({
+    type: "shell.requestCloseModal",
+  });
+}
 </script>
 
-{#if isLoading}
-  Loading..
-{:else}
-  {console.log("THE SHOPS DRIN: ", shops)}
+{#if $cartContents && $cartContents.length > 0}
   {#each shops as displayShop, shopIndex}
-    {console.log("DISPLAYSHOP", displayShop)}
     {#if displayShop}
       <div class="flex flex-col w-full" class:mt-8="{shopIndex >= 1}">
         <header class=" rounded-xl headerImageContainer">
@@ -163,7 +145,7 @@ function removeAllItems(id) {
         </header>
       </div>
 
-      {#each displayShop.items as { item }, index}
+      {#each displayShop.items as item, index}
         <div class="flex items-center justify-between w-full pb-6 mb-6 border-b" class:mt-8="{index == 0}">
           <div class="flex items-center w-full">
             <img class="w-16 rounded-full mask mask-circle" src="{item.pictureUrl}" alt="{item.title}" />
@@ -172,7 +154,7 @@ function removeAllItems(id) {
                 <div class="md:text-md">{item.title}</div>
                 <div
                   class="self-center cursor-pointer text-dark"
-                  on:click="{() => removeAllItems(item.id)}"
+                  on:click="{() => removeAllItems(item.offerId)}"
                   class:hidden="{!editable}">
                   <Icons icon="trash" size="4" />
                 </div>
@@ -184,7 +166,7 @@ function removeAllItems(id) {
                 <div class="flex pr-8">
                   <div
                     class="font-semibold cursor-pointer span"
-                    on:click="{() => removeOneItem(item.id)}"
+                    on:click="{() => removeOneItem(item.offerId)}"
                     class:hidden="{!editable}">
                     -
                   </div>
@@ -196,7 +178,7 @@ function removeAllItems(id) {
                   </div>
                   <span
                     class="font-semibold cursor-pointer"
-                    on:click="{() => addOneItem(item.id)}"
+                    on:click="{() => addOneItem(item.offerId, shopIndex)}"
                     class:hidden="{!editable}">+</span>
                 </div>
                 <div class="items-center">
@@ -208,24 +190,36 @@ function removeAllItems(id) {
           </div>
         </div>
       {/each}
-      <div class="flex items-center justify-end">
-        <span class="mr-2 text-sm font-medium text-gray-400">{$_("dapps.o-marketplace.pages.shoppingCart.total")}</span
-        ><span class="text-lg font-bold"
-          >{displayShop.total.toFixed(2)}
-          <span class="font-enso">€</span></span>
-      </div>
-      {#if isLoading}
-        <button class="h-auto btn-block btn btn-disabled"
-          >{$_("dapps.o-marketplace.pages.shoppingCart.checkOut")}
-        </button>
-      {:else if payableStatusBySeller[displayShop.shop.owner.circlesAddress].payable}
-        <button class="h-auto btn-block btn btn-primary" on:click="{() => checkout(shopIndex)}"
-          >{$_("dapps.o-marketplace.pages.shoppingCart.checkOut")}</button>
-      {:else if payableStatusBySeller[displayShop.shop.owner.circlesAddress].payable === false}
-        <div class="w-full text-center text-alert">
-          {@html $_(payableStatusBySeller[displayShop.shop.owner.circlesAddress].reason)}
+      {#if editable}
+        <div class="flex items-center justify-end">
+          <span class="mr-2 text-sm font-medium text-gray-400"
+            >{$_("dapps.o-marketplace.pages.shoppingCart.total")}</span
+          ><span class="text-lg font-bold"
+            >{displayShop.total.toFixed(2)}
+            <span class="font-enso">€</span></span>
         </div>
+
+        {#if isLoading}
+          <button class="h-auto btn-block btn btn-disabled"
+            >{$_("dapps.o-marketplace.pages.shoppingCart.checkOut")}
+          </button>
+        {:else if payableStatusBySeller[displayShop.shop.owner.circlesAddress].payable}
+          <button class="h-auto btn-block btn btn-primary" on:click="{() => checkout(shopIndex)}"
+            >{$_("dapps.o-marketplace.pages.shoppingCart.checkOut")}</button>
+        {:else if payableStatusBySeller[displayShop.shop.owner.circlesAddress].payable === false}
+          <div class="w-full text-center text-alert">
+            {@html $_(payableStatusBySeller[displayShop.shop.owner.circlesAddress].reason)}
+          </div>
+        {/if}
       {/if}
     {/if}
   {/each}
+{:else}
+  <p class="mt-6 text-center">
+    {$_("dapps.o-marketplace.pages.shoppingCart.yourCartIsEmpty")}
+  </p>
+  <div class="w-full mt-6">
+    <button class="h-auto btn-block btn btn-light" on:click="{(event) => handleClickOutside(event)}"
+      >{$_("dapps.o-marketplace.pages.shoppingCart.continueShopping")}</button>
+  </div>
 {/if}

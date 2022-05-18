@@ -62,7 +62,7 @@ function getShopTotal(items) {
 */
 // Flatten Items into quantity by count.
 async function orderItems(items) {
-  console.log("IORDERIDE: ", items);
+  console.log("INB ORDER ITEMS: ", items);
   const orderedCart: { [x: string]: ShoppingCartItem & { item: Offer } } = {};
 
   items.forEach((item) => {

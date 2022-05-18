@@ -76,18 +76,6 @@ const processDefinition = (processId: string) =>
         ],
         invoke: {
           src: async (context: PurchaseContext) => {
-            // context.data.items[0].offerId = 8273642837462;
-            let offers = await ApiClient.query<Offer[], QueryOffersByIdAndVersionArgs>(OffersByIdAndVersionDocument, {
-              query: context.data.items.map((o) => {
-                return <OfferByIdAndVersionInput>{
-                  offerId: o.offerId,
-                  offerVersion: o.version,
-                };
-              }),
-            });
-
-            console.log("ITEM", offers);
-
             return context.data;
           },
           onDone: "#checkoutDelivery",
