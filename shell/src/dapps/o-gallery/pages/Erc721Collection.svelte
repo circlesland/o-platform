@@ -96,7 +96,7 @@ function getFullUrl(token: Erc721Token) {
             <header class="rounded-t-xl headerImageContainer">
               <div class="relative rounded-t-xl image-wrapper">
                 <img
-                  src="{getPreviewUrl(token.token_url)}"
+                  src="{getPreviewUrl(token)}"
                   alt=""
                   class="rounded-t-xl" />
                 <div

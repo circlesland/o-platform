@@ -65,13 +65,12 @@ const editorContent: { [x: string]: EditorViewContext } = {
 const processDefinition = (processId: string) =>
   createMachine<UpsertIdentityContext, any>({
     id: `${processId}:upsertIdentity`,
-    initial: "#emailAddress",
+    initial: "emailAddress",
 
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<UpsertIdentityContext, any>("error"),
-
 
       emailAddress: prompt<UpsertIdentityContext, any>({
         id: "emailAddress",
