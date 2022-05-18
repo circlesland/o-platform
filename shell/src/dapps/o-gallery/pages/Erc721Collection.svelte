@@ -95,10 +95,12 @@ function getFullUrl(token: Erc721Token) {
           <div class="flex flex-col w-full ">
             <header class="rounded-t-xl headerImageContainer">
               <div class="relative rounded-t-xl image-wrapper">
-                <img
-                  src="{getPreviewUrl(token)}"
-                  alt=""
-                  class="rounded-t-xl" />
+                <a target="_blank" href="{getFullUrl(token)}">
+                  <img
+                    src="{getPreviewUrl(token)}"
+                    alt=""
+                    class="rounded-t-xl" />
+                </a>
                 <div
                   class="absolute right-0 px-2 mt-2 text-lg rounded-l-full sm:text-xl lg:pb-2 lg:pt-3 lg:pl-4 lg:pr-2 lg:text-3xl font-heading top-2 bg-light-lightest">
                   {token.token_name} (#{token.token_no})
