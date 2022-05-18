@@ -28,31 +28,31 @@ let shop: Shop;
 
 onMount(async () => {
   console.log("ASLKAJSDLAKSJDLAKDSJ", context);
-  if (context.data.items.length) {
-    const result = await Promise.all(
-      context.data.items
-        .filter((o) => o.hasOwnProperty("shopId") == true)
-        .map(async (o) => {
-          return { shopId: o.shopId, item: o };
-        })
-    );
+  // if (context.data.items.length) {
+  //   const result = await Promise.all(
+  //     context.data.items
+  //       .filter((o) => o.hasOwnProperty("shopId") == true)
+  //       .map(async (o) => {
+  //         return { shopId: o.shopId, item: o };
+  //       })
+  //   );
 
-    if (result.length) {
-      shopId = result[0].shopId;
-      shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
-        id: parseInt(shopId.toString()),
-      });
+  //   if (result.length) {
+  //     shopId = result[0].shopId;
+  //     shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
+  //       id: parseInt(shopId.toString()),
+  //     });
 
-      if (shop.purchaseMetaDataKeys && context.data.metadata) {
-        metadata = context.data.metadata;
-      } else {
-        metadata = undefined;
-      }
-      isLoading = false;
-    }
-    console.log("SHOP", shop);
-    console.log("data", context.data.items);
-  }
+  //     if (shop.purchaseMetaDataKeys && context.data.metadata) {
+  //       metadata = context.data.metadata;
+  //     } else {
+  //       metadata = undefined;
+  //     }
+  //     isLoading = false;
+  //   }
+  //   console.log("SHOP", shop);
+  //   console.log("data", context.data.items);
+  // }
 });
 
 let classes: string;
@@ -76,13 +76,14 @@ function onkeydown(e: KeyboardEvent) {
 }
 </script>
 
-{#if isLoading}
-  ...
-{:else}
+{#if context.data.shop}
   <div class="flex flex-col items-center self-center w-full m-auto space-y-4 text-center justify-self-center">
     <div>
-      {#if shop && shop.purchaseMetaDataKeys}
-        <ShopMetadata jsonSchema="{shop.purchaseMetaDataKeys}" bind:value="{metadata}" bind:error="{metadataError}" />
+      {#if context.data.shop && context.data.shop.purchaseMetaDataKeys}
+        <ShopMetadata
+          jsonSchema="{context.data.shop.purchaseMetaDataKeys}"
+          bind:value="{metadata}"
+          bind:error="{metadataError}" />
       {/if}
     </div>
 
@@ -119,10 +120,10 @@ function onkeydown(e: KeyboardEvent) {
         <div class="flex flex-col w-full">
           <header class=" rounded-xl headerImageContainer">
             <div class="relative rounded-xl image-wrapper">
-              <img src="{shop.smallBannerUrl}" alt="" class="w-full rounded-xl" />
+              <img src="{context.data.shop.shop.smallBannerUrl}" alt="" class="w-full rounded-xl" />
               <div
                 class="absolute right-0 px-2 mt-2 text-lg rounded-l-full sm:text-xl lg:pb-2 lg:pt-3 lg:pl-4 lg:pr-2 lg:text-3xl font-heading top-2 bg-light-lightest">
-                <span class="inline-block">{shop.name}</span>
+                <span class="inline-block">{context.data.shop.shop.name}</span>
               </div>
             </div>
           </header>
@@ -157,12 +158,12 @@ function onkeydown(e: KeyboardEvent) {
           </div>
         {/each}
       </div>
-      <!-- <div class="flex items-center justify-end w-full -mt-2">
+      <div class="flex items-center justify-end w-full -mt-2">
         <span class="mr-2 text-sm font-medium text-gray-400">
           {$_("dapps.o-marketplace.molecules.checkoutSummary.total")}
         </span>
         <span class="w-20 text-lg font-bold text-right">
-          {$totalPrice.toFixed(2)} €
+          {context.data.shop.total.toFixed(2)} €
         </span>
       </div>
       <div class="flex items-center justify-end w-full -mt-2">
@@ -170,14 +171,14 @@ function onkeydown(e: KeyboardEvent) {
           {$_("dapps.o-marketplace.molecules.checkoutSummary.tax")}
         </span>
         <span class="w-20 text-lg text-right font-primary text-dark-lightest">
-          {((19 / 100) * $totalPrice).toFixed(2)} €
+          {((19 / 100) * context.data.shop.total).toFixed(2)} €
         </span>
       </div>
       <div class="flex items-center justify-end w-full -mt-2">
         <span class="mr-2 text-sm font-medium text-gray-400">Time Circles:</span>
         <span class="w-20 text-lg text-right font-primary text-dark-lightest"
-          >{$totalPrice * 10} {Currency.currencySymbol["TIME_CRC"]}</span>
-      </div> -->
+          >{context.data.shop.total * 10} {Currency.currencySymbol["TIME_CRC"]}</span>
+      </div>
     </div>
 
     <!-- <div class="flex flex-col w-full space-y-2 text-left">

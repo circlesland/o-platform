@@ -93,7 +93,7 @@ async function checkout(shopIndex) {
   const cartContents = await $cartContentsByShop;
   console.log("ITEIET", cartContents[shopIndex].items);
 
-  window.o.runProcess(purchase, { items: cartContents[shopIndex].items });
+  window.o.runProcess(purchase, { items: cartContents[shopIndex].items, shop: cartContents[shopIndex] });
 }
 
 function addOneItem(id) {

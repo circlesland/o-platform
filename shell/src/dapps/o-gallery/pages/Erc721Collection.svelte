@@ -81,10 +81,9 @@ function getFullUrl(token: Erc721Token) {
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
-
-<div class="px-4 mx-auto -mt-3 lg:w-4/5 ">
-  {#if loading}
-    <div class="p-5">
+{#if loading}
+  <div class="flex items-center justify-center overflow-hidden" style="min-height: calc(100vh - 90px);">
+    <div class="">
       <LoadingIndicator />
     </div>
   {/if}
@@ -105,25 +104,25 @@ function getFullUrl(token: Erc721Token) {
                   class="absolute right-0 px-2 mt-2 text-lg rounded-l-full sm:text-xl lg:pb-2 lg:pt-3 lg:pl-4 lg:pr-2 lg:text-3xl font-heading top-2 bg-light-lightest">
                   {token.token_name} (#{token.token_no})
                 </div>
-              </div>
-            </header>
-            <div
-              class="relative flex flex-row items-center content-start p-2 pt-4 pl-4 space-x-4 text-base font-medium text-left">
-              <div class="inline-flex">
-                <UserImage profile="{issuerProfile[0]}" size="{10}" gradientRing="{true}" />
-              </div>
-              <div>
-                {issuerProfile ? issuerProfile[0].displayName : ""}
+              </header>
+              <div
+                class="relative flex flex-row items-center content-start p-2 pt-4 pl-4 space-x-4 text-base font-medium text-left">
+                <div class="inline-flex">
+                  <UserImage profile="{issuerProfile[0]}" size="{10}" gradientRing="{true}" />
+                </div>
+                <div>
+                  {issuerProfile ? issuerProfile[0].displayName : ""}
+                </div>
               </div>
             </div>
-          </div>
-        </section>
-      {/each}
-    {:else if !loading}
-      No items
-    {/if}
+          </section>
+        {/each}
+      {:else if !loading}
+        No items
+      {/if}
+    </div>
   </div>
-</div>
+{/if}
 
 <style>
 /* Ensure image is always 16:9 Ratio */
