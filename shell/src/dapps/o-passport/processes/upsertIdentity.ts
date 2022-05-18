@@ -40,11 +40,13 @@ export type UpsertIdentityContextData = {
 export type UpsertIdentityContext = ProcessContext<UpsertIdentityContextData>;
 
 const editorContent: { [x: string]: EditorViewContext } = {
+  /*
   info: {
     title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.info.title"),
     description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.info.description"),
     submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.info.submitButtonText"),
   },
+   */
   firstName: {
     title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.title"),
     description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.description"),
@@ -88,14 +90,14 @@ const editorContent: { [x: string]: EditorViewContext } = {
 const processDefinition = (processId: string) =>
   createMachine<UpsertIdentityContext, any>({
     id: `${processId}:upsertIdentity`,
-    initial: "info",
+    initial: "emailAddress",
 
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<UpsertIdentityContext, any>("error"),
 
-
+/*
       info: prompt({
         id: "info",
         field: "info",
@@ -111,6 +113,8 @@ const processDefinition = (processId: string) =>
           next: "#emailAddress",
         },
       }),
+
+ */
 
       emailAddress: prompt<UpsertIdentityContext, any>({
         id: "emailAddress",
