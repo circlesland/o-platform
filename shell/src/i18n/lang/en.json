@@ -628,6 +628,12 @@
             "continueShopping": "Continue Shopping"
           }
         },
+        "functions": {
+          "liquidity": {
+            "maxLiquidityToSellerExceeded":
+              "Oops, it looks like your balance is not enough to cover this order. <br />Try to remove some items or have a friend send you some circles :)",
+          },
+        },
         "processes": {
           "purchases": {
             "editorContent": {
