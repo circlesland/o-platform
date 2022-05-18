@@ -105,13 +105,14 @@ const resultData = {
 const AUTOCOMPLETION_URL = 'https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json';
 const APIKEY = "fhiIkoASi1B-z8R7ytKBnfJltOpaUlYBV1kydXyK1sE";
 
-async function search(text:string) {
+async function search(text:string, isAddress?: boolean) {
   const params = '?' +
     'query=' +  encodeURIComponent(text) +   // The search text which is the basis of the query
-    '&beginHighlight=' + encodeURIComponent('') + //  Mark the beginning of the match in a token.
-    '&endHighlight=' + encodeURIComponent('') + //  Mark the end of the match in a token.
+    '&beginHighlight=' + encodeURIComponent('<mark>') + //  Mark the beginning of the match in a token.
+    '&endHighlight=' + encodeURIComponent('</mark>') + //  Mark the end of the match in a token.
     '&maxresults=5' +  // The upper limit the for number of suggestions to be included
     // in the response.  Default is set to 5.
+    '&resultType=city' +
     '&apikey=' + encodeURIComponent(APIKEY);
 
   const url = AUTOCOMPLETION_URL + params;
@@ -172,54 +173,14 @@ export function promptCity<
       keyProperty: "geonameid",
       choices: {
         byKey: async (locationId: number) => {
-          const item = ["a", "b", "c", "aa", "ab", "ac"][locationId];
-          return {
-            geonameid: locationId,
-            name: item,
-            country: item,
-            population: 0,
-            latitude: 0,
-            longitude: 0,
-            feature_code: ""
-          };
-          console.log("item", item);
-          return item;
-
-          /*
           const result = await loadById(locationId.toString());
           console.log("GetByIdResult:", result);
-
-          const result = await ApiClient.query<City[], CitiesByIdQueryVariables>(
-            CitiesByIdDocument, {
-              ids: [locationId]
-            }
-          );
 
           return !result.response?.view?.length
             ? undefined
             : result.response.view[0];
-         */
         },
         find: async (filter: string) => {
-          console.log("filter", filter);
-          if (!filter) {
-            debugger;
-          }
-          const res = ["a", "b", "c", "aa", "ab", "ac"].filter(o => !filter || o.startsWith(filter));
-          const list = res.map((o,i) => {
-            return {
-              geonameid: i,
-              name: o,
-              country: o,
-              population: 0,
-              latitude: 0,
-              longitude: 0,
-              feature_code: ""
-            }
-          });
-
-          return list;
-          /*
           const n = <any>navigator;
           const lang = n.language || n.userLanguage;
 
@@ -235,17 +196,10 @@ export function promptCity<
               feature_code: ""
             };
           });
-          /*
-          const result = await ApiClient.query<City[], CitiesByNameQueryVariables>(
-            CitiesByNameDocument, {
-              name: (filter ?? "") + "%",
-              languageCode: lang.substr(0, 2),
-            }
-          );
+
           return result.length
             ? result.reverse()
             : [];
-           */
         },
       },
     },
