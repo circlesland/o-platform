@@ -1,5 +1,20 @@
-mutation createPurchase($lines: [PurchaseLineInput!]!) {
-  purchase(lines: $lines) {
+mutation upsertShippingAddress($data: PostAddressInput!) {
+  upsertShippingAddress(data: $data) {
+    id
+    name
+
+    street
+    house
+    zip
+    cityGeonameid
+    city
+    state
+    country
+  }
+}
+
+mutation createPurchase($lines: [PurchaseLineInput!]! $deliveryMethodId: Int!) {
+  purchase(lines: $lines deliveryMethodId: $deliveryMethodId) {
     id
     buyerAddress
     buyerProfile {

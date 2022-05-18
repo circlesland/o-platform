@@ -49,6 +49,7 @@ export function promptChoice<
     states: {
       promptChoice: prompt<ProcessContext<any>, any>({
         entry: spec.entry,
+        id: spec.id,
         field: spec.id,
         component: spec.component ?? ChoiceSelector,
         params: {

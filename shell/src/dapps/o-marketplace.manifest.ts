@@ -7,22 +7,23 @@ import CategoryDetail from "./o-marketplace/pages/CategoryDetail.svelte";
 import Favorites from "./o-marketplace/pages/Favorites.svelte";
 import MyOffers from "./o-marketplace/pages/MyOffers.svelte";
 import MyCategories from "./o-marketplace/pages/MyCategories.svelte";
+import MyShops from "./o-marketplace/pages/MyShops.svelte";
 import MyPurchases from "./o-marketplace/pages/MyPurchases.svelte";
 import ScanPurchase from "./o-marketplace/pages/ScanPurchase.svelte";
 import MySales from "./o-marketplace/pages/MySales.svelte";
 import MySaleDetail from "./o-marketplace/pages/MySaleDetail.svelte";
 import MyPurchasesDetail from "./o-marketplace/pages/MyPurchasesDetail.svelte";
-import {Trigger} from "@o-platform/o-interfaces/dist/routables/trigger";
+import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
 import PleaseSignIn from "./o-marketplace/pages/PleaseSignIn.svelte";
 import ShoppingCart from "./o-marketplace/pages/ShoppingCart.svelte";
 // import { upsertOffer } from "./o-marketplace/processes/upsertOffer";
-import {Page} from "@o-platform/o-interfaces/dist/routables/page";
-import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
-import {cartContents} from "./o-marketplace/stores/shoppingCartStore";
-import {Offer, ProfileType} from "../shared/api/data/types";
-import {offers} from "../shared/stores/offers";
-import {push} from "svelte-spa-router";
-import {me} from "../shared/stores/me";
+import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import { cartContents } from "./o-marketplace/stores/shoppingCartStore";
+import { Offer, ProfileType } from "../shared/api/data/types";
+import { offers } from "../shared/stores/offers";
+import { push } from "svelte-spa-router";
+import { me } from "../shared/stores/me";
 import CategoryEntryDetail from "./o-marketplace/pages/CategoryEntryDetail.svelte";
 
 const addToCart: Trigger<{ id: Number }, DappState> = {
@@ -31,8 +32,8 @@ const addToCart: Trigger<{ id: Number }, DappState> = {
   title: "Add to Cart",
   type: "trigger",
   action: async (params) => {
-    let offer: Offer & {shopId:number};
-    let cart: (Offer & {shopId:number})[] = [];
+    let offer: Offer & { shopId: number };
+    let cart: (Offer & { shopId: number })[] = [];
     let authenticated: boolean = false;
     if (!params.id) {
       return;
@@ -51,7 +52,7 @@ const addToCart: Trigger<{ id: Number }, DappState> = {
       if (o) {
         offer = {
           ...o,
-          shopId:0
+          shopId: 0,
         };
 
         const unsubCart = cartContents.subscribe((o) => {
@@ -144,6 +145,13 @@ const favorites: Page<any, DappState> = {
   routeParts: ["=favorites"],
   component: Favorites,
   title: "Favorites",
+  type: "page",
+};
+const myShops: Page<any, DappState> = {
+  routeParts: ["=my-shops"],
+  component: MyShops,
+  audience: ProfileType.Organisation,
+  title: "My Shops",
   type: "page",
 };
 const myOffers: Page<any, DappState> = {
@@ -261,8 +269,9 @@ export const marketplace: DappManifest<DappState> = {
     scanPurchase,
     mySaleDetail,
     categoryEntryDetail,
+    myShops,
     myOffers,
     myCategories,
-    mySales
+    mySales,
   ],
 };

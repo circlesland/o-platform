@@ -5,9 +5,7 @@ import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { contacts } from "../../../shared/stores/contacts";
 import { ApiClient } from "../../../shared/apiConnection";
-import {
-  Organisation, Shop, ShopsDocument, ShopsQueryVariables
-} from "../../../shared/api/data/types";
+import { Organisation, Shop, ShopsDocument, ShopsQueryVariables } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { trustFromContactMetadata } from "../../../shared/functions/trustFromContactMetadata";
 import { inbox } from "../../../shared/stores/inbox";
@@ -19,7 +17,7 @@ function loadLocationPage(route: string) {
   push(`#/marketplace/${route}`);
 }
 
-let orgas: { shopId: number, orga: Organisation; enabled: boolean; productListingType: string }[] = [];
+let orgas: { shopId: number; orga: Organisation; enabled: boolean; productListingType: string }[] = [];
 
 $: {
   if ($inbox.length) {
@@ -28,26 +26,22 @@ $: {
 }
 
 async function load() {
-  const allShops = await ApiClient.query<Shop[], ShopsQueryVariables>(
-    ShopsDocument,
-    {}
-  );
+  const allShops = await ApiClient.query<Shop[], ShopsQueryVariables>(ShopsDocument, {});
   orgas = await Promise.all(
-    allShops
-      .map(async (o) => {
-        const contact = await contacts.findBySafeAddress(o.owner.circlesAddress);
-        const { trustIn, trustOut } = trustFromContactMetadata(contact);
-        return {
-          shopId: o.id,
-          orga: {
-            ...o.owner,
-            largeBannerUrl: o.largeBannerUrl,
-            smallBannerUrl: o.smallBannerUrl
-          },
-          enabled: trustIn > 0,
-          productListingType: o.productListingStyle == "LIST" ? "list" : "market",
-        };
-      })
+    allShops.map(async (o) => {
+      const contact = await contacts.findBySafeAddress(o.owner.circlesAddress);
+      const { trustIn, trustOut } = trustFromContactMetadata(contact);
+      return {
+        shopId: o.id,
+        orga: {
+          ...o.owner,
+          largeBannerUrl: o.largeBannerUrl,
+          smallBannerUrl: o.smallBannerUrl,
+        },
+        enabled: trustIn > 0,
+        productListingType: o.productListingStyle == "LIST" ? "list" : "market",
+      };
+    })
   );
 }
 
@@ -57,7 +51,7 @@ onMount(async () => await load());
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <div class="mx-auto md:w-2/3 xl:w-1/2">
-  <div class="flex flex-col space-y-10">
+  <div class="flex flex-col pb-20 space-y-10">
     <section class="m-4 -mb-4 text-center">
       <h1>Welcome to the Market</h1>
       <span>Please choose your location</span>
@@ -67,8 +61,7 @@ onMount(async () => await load());
       <section
         class="flex items-start m-4 rounded-xl"
         class:cursor-pointer="{orga.enabled}"
-        on:click="{() =>
-          orga.enabled ? loadLocationPage(`${orga.productListingType}/${orga.shopId}`) : null}">
+        on:click="{() => (orga.enabled ? loadLocationPage(`${orga.productListingType}/${orga.shopId}`) : null)}">
         <div class="flex flex-col w-full ">
           <header class=" rounded-xl headerImageContainer">
             <div class="relative rounded-xl image-wrapper">

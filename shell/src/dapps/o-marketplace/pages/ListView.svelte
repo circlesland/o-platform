@@ -7,7 +7,13 @@ import { Subscription } from "rxjs";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-import { Shop, ShopCategory, ShopDocument, ShopQueryVariables } from "../../../shared/api/data/types";
+import {
+  Shop,
+  ShopCategory,
+  ShopCategoryEntry,
+  ShopDocument,
+  ShopQueryVariables,
+} from "../../../shared/api/data/types";
 
 import { ApiClient } from "../../../shared/apiConnection";
 
@@ -18,6 +24,7 @@ export let shopId: number;
 let shop: Shop | null = null;
 let categories: ShopCategory[] = [];
 let shellEventSubscription: Subscription;
+let categoryEntries: ShopCategoryEntry[] = [];
 
 onMount(async () => {
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
@@ -27,7 +34,8 @@ onMount(async () => {
   if (shop) {
     categories = shop.categories;
   }
-  console.log("CATEGORIES", categories);
+
+  categoryEntries = shop.categories.flatMap((o) => o.entries);
 });
 </script>
 
@@ -49,6 +57,7 @@ onMount(async () => {
               <span class="inline-block">{shop.name}</span>
             </div>
           </div>
+          <div class="w-full mt-2 text-sm text-center">{shop.description}</div>
         </header>
       </div>
     </section>
@@ -75,8 +84,8 @@ onMount(async () => {
                   <h1 class="px-4 mb-2 ml-2 ">{category.name}</h1>
                 {/if}
                 <div class="flex flex-col px-4 space-y-4">
-                  {#each category.entries.map((o) => o.product) as offer}
-                    <ListViewCard param="{offer}" shopId="{shopId}" />
+                  {#each category.entries as entry}
+                    <ListViewCard entry="{entry}" shopId="{shopId}" deliveryMethods="{shop.deliveryMethods}" />
                   {/each}
                 </div>
               </div>
@@ -84,8 +93,23 @@ onMount(async () => {
           {/if}
         {/each}
         {#if shop}
-          <div class="p-6 text-center text-2xs">
-            Informationen über Zusatzstoffe und Allergene können auf der Physische Karte der {shop.name} eingesehen werden.
+          <div class="pb-6 text-center text-2xs">
+            <h4 class="mb-2">{shop.name}</h4>
+            <div class="flex flex-row justify-center space-x-4">
+              {#if shop.privacyPolicyLink}
+                <a href="{shop.privacyPolicyLink}" target="_blank" class="link link-primary" alt="Privacy Policy"
+                  >Privacy Policy</a>
+              {/if}
+              {#if shop.tosLink}
+                <a href="{shop.tosLink}" target="_blank" class="link link-primary" alt="Terms of Service"
+                  >Terms of Service</a>
+              {/if}
+
+              {#if shop.healthInfosLink}
+                <a href="{shop.healthInfosLink}" target="_blank" class="link link-primary" alt="Health Infos"
+                  >Health Information</a>
+              {/if}
+            </div>
           </div>
         {/if}
       </div>

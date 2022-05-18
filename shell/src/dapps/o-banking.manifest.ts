@@ -18,6 +18,7 @@ import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { loadProfileByProfileId } from "../shared/api/loadProfileByProfileId";
 import { Profile } from "../shared/api/data/types";
 import {push} from "svelte-spa-router";
+import Erc721Detail from "./o-banking/pages/Erc721Detail.svelte";
 // import {getUbi, getUbiInfo} from "../shared/ubiTimer2";
 
 const transactions: Page<any, BankingDappState> = {
@@ -113,6 +114,15 @@ const assets: Page<any, BankingDappState> = {
   icon: "assets",
   type: "page",
 };
+/*
+const nfts: Page<any, BankingDappState> = {
+  routeParts: ["=nfts"],
+  component: Erc721Detail,
+  title: "NFTs",
+  icon: "assets",
+  type: "page",
+};
+ */
 
 const transferTrigger: Trigger<any, BankingDappState> = {
   routeParts: ["=send", ":amount", ":to"],

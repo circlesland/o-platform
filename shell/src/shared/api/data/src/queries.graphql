@@ -7,6 +7,7 @@ query init {
     capabilities {
       type
     }
+    useShortSignup
     profile {
       id
       circlesAddress
@@ -34,6 +35,17 @@ query init {
       city {
         geonameid
         name
+        country
+      }
+      shippingAddresses {
+        id
+        name
+        street
+        house
+        city
+        cityGeonameid
+        zip
+        state
         country
       }
       memberships {
@@ -101,6 +113,7 @@ query sessionInfo {
     capabilities {
       type
     }
+    useShortSignup
   }
 }
 
@@ -786,6 +799,7 @@ query organisationsByAddress($addresses: [String!]!) {
     createdAt
     name
     avatarUrl
+    displayName
     city {
       geonameid
       name
@@ -1223,6 +1237,10 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           createdAt
           createdByAddress
           total
+          deliveryMethod {
+            id
+            name
+          }
           lines {
             id
             amount
@@ -1361,6 +1379,25 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
           description
           pricePerUnit
           timeCirclesPriceShare
+        }
+      }
+      ...on Erc721Tokens {
+        lastUpdatedAt
+        balances {
+          token_no
+          token_symbol
+          token_name
+          token_address
+          token_owner_profile {
+            id
+            circlesAddress
+            displayName
+            avatarUrl
+            firstName
+            lastName
+          }
+          token_no
+          token_url
         }
       }
       ... on CrcBalances {
@@ -1525,6 +1562,10 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             avatarUrl
             circlesAddress
             displayCurrency
+          }
+          deliveryMethod {
+            id
+            name
           }
           total
           lines {
@@ -1762,13 +1803,23 @@ query shop($id: Int!) {
     largeBannerUrl
     openingHours
     private
+    enabled
     productListingStyle
+    shopListingStyle
     purchaseMetaDataKeys
+    tosLink
+    privacyPolicyLink
+    healthInfosLink
+    ownerId
     owner {
       id
       name
       avatarUrl
       circlesAddress
+    }
+    deliveryMethods {
+      id
+      name
     }
     categories {
       id
@@ -1809,8 +1860,8 @@ query shop($id: Int!) {
   }
 }
 
-query shops {
-  shops {
+query shops($ownerId: Int) {
+  shops(ownerId: $ownerId) {
     id
     createdAt
     name
@@ -1819,9 +1870,15 @@ query shops {
     largeBannerUrl
     openingHours
     private
+    enabled
     shopListingStyle
     productListingStyle
     sortOrder
+    ownerId
+    deliveryMethods {
+      id
+      name
+    }
     owner {
       id
       name
@@ -1832,16 +1889,64 @@ query shops {
       name
       street
       house
-      city {
-        name
-        country
-      }
       zip
+      city
       state
+      country
+    }
+  }
+}
+
+query shopsById($ids: [Int!]!) {
+  shopsById(ids: $ids) {
+    id
+    createdAt
+    name
+    description
+    smallBannerUrl
+    largeBannerUrl
+    openingHours
+    private
+    enabled
+    shopListingStyle
+    productListingStyle
+    sortOrder
+    ownerId
+    deliveryMethods {
+      id
+      name
+    }
+    owner {
+      id
+      name
+      avatarUrl
+      circlesAddress
+    }
+    pickupAddress {
+      name
+      street
+      house
+      zip
+      city
+      state
+      country
     }
   }
 }
 
 query clientAssertionJwt {
   clientAssertionJwt
+}
+
+query offersByIdAndVersion($query: [OfferByIdAndVersionInput!]!) {
+  offersByIdAndVersion(query: $query) {
+    id
+    title
+    pictureUrl
+    pricePerUnit
+    tags {
+      typeId
+      value
+    }
+  }
 }

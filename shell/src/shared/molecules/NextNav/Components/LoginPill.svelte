@@ -1,5 +1,6 @@
 <script lang="ts">
   import { _ } from "svelte-i18n";
+  import {onMount} from "svelte";
 
   export let props;
 
@@ -7,11 +8,13 @@
     window.runInitMachine();
   }
 
-  setTimeout(() => {
-    if (sessionStorage.getItem("desiredRoute")) {
-      login();
-    }
-  }, 30);
+  onMount(() => {
+    setTimeout(() => {
+      if (sessionStorage.getItem("desiredRoute") && !sessionStorage.getItem("notFirst")) {
+        login();
+      }
+    }, 30);
+  });
 
   console.log("PROPS ", props);
 </script>

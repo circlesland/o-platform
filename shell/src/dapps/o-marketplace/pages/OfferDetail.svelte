@@ -1,5 +1,4 @@
 <script lang="ts">
-import { Offer } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
@@ -9,11 +8,14 @@ import { push } from "svelte-spa-router";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { offers } from "../../../shared/stores/offers";
 import { _ } from "svelte-i18n";
+import { Offer, Shop, ShopCategory, ShopDocument, ShopQueryVariables } from "../../../shared/api/data/types";
+import { ApiClient } from "../../../shared/apiConnection";
 
 let isLoading: boolean;
 let error: Error;
 let offer: Offer[] = [];
 let shellEventSubscription: Subscription;
+let shop: Shop | null = null;
 
 export let id: number;
 
@@ -25,12 +27,17 @@ async function load() {
 
   const o = await offers.findById(parseInt(id.toString()));
   offer = o ? [o] : [];
+
+  shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
+    id: 30,
+  });
+
   isLoading = false;
 }
 
-export let shopId: Number;
+export let shopId: Number; // ATTENTION SHOPID IS HARDCODED BELOW AT THE API CALL!!!!!!!
 
-function addToCart(item:Offer, shopId:number) {
+function addToCart(item: Offer, shopId: number) {
   item.shopId = shopId;
   $cartContents = $cartContents ? [...$cartContents, item] : [item];
   push(`#/marketplace/cart`);
@@ -38,6 +45,7 @@ function addToCart(item:Offer, shopId:number) {
 
 onMount(async () => {
   isLoading = true;
+
   await load();
 
   shellEventSubscription = window.o.events.subscribe(async (event: PlatformEvent) => {
@@ -89,9 +97,16 @@ onMount(async () => {
                 <span class="inline-block">€</span>
               </div>
 
-              <div class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full top-16 bg-alert-lightest">
-                {$_("dapps.o-marketplace.atoms.offerCard.pickUpOnly")}
-              </div>
+              {#if shop && shop.deliveryMethods}
+                {#each shop.deliveryMethods as deliveryMethod, i}
+                  <div
+                    class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full bg-alert-lightest"
+                    class:top-16="{i == 0}"
+                    class:top-28="{i > 0}">
+                    {deliveryMethod.name}
+                  </div>
+                {/each}
+              {/if}
             </div>
           </header>
           <div
@@ -105,20 +120,6 @@ onMount(async () => {
           </div>
 
           <div class="flex flex-col w-full px-6 mt-2 space-y-4 bg-white">
-            <!--
-            <div class="flex flex-row flex-grow space-x-2">
-              <div
-                class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs">
-            
-                <a
-                  href="#/marketplace/categories/{o.categoryTagId}/{o
-                    .categoryTag.value}"
-                  alt="{o.categoryTag.value}">
-                  {o.categoryTag.value}
-                </a>
-              </div>
-            </div>
-            -->
             <div class="text-4xl text-left uppercase font-heading">
               {o.title}
             </div>
@@ -128,180 +129,33 @@ onMount(async () => {
                 {@html o.description}
               </div>
             {/if}
+
             <!-- {#if o.deliveryTermsTag} -->
-            <!-- <div class="flex flex-col space-y-1 text-right">
+            <div class="flex flex-col space-y-1 text-right">
               <div class="pt-2 text-sm">
-                <span class="text-xs"
-                  >{$_(
-                    "dapps.o-marketplace.pages.offerDetail.storePickup"
-                  )}</span
-                ><br />
-                Basic Income Lab GmbH<br />
-                Reifenstuelstrasse 6<br />
-                80469 München<br />
-                <span class="text-sm font-thin"
-                  >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
-              </div>
-            </div> -->
-            <!-- {/if} -->
-            <!-- {#if o.city}
-              <div class="flex flex-col space-y-1">
-                <div class="text-2xs">
-                  {$_("dapps.o-marketplace.pages.offerDetail.location")}
+                <div class="">
+                  <span class="text-xs"
+                    >Available for delivery <Icon name="truck" class="inline w-5 h-5 heroicon smallicon" /></span>
                 </div>
-                <div class="text-sm text-dark-lightest">{o.city.name}</div>
+                <div class="pb-2 ">
+                  <span class="text-xs"
+                    >Available for in-Store pickup
+                    <Icon name="home" class="inline w-5 h-5 heroicon smallicon" /></span>
+                  <br />
+                  <br />
+                  Basic Income Lab GmbH<br />
+                  Reifenstuelstrasse 6<br />
+                  80469 München<br />
+                  {#if shop && shop.openingHours}
+                    <span class="text-xs text-dark-lightest">Shop hours: {shop.openingHours}</span>
+                  {/if}
+                </div>
               </div>
-            {/if} -->
+            </div>
           </div>
-
-          <!-- <div class="relative flex-grow text-left">
-      <div class="max-w-full cursor-pointer">
-        <h2 class="text-2xl sm:text-3xl">
-          {o.title}
-          {#if isEditable}
-            <button
-              class="link link-primary text-primary text-2xs"
-              on:click={() => edit({ title: true })}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-3 h-3"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                />
-              </svg>
-            </button>
-          {/if}
-        </h2>
-        {#if o.description}
-          <span class="inline text-dark"
-            >{o.description}
-            {#if isEditable}
-              <button
-                class="link link-primary text-primary text-2xs"
-                on:click={() => edit({ description: true })}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-3 h-3"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                  />
-                </svg>
-              </button>
-            {/if}
-          </span>
-          <br />
-        {/if}
-        {#if o.deliveryTermsTag}
-          <span class="inline text-sm"
-            >{o.deliveryTermsTag.value}
-            {#if isEditable}
-              <button
-                class="link link-primary text-primary text-2xs"
-                on:click={() => edit({ deliveryTermsTag: true })}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-3 h-3"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                  />
-                </svg>
-              </button>
-            {/if}
-          </span>
-        {/if}
-        <br />
-      </div>
-
-      <OfferCardField
-        {allowEdit}
-        {o}
-        field={{
-          key: "categoryTagId",
-          title: "Category",
-          displayName: (o) => o.categoryTag.value,
-        }}
-      />
-      <OfferCardField
-        {allowEdit}
-        {o}
-        field={{
-          key: "geonameid",
-          title: "City",
-          displayName: (o) => o.city.name,
-        }}
-      />
-      <OfferCardField
-        {allowEdit}
-        {o}
-        field={{
-          key: "geonameid",
-          title: "Country",
-          displayName: (o) => o.city.country,
-        }}
-      />
-      <OfferCardField
-        {allowEdit}
-        {o}
-        field={{
-          key: "unitTagId",
-          title: "Unit",
-          displayName: (o) => o.unitTag.value,
-        }}
-      />
-      <OfferCardField
-        {allowEdit}
-        {o}
-        field={{
-          key: "pricePerUnit",
-          title: "Price per unit",
-        }}
-      />
-    </div> -->
-
-          <!-- <div class="flex flex-col self-start flex-1 justify-items-end">
-      <div class="flex flex-col self-end space-y-2 text-2xl sm:text-3xl ">
-        <button
-          on:click={() => buy()}
-          class="self-end btn btn-square btn-md btn-primary"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-10 h-10"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
-            />
-          </svg>
-        </button>
-      </div>
-      <div class="self-end mt-2 text-xs text-light-dark">
-        {o.publishedAt} (9 days ago)
-      </div>
-    </div> -->
         </div>
       </section>
 
-      <!-- 
-      <CreatorCard profile={o.createdBy} />
-      <OfferCard {o} allowEdit={true} /> -->
       <div class="sticky bottom-0 left-0 right-0 w-full px-4 pb-4 mt-4 bg-white rounded-xl">
         <div class="flex flex-row space-x-4">
           <div>

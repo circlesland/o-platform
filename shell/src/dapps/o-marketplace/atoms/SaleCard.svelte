@@ -8,7 +8,7 @@ import UserImage from "../../../shared/atoms/UserImage.svelte";
 import Button from "../../../shared/atoms/button/Button.svelte";
 import ButtonContext from "../../../shared/atoms/button/buttonContext";
 import { mySales } from "../../../shared/stores/mySales";
-import {purchased} from "./MyPurchaseCard.svelte";
+import { purchased } from "./MyPurchaseCard.svelte";
 
 export let event: ProfileEvent;
 export let sale: SaleEvent;
@@ -58,14 +58,12 @@ $: {
   };
 }
 
-function getTableNoFromMetadata(metadataJson:string|undefined) {
+function getTableNoFromMetadata(metadataJson: string | undefined) {
   if (!sale || !sale.invoice || !metadataJson) {
     return "";
   }
 
-  const parsedJson = sale.invoice.lines[0].metadata
-          ? JSON.parse(sale.invoice.lines[0].metadata)
-          : {};
+  const parsedJson = sale.invoice.lines[0].metadata ? JSON.parse(sale.invoice.lines[0].metadata) : {};
 
   if (!parsedJson?.Table) {
     return "";
@@ -95,7 +93,7 @@ function getTableNoFromMetadata(metadataJson:string|undefined) {
             <div class="inline-flex self-center">
               <UserImage profile="{sale.buyer_profile}" size="{5}" gradientRing="{false}" />
             </div>
-            <h2 class="self-center inline overflow-hidden text-base text-lg overflow-ellipsis">
+            <h2 class="self-center inline overflow-hidden text-base text-lg break-all overflow-ellipsis">
               {sale.buyer_profile.displayName}
             </h2>
           </div>
@@ -104,7 +102,9 @@ function getTableNoFromMetadata(metadataJson:string|undefined) {
               {relativeTimeString(sale.invoice.createdAt, 1, true)}
             </span>
 
-            <div class="mt-2 mb-2 text-lg font-bold text-right">{getTableNoFromMetadata(sale.invoice.lines[0].metadata)}</div>
+            <div class="mt-2 mb-2 text-lg font-bold text-right">
+              {getTableNoFromMetadata(sale.invoice.lines[0].metadata)}
+            </div>
           </div>
         </div>
         <div class="flex flex-row items-center justify-between px-3 mt-2 text-left">

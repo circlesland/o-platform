@@ -14,6 +14,7 @@ import { AvataarGenerator } from "../../../shared/avataarGenerator";
 import { onMount } from "svelte";
 import { upsertOrganisation } from "../../o-coop/processes/upsertOrganisation";
 import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";
+import { upsertShippingAddress } from "../processes/upsertShippingAddress";
 
 let name;
 let profile: Profile;
@@ -28,6 +29,7 @@ $: name = profile?.circlesAddress ? profile.circlesAddress : "";
 onMount(() => {
   if ($me) {
     profile = $me;
+    console.log(profile.shippingAddresses);
   } else {
     profile = undefined;
   }
@@ -35,12 +37,7 @@ onMount(() => {
 
 function editProfile(dirtyFlags: { [x: string]: boolean }) {
   if (profile.__typename == "Organisation") {
-    window.o.runProcess(
-      upsertOrganisation,
-      profile,
-      {},
-      Object.keys(dirtyFlags)
-    );
+    window.o.runProcess(upsertOrganisation, profile, {}, Object.keys(dirtyFlags));
   } else {
     window.o.runProcess(upsertIdentity, profile, {}, Object.keys(dirtyFlags));
   }
@@ -49,27 +46,26 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
 
 <PassportHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="flex flex-col px-4 mx-auto mb-20 -mt-3 space-y-6 md:w-2/3 xl:w-1/2">
-  <div
-    class="flex flex-col w-full p-4 space-y-4 bg-white rounded-lg shadow-md cardborder">
-    <section class="justify-center">
-      <div class="flex flex-col w-full space-y-2">
-        <div class="text-left text-2xs text-dark-lightest">
-          {$_("dapps.o-passport.pages.home.qrcode")}
+{#if profile}
+  <div class="flex flex-col px-4 mx-auto mb-20 -mt-3 space-y-6 md:w-2/3 xl:w-1/2">
+    <div class="flex flex-col w-full p-4 space-y-4 bg-white rounded-lg shadow-md cardborder">
+      <section class="justify-center">
+        <div class="flex flex-col w-full space-y-2">
+          <div class="text-left text-2xs text-dark-lightest">
+            {$_("dapps.o-passport.pages.home.qrcode")}
+          </div>
+          <div class="container">
+            <center>
+              {#if profile}
+                <QrCode value="{profile.circlesAddress}" />
+              {/if}
+            </center>
+          </div>
         </div>
-        <div class="container">
-          <center>
-            {#if profile}
-              <QrCode value="{profile.circlesAddress}" />
-            {/if}
-          </center>
-        </div>
-      </div>
-    </section>
-  </div>
-  <div
-    class="flex flex-col w-full p-4 space-y-4 bg-white rounded-lg shadow-md cardborder">
-    <!-- <section class="justify-center">
+      </section>
+    </div>
+    <div class="flex flex-col w-full p-4 space-y-4 bg-white rounded-lg shadow-md cardborder">
+      <!-- <section class="justify-center">
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
           {$_("dapps.o-passport.pages.home.passion")}
@@ -86,42 +82,81 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
         </div>
       </div>
     </section> -->
-    {#if profile && profile.circlesAddress}
-      <section class="justify-center">
-        <div class="flex flex-col w-full space-y-1">
-          <div class="text-left text-2xs text-dark-lightest">
-            {$_("dapps.o-passport.pages.home.address")}
-          </div>
+      {#if profile.circlesAddress}
+        <section class="justify-center">
+          <div class="flex flex-col w-full space-y-1">
+            <div class="text-left text-2xs text-dark-lightest">
+              {$_("dapps.o-passport.pages.home.address")}
+            </div>
 
-          <div class="flex items-center w-full space-x-2 sm:space-x-4">
-            <div class="text-left">
-              <div class="inline-block break-all" id="clipboard">
-                {#if profile}
-                  {profile.circlesAddress ? profile.circlesAddress : ""}
+            <div class="flex items-center w-full space-x-2 sm:space-x-4">
+              <div class="text-left">
+                <div class="inline-block break-all" id="clipboard">
+                  {#if profile}
+                    {profile.circlesAddress ? profile.circlesAddress : ""}
 
-                  <CopyToClipboard text="{name}" let:copy>
-                    <svg
-                      on:click="{copy}"
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="inline w-4 h-4 stroke-current text-primary"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0
+                    <CopyToClipboard text="{name}" let:copy>
+                      <svg
+                        on:click="{copy}"
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="inline w-4 h-4 stroke-current text-primary"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0
                 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0
                 012 2"></path>
-                    </svg>
-                  </CopyToClipboard>
-                {/if}
+                      </svg>
+                    </CopyToClipboard>
+                  {/if}
+                </div>
               </div>
             </div>
           </div>
+        </section>
+      {/if}
+
+      <section class="justify-center">
+        <div class="flex flex-col w-full space-y-1">
+          <div class="text-left text-2xs text-dark-lightest">
+            {$_("dapps.o-passport.pages.home.postAddress")}
+          </div>
+          {#if profile.shippingAddresses && profile.shippingAddresses.length}
+            {#each profile.shippingAddresses as shippingAddress, index}
+              <div
+                class="flex items-center w-full space-x-2 cursor-pointer sm:space-x-4"
+                on:click="{() => {
+                  window.o.runProcess(upsertShippingAddress, {
+                    ...shippingAddress,
+                  });
+                }}">
+                <div class="text-left">
+                  <div class="inline-block break-all">
+                    {shippingAddress.name}<br />
+                    {shippingAddress.street}
+                    {shippingAddress.house} <br />
+                    {shippingAddress.zip}
+                    {shippingAddress.city} <br />
+                    {shippingAddress.country}
+                  </div>
+                </div>
+              </div>
+            {/each}
+          {:else}
+            <div>
+              <button
+                class="btn btn-sm btn-primary"
+                on:click="{() => {
+                  window.o.runProcess(upsertShippingAddress, {});
+                }}">Add Address</button>
+            </div>
+          {/if}
         </div>
       </section>
-    {/if}
+    </div>
   </div>
-</div>
+{/if}

@@ -34,7 +34,7 @@ $: {
       edgeless: false,
       imageProfile: $me,
       title: $me.displayName,
-      subTitle: `${window.i18n("dapps.o-passport.pages.account.subTitle")}`,
+      subTitle: `${window.i18n('dapps.o-passport.pages.account.subTitle')}`,
       truncateMain: true,
     }}">
     <div slot="itemCardEnd">
@@ -43,7 +43,7 @@ $: {
   </ItemCard>
 
   {#if keyManager}
-    {#each Object.values(keyManager.eoas).sort( (a, b) => a.address.localeCompare(b.address) ) as key}
+    {#each Object.values(keyManager.eoas).sort((a, b) => a.address.localeCompare(b.address)) as key}
       <AccountCard key="{key}" />
     {/each}
   {/if}

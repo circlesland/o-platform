@@ -1,6 +1,6 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
-import {Offer, ShopCategoryEntry} from "../../../shared/api/data/types";
+import { Offer, ShopCategoryEntry } from "../../../shared/api/data/types";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 import { cartContents } from "../stores/shoppingCartStore";
@@ -9,13 +9,13 @@ import { _ } from "svelte-i18n";
 
 export let entry: ShopCategoryEntry;
 export let shopId: number;
-
+export let deliveryMethods: any;
 
 function loadDetailPage() {
   push("#/marketplace/detail/" + shopId + "/" + entry.id);
 }
 
-function addToCart(item:Offer & {shopId:number}) {
+function addToCart(item: Offer & { shopId: number }) {
   $cartContents = $cartContents ? [...$cartContents, item] : [item];
   push(`#/marketplace/cart`);
 }
@@ -40,9 +40,16 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
           <span class="inline-block">€</span>
         </div>
 
-        <div class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full top-16 bg-alert-lightest">
-          {$_("dapps.o-marketplace.atoms.offerCard.pickUpOnly")}
-        </div>
+        {#if deliveryMethods}
+          {#each deliveryMethods as deliveryMethod, i}
+            <div
+              class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full bg-alert-lightest"
+              class:top-16="{i == 0}"
+              class:top-28="{i > 0}">
+              {deliveryMethod.name}
+            </div>
+          {/each}
+        {/if}
       </div>
     </header>
     <div
@@ -69,7 +76,10 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
 
       <div class="flex flex-row space-x-4">
         <div class="">
-          <button type="submit" class="relative btn btn-primary btn-square" on:click="{() => addToCart({...entry.product, shopId: shopId})}">
+          <button
+            type="submit"
+            class="relative btn btn-primary btn-square"
+            on:click="{() => addToCart({ ...entry.product, shopId: shopId })}">
             <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
           </button>
         </div>

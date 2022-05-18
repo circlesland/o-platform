@@ -6,7 +6,7 @@ import { _ } from "svelte-i18n";
 
 export let profile: Profile | Organisation;
 export let targetCirclesAddress: string;
-export let showPassion: boolean = true;
+// export let showPassion: boolean = true;
 let displayName: string;
 
 if (profile.__typename == "Profile") {
@@ -19,8 +19,7 @@ if (profile.__typename == "Profile") {
 </script>
 
 {#if profile && profile.circlesAddress}
-  <div
-    class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
+  <div class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
     <UserImage profile="{profile}" size="{36}" gradientRing="{true}" />
 
     <div
@@ -47,8 +46,7 @@ if (profile.__typename == "Profile") {
     </div>
   {/if} -->
 {:else if targetCirclesAddress}
-  <div
-    class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
+  <div class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
     {targetCirclesAddress}
   </div>
 {/if}

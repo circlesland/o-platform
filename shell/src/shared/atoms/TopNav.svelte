@@ -9,8 +9,6 @@ import { push } from "svelte-spa-router";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
-export let routable: Routable;
-export let headerString: string = null;
 
 let profile: Profile;
 let showSwitcher = false;
@@ -44,7 +42,7 @@ $: {
     </div>
 
     <div class="col-start-3 pr-1 place-self-center justify-self-end">
-      {#if runtimeDapp && (runtimeDapp.dappId !== "homepage:1" && !runtimeDapp.anonymous)}
+      {#if runtimeDapp && runtimeDapp.dappId !== "homepage:1" && !runtimeDapp.anonymous}
         <div class="relative mr-4 cursor-pointer justify-self-center" on:click="{() => push(`#/marketplace/cart`)}">
           {#if $cartContents && $cartContents.length > 0}
             <div class="absolute left-0 w-full text-center text-secondary -top-4 font-heading">

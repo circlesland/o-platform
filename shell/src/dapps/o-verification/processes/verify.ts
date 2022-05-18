@@ -6,6 +6,7 @@ import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
 import { AddMemberDocument } from "../../../shared/api/data/types";
 import { promptCirclesSafe } from "../../../shared/api/promptCirclesSafe";
+import {setWindowLastError} from "../../../shared/processes/actions/setWindowLastError";
 
 export type AddMemberContextData = {
   successAction: (data: AddMemberContextData) => void;
@@ -56,9 +57,7 @@ const processDefinition = (processId: string) =>
           },
           onDone: "success",
           onError: {
-            actions: (context, event) => {
-              window.o.lastError = event.data;
-            },
+            actions: setWindowLastError,
             target: "#showError",
           },
         },

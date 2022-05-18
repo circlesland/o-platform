@@ -17,9 +17,9 @@ export default function relativeTimeString(
 
   if (relativeDaysAgo > convertedTime.getTime()) {
     if (showHours) {
-      return dayjs(convertedTime).format("D.MM. YYYY HH:mm");
+      return dayjs(convertedTime).format("D.MM.YYYY HH:mm");
     } else {
-      return dayjs(convertedTime).format("D.MM. YYYY");
+      return dayjs(convertedTime).format("D.MM.YYYY");
     }
   } else {
     return dayjs().to(dayjs(convertedTime));

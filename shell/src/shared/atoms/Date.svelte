@@ -16,7 +16,7 @@ function dateOlderThanSevenDays(unixTime: number) {
 
 {#if time}
   {#if dateOlderThanSevenDays(convertedTime.getTime())}
-    <Time timestamp="{convertedTime}" format="D. MM. YYYY" />
+    <Time timestamp="{convertedTime}" format="DD.MM.YYYY" />
   {:else}
     <Time relative timestamp="{convertedTime}" live="{true}" />
   {/if}
