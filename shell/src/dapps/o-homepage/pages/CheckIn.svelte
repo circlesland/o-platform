@@ -40,7 +40,7 @@ onMount(async () => {
   id="video-overlay"
   class="relative flex items-center content-center justify-center h-screen overflow-hidden"
   style=" background-position: center; background:
-  url('/images/market/acidpunkstroke22.png') no-repeat center center fixed;
+  url('/images/market/acidpunkstroke22.jpg') no-repeat center center fixed;
   -webkit-background-size: cover; -moz-background-size: cover;
   -o-background-size: cover; background-size: cover; ">
   <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
