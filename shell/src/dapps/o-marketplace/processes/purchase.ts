@@ -246,11 +246,18 @@ const showCreatePurchaseWaitingMessage = () =>
     message: window.i18n("dapps.o-marketplace.processes.purchases.createPurchase.message"),
   });
 
-const createPurchaseService = async (context) => {
-  console.log("METADAATATATA: ", context.data.metadata);
+const createPurchaseService = async (context: PurchaseContext) => {
   const linesGroupedByOffer: { [offerId: number]: number } = {};
   context.data.items.forEach((o) => {
-    linesGroupedByOffer[o.id] = linesGroupedByOffer[o.id] ? linesGroupedByOffer[o.id] + 1 : 1;
+    linesGroupedByOffer[o.offerId] = o.qty;
+  });
+
+  let rere = Object.entries(linesGroupedByOffer).map((o) => {
+    return <PurchaseLineInput>{
+      offerId: parseInt(o[0]),
+      amount: o[1],
+      metadata: JSON.stringify(context.data.metadata),
+    };
   });
 
   const result = await ApiClient.mutate<Purchase, CreatePurchaseMutationVariables>(CreatePurchaseDocument, {
@@ -270,6 +277,8 @@ const createPurchaseService = async (context) => {
   }
   myPurchases.refresh();
 };
+
+// TODO: REMOVE Purchased items from cartStore.
 
 // const loadAndSetCartContents = (context: ProcessContext<PurchaseContextData>) => {
 //   const cartContents = JSON.parse(localStorage.getItem("cartContents"));
