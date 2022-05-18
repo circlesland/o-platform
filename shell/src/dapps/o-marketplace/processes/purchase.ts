@@ -69,7 +69,7 @@ const processDefinition = (processId: string) =>
       init: {
         id: "init",
         entry: [
-          loadAndSetCartContents,
+          // loadAndSetCartContents,
           // TODO: BOTH ACTIONS ASSUME ALL ITEMS ARE FROM THE SAME SELLER
           setFirstSellerAsSellerProfile,
           loadAndSetFirstShopMetadata,
@@ -271,12 +271,12 @@ const createPurchaseService = async (context) => {
   myPurchases.refresh();
 };
 
-const loadAndSetCartContents = (context: ProcessContext<PurchaseContextData>) => {
-  const cartContents = JSON.parse(localStorage.getItem("cartContents"));
-  if (cartContents) {
-    context.data.items = cartContents;
-  }
-};
+// const loadAndSetCartContents = (context: ProcessContext<PurchaseContextData>) => {
+//   const cartContents = JSON.parse(localStorage.getItem("cartContents"));
+//   if (cartContents) {
+//     context.data.items = cartContents;
+//   }
+// };
 
 const setFirstSellerAsSellerProfile = (context) => {
   context.data.sellerProfile = context.data.items[0].createdByProfile;

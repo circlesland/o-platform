@@ -16,8 +16,10 @@ import Item from "../../../shared/molecules/Select/Item.svelte";
 import { cartContents, cartContentsByShop } from "../stores/shoppingCartStore";
 
 export let editable: boolean = true;
+export let shop: any;
 
 let shops: any = [];
+
 let payableStatusBySeller: PayableStatusBySeller;
 let payable: boolean = false;
 
@@ -47,31 +49,35 @@ $: shops = shops;
 
 async function refresh() {
   isLoading = true;
-  shops = await $cartContentsByShop;
+  if (!shop) {
+    shops = await $cartContentsByShop;
 
-  const contentsByShop: {
-    [shopId: number]: {
-      items: any[];
-      shop: Shop;
-    };
-  } = shops.toLookup(
-    (o) => o.shop.owner.circlesAddress,
-    (o) => {
-      return {
-        items: o.items,
-        shop: o.shop,
+    const contentsByShop: {
+      [shopId: number]: {
+        items: any[];
+        shop: Shop;
       };
-    }
-  );
+    } = shops.toLookup(
+      (o) => o.shop.owner.circlesAddress,
+      (o) => {
+        return {
+          items: o.items,
+          shop: o.shop,
+        };
+      }
+    );
 
-  const amountsBySeller = Object.entries(contentsByShop).reduce((p, c) => {
-    p[c[0]] = c[1].items.reduce((q, d) => q + d.total, 0);
-    return p;
-  }, {});
+    const amountsBySeller = Object.entries(contentsByShop).reduce((p, c) => {
+      p[c[0]] = c[1].items.reduce((q, d) => q + d.total, 0);
+      return p;
+    }, {});
 
-  payableStatusBySeller = await Liquidity.getPayableStatusBySeller($me.circlesAddress, amountsBySeller);
+    payableStatusBySeller = await Liquidity.getPayableStatusBySeller($me.circlesAddress, amountsBySeller);
 
-  insufficientFunds = !hasSufficientFunds(amountsBySeller);
+    insufficientFunds = !hasSufficientFunds(amountsBySeller);
+  } else {
+    shops = shop;
+  }
   isLoading = false;
 }
 
@@ -87,7 +93,7 @@ async function checkout(shopIndex) {
   const cartContents = await $cartContentsByShop;
   console.log("ITEIET", cartContents[shopIndex].items);
 
-  window.o.runProcess(purchase, { items: cartContents[shopIndex] });
+  window.o.runProcess(purchase, { items: cartContents[shopIndex].items });
 }
 
 function addOneItem(id) {
