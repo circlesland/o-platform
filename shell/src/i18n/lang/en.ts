@@ -804,7 +804,7 @@ export const en = {
               },
               redeemInvitation: {
                 message: "Please wait, redeeming your Invitation...",
-                error: "Couldn't redeem an invitation: {contextMessages}",
+                error: "Couldn't redeem your invitation. Please reload the page and try again.",
                 onError: "The following error occurred while redeeming you claimed invitation:",
               },
               checkIfRedeemed: {
