@@ -9,7 +9,7 @@
     <div class="mt-4 text-3xl font-heading">{$_("shared.molecules.notificationViewer.molecules.notificationViewWelcome.welcomeToCirclesLand")}</div>
     <div class="mt-1 text-sm text-dark-lightest">{$_("shared.molecules.notificationViewer.molecules.notificationViewWelcome.duSchoenerMensch")}</div>
 
-    <div class="mt-4 text-3xl font-heading">{$_("dapps.o-passport.processes.upsertIdentity.editorContent.info.title")}</div>
+    <div class="mt-4 text-2xl font-heading">{$_("dapps.o-passport.processes.upsertIdentity.editorContent.info.title")}</div>
     <div class="mt-1 text-sm text-dark-lightest">{$_("dapps.o-passport.processes.upsertIdentity.editorContent.info.description")}</div>
 
   </div>
