@@ -271,7 +271,7 @@ const createPurchaseService = async (context: PurchaseContext) => {
     }),
   });
 
-  context.data.invoices = result;
+  context.data.invoices = result.invoices;
   if (context.data.invoices.length > 0) {
     await myPurchases.findSingleItemFallback([EventType.Purchased], context.data.invoices[0].purchaseId.toString());
   }
