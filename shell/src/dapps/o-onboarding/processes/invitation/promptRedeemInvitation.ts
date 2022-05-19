@@ -1,21 +1,18 @@
 import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
-import { prompt } from "@o-platform/o-process/dist/states/prompt";
 import { fatalError } from "@o-platform/o-process/dist/states/fatalError";
 import { createMachine } from "xstate";
-import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { push } from "svelte-spa-router";
-import * as yup from "yup";
-import HtmlViewer from "../../../../../../packages/o-editors/src/HtmlViewer.svelte";
 import {
-  ClaimInvitationDocument,
   EventsDocument,
   EventType,
   InvitationTransactionDocument,
   RedeemClaimedInvitationDocument,
 } from "../../../../shared/api/data/types";
-import { inbox } from "../../../../shared/stores/inbox";
+import {show} from "@o-platform/o-process/dist/actions/show";
+import ErrorView from "../../../../shared/atoms/Error.svelte";
+import {setWindowLastError} from "../../../../shared/processes/actions/setWindowLastError";
 
 export type RedeemInvitationContextData = {
   inviteCode: string;
@@ -24,15 +21,6 @@ export type RedeemInvitationContextData = {
 export type PromptRedeemInvitationContext = ProcessContext<RedeemInvitationContextData>;
 
 const editorContent = {
-  info: {
-    title: window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.editorContent.info.title"),
-    description: window.i18n(
-      "dapps.o-onboarding.processes.invitation.promptRedeemInvitation.editorContent.info.description"
-    ),
-    submitButtonText: window.i18n(
-      "dapps.o-onboarding.processes.invitation.promptRedeemInvitation.editorContent.info.submitButtonText"
-    ),
-  },
   waitUntilRedeemed: {
     title: window.i18n(
       "dapps.o-onboarding.processes.invitation.promptRedeemInvitation.editorContent.waitUntilRedeemed.title"
@@ -53,20 +41,7 @@ const processDefinition = (processId: string) =>
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<PromptRedeemInvitationContext, any>("error"),
-/*
-      info: prompt({
-        id: "info",
-        field: "__",
-        component: HtmlViewer,
-        params: {
-          view: editorContent.info,
-          html: () => "",
-          hideNav: false,
-        },
-        navigation: {
-          next: "#redeemInvitation",
-        },
-      }),*/
+
       redeemInvitation: {
         id: "redeemInvitation",
         entry: () => {
@@ -103,13 +78,8 @@ const processDefinition = (processId: string) =>
             }
           },
           onError: {
-            actions: (context, event) => {
-              console.error(
-                window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.redeemInvitation.onError"),
-                event.data
-              );
-            },
-            target: "#info",
+            actions: setWindowLastError,
+            target: "#showError",
           },
           onDone: "#checkIfRedeemed",
         },
@@ -164,21 +134,18 @@ const processDefinition = (processId: string) =>
           onDone: "#checkIfRedeemed",
         },
       },
-      /*
-      waitUntilRedeemed: prompt({
-        id: "waitUntilRedeemed",
-        field: "__",
-        component: HtmlViewer,
-        params: {
-          view: editorContent.waitUntilRedeemed,
-          html: () => "",
-          hideNav: false,
-        },
-        navigation: {
-          next: "#checkIfRedeemed",
-        },
-      }),
-       */
+      showError: {
+        id: "showError",
+        entry: show({
+          component: ErrorView,
+          params: {},
+          field: {
+            name: "",
+            get: () => undefined,
+            set: (o: any) => {},
+          },
+        }),
+      },
       success: {
         id: "success",
         type: "final",
