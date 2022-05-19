@@ -17,10 +17,6 @@ import {
   EventType,
   CreatePurchaseMutationVariables,
   Purchase,
-  OffersByIdAndVersionQuery,
-  OffersByIdAndVersionDocument,
-  OfferByIdAndVersionInput,
-  QueryOffersByIdAndVersionArgs,
 } from "../../../shared/api/data/types";
 import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
@@ -260,7 +256,7 @@ const createPurchaseService = async (context: PurchaseContext) => {
     };
   });
 
-  const result = await ApiClient.mutate<Purchase, CreatePurchaseMutationVariables>(CreatePurchaseDocument, {
+  const result = await ApiClient.mutate<Invoice[], CreatePurchaseMutationVariables>(CreatePurchaseDocument, {
     deliveryMethodId: 1,
     lines: Object.entries(linesGroupedByOffer).map((o) => {
       return <PurchaseLineInput>{
@@ -271,7 +267,7 @@ const createPurchaseService = async (context: PurchaseContext) => {
     }),
   });
 
-  context.data.invoices = result.invoices;
+  context.data.invoices = result;
   if (context.data.invoices.length > 0) {
     await myPurchases.findSingleItemFallback([EventType.Purchased], context.data.invoices[0].purchaseId.toString());
   }
