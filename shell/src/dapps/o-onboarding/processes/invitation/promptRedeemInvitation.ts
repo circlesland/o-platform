@@ -48,12 +48,12 @@ const editorContent = {
 const processDefinition = (processId: string) =>
   createMachine<PromptRedeemInvitationContext, any>({
     id: `${processId}:promptRedeemInvitation`,
-    initial: "info",
+    initial: "redeemInvitation",
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<PromptRedeemInvitationContext, any>("error"),
-
+/*
       info: prompt({
         id: "info",
         field: "__",
@@ -66,7 +66,7 @@ const processDefinition = (processId: string) =>
         navigation: {
           next: "#redeemInvitation",
         },
-      }),
+      }),*/
       redeemInvitation: {
         id: "redeemInvitation",
         entry: () => {
