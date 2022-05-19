@@ -24,39 +24,6 @@ $: {
   profile = context.data.sellerProfile;
 }
 
-let shop: Shop;
-
-onMount(async () => {
-  console.log("ASLKAJSDLAKSJDLAKDSJ", context);
-  // if (context.data.items.length) {
-  //   const result = await Promise.all(
-  //     context.data.items
-  //       .filter((o) => o.hasOwnProperty("shopId") == true)
-  //       .map(async (o) => {
-  //         return { shopId: o.shopId, item: o };
-  //       })
-  //   );
-
-  //   if (result.length) {
-  //     shopId = result[0].shopId;
-  //     shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
-  //       id: parseInt(shopId.toString()),
-  //     });
-
-  //     if (shop.purchaseMetaDataKeys && context.data.metadata) {
-  //       metadata = context.data.metadata;
-  //     } else {
-  //       metadata = undefined;
-  //     }
-  //     isLoading = false;
-  //   }
-  //   console.log("SHOP", shop);
-  //   console.log("data", context.data.items);
-  // }
-});
-
-let classes: string;
-
 function submit() {
   if (context.data.shop.shop.purchaseMetaDataKeys && metadataError) {
     return;
