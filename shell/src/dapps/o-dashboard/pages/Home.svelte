@@ -74,10 +74,7 @@ async function fetchStats() {
       <div class="flex flex-col w-full ">
         <header class="rounded-lg shadow-md headerImageContainer">
           <div class="relative rounded-lg image-wrapper">
-            <img
-              src="https://circlesland-pictures.fra1.cdn.digitaloceanspaces.com/cc9a50fdd22d04447812d597835e.jpg"
-              alt=""
-              class="rounded-lg" />
+            <img src="/images/common/substanz.jpg" alt="" class="rounded-lg" />
           </div>
         </header>
       </div>
