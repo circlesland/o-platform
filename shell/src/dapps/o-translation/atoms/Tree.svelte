@@ -8,13 +8,15 @@ import { createEventDispatcher } from "svelte";
 export let rootNode: CTreeNode;
 
 let dispatch = createEventDispatcher();
+let snapshot = [];
 </script>
 
 <span
   on:click="{() => {
     rootNode.toggleExpanded();
     rootNode = rootNode;
-    dispatch("expand");
+    snapshot = rootNode.createStateSnapshot()
+    dispatch("expand", {snapshot});
   }}">
   {rootNode.key}
 </span>

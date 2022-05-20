@@ -6,6 +6,7 @@ import {
   I18n,
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
+import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import Tree from "../atoms/Tree.svelte";
 import { CTreeNode } from "../classes/treenode";
 
@@ -48,9 +49,10 @@ async function filterItems(keyFilter: string, valueFilter: string, i18nData: I18
 
 async function refreshView() {
   let filteredI18nData = await filterItems(keyFilter, valueFilter, fullI18nData);
-  let snapshot = displayedTree.createStateSnapshot();
 
   displayedTree = await createTree(filteredI18nData);
+  //let snapshot = displayedTree.createStateSnapshot();
+
   displayedTree.restoreStateSnapshot(snapshot);
   console.log("snapshot", snapshot)
 }
@@ -86,5 +88,5 @@ async function logTree() {
   <form on:input="{() => refreshView()}">
     <input bind:value="{valueFilter}" class="input m-1" type="text" placeholder="String" />
   </form>
-  <Tree rootNode="{displayedTree}" on:expand={() => {snapshot = displayedTree.createStateSnapshot()}}/>
+  <Tree rootNode="{displayedTree}" on:expand={(e) => displayedTree.restoreStateSnapshot(e.detail.snapshot)}/>
 </section>
