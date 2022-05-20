@@ -14,20 +14,14 @@ let displayedTree: CTreeNode = new CTreeNode("root");
 let keyFilter: string = "";
 let valueFilter: string = "";
 let completeTree;
+let snapshot = [];
 
 async function createTree(rootData: I18n[]): Promise<CTreeNode> {
   let cTreenode = new CTreeNode("root");
-  let currentNode: CTreeNode = cTreenode;
   for (const row of rootData) {
-    currentNode = cTreenode.add(row.key, row);
-    let keyParts = row.key.split(".");
-    for (let i = 0; i < keyParts.length; i++) {
-      let keyPart = keyParts[i];
-      if (currentNode.findChildByKey(keyPart)) {
-        currentNode = currentNode.findChildByKey(keyPart);
-      } else {
-        currentNode = currentNode.add(keyPart, row);
-      }
+    cTreenode.add(row.key, row);
+    if(snapshot.length) {
+      cTreenode.restoreStateSnapshot(snapshot);
     }
   }
   console.log(cTreenode)
@@ -54,12 +48,14 @@ async function filterItems(keyFilter: string, valueFilter: string, i18nData: I18
 
 async function refreshView() {
   let filteredI18nData = await filterItems(keyFilter, valueFilter, fullI18nData);
+  let snapshot = displayedTree.createStateSnapshot();
+
   displayedTree = await createTree(filteredI18nData);
-  console.log("blablabal", displayedTree)
+  displayedTree.restoreStateSnapshot(snapshot);
+  console.log("snapshot", snapshot)
 }
 
 async function logTree() {
-  let childTree = {};
   let data = await getI18nData();
   completeTree = await createTree(data);
 
@@ -69,7 +65,8 @@ async function logTree() {
 
   function loppOverChildren(tree) {
     if (tree._children.length == 0) {
-      console.log("end");
+      console.log(tree._key);
+      console.log(tree._values[0].key)
     } else {
       for (let i = 0; i < tree._children.length; i++) {
         console.log(tree._key);
@@ -79,7 +76,7 @@ async function logTree() {
   }
 }
 
-logTree();
+//logTree();
 </script>
 
 <section>
@@ -89,5 +86,5 @@ logTree();
   <form on:input="{() => refreshView()}">
     <input bind:value="{valueFilter}" class="input m-1" type="text" placeholder="String" />
   </form>
-  <Tree rootNode="{displayedTree}" />
+  <Tree rootNode="{displayedTree}" on:expand={() => {snapshot = displayedTree.createStateSnapshot()}}/>
 </section>

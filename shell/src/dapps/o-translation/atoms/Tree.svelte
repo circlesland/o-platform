@@ -3,15 +3,20 @@ import { CTreeNode } from "../classes/treenode";
 
 import StringEditor from "./StringEditor.svelte";
 
+import { createEventDispatcher } from "svelte";
+
 export let rootNode: CTreeNode;
+
+let dispatch = createEventDispatcher();
 </script>
 
 <span
   on:click="{() => {
     rootNode.toggleExpanded();
     rootNode = rootNode;
+    dispatch("expand");
   }}">
-  {rootNode.key}:
+  {rootNode.key}
 </span>
 
 {#if rootNode.isExpanded}

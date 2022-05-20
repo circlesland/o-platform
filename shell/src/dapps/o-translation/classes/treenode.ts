@@ -1,6 +1,6 @@
 import { I18n } from "../../../shared/api/data/types";
 
-type StateSnapshot = string;
+type StateSnapshot = object[];
 
 export class CTreeNode {
   public add(key: string, value: I18n) {
@@ -26,6 +26,18 @@ export class CTreeNode {
     }
     return currentNode;
   }
+
+  public createStateSnapshot(): StateSnapshot {
+    let currentNode: CTreeNode = this;
+    let stateSnapshot = [];
+    if (currentNode._isExpanded) {
+      stateSnapshot.push(currentNode);
+    }
+    console.log("statesnapshot",stateSnapshot)
+
+    return stateSnapshot;
+  }
+
   public get children(): CTreeNode[] {
     return this._children;
   }
@@ -63,11 +75,9 @@ export class CTreeNode {
     return this.children.find((o) => o.key == keyPart);
   }
 
-  public createStateSnapshot(): StateSnapshot{
-    return "";
-  }
-
   public restoreStateSnapshot(stateSnapshot: StateSnapshot) {
-
+    if (stateSnapshot.length) {
+    return this._isExpanded = true;
+    }
   }
 }
