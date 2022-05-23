@@ -34,10 +34,12 @@ import { Environment } from "../../../shared/environment";
 import { setWindowLastError } from "../../../shared/processes/actions/setWindowLastError";
 import { ApiClient } from "../../../shared/apiConnection";
 import { ShoppingCartItem } from "../types/ShoppingCartItem";
+import { data } from "vis-network";
 
 export type PurchaseContextData = {
   items: ShoppingCartItem[];
   metadata?: string;
+  deliveryMethodId?: number;
   sellerProfile?: Profile;
   invoices?: Invoice[];
   pickupCode?: string;
@@ -80,12 +82,13 @@ const processDefinition = (processId: string) =>
 
       checkoutDelivery: prompt<PurchaseContext, any>({
         id: "checkoutDelivery",
-        field: "deliveryMethod",
+        field: "deliveryMethodId",
         component: CheckoutDelivery,
         params: {
           view: editorContent.delivery,
           submitButtonText: editorContent.delivery.submitButtonText,
         },
+
         navigation: {
           next: "#checkoutSummary",
         },
@@ -257,7 +260,7 @@ const createPurchaseService = async (context: PurchaseContext) => {
   });
 
   const result = await ApiClient.mutate<Invoice[], CreatePurchaseMutationVariables>(CreatePurchaseDocument, {
-    deliveryMethodId: 1,
+    deliveryMethodId: context.data.deliveryMethodId,
     lines: Object.entries(linesGroupedByOffer).map((o) => {
       return <PurchaseLineInput>{
         offerId: parseInt(o[0]),
@@ -285,6 +288,7 @@ const createPurchaseService = async (context: PurchaseContext) => {
 
 const setFirstSellerAsSellerProfile = (context) => {
   context.data.sellerProfile = context.data.items[0].createdByProfile;
+  context.data.deliveryMethodId = context.data.deliveryMethodId;
 };
 
 const showCalculatePathWaitingMessage = () => {
@@ -320,8 +324,6 @@ const calculatePathService = async (context) => {
       });
     }
   }
-
-  console.log(JSON.stringify(context.data.payableInvoices, null, 2));
 };
 
 const showPaymentTransferWaitingMessage = () => {

@@ -20,7 +20,6 @@ let shopId: any = null;
 let isLoading: Boolean = true;
 $: {
   context = context;
-  console.log("CheckoutSummary.context:", context);
   profile = context.data.sellerProfile;
 }
 
