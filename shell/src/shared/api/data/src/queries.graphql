@@ -1200,6 +1200,10 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           buyerSignedDate
           sellerSignature
           sellerSignedDate
+          deliveryMethod {
+            id
+            name
+          }
           createdAt
           cancelledAt
           cancelReason
@@ -1260,6 +1264,10 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           invoices {
             id
             pickupCode
+            deliveryMethod {
+              id
+              name
+            }
             simplePickupCode
             buyerProfile {
               id
@@ -1381,7 +1389,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
           timeCirclesPriceShare
         }
       }
-      ...on Erc721Tokens {
+      ... on Erc721Tokens {
         lastUpdatedAt
         balances {
           token_no
@@ -1601,6 +1609,10 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             paymentTransactionHash
             buyerAddress
             pickupCode
+            deliveryMethod {
+              id
+              name
+            }
             simplePickupCode
             buyerSignature
             buyerSignedDate
@@ -1695,6 +1707,10 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             paymentTransactionHash
             buyerAddress
             pickupCode
+            deliveryMethod {
+              id
+              name
+            }
             simplePickupCode
             buyerSignature
             buyerSignedDate
