@@ -7,25 +7,22 @@ import { _ } from "svelte-i18n";
 
 export let context: any;
 
-function checkout() {
-  window.o.runProcess(purchase, {});
-}
-
 let checked: boolean = false;
 let balance: number = 0;
 let invoiceAmount: number = 0;
 let shippingAddressId: number;
+let deliveryType: number = 1;
 
-let deliveryType: number = 2;
+$: {
+  context = context;
+}
 
 function submit(redirectTo?: string) {
   const answer = new Continue();
-  context.data.deliveryMethod = deliveryType === 1;
-  console.log("CONTEXT: ", context);
-  answer.data = {
-    ...context.data,
-    redirectTo: redirectTo,
-  };
+  context.data.deliveryMethodId = deliveryType;
+
+  answer.data = context.data;
+
   context.process.sendAnswer(answer);
 }
 
@@ -45,7 +42,7 @@ function onkeydown(e: KeyboardEvent) {
           class=" radio radio-primary radio-sm"
           bind:group="{deliveryType}"
           name="deliveryType"
-          value="{1}" />
+          value="{2}" />
         <span class="pb-2 align-baseline">I want this order to be delivered to me</span>
       </label>
     </div>
@@ -57,12 +54,12 @@ function onkeydown(e: KeyboardEvent) {
           checked
           bind:group="{deliveryType}"
           name="deliveryType"
-          value="{2}" />
+          value="{1}" />
         <span class="inline"> I want to pick this order up at the store</span>
       </label>
     </div>
   </div>
-  {#if deliveryType == 1}
+  {#if deliveryType == 2}
     <div class="form-control">
       <label class="cursor-pointer label">
         <select class="select select-bordered" bind:value="{shippingAddressId}">

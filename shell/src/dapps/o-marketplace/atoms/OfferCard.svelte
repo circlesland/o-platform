@@ -35,10 +35,12 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
           alt="
           "
           class="rounded-t-xl" />
-        <div class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
-          <span class="inline-block">{entry.product.pricePerUnit}</span>
-          <span class="inline-block">€</span>
-        </div>
+        {#if entry.product.pricePerUnit}
+          <div class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
+            <span class="inline-block">{entry.product.pricePerUnit}</span>
+            <span class="inline-block">€</span>
+          </div>
+        {/if}
 
         {#if deliveryMethods}
           {#each deliveryMethods as deliveryMethod, i}

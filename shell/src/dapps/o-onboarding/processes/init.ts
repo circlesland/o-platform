@@ -87,7 +87,6 @@ export const initMachine = createMachine<InitContext, InitEvent>(
             context.session = initResult;
 
             if (initResult.profile.circlesSafeOwner) {
-              context.session = initResult;
               context.eoa = {
                 address: initResult.profile.circlesSafeOwner,
                 origin: "Created",

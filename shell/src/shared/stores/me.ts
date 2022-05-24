@@ -14,6 +14,16 @@ export const me = {
       sessionInfo = await getSessionInfo();
     }
     return sessionInfo;
+  },
+  reload: async () => {
+    sessionInfo = await getSessionInfo();
+
+    if (sessionInfo.profile) {
+      window.o.publishEvent(<PlatformEvent>{
+        type: "shell.authenticated",
+        profile: sessionInfo.profile,
+      });
+    }
   }
 };
 const _me = readable<Profile|null>(null, function start(set) {

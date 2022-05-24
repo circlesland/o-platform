@@ -34,6 +34,8 @@ import { useMachine } from "@xstate/svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import Editor from "@tinymce/tinymce-svelte";
+
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
@@ -55,6 +57,13 @@ onMount(async () => {
     ownerId: $me.id,
   });
 });
+
+const tinymceloaded = () => {
+  tiny = window.tinymce.init({
+    //include the tinymce.init statement with the window function
+    selector: "textarea",
+  });
+};
 
 async function updateShop(newShop: Boolean = false) {
   try {
@@ -294,16 +303,31 @@ async function createNewShop() {
               </div>
             </div>
             {#if editShopId == shop.id}
-              <div class="w-full mt-2 text-left label">Description</div>
-              <div class="flex flex-row w-full space-x-2">
-                <input
+              <h1 class="w-full mt-2 text-left label">Description</h1>
+
+              <div class="w-full">
+                <Editor scriptSrc="tinymce/tinymce.min.js" bind:value="{shop.description}" />
+                <div class="flex flex-row justify-end w-full mt-2 space-x-2">
+                  <button class="inline btn btn-primary" on:click="{() => submit()}"> Save Description </button>
+                </div>
+                <!-- <input
                   type="text"
                   class="flex-grow font-primary input"
                   placeholder="Description"
-                  bind:value="{shop.description}" />
-                <button class="inline btn btn-square btn-primary" on:click="{() => submit()}">
-                  <Icon name="check" class="inline w-6 h-6 heroicon smallicon" />
-                </button>
+                  bind:value="{shop.description}" /> -->
+              </div>
+              <h1 class="w-full mt-2 text-left label">Legal Text</h1>
+
+              <div class="w-full">
+                <Editor scriptSrc="tinymce/tinymce.min.js" bind:value="{shop.legalText}" />
+                <div class="flex flex-row justify-end w-full mt-2 space-x-2">
+                  <button class="inline btn btn-primary" on:click="{() => submit()}"> Save legal Text </button>
+                </div>
+                <!-- <input
+                  type="text"
+                  class="flex-grow font-primary input"
+                  placeholder="Description"
+                  bind:value="{shop.description}" /> -->
               </div>
               <div class="w-full mt-2 text-left label">Terms of Service Link</div>
               <div class="flex flex-row w-full space-x-2">
@@ -361,45 +385,63 @@ async function createNewShop() {
                 Store Pick-Up
               </label>
               -->
-            </div>
-          {:else}
-            <div class="w-full mt-2 text-sm text-center">{shop.description}</div>
-          {/if}
-        </header>
-      </div>
-    </section>
-  {/each}
-  {#if showModal}
-    <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
-      {#if editImage}
-        <div class="p4">
-          <center>
-            <button class="self-center m-4 btn btn-primary btn-sm" on:click="{removeImage}">No Image</button>
-          </center>
+              </div>
+            {:else}
+              <h1>Description</h1>
+              <div class="w-full mt-2 text-sm">{@html shop.description}</div>
+              <h1 class="mt-4">Legal Text</h1>
+              <div class="w-full mt-2 text-sm">{@html shop.legalText}</div>
+              <div class="flex flex-row justify-center mt-4 space-x-4 text-xs">
+                {#if shop.privacyPolicyLink}
+                  <a href="{shop.privacyPolicyLink}" target="_blank" class="link link-primary" alt="Privacy Policy"
+                    >Privacy Policy</a>
+                {/if}
+                {#if shop.tosLink}
+                  <a href="{shop.tosLink}" target="_blank" class="link link-primary" alt="Terms of Service"
+                    >Terms of Service</a>
+                {/if}
+
+                {#if shop.healthInfosLink}
+                  <a href="{shop.healthInfosLink}" target="_blank" class="link link-primary" alt="Health Infos"
+                    >Health Information</a>
+                {/if}
+              </div>
+            {/if}
+          </header>
         </div>
-        <ImageUpload
-          on:submit="{handleImageUpload}"
-          aspect="{editType == 'smallBannerUrl' ? 750 / 216 : 262 / 175}" />
-      {:else}
-        <div class="flex flex-col w-full h-full p-4">
-          <button
-            class="self-center mb-4 btn btn-primary btn-sm"
-            on:click="{() => {
-              editImage = true;
-            }}">Remove Image</button>
-          <div class="text-center">
-            <div class="inline-flex">
-              <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
+      </section>
+    {/each}
+    {#if showModal}
+      <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
+        {#if editImage}
+          <div class="p4">
+            <center>
+              <button class="self-center m-4 btn btn-primary btn-sm" on:click="{removeImage}">No Image</button>
+            </center>
+          </div>
+          <ImageUpload
+            on:submit="{handleImageUpload}"
+            aspect="{editType == 'smallBannerUrl' ? 750 / 216 : 262 / 175}" />
+        {:else}
+          <div class="flex flex-col w-full h-full p-4">
+            <button
+              class="self-center mb-4 btn btn-primary btn-sm"
+              on:click="{() => {
+                editImage = true;
+              }}">Remove Image</button>
+            <div class="text-center">
+              <div class="inline-flex">
+                <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
+              </div>
             </div>
           </div>
-        </div>
-      {/if}
-    </Center>
+        {/if}
+      </Center>
+    {/if}
   {/if}
-{/if}
-<section class="flex items-start px-4 mx-auto mb-20 md:w-2/3 xl:w-1/2 rounded-xl">
-  <div class="flex flex-col w-full space-y-2">
-    <button class=" btn btn-large btn-primary" on:click="{() => createNewShop()}"> Create new Shop </button>
-  </div>
-</section>
+  <section class="flex items-start px-4 mx-auto mb-20 md:w-2/3 xl:w-1/2 rounded-xl">
+    <div class="flex flex-col w-full space-y-2">
+      <button class=" btn btn-large btn-primary" on:click="{() => createNewShop()}"> Create new Shop </button>
+    </div>
+  </section>
 </div>

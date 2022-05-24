@@ -20,29 +20,23 @@ let __HUMANODE_REDIRECT_URL__ = "http://localhost:5000/";
 let __HUMANODE_CLIENT_ID__ = "circles-ubi-jwks";
 let __HUMANODE_SCOPE__ = "openid";
 let __EXTERNAL_URL__ = "https://circles.land";
-let __CIRCLES_SUBGRAPH_ENDPOINT__ =
-  "https://api.thegraph.com/subgraphs/name/circlesubi/circles";
+let __CIRCLES_SUBGRAPH_ENDPOINT__ = "https://api.thegraph.com/subgraphs/name/circlesubi/circles";
 let __PATHFINDER_ENDPOINT__ = "https://rpc.circles.land/pathfinder";
 let __APP_ID__ = "circles.land";
 let __FILES_APP_ID__ = "files.circles.land";
 let __SAFE_SCHEMA_VERSION__ = "2";
 let __CIRCLES_HUB_ADDRESS__ = "0x29b9a7fBb8995b2423a71cC17cf9810798F6C543";
 let __CIRCLES_HUB_BLOCK__ = "12529458";
-let __SAFE_PROXY_FACTORY_ADDRESS__ =
-  "0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2";
+let __SAFE_PROXY_FACTORY_ADDRESS__ = "0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2";
 let __SAFE_ADDRESS__ = "0x3E5c63644E683549055b9Be8653de26E0B4CD36E";
 let __RPC_ENDPOINT__ = "https://rpc.circles.land";
 let __OPENLOGIN_CLIENT_ID__ =
   process.env.OPENLOGIN_CLIENT_ID ??
   "BHqazms23gbTZQ2fYvvUaFzv718Ft8Ox1XwSEqVt81jtZJRQRb-N5cnThtZGSjZF9Dtj9MQxkEQTUo47I_wiihE";
 let __ALLOW_VERIFY__ = "true"; // !process.env.ALLOW_VERIFY ? "false" : "true";
-let __ALLOW_CREATE_ORGANISATION__ = !process.env.ALLOW_CREATE_ORGANISATION
-  ? "false"
-  : "true";
+let __ALLOW_CREATE_ORGANISATION__ = !process.env.ALLOW_CREATE_ORGANISATION ? "false" : "true";
 let __USE_MOCKS__ = !process.env.USE_MOCKS ? "false" : "true";
-let __FIXED_GAS_PRICE__ = !process.env.FIXED_GAS_PRICE
-  ? "0"
-  : process.env.FIXED_GAS_PRICE;
+let __FIXED_GAS_PRICE__ = !process.env.FIXED_GAS_PRICE ? "0" : process.env.FIXED_GAS_PRICE;
 
 if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __AUTH_ENDPOINT__ = "https://auth.circles.name";
@@ -108,9 +102,7 @@ console.log(`__PATHFINDER_ENDPOINT__: ${__PATHFINDER_ENDPOINT__}`);
 console.log(`__CIRCLES_SUBGRAPH_ENDPOINT__: ${__CIRCLES_SUBGRAPH_ENDPOINT__}`);
 console.log(`__CIRCLES_HUB_ADDRESS__: ${__CIRCLES_HUB_ADDRESS__}`);
 console.log(`__CIRCLES_HUB_BLOCK__: ${__CIRCLES_HUB_BLOCK__}`);
-console.log(
-  `__SAFE_PROXY_FACTORY_ADDRESS__: ${__SAFE_PROXY_FACTORY_ADDRESS__}`
-);
+console.log(`__SAFE_PROXY_FACTORY_ADDRESS__: ${__SAFE_PROXY_FACTORY_ADDRESS__}`);
 console.log(`__SAFE_ADDRESS__: ${__SAFE_ADDRESS__}`);
 console.log(`__RPC_ENDPOINT__: ${__RPC_ENDPOINT__}`);
 console.log(`__OPENLOGIN_CLIENT_ID__: ${__OPENLOGIN_CLIENT_ID__}`);

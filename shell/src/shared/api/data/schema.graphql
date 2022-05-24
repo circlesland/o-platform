@@ -297,6 +297,7 @@ type Invoice {
     cancelledAt: String
     cancelledBy: Profile
     createdAt: String
+    deliveryMethod: DeliveryMethod!
     id: Int!
     invoiceNo: String!
     lines: [InvoiceLine!]
@@ -497,9 +498,11 @@ type PostAddress {
     city: String!
     cityGeonameid: Int
     country: String!
+    hereLocationId: String
     house: String!
     id: Int!
     name: String
+    osmId: String
     state: String
     street: String!
     zip: String!
@@ -651,7 +654,7 @@ type Query {
     safeInfo(safeAddress: String): SafeInfo
     search(query: SearchInput!): [Profile!]!
     sessionInfo: SessionInfo!
-    shop(id: Int!): Shop
+    shop(id: Int!, ownerId: Int): Shop
     shops(ownerId: Int): [Shop!]!
     shopsById(ids: [Int!]!): [Shop!]!
     stats: Stats!
@@ -765,6 +768,7 @@ type Shop {
     healthInfosLink: String
     id: Int!
     largeBannerUrl: String!
+    legalText: String
     name: String!
     openingHours: String
     owner: Organisation!
@@ -920,6 +924,7 @@ enum AggregateType {
 enum CapabilityType {
     Invite
     PreviewFeatures
+    Tickets
     Translate
     Verify
 }
@@ -1170,6 +1175,7 @@ input ShopInput {
     healthInfosLink: String
     id: Int
     largeBannerUrl: String!
+    legalText: String
     name: String!
     openingHours: String
     ownerId: Int!

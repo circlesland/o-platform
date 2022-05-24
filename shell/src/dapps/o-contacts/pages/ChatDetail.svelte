@@ -163,13 +163,13 @@
             reverse={true}
             store={myChats.with(contactProfile.circlesAddress)}
             views="{{
-              [EventType.CrcHubTransfer]: NotificationCard,
-              [EventType.CrcTrust]: NotificationCard,
-              [EventType.ChatMessage]: NotificationCard,
-              [EventType.Erc20Transfer]: NotificationCard,
-              [EventType.Purchased]: NotificationCard,
-              [EventType.SaleEvent]: NotificationCard,
-              [EventType.InvitationRedeemed]: NotificationCard
+              [EventType.CrcHubTransfer]:{component: NotificationCard},
+              [EventType.CrcTrust]: {component: NotificationCard},
+              [EventType.ChatMessage]: {component: NotificationCard},
+              [EventType.Erc20Transfer]: {component: NotificationCard},
+              [EventType.Purchased]: {component: NotificationCard},
+              [EventType.SaleEvent]: {component: NotificationCard},
+              [EventType.InvitationRedeemed]: {component: NotificationCard}
     }}" />
     {/if}
   </div>

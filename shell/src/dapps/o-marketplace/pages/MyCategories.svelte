@@ -19,7 +19,7 @@ import {
   UpsertShopCategoriesDocument,
   ShopCategoryInput,
   UpsertShopCategoriesResult,
-  UpsertShopCategoriesMutationVariables,
+  UpsertShopCategoriesMutationVariables, ShopsQueryVariables, ShopsDocument,
 } from "../../../shared/api/data/types";
 
 import { ok, err, Result } from "neverthrow";
@@ -46,11 +46,19 @@ let currentCategoryId: any;
 $: categories = categories;
 
 onMount(async () => {
-  if (!$me || !$me.shops || !$me.shops.length) {
+  if (!$me) {
     return;
   }
 
-  shopId = $me.shops[0].id;
+  const shops = await ApiClient.query<Shop[], ShopsQueryVariables>(ShopsDocument, {
+    ownerId: $me.id,
+  });
+
+  if (!shops || !shops.length) {
+    return;
+  }
+
+  shopId = shops[0].id;
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
     id: parseInt(shopId.toString()),
   });

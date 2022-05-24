@@ -12,9 +12,7 @@ export type DynamicPromptField<TContext extends ProcessContext<any>> = {
   set: (o: any, context: TContext) => void;
 };
 
-export type PromptField<TContext extends ProcessContext<any>> =
-  | string
-  | DynamicPromptField<TContext>;
+export type PromptField<TContext extends ProcessContext<any>> = string | DynamicPromptField<TContext>;
 
 export function normalizePromptField<TContext extends ProcessContext<any>>(
   field: PromptField<TContext>
@@ -55,32 +53,25 @@ export type PromptSpec<TContext extends ProcessContext<any>, TEvent> = {
   navigation?: {
     // If you want to allow the user to go one step back then specify here where he came from
     previous?: string;
-    canGoBack?: (
-      context: ProcessContext<TContext>,
-      event: { type: string; [x: string]: any }
-    ) => boolean;
-    next?: string | {
-      cond?: (context: TContext, event: { type: string; [x: string]: any; }) => boolean,
-      target: string
-    }[];
+    canGoBack?: (context: ProcessContext<TContext>, event: { type: string; [x: string]: any }) => boolean;
+    next?:
+      | string
+      | {
+          cond?: (context: TContext, event: { type: string; [x: string]: any }) => boolean;
+          target: string;
+        }[];
     skip?: string;
-    canSkip?: (
-      context: ProcessContext<TContext>,
-      event: { type: string; [x: string]: any }
-    ) => boolean;
+    canSkip?: (context: ProcessContext<TContext>, event: { type: string; [x: string]: any }) => boolean;
   };
   params: { [x: string]: any } | ((context: TContext) => { [x: string]: any });
   dataSchema?: any; // ((context:TContext, event:TEvent) => any)|any;
 };
 
-export function prompt<
-  TContext extends ProcessContext<any>,
-  TEvent extends PlatformEvent
->(spec: PromptSpec<TContext, TEvent>) {
-
+export function prompt<TContext extends ProcessContext<any>, TEvent extends PlatformEvent>(
+  spec: PromptSpec<TContext, TEvent>
+) {
   // Default 'canGoBack' (true when there are previous steps)
-  let canGoBack: (context: ProcessContext<any>, event: any) => boolean = () =>
-    !!spec.navigation?.previous;
+  let canGoBack: (context: ProcessContext<any>, event: any) => boolean = () => !!spec.navigation?.previous;
 
   // When 'canGoBack' is externally specified then use the external function
   if (canGoBack && spec.navigation?.canGoBack) {
@@ -114,10 +105,9 @@ export function prompt<
           onDone: [
             {
               cond: (context: TContext) => {
-                const skip =
-                  context.onlyThesePages?.length > 0 && !context.onlyThesePages.find(o => o == field.name)
-                  //context.onlyWhenDirty && !context.dirtyFlags[field.name];
-                  // spec.onlyWhenDirty && !context.dirtyFlags[field.name];
+                const skip = context.onlyThesePages?.length > 0 && !context.onlyThesePages.find((o) => o == field.name);
+                //context.onlyWhenDirty && !context.dirtyFlags[field.name];
+                // spec.onlyWhenDirty && !context.dirtyFlags[field.name];
                 if (skip) {
                   console.log(
                     `checkSkip: ${spec.id} ${spec.field} - skipping because '${spec.field}' is not dirty and 'onlyWhenDirty' == true.`
@@ -171,9 +161,7 @@ export function prompt<
           {
             cond: (context: TContext, event: TEvent) => {
               return (
-                spec.navigation?.previous &&
-                (!spec.navigation?.canGoBack ||
-                  spec.navigation.canGoBack(context, event))
+                spec.navigation?.previous && (!spec.navigation?.canGoBack || spec.navigation.canGoBack(context, event))
               );
             },
             target: spec.navigation?.previous ?? "show",
@@ -188,17 +176,15 @@ export function prompt<
         always: [
           {
             cond: (context: TContext, event: TEvent) => {
-              return (
-                spec.navigation?.canSkip !== undefined &&
-                spec.navigation.canSkip(context, event)
-              );
+              return spec.navigation?.canSkip !== undefined && spec.navigation.canSkip(context, event);
             },
-            target: spec.navigation?.skip ?? (
-              !spec.navigation?.next
+            target:
+              spec.navigation?.skip ??
+              (!spec.navigation?.next
                 ? "show"
                 : Array.isArray(spec.navigation.next)
-                  ? spec.navigation.next
-                  : spec.navigation.next),
+                ? spec.navigation.next
+                : spec.navigation.next),
           },
           {
             target: "show",
@@ -211,9 +197,7 @@ export function prompt<
             const data = event.data;
             if (!data) {
               throw new Error(
-                `Couldn't read the 'data' property of the received Continue event: ${JSON.stringify(
-                  event
-                )}`
+                `Couldn't read the 'data' property of the received Continue event: ${JSON.stringify(event)}`
               );
             }
             if (spec.dataSchema) {
@@ -257,9 +241,7 @@ export function prompt<
             const data = event.data;
             if (!data) {
               throw new Error(
-                `Couldn't read the 'data' property of the received Continue event: ${JSON.stringify(
-                  event
-                )}`
+                `Couldn't read the 'data' property of the received Continue event: ${JSON.stringify(event)}`
               );
             }
             if (field.get(context) !== data[field.name]) {
@@ -272,8 +254,8 @@ export function prompt<
         always: !spec.navigation?.next
           ? "show"
           : Array.isArray(spec.navigation.next)
-            ? spec.navigation.next
-            : spec.navigation.next,
+          ? spec.navigation.next
+          : spec.navigation.next,
       },
     },
   };

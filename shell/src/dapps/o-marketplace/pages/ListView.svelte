@@ -57,7 +57,7 @@ onMount(async () => {
               <span class="inline-block">{shop.name}</span>
             </div>
           </div>
-          <div class="w-full mt-2 text-sm text-center">{shop.description}</div>
+          <div class="w-full mt-2 text-sm">{@html shop.description}</div>
         </header>
       </div>
     </section>
@@ -94,21 +94,26 @@ onMount(async () => {
         {/each}
         {#if shop}
           <div class="pb-6 text-center text-2xs">
-            <h4 class="mb-2">{shop.name}</h4>
-            <div class="flex flex-row justify-center space-x-4">
-              {#if shop.privacyPolicyLink}
-                <a href="{shop.privacyPolicyLink}" target="_blank" class="link link-primary" alt="Privacy Policy"
-                  >Privacy Policy</a>
+            <div class="p-4 mx-auto space-y-4 xl:w-1/2 md:w-2/3">
+              {#if shop.legalText}
+                <div class="w-full mt-2 text-xs text-left">{@html shop.legalText}</div>
               {/if}
-              {#if shop.tosLink}
-                <a href="{shop.tosLink}" target="_blank" class="link link-primary" alt="Terms of Service"
-                  >Terms of Service</a>
-              {/if}
+              <h4 class="mb-2">{shop.name}</h4>
+              <div class="flex flex-row justify-center space-x-4">
+                {#if shop.privacyPolicyLink}
+                  <a href="{shop.privacyPolicyLink}" target="_blank" class="link link-primary" alt="Privacy Policy"
+                    >Privacy Policy</a>
+                {/if}
+                {#if shop.tosLink}
+                  <a href="{shop.tosLink}" target="_blank" class="link link-primary" alt="Terms of Service"
+                    >Terms of Service</a>
+                {/if}
 
-              {#if shop.healthInfosLink}
-                <a href="{shop.healthInfosLink}" target="_blank" class="link link-primary" alt="Health Infos"
-                  >Health Information</a>
-              {/if}
+                {#if shop.healthInfosLink}
+                  <a href="{shop.healthInfosLink}" target="_blank" class="link link-primary" alt="Health Infos"
+                    >Health Information</a>
+                {/if}
+              </div>
             </div>
           </div>
         {/if}

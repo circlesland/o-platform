@@ -11,6 +11,7 @@ import {
 } from "../../../shared/api/data/types";
 import {UpsertIdentityContext} from "./upsertIdentity";
 import {ApiClient} from "../../../shared/apiConnection";
+import {me} from "../../../shared/stores/me";
 
 export type UpsertShippingAddressContextData = {
   id?: number;
@@ -142,6 +143,7 @@ const processDefinition = (processId: string) =>
         id: "success",
         entry: (context, event) => {
           if (context.data.successAction) {
+            me.reload();
             context.data.successAction(context.data);
           }
         },

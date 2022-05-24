@@ -22,14 +22,12 @@ function loadDetailPage(path) {
   push(`#/marketplace/my-purchases/${path}`);
 }
 
-function getTableNoFromMetadata(metadataJson:string|undefined) {
+function getTableNoFromMetadata(metadataJson: string | undefined) {
   if (!purchased || !purchased.purchase || !metadataJson) {
     return "";
   }
 
-  const parsedJson = purchased.purchase.lines[0].metadata
-          ? JSON.parse(purchased.purchase.lines[0].metadata)
-          : {};
+  const parsedJson = purchased.purchase.lines[0].metadata ? JSON.parse(purchased.purchase.lines[0].metadata) : {};
 
   if (!parsedJson?.Table) {
     return "";
@@ -91,26 +89,42 @@ function getTableNoFromMetadata(metadataJson:string|undefined) {
               <span>{$_("dapps.o-marketplace.pages.myPurchases.paymentPending")}</span>
             {/if}
           </div>
-          <div
-            class="inline-block text-xs "
-            class:text-inactive="{!purchased.purchase.invoices[0].pickupCode}"
-            class:text-success="{purchased.purchase.invoices[0].pickupCode}">
-            <span>{$_("dapps.o-marketplace.pages.myPurchases.pickupCode")}</span>
-            {#if purchased.purchase.invoices[0].pickupCode}
-              <Icons icon="check" size="{4}" customClass="inline" />
-            {/if}
-          </div>
-          <div
-            class="inline-block text-xs"
-            class:text-inactive="{!purchased.purchase.invoices[0].sellerSignature}"
-            class:text-success="{purchased.purchase.invoices[0].sellerSignature}">
-            <span>{$_("dapps.o-marketplace.pages.myPurchases.pickedUp")}</span>
-            {#if purchased.purchase.invoices[0].sellerSignature}
-              <Icons icon="check" size="{4}" customClass="inline" />
-            {:else}
-              <Icons icon="closex" size="{2}" customClass="inline" />
-            {/if}
-          </div>
+          {#if purchased.purchase.deliveryMethod.id == 2}
+            <div class="inline-block text-xs ">
+              <span>{purchased.purchase.deliveryMethod.name}</span>
+            </div>
+            <div
+              class="inline-block text-xs"
+              class:text-inactive="{!purchased.purchase.invoices[0].sellerSignature}"
+              class:text-success="{purchased.purchase.invoices[0].sellerSignature}">
+              {#if purchased.purchase.invoices[0].sellerSignature}
+                <span>items shipped <Icons icon="check" size="{4}" customClass="inline" /></span>
+              {:else}
+                <span>items not yet shipped <Icons icon="closex" size="{2}" customClass="inline" /></span>
+              {/if}
+            </div>
+          {:else}
+            <div
+              class="inline-block text-xs "
+              class:text-inactive="{!purchased.purchase.invoices[0].pickupCode}"
+              class:text-success="{purchased.purchase.invoices[0].pickupCode}">
+              <span>{$_("dapps.o-marketplace.pages.myPurchases.pickupCode")}</span>
+              {#if purchased.purchase.invoices[0].pickupCode}
+                <Icons icon="check" size="{4}" customClass="inline" />
+              {/if}
+            </div>
+            <div
+              class="inline-block text-xs"
+              class:text-inactive="{!purchased.purchase.invoices[0].sellerSignature}"
+              class:text-success="{purchased.purchase.invoices[0].sellerSignature}">
+              <span>{$_("dapps.o-marketplace.pages.myPurchases.pickedUp")}</span>
+              {#if purchased.purchase.invoices[0].sellerSignature}
+                <Icons icon="check" size="{4}" customClass="inline" />
+              {:else}
+                <Icons icon="closex" size="{2}" customClass="inline" />
+              {/if}
+            </div>
+          {/if}
         </div>
       </div>
     </div>

@@ -74,6 +74,7 @@ export type Capability = {
 export enum CapabilityType {
   Invite = 'Invite',
   PreviewFeatures = 'PreviewFeatures',
+  Tickets = 'Tickets',
   Translate = 'Translate',
   Verify = 'Verify'
 }
@@ -420,6 +421,7 @@ export type Invoice = {
   cancelledAt?: Maybe<Scalars['String']>;
   cancelledBy?: Maybe<Profile>;
   createdAt?: Maybe<Scalars['String']>;
+  deliveryMethod: DeliveryMethod;
   id: Scalars['Int'];
   invoiceNo: Scalars['String'];
   lines?: Maybe<Array<InvoiceLine>>;
@@ -824,9 +826,11 @@ export type PostAddress = {
   city: Scalars['String'];
   cityGeonameid?: Maybe<Scalars['Int']>;
   country: Scalars['String'];
+  hereLocationId?: Maybe<Scalars['String']>;
   house: Scalars['String'];
   id: Scalars['Int'];
   name?: Maybe<Scalars['String']>;
+  osmId?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
   street: Scalars['String'];
   zip: Scalars['String'];
@@ -1165,6 +1169,7 @@ export type QuerySearchArgs = {
 
 export type QueryShopArgs = {
   id: Scalars['Int'];
+  ownerId?: Maybe<Scalars['Int']>;
 };
 
 
@@ -1366,6 +1371,7 @@ export type Shop = {
   healthInfosLink?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   largeBannerUrl: Scalars['String'];
+  legalText?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   openingHours?: Maybe<Scalars['String']>;
   owner: Organisation;
@@ -1442,6 +1448,7 @@ export type ShopInput = {
   healthInfosLink?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['Int']>;
   largeBannerUrl: Scalars['String'];
+  legalText?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   openingHours?: Maybe<Scalars['String']>;
   ownerId: Scalars['Int'];
@@ -2023,7 +2030,7 @@ export type UpsertShopMutation = (
   { __typename?: 'Mutation' }
   & { upsertShop: (
     { __typename?: 'Shop' }
-    & Pick<Shop, 'id' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'productListingStyle'>
+    & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'productListingStyle'>
     & { owner: (
       { __typename?: 'Organisation' }
       & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
@@ -2656,7 +2663,7 @@ export type OrganisationsQuery = (
       & Pick<City, 'geonameid' | 'name' | 'country'>
     )>, shops?: Maybe<Array<(
       { __typename?: 'Shop' }
-      & Pick<Shop, 'id' | 'name' | 'description' | 'largeBannerUrl' | 'smallBannerUrl'>
+      & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'largeBannerUrl' | 'smallBannerUrl'>
     )>> }
   )> }
 );
@@ -2691,7 +2698,7 @@ export type OrganisationsByAddressQuery = (
       & Pick<City, 'geonameid' | 'name' | 'country'>
     )>, shops?: Maybe<Array<(
       { __typename?: 'Shop' }
-      & Pick<Shop, 'id' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl'>
+      & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl'>
     )>>, members?: Maybe<Array<(
       { __typename?: 'Organisation' }
       & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'createdAt' | 'name' | 'displayName' | 'avatarUrl'>
@@ -2922,7 +2929,10 @@ export type StreamQuery = (
         )>>, invoices?: Maybe<Array<(
           { __typename?: 'Invoice' }
           & Pick<Invoice, 'id' | 'pickupCode' | 'simplePickupCode' | 'paymentTransactionHash' | 'createdAt' | 'cancelledAt' | 'invoiceNo' | 'sellerSignature' | 'buyerSignature'>
-          & { buyerProfile?: Maybe<(
+          & { deliveryMethod: (
+            { __typename?: 'DeliveryMethod' }
+            & Pick<DeliveryMethod, 'id' | 'name'>
+          ), buyerProfile?: Maybe<(
             { __typename?: 'Profile' }
             & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
           )>, sellerProfile?: Maybe<(
@@ -2947,7 +2957,10 @@ export type StreamQuery = (
       )>, invoice?: Maybe<(
         { __typename?: 'Invoice' }
         & Pick<Invoice, 'id' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate' | 'createdAt' | 'cancelledAt' | 'cancelReason' | 'simplePickupCode' | 'paymentTransactionHash'>
-        & { lines?: Maybe<Array<(
+        & { deliveryMethod: (
+          { __typename?: 'DeliveryMethod' }
+          & Pick<DeliveryMethod, 'id' | 'name'>
+        ), lines?: Maybe<Array<(
           { __typename?: 'InvoiceLine' }
           & Pick<InvoiceLine, 'amount' | 'metadata'>
           & { offer?: Maybe<(
@@ -3130,7 +3143,10 @@ export type AggregatesQuery = (
         )>>, invoices?: Maybe<Array<(
           { __typename?: 'Invoice' }
           & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode' | 'simplePickupCode' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate' | 'createdAt' | 'cancelledAt' | 'cancelReason'>
-          & { sellerProfile?: Maybe<(
+          & { deliveryMethod: (
+            { __typename?: 'DeliveryMethod' }
+            & Pick<DeliveryMethod, 'id' | 'name'>
+          ), sellerProfile?: Maybe<(
             { __typename?: 'Profile' }
             & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
           )> }
@@ -3177,7 +3193,10 @@ export type AggregatesQuery = (
         )>>, invoices?: Maybe<Array<(
           { __typename?: 'Invoice' }
           & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode' | 'simplePickupCode' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate' | 'createdAt' | 'cancelledAt' | 'cancelReason'>
-          & { buyerProfile?: Maybe<(
+          & { deliveryMethod: (
+            { __typename?: 'DeliveryMethod' }
+            & Pick<DeliveryMethod, 'id' | 'name'>
+          ), buyerProfile?: Maybe<(
             { __typename?: 'Profile' }
             & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
             & { verifications?: Maybe<Array<(
@@ -3275,7 +3294,7 @@ export type ShopQuery = (
   { __typename?: 'Query' }
   & { shop?: Maybe<(
     { __typename?: 'Shop' }
-    & Pick<Shop, 'id' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'productListingStyle' | 'shopListingStyle' | 'purchaseMetaDataKeys' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink' | 'ownerId'>
+    & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'productListingStyle' | 'shopListingStyle' | 'purchaseMetaDataKeys' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink' | 'ownerId'>
     & { owner: (
       { __typename?: 'Organisation' }
       & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
@@ -3310,7 +3329,7 @@ export type ShopsQuery = (
   { __typename?: 'Query' }
   & { shops: Array<(
     { __typename?: 'Shop' }
-    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId'>
+    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink'>
     & { deliveryMethods?: Maybe<Array<(
       { __typename?: 'DeliveryMethod' }
       & Pick<DeliveryMethod, 'id' | 'name'>
@@ -3333,7 +3352,7 @@ export type ShopsByIdQuery = (
   { __typename?: 'Query' }
   & { shopsById: Array<(
     { __typename?: 'Shop' }
-    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId'>
+    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink'>
     & { deliveryMethods?: Maybe<Array<(
       { __typename?: 'DeliveryMethod' }
       & Pick<DeliveryMethod, 'id' | 'name'>
@@ -3793,6 +3812,7 @@ export const UpsertShopDocument = gql`
     id
     name
     description
+    legalText
     smallBannerUrl
     largeBannerUrl
     openingHours
@@ -4644,6 +4664,7 @@ export const OrganisationsDocument = gql`
       id
       name
       description
+      legalText
       largeBannerUrl
       smallBannerUrl
     }
@@ -4686,6 +4707,7 @@ export const OrganisationsByAddressDocument = gql`
       id
       name
       description
+      legalText
       smallBannerUrl
       largeBannerUrl
     }
@@ -5061,6 +5083,10 @@ export const StreamDocument = gql`
           buyerSignedDate
           sellerSignature
           sellerSignedDate
+          deliveryMethod {
+            id
+            name
+          }
           createdAt
           cancelledAt
           cancelReason
@@ -5121,6 +5147,10 @@ export const StreamDocument = gql`
           invoices {
             id
             pickupCode
+            deliveryMethod {
+              id
+              name
+            }
             simplePickupCode
             buyerProfile {
               id
@@ -5463,6 +5493,10 @@ export const AggregatesDocument = gql`
             paymentTransactionHash
             buyerAddress
             pickupCode
+            deliveryMethod {
+              id
+              name
+            }
             simplePickupCode
             buyerSignature
             buyerSignedDate
@@ -5557,6 +5591,10 @@ export const AggregatesDocument = gql`
             paymentTransactionHash
             buyerAddress
             pickupCode
+            deliveryMethod {
+              id
+              name
+            }
             simplePickupCode
             buyerSignature
             buyerSignedDate
@@ -5666,6 +5704,7 @@ export const ShopDocument = gql`
     id
     name
     description
+    legalText
     smallBannerUrl
     largeBannerUrl
     openingHours
@@ -5734,6 +5773,7 @@ export const ShopsDocument = gql`
     createdAt
     name
     description
+    legalText
     smallBannerUrl
     largeBannerUrl
     openingHours
@@ -5743,6 +5783,9 @@ export const ShopsDocument = gql`
     productListingStyle
     sortOrder
     ownerId
+    tosLink
+    privacyPolicyLink
+    healthInfosLink
     deliveryMethods {
       id
       name
@@ -5772,6 +5815,7 @@ export const ShopsByIdDocument = gql`
     createdAt
     name
     description
+    legalText
     smallBannerUrl
     largeBannerUrl
     openingHours
@@ -5781,6 +5825,9 @@ export const ShopsByIdDocument = gql`
     productListingStyle
     sortOrder
     ownerId
+    tosLink
+    privacyPolicyLink
+    healthInfosLink
     deliveryMethods {
       id
       name
