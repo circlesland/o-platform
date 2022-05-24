@@ -365,6 +365,7 @@ export const en = {
             totalCitizens: "Total Citizens",
             verifiedCitizens: "Verified Citizens",
             passport: "passport",
+            tickets: "My tickets",
             contacts: "contacts",
             chat: "chat",
             banking: "banking",

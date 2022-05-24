@@ -88,6 +88,14 @@ onMount(async () => {
       title: window.i18n("dapps.o-marketplace.pages.myTicketDetail.chat"),
       action: () => push(`#/contacts/chat/${sellerProfile.circlesAddress}`),
     },
+    {
+      icon: "calendar",
+      title: "Date & Location",
+      action: () => {
+        console .log(groupedItems);
+        push(`#/marketplace/offer/${groupedItems[0].item.item.offer.id}`)
+      },
+    },
   ];
 
   if (purchase.invoices && purchase.invoices.length) {
@@ -202,6 +210,9 @@ onMount(async () => {
       </div>
       {#each groupedItems as groupPurchase, i}
         <div class="flex items-center justify-between w-full pb-6 mb-6 border-b">
+          <a
+                  href="#/marketplace/offer/{groupPurchase.item.item.offer.id}"
+                  alt="{groupPurchase.item.item.offer.title}">
           <div class="flex items-center w-full">
             <img
               src="{groupPurchase.item.item.offer.pictureUrl}"
@@ -210,11 +221,7 @@ onMount(async () => {
             <div class="flex flex-col items-start w-full ml-2 space-y-2">
               <div class="flex flex-row justify-between w-full">
                 <div class="md:text-md">
-                  <a
-                    href="#/marketplace/offer/{groupPurchase.item.item.offer.id}"
-                    alt="{groupPurchase.item.item.offer.title}">
                     {groupPurchase.item.item.offer.title}
-                  </a>
                 </div>
               </div>
               <div class="flex items-center justify-end w-full">
@@ -244,16 +251,9 @@ onMount(async () => {
     </div>
     {#each purchase.invoices as invoice}
       <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
-        <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
-          <h1 class="p-2 text-center text-white uppercase bg-dark-dark">
-            {#if invoice.simplePickupCode}
-              {$_("dapps.o-marketplace.pages.myTicketDetail.yourPickupNumber")}
-              {invoice.simplePickupCode}
-            {/if}
-          </h1>
-        </div>
 
         <div class="w-full text-center">
+          Please show this code at the entrance:<br/>
           {#if !invoice.pickupCode}
             <h1 class="text-3xl uppercase font-heading">
               {$_("dapps.o-marketplace.pages.myTicketDetail.noCode")}
