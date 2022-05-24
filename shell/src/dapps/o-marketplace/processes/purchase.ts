@@ -96,6 +96,7 @@ const processDefinition = (processId: string) =>
 
       checkoutSummary: prompt<PurchaseContext, any>({
         id: "checkoutSummary",
+        entry: ((context, event) => {}),
         field: "metadata",
         component: CheckoutSummary,
         params: {

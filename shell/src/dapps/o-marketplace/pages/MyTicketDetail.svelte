@@ -85,7 +85,7 @@ onMount(async () => {
   actions = [
     {
       icon: "chat",
-      title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.chat"),
+      title: window.i18n("dapps.o-marketplace.pages.myTicketDetail.chat"),
       action: () => push(`#/contacts/chat/${sellerProfile.circlesAddress}`),
     },
   ];
@@ -93,10 +93,10 @@ onMount(async () => {
   if (purchase.invoices && purchase.invoices.length) {
     const pickUpAction = {
       icon: "cash",
-      title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iPickedUp"),
+      title: window.i18n("dapps.o-marketplace.pages.myTicketDetail.iPickedUp"),
       action: async () => {
         const action = actions.find(
-          (o) => o.title == window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iPickedUp")
+          (o) => o.title == window.i18n("dapps.o-marketplace.pages.myTicketDetail.iPickedUp")
         );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await myPurchases.completePurchase(purchase.invoices[0].id);
@@ -105,10 +105,10 @@ onMount(async () => {
     };
     const unPickUpAction = {
       icon: "cash",
-      title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iHaventPickedUp"),
+      title: window.i18n("dapps.o-marketplace.pages.myTicketDetail.iHaventPickedUp"),
       action: async () => {
         const action = actions.find(
-          (o) => o.title == window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iHaventPickedUp")
+          (o) => o.title == window.i18n("dapps.o-marketplace.pages.myTicketDetail.iHaventPickedUp")
         );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await myPurchases.revokeCompletionStatus(purchase.invoices[0].id);
@@ -120,13 +120,13 @@ onMount(async () => {
       && !purchase.invoices[0].paymentTransactionHash.startsWith("0x0000000000000000")) {
       actions.push({
                 icon: "cash",
-                title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.transaction"),
+                title: window.i18n("dapps.o-marketplace.pages.myTicketDetail.transaction"),
                 action: () => push(`#/banking/transactions/${purchase.invoices[0].paymentTransactionHash}`),
               }
               // {
               //   icon: "document",
               //   title: window.i18n(
-              //     "dapps.o-marketplace.pages.myPurchaseDetail.downloadInvoice"
+              //     "dapps.o-marketplace.pages.myTicketDetail.downloadInvoice"
               //   ),
               //   action: async () => {
               //     for (let invoice of purchase.invoices) {
@@ -161,13 +161,13 @@ onMount(async () => {
   <header class="grid overflow-hidden bg-white ">
     <div class="w-full text-center">
       <h1 class="text-3xl uppercase font-heading">
-        {$_("dapps.o-marketplace.pages.myPurchaseDetail.purchaseDetails")}
+        {$_("dapps.o-marketplace.pages.myTicketDetail.purchaseDetails")}
       </h1>
     </div>
     <div class="w-full text-center">
       {#if purchase}
         <span class="text-dark-lightest"
-          >{$_("dapps.o-marketplace.pages.myPurchaseDetail.purchaseDate")}
+          >{$_("dapps.o-marketplace.pages.myTicketDetail.purchaseDate")}
           {relativeTimeString(purchase.createdAt, 1, true)}</span>
       {/if}
     </div>
@@ -177,7 +177,7 @@ onMount(async () => {
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
-            {$_("dapps.o-marketplace.pages.myPurchaseDetail.loadingPurchases")}
+            {$_("dapps.o-marketplace.pages.myTicketDetail.loadingPurchases")}
           </div>
         </div>
       </div>
@@ -247,7 +247,7 @@ onMount(async () => {
         <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
           <h1 class="p-2 text-center text-white uppercase bg-dark-dark">
             {#if invoice.simplePickupCode}
-              {$_("dapps.o-marketplace.pages.myPurchaseDetail.yourPickupNumber")}
+              {$_("dapps.o-marketplace.pages.myTicketDetail.yourPickupNumber")}
               {invoice.simplePickupCode}
             {/if}
           </h1>
@@ -256,7 +256,7 @@ onMount(async () => {
         <div class="w-full text-center">
           {#if !invoice.pickupCode}
             <h1 class="text-3xl uppercase font-heading">
-              {$_("dapps.o-marketplace.pages.myPurchaseDetail.noCode")}
+              {$_("dapps.o-marketplace.pages.myTicketDetail.noCode")}
             </h1>
           {:else}
             <div class="container mt-6">
@@ -268,7 +268,7 @@ onMount(async () => {
         </div>
 
         <!-- <div class="pt-2 text-sm">
-          {$_("dapps.o-marketplace.pages.myPurchaseDetail.location")}
+          {$_("dapps.o-marketplace.pages.myTicketDetail.location")}
         </div>
         <div class="pt-2 text-sm">
           <span class="font-bold">Basic Income Lab GmbH</span><br />

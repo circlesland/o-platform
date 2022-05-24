@@ -14,5 +14,5 @@ export let routable: Routable;
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <div class="px-4 mx-auto mb-20 -mt-3 md:w-2/3 xl:w-1/2 ">
-  <EventList store="{mySales}" views="{{ [EventType.SaleEvent]: SaleCard }}" />
+  <EventList store="{mySales}" views="{{ [EventType.SaleEvent]: {component: SaleCard} }}" />
 </div>

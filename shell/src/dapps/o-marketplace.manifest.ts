@@ -9,10 +9,12 @@ import MyOffers from "./o-marketplace/pages/MyOffers.svelte";
 import MyCategories from "./o-marketplace/pages/MyCategories.svelte";
 import MyShops from "./o-marketplace/pages/MyShops.svelte";
 import MyPurchases from "./o-marketplace/pages/MyPurchases.svelte";
+import MyTickets from "./o-marketplace/pages/MyTickets.svelte";
 import ScanPurchase from "./o-marketplace/pages/ScanPurchase.svelte";
 import MySales from "./o-marketplace/pages/MySales.svelte";
 import MySaleDetail from "./o-marketplace/pages/MySaleDetail.svelte";
 import MyPurchasesDetail from "./o-marketplace/pages/MyPurchasesDetail.svelte";
+import MyTicketDetail from "./o-marketplace/pages/MyTicketDetail.svelte";
 import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
 import PleaseSignIn from "./o-marketplace/pages/PleaseSignIn.svelte";
 import ShoppingCart from "./o-marketplace/pages/ShoppingCart.svelte";
@@ -182,6 +184,12 @@ const myPurchases: Page<any, DappState> = {
   title: "My purchases",
   type: "page",
 };
+const myTickets: Page<any, DappState> = {
+  routeParts: ["=my-tickets"],
+  component: MyTickets,
+  title: "My tickets",
+  type: "page",
+};
 const scanPurchase: Page<any, DappState> = {
   isSystem: true,
   position: "modal",
@@ -204,6 +212,15 @@ const myPurchasesDetail: Page<any, DappState> = {
   basePage: ["my-purchases"],
   component: MyPurchasesDetail,
   title: "Purchase Details",
+  type: "page",
+};
+const myTicketDetail: Page<any, DappState> = {
+  isSystem: true,
+  position: "modal",
+  routeParts: ["=my-tickets", ":id"],
+  basePage: ["my-tickets"],
+  component: MyTicketDetail,
+  title: "Ticket Details",
   type: "page",
 };
 const mySaleDetail: Page<any, DappState> = {
@@ -273,5 +290,7 @@ export const marketplace: DappManifest<DappState> = {
     myOffers,
     myCategories,
     mySales,
+    myTickets,
+    myTicketDetail
   ],
 };

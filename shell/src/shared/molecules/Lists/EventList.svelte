@@ -1,14 +1,27 @@
+<script lang="ts" context="module">
+  import {SvelteComponentDev} from "svelte/internal";
+  import {ProfileEvent} from "../../api/data/types";
+
+  export type EventListView = {
+    component?: SvelteComponentDev,
+    function?: (event:ProfileEvent) => SvelteComponentDev|null
+  };
+
+  export type EventListViewMap = {
+    [eventType:string]: EventListView
+  }
+</script>
 <script lang="ts">
 import { onMount } from "svelte";
-import { ProfileEvent } from "../../api/data/types";
 
 import { inview } from "svelte-inview/dist/index";
 import GenericEventCard from "../../NotificationViewer/molecules/GenericEventCard.svelte";
 import {poppedScrollPosition, scrollToTop, scrollToBottom, scrollToPosition, popScrollPosition, scrollPositionStackPopulated} from "../../layouts/Center.svelte";
 import {Readable} from "svelte/store";
 import { _ } from "svelte-i18n";
+import {SvelteComponentDev} from "svelte/internal";
 
-export let views: { [type: string]: any } = {};
+export let views: EventListViewMap = {};
 export let reverse: boolean = false;
 export let store: Readable<ProfileEvent[]> & {
   next: () => Promise<boolean>;
@@ -17,6 +30,7 @@ export let store: Readable<ProfileEvent[]> & {
 let isLoading = true;
 let hasMore = true;
 let events: ProfileEvent[] = [];
+let eventsWithViews: {component: SvelteComponentDev, event: ProfileEvent}[] = [];
 let initialScrollToBottom: boolean = false;
 let lastElement: HTMLElement;
 
@@ -34,6 +48,24 @@ onMount(() => {
     if (data.metadata?.itemAdded) {
       setTimeout(() => reverse ? scrollToBottom() : scrollToTop());
     }
+
+    eventsWithViews = events.map((event) => {
+      const view:EventListView = views[event.type];
+      let viewComponent: SvelteComponentDev;
+      if (view.function) {
+        viewComponent = view.function(event);
+      } else if (view.component) {
+        viewComponent = view.component;
+      } else {
+        viewComponent = GenericEventCard;
+      }
+
+      return {
+        event: event,
+        component: viewComponent
+      };
+    })
+    .filter(o => o.component);
 
     isLoading = !(<any>store)._isInitialized;
   });
@@ -91,12 +123,8 @@ const handleChange = async (e) => {
   <div use:inview="{{}}" on:change="{handleChange}"></div>
 {/if}
 {#if store}
-  {#each events as event, i}
-    {#if views[event.type]}
-      <svelte:component this="{views[event.type]}" event="{event}" />
-    {:else}
-      <GenericEventCard event="{event}" />
-    {/if}
+  {#each eventsWithViews as eventWithView, i}
+    <svelte:component this="{eventWithView.component}" event="{eventWithView.event}" />
 
     {#if store && !reverse && i > events.length - 25}
       <div use:inview="{{}}" on:change="{handleChange}"></div>
