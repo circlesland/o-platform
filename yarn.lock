@@ -3043,6 +3043,13 @@
   dependencies:
     "@testing-library/dom" "^8.1.0"
 
+"@tinymce/tinymce-svelte@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/@tinymce/tinymce-svelte/-/tinymce-svelte-1.0.0.tgz"
+  integrity sha512-wrI0jeTiqdEJLIsUMXtqWjY/m4TQzug+MMASkg3hj+1uBkZeDyTVwe9x/zbYprThujfiyB/lXmaBku+d9g514A==
+  dependencies:
+    rollup-plugin-execute "^1.1.1"
+
 "@tootallnate/once@1":
   version "1.1.2"
   resolved "https://registry.npmjs.org/@tootallnate/once/-/once-1.1.2.tgz"
@@ -13636,6 +13643,11 @@ rlp@^2.2.3, rlp@^2.2.4:
   dependencies:
     bn.js "^5.2.0"
 
+rollup-plugin-execute@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.npmjs.org/rollup-plugin-execute/-/rollup-plugin-execute-1.1.1.tgz"
+  integrity sha512-isCNR/VrwlEfWJMwsnmt5TBRod8dW1IjVRxcXCBrxDmVTeA1IXjzeLSS3inFBmRD7KDPlo38KSb2mh5v5BoWgA==
+
 rollup-plugin-terser@^7.0.0:
   version "7.0.2"
   resolved "https://registry.npmjs.org/rollup-plugin-terser/-/rollup-plugin-terser-7.0.2.tgz"
@@ -15201,6 +15213,11 @@ tiny-inflate@^1.0.0, tiny-inflate@^1.0.2:
   version "1.0.3"
   resolved "https://registry.npmjs.org/tiny-inflate/-/tiny-inflate-1.0.3.tgz"
   integrity sha512-pkY1fj1cKHb2seWDy0B16HeWyczlJA9/WW3u3c4z/NiWDsO3DOU5D7nhTLE9CF0yXv/QZFY7sEJmj24dK+Rrqw==
+
+tinymce@^6.0.2:
+  version "6.0.2"
+  resolved "https://registry.npmjs.org/tinymce/-/tinymce-6.0.2.tgz"
+  integrity sha512-i4OEzcTF6mGxZ+scumOoWiaI9HYn6uya980hJ+9jwnhgLbhBb+73ar2t9Ewfkns3DTl2Ez3r1pQs2tpT+ka29Q==
 
 title-case@^3.0.3:
   version "3.0.3"

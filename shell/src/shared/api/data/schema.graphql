@@ -196,6 +196,7 @@ type Shop {
   enabled: Boolean
   name: String!
   description: String!
+  legalText: String
   largeBannerUrl: String!
   smallBannerUrl: String!
   shopListingStyle: ShopListingStyle!
@@ -1084,6 +1085,7 @@ input ShopInput {
   private: Boolean
   name: String!
   description: String!
+  legalText: String
   largeBannerUrl: String!
   smallBannerUrl: String!
   shopListingStyle: ShopListingStyle!

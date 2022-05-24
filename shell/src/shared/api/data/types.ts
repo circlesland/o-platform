@@ -1364,6 +1364,7 @@ export type Shop = {
   enabled?: Maybe<Scalars['Boolean']>;
   name: Scalars['String'];
   description: Scalars['String'];
+  legalText?: Maybe<Scalars['String']>;
   largeBannerUrl: Scalars['String'];
   smallBannerUrl: Scalars['String'];
   shopListingStyle: ShopListingStyle;
@@ -2023,7 +2024,7 @@ export type UpsertShopMutation = (
   { __typename?: 'Mutation' }
   & { upsertShop: (
     { __typename?: 'Shop' }
-    & Pick<Shop, 'id' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'productListingStyle'>
+    & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'productListingStyle'>
     & { owner: (
       { __typename?: 'Organisation' }
       & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
@@ -2656,7 +2657,7 @@ export type OrganisationsQuery = (
       & Pick<City, 'geonameid' | 'name' | 'country'>
     )>, shops?: Maybe<Array<(
       { __typename?: 'Shop' }
-      & Pick<Shop, 'id' | 'name' | 'description' | 'largeBannerUrl' | 'smallBannerUrl'>
+      & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'largeBannerUrl' | 'smallBannerUrl'>
     )>> }
   )> }
 );
@@ -2691,7 +2692,7 @@ export type OrganisationsByAddressQuery = (
       & Pick<City, 'geonameid' | 'name' | 'country'>
     )>, shops?: Maybe<Array<(
       { __typename?: 'Shop' }
-      & Pick<Shop, 'id' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl'>
+      & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl'>
     )>>, members?: Maybe<Array<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'id' | 'successorOfCirclesAddress' | 'circlesSafeOwner' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'displayName' | 'firstName' | 'lastName' | 'dream'>
@@ -3287,7 +3288,7 @@ export type ShopQuery = (
   { __typename?: 'Query' }
   & { shop?: Maybe<(
     { __typename?: 'Shop' }
-    & Pick<Shop, 'id' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'productListingStyle' | 'shopListingStyle' | 'purchaseMetaDataKeys' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink' | 'ownerId'>
+    & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'productListingStyle' | 'shopListingStyle' | 'purchaseMetaDataKeys' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink' | 'ownerId'>
     & { owner: (
       { __typename?: 'Organisation' }
       & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
@@ -3322,7 +3323,7 @@ export type ShopsQuery = (
   { __typename?: 'Query' }
   & { shops: Array<(
     { __typename?: 'Shop' }
-    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId'>
+    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId'>
     & { deliveryMethods?: Maybe<Array<(
       { __typename?: 'DeliveryMethod' }
       & Pick<DeliveryMethod, 'id' | 'name'>
@@ -3345,7 +3346,7 @@ export type ShopsByIdQuery = (
   { __typename?: 'Query' }
   & { shopsById: Array<(
     { __typename?: 'Shop' }
-    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId'>
+    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId'>
     & { deliveryMethods?: Maybe<Array<(
       { __typename?: 'DeliveryMethod' }
       & Pick<DeliveryMethod, 'id' | 'name'>
@@ -3805,6 +3806,7 @@ export const UpsertShopDocument = gql`
     id
     name
     description
+    legalText
     smallBannerUrl
     largeBannerUrl
     openingHours
@@ -4656,6 +4658,7 @@ export const OrganisationsDocument = gql`
       id
       name
       description
+      legalText
       largeBannerUrl
       smallBannerUrl
     }
@@ -4698,6 +4701,7 @@ export const OrganisationsByAddressDocument = gql`
       id
       name
       description
+      legalText
       smallBannerUrl
       largeBannerUrl
     }
@@ -5694,6 +5698,7 @@ export const ShopDocument = gql`
     id
     name
     description
+    legalText
     smallBannerUrl
     largeBannerUrl
     openingHours
@@ -5762,6 +5767,7 @@ export const ShopsDocument = gql`
     createdAt
     name
     description
+    legalText
     smallBannerUrl
     largeBannerUrl
     openingHours
@@ -5800,6 +5806,7 @@ export const ShopsByIdDocument = gql`
     createdAt
     name
     description
+    legalText
     smallBannerUrl
     largeBannerUrl
     openingHours

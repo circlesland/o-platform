@@ -57,6 +57,8 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "tinymce": "^6.0.2",
+    "@tinymce/tinymce-svelte": "^1.0.0",
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.4",
     "@graphql-codegen/cli": "^1.17.10",

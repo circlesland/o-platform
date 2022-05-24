@@ -769,6 +769,7 @@ query organisations($pagination: PaginationArgs) {
       id
       name
       description
+      legalText
       largeBannerUrl
       smallBannerUrl
     }
@@ -809,6 +810,7 @@ query organisationsByAddress($addresses: [String!]!) {
       id
       name
       description
+      legalText
       smallBannerUrl
       largeBannerUrl
     }
@@ -1815,6 +1817,7 @@ query shop($id: Int!) {
     id
     name
     description
+    legalText
     smallBannerUrl
     largeBannerUrl
     openingHours
@@ -1882,6 +1885,7 @@ query shops($ownerId: Int) {
     createdAt
     name
     description
+    legalText
     smallBannerUrl
     largeBannerUrl
     openingHours
@@ -1919,6 +1923,7 @@ query shopsById($ids: [Int!]!) {
     createdAt
     name
     description
+    legalText
     smallBannerUrl
     largeBannerUrl
     openingHours
