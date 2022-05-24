@@ -1895,6 +1895,9 @@ query shops($ownerId: Int) {
     productListingStyle
     sortOrder
     ownerId
+    tosLink
+    privacyPolicyLink
+    healthInfosLink
     deliveryMethods {
       id
       name
@@ -1933,6 +1936,9 @@ query shopsById($ids: [Int!]!) {
     productListingStyle
     sortOrder
     ownerId
+    tosLink
+    privacyPolicyLink
+    healthInfosLink
     deliveryMethods {
       id
       name

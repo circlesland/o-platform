@@ -1443,6 +1443,7 @@ export type ShopInput = {
   private?: Maybe<Scalars['Boolean']>;
   name: Scalars['String'];
   description: Scalars['String'];
+  legalText?: Maybe<Scalars['String']>;
   largeBannerUrl: Scalars['String'];
   smallBannerUrl: Scalars['String'];
   shopListingStyle: ShopListingStyle;
@@ -3323,7 +3324,7 @@ export type ShopsQuery = (
   { __typename?: 'Query' }
   & { shops: Array<(
     { __typename?: 'Shop' }
-    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId'>
+    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink'>
     & { deliveryMethods?: Maybe<Array<(
       { __typename?: 'DeliveryMethod' }
       & Pick<DeliveryMethod, 'id' | 'name'>
@@ -3346,7 +3347,7 @@ export type ShopsByIdQuery = (
   { __typename?: 'Query' }
   & { shopsById: Array<(
     { __typename?: 'Shop' }
-    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId'>
+    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink'>
     & { deliveryMethods?: Maybe<Array<(
       { __typename?: 'DeliveryMethod' }
       & Pick<DeliveryMethod, 'id' | 'name'>
@@ -5777,6 +5778,9 @@ export const ShopsDocument = gql`
     productListingStyle
     sortOrder
     ownerId
+    tosLink
+    privacyPolicyLink
+    healthInfosLink
     deliveryMethods {
       id
       name
@@ -5816,6 +5820,9 @@ export const ShopsByIdDocument = gql`
     productListingStyle
     sortOrder
     ownerId
+    tosLink
+    privacyPolicyLink
+    healthInfosLink
     deliveryMethods {
       id
       name

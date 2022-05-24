@@ -391,6 +391,21 @@ async function createNewShop() {
               <div class="w-full mt-2 text-sm">{@html shop.description}</div>
               <h1 class="mt-4">Legal Text</h1>
               <div class="w-full mt-2 text-sm">{@html shop.legalText}</div>
+              <div class="flex flex-row justify-center mt-4 space-x-4 text-xs">
+                {#if shop.privacyPolicyLink}
+                  <a href="{shop.privacyPolicyLink}" target="_blank" class="link link-primary" alt="Privacy Policy"
+                    >Privacy Policy</a>
+                {/if}
+                {#if shop.tosLink}
+                  <a href="{shop.tosLink}" target="_blank" class="link link-primary" alt="Terms of Service"
+                    >Terms of Service</a>
+                {/if}
+
+                {#if shop.healthInfosLink}
+                  <a href="{shop.healthInfosLink}" target="_blank" class="link link-primary" alt="Health Infos"
+                    >Health Information</a>
+                {/if}
+              </div>
             {/if}
           </header>
         </div>
