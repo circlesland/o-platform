@@ -54,11 +54,6 @@ Array.prototype.toLookup = function toLookup<T, TValue>(keySelector: (item: T) =
   }, <{ [key: string]: TValue }>{});
 }
 
-export enum Role {
-  User = "USER",
-  Admin = "ADMIN",
-}
-
 export async function getProcessContext(): Promise<ProcessContext<any>> {
   return <ProcessContext<any>>{
     data: {},
