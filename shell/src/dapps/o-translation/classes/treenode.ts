@@ -49,7 +49,7 @@ export class CTreeNode {
 
     for (let i = 0; i < Object.keys(newSnapshot).length; i++) {
 
-      console.log(Object.keys(newSnapshot)[i], Object.values(newSnapshot)[i])
+//      console.log(Object.keys(newSnapshot)[i], Object.values(newSnapshot)[i])
       console.log("bla")
     }
 

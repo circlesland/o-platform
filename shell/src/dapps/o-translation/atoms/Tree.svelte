@@ -17,7 +17,6 @@ let snapshot: StateSnapshot = {};
     rootNode.toggleExpanded();
     snapshot = rootNode.createStateSnapshot();
     rootNode = rootNode;
-    console.log("bla")
     dispatch("expand", {
       newSnapshot: snapshot
     });
@@ -38,7 +37,7 @@ let snapshot: StateSnapshot = {};
               dataVersion="{item.version}" />
           {/each}
         {:else}
-          <svelte:self rootNode="{childNode}" />
+          <svelte:self rootNode="{childNode}" on:expand />
         {/if}
       </ul>
     {/each}
