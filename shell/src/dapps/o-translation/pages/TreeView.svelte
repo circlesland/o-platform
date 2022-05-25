@@ -6,26 +6,22 @@ import {
   I18n,
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
-import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import Tree from "../atoms/Tree.svelte";
-import { CTreeNode } from "../classes/treenode";
+import { CTreeNode, StateSnapshot } from "../classes/treenode";
 
 let fullI18nData: I18n[] = [];
 let displayedTree: CTreeNode = new CTreeNode("root");
 let keyFilter: string = "";
 let valueFilter: string = "";
 let completeTree;
-let snapshot = [];
+let snapshot: StateSnapshot;
 
 async function createTree(rootData: I18n[]): Promise<CTreeNode> {
   let cTreenode = new CTreeNode("root");
   for (const row of rootData) {
     cTreenode.add(row.key, row);
-    if(snapshot.length) {
-      cTreenode.restoreStateSnapshot(snapshot);
-    }
   }
-  console.log(cTreenode)
+  console.log(cTreenode);
   return cTreenode;
 }
 
@@ -51,10 +47,11 @@ async function refreshView() {
   let filteredI18nData = await filterItems(keyFilter, valueFilter, fullI18nData);
 
   displayedTree = await createTree(filteredI18nData);
-  //let snapshot = displayedTree.createStateSnapshot();
 
-  displayedTree.restoreStateSnapshot(snapshot);
-  console.log("snapshot", snapshot)
+  if (!snapshot && !(keyFilter.trim() != "" || valueFilter.trim() != "") && displayedTree) {
+    snapshot = displayedTree.createStateSnapshot();
+  }
+  console.log("snapshot", snapshot);
 }
 
 async function logTree() {
@@ -68,7 +65,7 @@ async function logTree() {
   function loppOverChildren(tree) {
     if (tree._children.length == 0) {
       console.log(tree._key);
-      console.log(tree._values[0].key)
+      console.log(tree._values[0].key);
     } else {
       for (let i = 0; i < tree._children.length; i++) {
         console.log(tree._key);
@@ -77,6 +74,8 @@ async function logTree() {
     }
   }
 }
+
+
 
 //logTree();
 </script>
@@ -88,5 +87,9 @@ async function logTree() {
   <form on:input="{() => refreshView()}">
     <input bind:value="{valueFilter}" class="input m-1" type="text" placeholder="String" />
   </form>
-  <Tree rootNode="{displayedTree}" on:expand={(e) => displayedTree.restoreStateSnapshot(e.detail.snapshot)}/>
+  <Tree
+    rootNode="{displayedTree}"
+    on:expand="{(event) => {
+      snapshot = displayedTree.updateSnapshot(event.detail.newSnapshot, snapshot);
+    }}" />
 </section>

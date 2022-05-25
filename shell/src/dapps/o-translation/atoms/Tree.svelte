@@ -1,22 +1,26 @@
 <script lang="ts">
-import { CTreeNode } from "../classes/treenode";
+import { createEventDispatcher } from "svelte";
+
+import { CTreeNode, StateSnapshot } from "../classes/treenode";
 
 import StringEditor from "./StringEditor.svelte";
 
-import { createEventDispatcher } from "svelte";
-
 export let rootNode: CTreeNode;
 
+
 let dispatch = createEventDispatcher();
-let snapshot = [];
+let snapshot: StateSnapshot = {};
 </script>
 
 <span
   on:click="{() => {
     rootNode.toggleExpanded();
+    snapshot = rootNode.createStateSnapshot();
     rootNode = rootNode;
-    snapshot = rootNode.createStateSnapshot()
-    dispatch("expand", {snapshot});
+    console.log("bla")
+    dispatch("expand", {
+      newSnapshot: snapshot
+    });
   }}">
   {rootNode.key}
 </span>

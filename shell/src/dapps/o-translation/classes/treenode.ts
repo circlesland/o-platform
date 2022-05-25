@@ -1,6 +1,8 @@
 import { I18n } from "../../../shared/api/data/types";
 
-type StateSnapshot = object[];
+export type StateSnapshot = {
+  [key: string]: boolean;
+};
 
 export class CTreeNode {
   public add(key: string, value: I18n) {
@@ -28,14 +30,31 @@ export class CTreeNode {
   }
 
   public createStateSnapshot(): StateSnapshot {
-    let currentNode: CTreeNode = this;
-    let stateSnapshot = [];
-    if (currentNode._isExpanded) {
-      stateSnapshot.push(currentNode);
-    }
-    console.log("statesnapshot",stateSnapshot)
+    let stateSnapshot: StateSnapshot = {};
+    loopOverTree(this);
 
+    function loopOverTree(tree) {
+      for (let i = 0; i < tree._children.length; i++) {
+        stateSnapshot[tree._key] = tree._isExpanded;
+
+        loopOverTree(tree._children[i]);
+      }
+    }
+    console.log("states", stateSnapshot);
     return stateSnapshot;
+  }
+
+  public updateSnapshot(newSnapshot: StateSnapshot, oldSnapshot: StateSnapshot): StateSnapshot {
+    let updatedSnapshot: StateSnapshot = {};
+
+    for (let i = 0; i < Object.keys(newSnapshot).length; i++) {
+
+      console.log(Object.keys(newSnapshot)[i], Object.values(newSnapshot)[i])
+      console.log("bla")
+    }
+
+
+    return updatedSnapshot;
   }
 
   public get children(): CTreeNode[] {
@@ -75,9 +94,13 @@ export class CTreeNode {
     return this.children.find((o) => o.key == keyPart);
   }
 
-  public restoreStateSnapshot(stateSnapshot: StateSnapshot) {
-    if (stateSnapshot.length) {
-    return this._isExpanded = true;
+  public restoreStateSnapshot(stateSnapshot: StateSnapshot): void {
+    function restoreLoop(tree: CTreeNode) {
+      for (let i = 0; i < tree._children.length; i++) {
+        tree._isExpanded = stateSnapshot[tree._key];
+        restoreLoop(tree._children[i]);
+      }
     }
+    return restoreLoop(this);
   }
 }
