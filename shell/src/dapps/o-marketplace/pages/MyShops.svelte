@@ -171,6 +171,7 @@ async function createNewShop() {
     private: false,
     name: "",
     description: "",
+    legalText: "",
     tosLink: "",
     privacyPolicyLink: "",
     healthInfosLink: "",
@@ -244,7 +245,7 @@ async function createNewShop() {
                     </span>
                   </span>
                 </div>
-                <div class="absolute z-10 text-white left-2 bottom-10">
+                <div class="absolute z-10 p-1 text-white bg-gray-500 left-2 bottom-10">
                   <input
                     type="checkbox"
                     class="inline-block toggle toggle-primary"
@@ -252,7 +253,7 @@ async function createNewShop() {
                     bind:checked="{shop.enabled}" />
                   <div class="inline-block align-top">Enabled?</div>
                 </div>
-                <div class="absolute z-10 text-white left-2 bottom-2">
+                <div class="absolute z-10 p-1 text-white bg-gray-500 left-2 bottom-2">
                   <input
                     type="checkbox"
                     class="inline-block toggle toggle-primary"

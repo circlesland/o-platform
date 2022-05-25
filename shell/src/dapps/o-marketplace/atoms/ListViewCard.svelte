@@ -31,11 +31,13 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
   <div class="flex flex-col w-full ">
     <div class="relative flex flex-col items-stretch w-full px-4 py-4 space-y-4 ">
       <div class="flex flex-row space-x-2">
-        <div>
-          <div class="flex items-center w-full">
-            <img class="w-20 h-20 rounded-md" src="{entry.product.pictureUrl}" alt="{entry.product.title}" />
+        {#if entry.product.pictureUrl}
+          <div>
+            <div class="flex items-center w-full">
+              <img class="w-20 h-20 rounded-md" src="{entry.product.pictureUrl}" alt="{entry.product.title}" />
+            </div>
           </div>
-        </div>
+        {/if}
         <div class="flex-grow" on:click="{() => loadDetailPage()}">
           <div class="text-lg leading-tight text-left uppercase break-word">
             <span class="cursor-pointer">{entry.product.title}</span>
