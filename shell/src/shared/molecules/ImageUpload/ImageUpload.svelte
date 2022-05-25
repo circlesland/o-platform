@@ -4,9 +4,14 @@ import Dropzone from "svelte-file-dropzone";
 import { createEventDispatcher } from "svelte";
 const dispatch = createEventDispatcher();
 import Cropper from "svelte-easy-crop";
+import Resizer from "react-image-file-resizer";
 
 export let cropShape: string = "rect";
-export let aspect: Number;
+export let aspect: number;
+export let maxWidth: number = 500;
+
+const resize = Resizer.imageFileResizer;
+let rawImgs;
 
 let crop = { x: 0, y: 0 };
 let zoom = 1;
@@ -31,6 +36,24 @@ $: {
     }
   }
 }
+
+function dataURLtoBlob(dataurl) {
+  var arr = dataurl.split(","),
+    mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]),
+    n = bstr.length,
+    u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
+}
+
+let resizeImage = (file) => {
+  return new Promise((resolve, reject) => {
+    resize(dataURLtoBlob(file), maxWidth, maxWidth / aspect, "JPEG", 100, 0, (uri) => resolve(uri), "base64");
+  });
+};
 
 function handleFilesSelect(e) {
   const { acceptedFiles, fileRejections } = e.detail;
@@ -60,6 +83,7 @@ let profilePicture, style;
 
 function previewCrop(e) {
   pixelCrop = e.detail.pixels;
+
   const { x, y, width } = e.detail.pixels;
   const scale = 200 / width;
   profilePicture.style = `margin: ${-y * scale}px 0 0 ${-x * scale}px; width: ${
@@ -78,18 +102,10 @@ function reset() {
 
 async function submit() {
   croppedImage = await getCroppedImg(image, pixelCrop);
+  let resizedImage = await resizeImage(croppedImage);
   dispatch("submit", {
-    croppedImage: croppedImage,
+    croppedImage: resizedImage,
   });
-  // const answer = new Continue();
-  // answer.data = context.data;
-  // const field = normalizePromptField(context.field);
-  // answer.data[field.name] = {
-  //   mimeType: "image/jpeg",
-  //   bytes: croppedImage,
-  // };
-  // context.process.sendAnswer(answer);
-  // console.log("SOLLTE EIGENTLICH WAS MACHEN...");
 }
 </script>
 
@@ -141,8 +157,6 @@ async function submit() {
       <button class="btn btn-light" on:click="{() => reset()}">Remove Image</button>
       <button class="btn btn-primary" on:click="{submit}">Save Image</button>
     </div>
-
-    <!-- <ProcessNavigation on:buttonClick="{submit}" context="{context}" /> -->
   {/if}
 </div>
 

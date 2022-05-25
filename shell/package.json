@@ -58,6 +58,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "react-image-file-resizer": "^0.4.8",
     "tinymce": "^6.0.2",
     "@tinymce/tinymce-svelte": "^1.0.0",
     "@babel/core": "^7.16.0",
