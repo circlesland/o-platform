@@ -6,9 +6,11 @@ import ProcessNavigation from "./ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { normalizePromptField } from "@o-platform/o-process/dist/states/prompt";
 import Cropper from "svelte-easy-crop";
+import Resizer from "react-image-file-resizer";
 
 export let context: EditorContext;
 
+const resize = Resizer.imageFileResizer;
 let crop = { x: 0, y: 0 };
 let zoom = 1;
 let aspect = 1;
@@ -30,6 +32,24 @@ $: {
     aspect = 4 / 3;
   }
 }
+
+function dataURLtoBlob(dataurl) {
+  var arr = dataurl.split(","),
+    mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]),
+    n = bstr.length,
+    u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
+}
+
+let resizeImage = (file) => {
+  return new Promise((resolve, reject) => {
+    resize(dataURLtoBlob(file), 300, 300 / aspect, "JPEG", 100, 0, (uri) => resolve(uri), "base64");
+  });
+};
 
 function handleFilesSelect(e) {
   const { acceptedFiles, fileRejections } = e.detail;
@@ -79,12 +99,13 @@ function reset() {
 
 async function submit() {
   croppedImage = await getCroppedImg(image, pixelCrop);
+  let resizedImage = await resizeImage(croppedImage);
   const answer = new Continue();
   answer.data = context.data;
   const field = normalizePromptField(context.field);
   answer.data[field.name] = {
     mimeType: "image/jpeg",
-    bytes: croppedImage,
+    bytes: resizedImage,
   };
   context.process.sendAnswer(answer);
   // console.log("SOLLTE EIGENTLICH WAS MACHEN...");
@@ -94,10 +115,7 @@ async function submit() {
 <div>
   <div class="w-full h-full">
     {#if !image}
-      <Dropzone
-        on:drop="{handleFilesSelect}"
-        multiple="{false}"
-        accept="image/png,image/jpeg,image/jpg">
+      <Dropzone on:drop="{handleFilesSelect}" multiple="{false}" accept="image/png,image/jpeg,image/jpg">
         <div class="flex justify-center px-6 pt-5 pb-6 mt-1 ">
           <div class="space-y-1 text-center">
             <svg
@@ -127,27 +145,14 @@ async function submit() {
       </Dropzone>
     {:else}
       <div style="position: relative; width: 100%; height: 300px;">
-        <Cropper
-          image="{image}"
-          bind:crop
-          bind:zoom
-          bind:aspect
-          bind:cropShape
-          on:cropcomplete="{previewCrop}" />
+        <Cropper image="{image}" bind:crop bind:zoom bind:aspect bind:cropShape on:cropcomplete="{previewCrop}" />
       </div>
       <div class="" style="mt-2">
-        <span on:click="{() => reset()}" class="float-right cursor-pointer">
-          clear image
-        </span>
+        <span on:click="{() => reset()}" class="float-right cursor-pointer"> clear image </span>
       </div>
       <!-- we need this, otherwise the zoom doesnt work. though it needs to stay hidden. -->
       <div class="hidden prof-pic-wrapper">
-        <img
-          bind:this="{profilePicture}"
-          class="prof-pic"
-          src="{image}"
-          alt="Profile example"
-          style="{style}" />
+        <img bind:this="{profilePicture}" class="prof-pic" src="{image}" alt="Profile example" style="{style}" />
       </div>
     {/if}
   </div>

@@ -404,7 +404,7 @@ function addProduct(categoryId) {
         {#if showModal}
           <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
             {#if editImage}
-              <ImageUpload on:submit="{handleImageUpload}" cropShape="square" />
+              <ImageUpload on:submit="{handleImageUpload}" cropShape="square" aspect="{1 / 1}" maxWidth="{300}" />
             {:else}
               <div class="flex flex-col w-full h-full p-4">
                 <button

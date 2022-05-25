@@ -19,7 +19,9 @@ import {
   UpsertShopCategoriesDocument,
   ShopCategoryInput,
   UpsertShopCategoriesResult,
-  UpsertShopCategoriesMutationVariables, ShopsQueryVariables, ShopsDocument,
+  UpsertShopCategoriesMutationVariables,
+  ShopsQueryVariables,
+  ShopsDocument,
 } from "../../../shared/api/data/types";
 
 import { ok, err, Result } from "neverthrow";
@@ -337,7 +339,7 @@ function removeLast() {
                   <button class="self-center m-4 btn btn-primary btn-sm" on:click="{removeImage}">No Image</button>
                 </center>
               </div>
-              <ImageUpload on:submit="{handleImageUpload}" aspect="{750 / 216}" />
+              <ImageUpload on:submit="{handleImageUpload}" aspect="{7 / 2}" maxWidth="{700}" />
             {:else}
               <div class="flex flex-col w-full h-full p-4">
                 <button

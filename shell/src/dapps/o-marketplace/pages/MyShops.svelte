@@ -125,6 +125,7 @@ function removeImage() {
   showModal = false;
   updateShop();
 }
+
 function handleImageUpload(event) {
   const machine = (<any>uploadFile).stateMachine("123");
   const machineOptions = {
@@ -422,7 +423,8 @@ async function createNewShop() {
           </div>
           <ImageUpload
             on:submit="{handleImageUpload}"
-            aspect="{editType == 'smallBannerUrl' ? 750 / 216 : 262 / 175}" />
+            aspect="{editType == 'smallBannerUrl' ? 7 / 2 : 3 / 2}"
+            maxWidth="{700}" />
         {:else}
           <div class="flex flex-col w-full h-full p-4">
             <button
