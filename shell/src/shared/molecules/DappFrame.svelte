@@ -814,6 +814,20 @@ function armOauthListener() {
               },
             });
           }, 1000);
+        } else if (splittedState[1] == "locations") {
+          setTimeout(() => {
+            window.o.runProcess(performOauth, {
+              origin: "locations",
+              authorizationResponse: {
+                error: paramsMap?.error,
+                state: paramsMap?.state,
+                code: paramsMap?.code,
+              },
+              successAction: () => {
+                push("#/dashboard");
+              },
+            });
+          }, 1000);
         } else {
           alert("Couldn't parse the 'state' from the oauth response");
           // invalid

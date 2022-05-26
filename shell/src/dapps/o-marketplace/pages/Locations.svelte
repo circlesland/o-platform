@@ -9,6 +9,7 @@ import { Organisation, Shop, ShopsDocument, ShopsQueryVariables } from "../../..
 import { onMount } from "svelte";
 import { trustFromContactMetadata } from "../../../shared/functions/trustFromContactMetadata";
 import { inbox } from "../../../shared/stores/inbox";
+import {getTrustedByShop} from "../processes/getTrustedByShop";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -81,7 +82,7 @@ onMount(async () => await load());
                   <!--Find one of our friendly circlesland people to trust you for
                   this shop.-->
                 </span>
-                You need to get trusted by this shop.
+                <a on:click={() => window.o.runProcess(getTrustedByShop, {}, {}, {})}>You need to get trusted by this shop.</a>
               </div>
             </div>
           </header>
