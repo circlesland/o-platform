@@ -5,18 +5,13 @@ import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import {
-  AggregateType,
   Capability,
   CapabilityType,
-  ProfileAggregate,
   StatsDocument
 } from "../../../shared/api/data/types";
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
-import Icons from "../../../shared/molecules/Icons.svelte";
 import { Environment } from "../../../shared/environment";
 import { _ } from "svelte-i18n";
-import CitizensProgressBar from "../atoms/CitizensProgressBar.svelte";
-import DashboardEventsWidget from "../molecules/DashboardEventsWidget.svelte";
 import DashboardInvitesWidget from "../molecules/DashboardInvitesWidget.svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 
@@ -29,8 +24,6 @@ $: me;
 let disableBanking: boolean = false;
 let canVerify: boolean = false;
 let hasTickets: boolean = false;
-
-let showInviteButton = false;
 
 let profilesCount: number;
 let statsResult: any;
@@ -86,22 +79,6 @@ async function fetchStats() {
         </header>
       </div>
     </section>
-    {#if hasTickets}
-      <!--
-    <section class="mt-4 flex items-start bg-white rounded-lg shadow-md">
-      <div class="flex flex-col w-full ">
-        <header class="rounded-lg shadow-md headerImageContainer">
-          <div class="relative rounded-lg image-wrapper">
-            <a href="#/marketplace/my-tickets">
-            <img src="/images/events/boysnoize_banner.jpg" alt="" class="rounded-lg" />
-            </a>
-          </div>
-        </header>
-      </div>
-    </section>
-    -->
-    {/if}
-    <!-- <DashboardEventsWidget profilesCount="{profilesCount}" /> -->
     <div class="grid grid-cols-2 gap-4 mt-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
       {#if hasTickets}
         <section
