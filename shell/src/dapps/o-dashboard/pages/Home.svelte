@@ -87,6 +87,7 @@ async function fetchStats() {
       </div>
     </section>
     {#if hasTickets}
+      <!--
     <section class="mt-4 flex items-start bg-white rounded-lg shadow-md">
       <div class="flex flex-col w-full ">
         <header class="rounded-lg shadow-md headerImageContainer">
@@ -98,6 +99,7 @@ async function fetchStats() {
         </header>
       </div>
     </section>
+    -->
     {/if}
     <!-- <DashboardEventsWidget profilesCount="{profilesCount}" /> -->
     <div class="grid grid-cols-2 gap-4 mt-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
