@@ -4,6 +4,7 @@ import { purchase } from "../processes/purchase";
 import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { _ } from "svelte-i18n";
+import { onMount } from "svelte";
 
 export let context: any;
 
@@ -16,6 +17,18 @@ let deliveryType: number = 1;
 $: {
   context = context;
 }
+
+onMount(() => {
+  if (context.data.shop.shop) {
+    if (context.data.shop.shop.deliveryMethods === null) {
+      deliveryType = 1;
+      submit(undefined);
+    } else if (context.data.shop.shop.deliveryMethods.length == 1) {
+      deliveryType = context.data.shop.shop.deliveryMethods[0].id;
+      submit(undefined);
+    }
+  }
+});
 
 function submit(redirectTo?: string) {
   const answer = new Continue();
