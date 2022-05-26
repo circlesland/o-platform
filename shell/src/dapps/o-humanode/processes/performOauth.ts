@@ -140,10 +140,6 @@ const processDefinition = (processId: string) =>
       }),
       callback: {
         id: "callback",
-        entry: (context) => {
-          console.log("Callback:", context.data);
-          // find out where the user wants to be redirected (from state)
-        },
         invoke: {
           src: async context => {
             context.data.oauthRequest.clientAssertion =
@@ -156,7 +152,7 @@ const processDefinition = (processId: string) =>
                 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
               },
               body: new URLSearchParams({
-                client_id: context.data.oauthRequest.clientId,
+                client_id: Environment.humanodeClientId,
                 grant_type: "authorization_code",
                 code: context.data.authorizationResponse.code,
                 redirect_uri: Environment.humanodeRedirectUrl,
@@ -186,11 +182,13 @@ const processDefinition = (processId: string) =>
           }
         },
         data: (context, event: any) => {
-          window.o.publishEvent(<PlatformEvent>{
-            type: "shell.authenticated",
-            profile: event.data,
-          });
-          return event.data;
+          if (context.data.authorizationResponse.state?.indexOf("dashboard") > -1) {
+            window.location.href = window.location.href.split("?")[0] + "#/home";
+          } else if (context.data.authorizationResponse.state?.indexOf("locations") > -1) {
+            window.location.href = window.location.href.split("?")[0] + "#/marketplace/locations";
+          } else {
+            window.location.href = window.location.href.split("?")[0];
+          }
         },
       },
     }

@@ -59,6 +59,7 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __APP_ID__ = "local.circles.land";
   __EXTERNAL_URL__ = "https://localhost:5000";
   __FILES_APP_ID__ = "dev.files.circles.land";
+  __HUMANODE_CLIENT_ID__ = "circles-ubi-staging";
   prod = false;
 } else if (process.env.DEPLOY_ENVIRONMENT === "ultralocal") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
@@ -66,6 +67,7 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __APP_ID__ = "ultralocal.circles.land";
   __EXTERNAL_URL__ = "http://localhost:5000";
   __FILES_APP_ID__ = "dev.files.circles.land";
+  __HUMANODE_CLIENT_ID__ = "circles-ubi-staging";
   prod = false;
 } else if (process.env.DEPLOY_ENVIRONMENT === "docker") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
@@ -80,6 +82,7 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __ALLOW_VERIFY__ = "true";
   __ALLOW_CREATE_ORGANISATION__ = "true";
   __FIXED_GAS_PRICE__ = "1";
+  __HUMANODE_CLIENT_ID__ = "circles-ubi-staging";
   prod = false;
 }
 

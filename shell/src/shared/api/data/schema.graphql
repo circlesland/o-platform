@@ -926,6 +926,7 @@ enum CapabilityType {
     PreviewFeatures
     Tickets
     Translate
+    VerifiedByHumanode
     Verify
 }
 
