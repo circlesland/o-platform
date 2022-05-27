@@ -47,6 +47,14 @@ async function load() {
 }
 
 onMount(async () => await load());
+
+function locationClicked(orga) {
+  if (orga.enabled) {
+    loadLocationPage(`${orga.productListingType}/${orga.shopId}`);
+  } else {
+    window.o.runProcess(getTrustedByShop, {}, {});
+  }
+}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
@@ -62,15 +70,14 @@ onMount(async () => await load());
       <section
         class="flex items-start m-4 rounded-xl"
         class:cursor-pointer="{orga.enabled}"
-        on:click="{() => (orga.enabled ? loadLocationPage(`${orga.productListingType}/${orga.shopId}`) : null)}">
+        on:click="{() => locationClicked(orga)}">
         <div class="flex flex-col w-full ">
           <header class=" rounded-xl headerImageContainer">
             <div class="relative rounded-xl image-wrapper">
               <img
                 src="{orga.orga.largeBannerUrl}"
                 alt=""
-                class="w-full rounded-xl"
-                class:opacity-60="{!orga.enabled}" />
+                class="w-full rounded-xl" />
               <div
                 class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-3xl rounded-l-full font-heading top-2 bg-light-lightest">
                 <span class="inline-block">{orga.orga.name}</span>

@@ -29,6 +29,7 @@ query init {
       displayTimeCircles
       displayCurrency
       cityGeonameid
+      provenUniqueness
       shops {
         id
       }
@@ -179,6 +180,7 @@ query stats {
         dream
         avatarUrl
         cityGeonameid
+        provenUniqueness
         city {
           geonameid
           name
@@ -210,6 +212,7 @@ query findSafesByOwner($owner: String!) {
       dream
       avatarUrl
       cityGeonameid
+      provenUniqueness
       city {
         geonameid
         name
@@ -264,6 +267,7 @@ query myProfile {
     displayTimeCircles
     displayCurrency
     cityGeonameid
+    provenUniqueness
     shops {
       id
     }
@@ -331,6 +335,7 @@ query profiles($id: [Int!]!) {
     dream
     avatarUrl
     displayCurrency
+    provenUniqueness
     city {
       geonameid
       name
@@ -416,6 +421,7 @@ query profilesByName($searchString: String!) {
     dream
     country
     displayCurrency
+    provenUniqueness
     city {
       geonameid
       name
@@ -455,6 +461,7 @@ query getRecentProfiles($pagination: PaginationArgs) {
     dream
     country
     avatarUrl
+    provenUniqueness
     city {
       geonameid
       name
@@ -493,6 +500,7 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
     lastName
     dream
     avatarUrl
+    provenUniqueness
     city {
       geonameid
       name
@@ -551,6 +559,7 @@ query profilesByIds($id: [Int!]!) {
     lastName
     dream
     avatarUrl
+    provenUniqueness
     city {
       geonameid
       name
@@ -590,6 +599,7 @@ query trustRelations($safeAddress: String!) {
       successorOfCirclesAddress
       circlesAddress
       displayCurrency
+      provenUniqueness
     }
     direction
     otherSafeAddress
@@ -602,6 +612,7 @@ query trustRelations($safeAddress: String!) {
       successorOfCirclesAddress
       circlesAddress
       displayCurrency
+      provenUniqueness
       verifications {
         createdAt
         revokedAt
@@ -640,6 +651,7 @@ query profileById($id: Int!) {
       country
       name
     }
+    provenUniqueness
     verifications {
       createdAt
       revokedAt
@@ -678,6 +690,7 @@ query profileBySafeAddress($safeAddress: String!) {
       country
       name
     }
+    provenUniqueness
     memberships {
       isAdmin
       organisation {
@@ -840,6 +853,7 @@ query organisationsByAddress($addresses: [String!]!) {
         firstName
         lastName
         dream
+        provenUniqueness
         city {
           geonameid
           country
@@ -881,6 +895,7 @@ query commonTrust($safeAddress1: String!, $safeAddress2: String!) {
       successorOfCirclesAddress
       circlesAddress
       displayCurrency
+      provenUniqueness
     }
   }
 }
@@ -933,6 +948,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
       firstName
       lastName
       avatarUrl
+      provenUniqueness
     }
     direction
     type
@@ -948,6 +964,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         to
         to_profile {
@@ -958,6 +975,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         flow
         transfers {
@@ -971,6 +989,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
             avatarUrl
             circlesAddress
             displayCurrency
+            provenUniqueness
           }
           to
           to_profile {
@@ -981,6 +1000,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
             avatarUrl
             circlesAddress
             displayCurrency
+            provenUniqueness
           }
           value
         }
@@ -1002,6 +1022,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         limit
       }
@@ -1022,6 +1043,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         to
         to_profile {
@@ -1032,6 +1054,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         value
       }
@@ -1052,6 +1075,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         to
         to_profile {
@@ -1062,6 +1086,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         value
       }
@@ -1083,6 +1108,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         to
         to_profile {
@@ -1093,6 +1119,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         text
       }
@@ -1106,6 +1133,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         organisation
         organisation_profile {
@@ -1127,6 +1155,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         organisation
         organisation_profile {
@@ -1146,6 +1175,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         organisation
         organisation_profile {
@@ -1165,6 +1195,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
       }
       ... on InvitationCreated {
@@ -1183,6 +1214,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
       }
       ... on SaleEvent {
@@ -1195,6 +1227,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         invoice {
           id
@@ -1237,6 +1270,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         purchase {
           id
@@ -1279,6 +1313,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
               avatarUrl
               circlesAddress
               displayCurrency
+              provenUniqueness
             }
             sellerProfile {
               id
@@ -1288,6 +1323,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
               avatarUrl
               circlesAddress
               displayCurrency
+              provenUniqueness
             }
             paymentTransactionHash
             createdAt
@@ -1341,6 +1377,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
       }
     }
@@ -1359,6 +1396,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
       avatarUrl
       circlesAddress
       displayCurrency
+      provenUniqueness
     }
     payload {
       ... on Offers {
@@ -1375,6 +1413,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             circlesAddress
             displayCurrency
             smallBannerUrl
+            provenUniqueness
           }
           tags {
             typeId
@@ -1405,6 +1444,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             avatarUrl
             firstName
             lastName
+            provenUniqueness
           }
           token_no
           token_url
@@ -1423,6 +1463,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             avatarUrl
             circlesAddress
             displayCurrency
+            provenUniqueness
           }
           token_balance
         }
@@ -1440,6 +1481,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             avatarUrl
             circlesAddress
             displayCurrency
+            provenUniqueness
           }
           token_balance
         }
@@ -1464,6 +1506,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             avatarUrl
             circlesAddress
             displayCurrency
+            provenUniqueness
             city {
               geonameid
               name
@@ -1531,6 +1574,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             successorOfCirclesAddress
             circlesAddress
             displayCurrency
+            provenUniqueness
           }
           ... on Organisation {
             circlesAddress
@@ -1572,6 +1616,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             avatarUrl
             circlesAddress
             displayCurrency
+            provenUniqueness
           }
           deliveryMethod {
             id
@@ -1598,6 +1643,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
                 avatarUrl
                 circlesAddress
                 displayCurrency
+                provenUniqueness
               }
               tags {
                 typeId
@@ -1631,6 +1677,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
               avatarUrl
               circlesAddress
               displayCurrency
+              provenUniqueness
             }
           }
         }
@@ -1648,6 +1695,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             avatarUrl
             circlesAddress
             displayCurrency
+            provenUniqueness
           }
           buyerProfile {
             id
@@ -1696,6 +1744,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
                 avatarUrl
                 circlesAddress
                 displayCurrency
+                provenUniqueness
               }
               tags {
                 typeId
@@ -1729,6 +1778,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
               avatarUrl
               circlesAddress
               displayCurrency
+              provenUniqueness
               verifications {
                 createdAt
                 revokedAt
@@ -1797,6 +1847,7 @@ query verifications($pagination: PaginationArgs, $filter: VerifiedSafesFilter) {
       avatarUrl
       circlesAddress
       displayCurrency
+      provenUniqueness
     }
   }
 }
@@ -1872,6 +1923,7 @@ query shop($id: Int!) {
             displayName
             avatarUrl
             circlesAddress
+            provenUniqueness
           }
         }
       }
