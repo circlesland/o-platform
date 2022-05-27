@@ -1,12 +1,12 @@
 import Verifications from "./o-verification/pages/Verifications.svelte";
-import { Page } from "@o-platform/o-interfaces/dist/routables/page";
-import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import {Page} from "@o-platform/o-interfaces/dist/routables/page";
+import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
 import RecentProfiles from "./o-verification/pages/RecentProfiles.svelte";
 import TrustToDo from "./o-verification/pages/TrustToDo.svelte";
-import { ContactsDappState } from "./o-contacts.manifest";
-import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
-import { Environment } from "../shared/environment";
-import { performOauth } from "./o-humanode/processes/performOauth";
+import {ContactsDappState} from "./o-contacts.manifest";
+import {Jumplist} from "@o-platform/o-interfaces/dist/routables/jumplist";
+import {Environment} from "../shared/environment";
+import {performOauth} from "./o-humanode/processes/performOauth";
 import {CapabilityType} from "../shared/api/data/types";
 import {me} from "../shared/stores/me";
 
@@ -40,7 +40,8 @@ const verificationJumplist: Jumplist<any, ContactsDappState> = {
     const sessionInfo = await me.getSessionInfo();
     const capabilities = sessionInfo.capabilities;
     const canVerify = capabilities && capabilities.find((o) => o.type == CapabilityType.Verify) && Environment.allowVerify;
-    if (canVerify) {
+    const alreadyVerified = capabilities.find(o => o.type == CapabilityType.VerifiedByHumanode);
+    if (canVerify && !alreadyVerified) {
       return [
         {
           key: "verify-self",

@@ -14,6 +14,7 @@ import {
   ProofUniquenessResult
 } from "../../../shared/api/data/types";
 import {Environment} from "../../../shared/environment";
+import {me} from "../../../shared/stores/me";
 
 export type PerformOauthContextData = {
   nonce: string, // A random string
@@ -164,13 +165,15 @@ const processDefinition = (processId: string) =>
           }
         },
         data: (context, event: any) => {
-          if (context.data.authorizationResponse.state?.indexOf("dashboard") > -1) {
-            window.location.href = window.location.href.split("?")[0] + "#/home";
-          } else if (context.data.authorizationResponse.state?.indexOf("locations") > -1) {
-            window.location.href = window.location.href.split("?")[0] + "#/marketplace/locations";
-          } else {
-            window.location.href = window.location.href.split("?")[0];
-          }
+          me.reload().then(() => {
+            if (context.data.authorizationResponse.state?.indexOf("dashboard") > -1) {
+              window.location.href = window.location.href.split("?")[0] + "#/home";
+            } else if (context.data.authorizationResponse.state?.indexOf("locations") > -1) {
+              window.location.href = window.location.href.split("?")[0] + "#/marketplace/locations";
+            } else {
+              window.location.href = window.location.href.split("?")[0];
+            }
+          });
         }
       }
     }
