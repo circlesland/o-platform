@@ -31,7 +31,7 @@ const processDefinition = (processId: string) =>
         }, {
           key: "proofUniqueness",
           target: "#proofUniqueness",
-          label: "Proof you're no clone"
+          label: "Proof you're unique"
         }],
         params: {
           view: {
@@ -79,7 +79,7 @@ const processDefinition = (processId: string) =>
         component: HtmlViewer,
         params: {
           view: {
-            title: "Proof you're no clone",
+            title: "Proof you're unique",
             description: `For Circles to work it's important that everybody uses only one account.
                           <p class="mt-1"><b>Upload a short selfie video to immediately proof the uniqueness of your account.</b></p>`,
             submitButtonText: "Use biometrics",

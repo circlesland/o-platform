@@ -171,8 +171,8 @@ const processDefinition = (processId: string) =>
           } else {
             window.location.href = window.location.href.split("?")[0];
           }
-        },
-      },
+        }
+      }
     }
   });
 
