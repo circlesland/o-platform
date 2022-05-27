@@ -19,6 +19,7 @@ let deliveryType: number = 2;
     </div>
   </header>
 
+  <!--
   {#if deliveryType == 1}
     <div class="form-control">
       <label class="cursor-pointer label">
@@ -35,7 +36,7 @@ let deliveryType: number = 2;
         </div>
       </label>
     </div>
-  {/if}
+  {/if}-->
   <div>
     <div class="w-full">
       <div class="md:flex">
