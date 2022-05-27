@@ -165,7 +165,7 @@ const processDefinition = (processId: string) =>
           }
         },
         data: (context, event: any) => {
-          me.getSessionInfo(true).then(() => {
+          me.reload().then(() => {
             if (context.data.authorizationResponse.state?.indexOf("dashboard") > -1) {
               window.location.href = window.location.href.split("?")[0] + "#/home";
             } else if (context.data.authorizationResponse.state?.indexOf("locations") > -1) {
