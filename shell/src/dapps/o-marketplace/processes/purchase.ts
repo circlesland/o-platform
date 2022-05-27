@@ -74,9 +74,10 @@ const processDefinition = (processId: string) =>
         ],
         invoke: {
           src: async (context: PurchaseContext) => {
+            context.data.deliveryMethodId = 1;
             return context.data;
           },
-          onDone: "#checkoutDelivery",
+          onDone: "#checkoutSummary",
         },
       },
 
