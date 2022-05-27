@@ -5,11 +5,13 @@ import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { contacts } from "../../../shared/stores/contacts";
 import { ApiClient } from "../../../shared/apiConnection";
-import { Organisation, Shop, ShopsDocument, ShopsQueryVariables } from "../../../shared/api/data/types";
+import {CapabilityType, Organisation, Shop, ShopsDocument, ShopsQueryVariables} from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { trustFromContactMetadata } from "../../../shared/functions/trustFromContactMetadata";
 import { inbox } from "../../../shared/stores/inbox";
 import {getTrustedByShop} from "../processes/getTrustedByShop";
+import {me} from "../../../shared/stores/me";
+import {getTrusted} from "../processes/getTrusted";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -48,11 +50,14 @@ async function load() {
 
 onMount(async () => await load());
 
-function locationClicked(orga) {
+async function locationClicked(orga) {
+  const alreadyVerified = (await me.getSessionInfo()).capabilities.find(o => o.type == CapabilityType.VerifiedByHumanode);
   if (orga.enabled) {
     loadLocationPage(`${orga.productListingType}/${orga.shopId}`);
+  } else if (!alreadyVerified) {
+    await window.o.runProcess(getTrustedByShop, {}, {});
   } else {
-    window.o.runProcess(getTrustedByShop, {}, {});
+    await window.o.runProcess(getTrusted, {}, {});
   }
 }
 </script>
@@ -89,7 +94,7 @@ function locationClicked(orga) {
                   <!--Find one of our friendly circlesland people to trust you for
                   this shop.-->
                 </span>
-                <a on:click={() => window.o.runProcess(getTrustedByShop, {}, {}, {})}>You need to get trusted by this shop.</a>
+                You need to get trusted by this shop.
               </div>
             </div>
           </header>
