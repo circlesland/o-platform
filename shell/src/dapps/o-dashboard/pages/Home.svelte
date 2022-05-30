@@ -70,6 +70,7 @@ async function fetchStats() {
 <div class="mx-auto md:w-2/3 xl:w-1/2">
   <div class="m-4 mb-40 ">
     <DashboardInvitesWidget stats="{statsResult}" />
+    <!--
     <section class="flex items-start bg-white rounded-lg shadow-md">
       <div class="flex flex-col w-full ">
         <header class="rounded-lg shadow-md headerImageContainer">
@@ -79,6 +80,7 @@ async function fetchStats() {
         </header>
       </div>
     </section>
+    -->
     <div class="grid grid-cols-2 gap-4 mt-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
       {#if hasTickets}
         <section
