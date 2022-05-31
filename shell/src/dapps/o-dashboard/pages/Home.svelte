@@ -82,20 +82,6 @@ async function fetchStats() {
     </section>
     -->
     <div class="grid grid-cols-2 gap-4 mt-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
-      {#if hasTickets}
-        <section
-                class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-                on:click="{() => loadLink('/marketplace/my-tickets')}">
-          <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
-            <div class="pt-2 text-primary">
-              <Icon name="ticket" class="w-20 h-20 heroicon" />
-            </div>
-            <div class="mt-4 text-3xl font-heading text-dark">
-              {$_("dapps.o-dashboard.pages.home.tickets")}
-            </div>
-          </div>
-        </section>
-      {/if}
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
         on:click="{() => loadLink('/passport/profile')}">
@@ -179,6 +165,20 @@ async function fetchStats() {
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
               {$_("dapps.o-dashboard.pages.home.verified")}
+            </div>
+          </div>
+        </section>
+      {/if}
+      {#if hasTickets}
+        <section
+                class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+                on:click="{() => loadLink('/marketplace/my-tickets')}">
+          <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+            <div class="pt-2 text-primary">
+              <Icon name="ticket" class="w-20 h-20 heroicon" />
+            </div>
+            <div class="mt-4 text-3xl font-heading text-dark">
+              {$_("dapps.o-dashboard.pages.home.tickets")}
             </div>
           </div>
         </section>

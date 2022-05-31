@@ -1,12 +1,10 @@
 <script lang="ts">
-import CitizensProgressBar from "../atoms/CitizensProgressBar.svelte";
 import { push } from "svelte-spa-router";
-import ButtonGroup from "../../../shared/molecules/ButtonGroup/ButtonGroup.svelte";
 import { stats } from "../../../shared/stores/stats";
 import ButtonContext from "../../../shared/atoms/button/buttonContext";
 import Button from "../../../shared/atoms/button/Button.svelte";
 import { me } from "../../../shared/stores/me";
-import {FibonacciGoals, LeaderboardEntry, MyInviteRank, Scalars, Stats} from "../../../shared/api/data/types";
+import {Stats} from "../../../shared/api/data/types";
 
 let leaderboardButton: ButtonContext = {
   label: "leaderboard",
