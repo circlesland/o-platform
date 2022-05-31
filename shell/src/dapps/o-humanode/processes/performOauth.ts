@@ -168,8 +168,12 @@ const processDefinition = (processId: string) =>
         field: "__",
         component: HtmlViewer,
         params: {
-          view: "",
-          html: () => "Success! You have been verified as a unique person.",
+          view: {
+            title: "Success",
+            description: "You have been verified as a unique person.",
+            submitButtonText: "OK"
+          },
+          html: () => "",
           hideNav: false,
         },
         navigation: {
@@ -181,8 +185,12 @@ const processDefinition = (processId: string) =>
         field: "__",
         component: HtmlViewer,
         params: {
-          view: "",
-          html: () => "Error: It seems like you already got a verified account.",
+          view: {
+            title: "Error",
+            description: "It seems like you already got a verified account.",
+            submitButtonText: "OK"
+          },
+          html: () => "",
           hideNav: false,
         },
         navigation: {
