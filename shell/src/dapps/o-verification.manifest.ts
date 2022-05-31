@@ -41,7 +41,7 @@ const verificationJumplist: Jumplist<any, ContactsDappState> = {
     const capabilities = sessionInfo.capabilities;
     const canVerify = capabilities && capabilities.find((o) => o.type == CapabilityType.Verify) && Environment.allowVerify;
     const alreadyVerified = capabilities.find(o => o.type == CapabilityType.VerifiedByHumanode);
-    if (canVerify /* && !alreadyVerified */) {
+    /*if (canVerify  && !alreadyVerified) {*/
       return [
         {
           key: "verify-self",
@@ -55,9 +55,9 @@ const verificationJumplist: Jumplist<any, ContactsDappState> = {
           },
         },
       ];
-    } else {
+    /*} else {
       return [];
-    }
+    }*/
   },
 };
 
