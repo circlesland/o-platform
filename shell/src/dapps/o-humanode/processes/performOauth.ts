@@ -34,7 +34,8 @@ export type PerformOauthContextData = {
     code?: string,
     scope?: string
     error?: string
-  }
+  },
+  proofUniquenessResult: ProofUniquenessResult;
   successAction?: (data: PerformOauthContextData) => void;
 };
 
@@ -146,16 +147,48 @@ const processDefinition = (processId: string) =>
 
             const responseData = await response.arrayBuffer();
             const responseString = Buffer.from(responseData).toString("utf-8");
-            await ApiClient.mutate<ProofUniquenessResult, ProofUniquenessMutationVariables>(
+            context.data.proofUniquenessResult = await ApiClient.mutate<ProofUniquenessResult, ProofUniquenessMutationVariables>(
               ProofUniquenessDocument,
               {
                 humanodeToken: responseString
               }
             );
           },
-          onDone: "success"
+          onDone: [{
+            cond: (ctx, ev) => !ctx.data.proofUniquenessResult.existingSafe,
+            target: "#showSuccess"
+          }, {
+            cond: (ctx, ev) => !!ctx.data.proofUniquenessResult.existingSafe,
+            target: "#showNotSuccess"
+          }]
         }
       },
+      showSuccess: prompt({
+        id: "showSuccess",
+        field: "__",
+        component: HtmlViewer,
+        params: {
+          view: "",
+          html: () => "Success! You have been verified as a unique person.",
+          hideNav: false,
+        },
+        navigation: {
+          next: "#success",
+        },
+      }),
+      showNotSuccess: prompt({
+        id: "showNotSuccess",
+        field: "__",
+        component: HtmlViewer,
+        params: {
+          view: "",
+          html: () => "Error: It seems like you already got a verified account.",
+          hideNav: false,
+        },
+        navigation: {
+          next: "#success",
+        },
+      }),
       success: {
         type: "final",
         id: "success",
