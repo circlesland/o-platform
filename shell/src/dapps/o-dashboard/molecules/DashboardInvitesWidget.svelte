@@ -57,15 +57,16 @@ $: {
       value="{_stats.profilesCount ? _stats.profilesCount : '0'}"
       max="{_stats.goals.nextGoal}"></progress>
     <div class="absolute grid w-full grid-cols-3 px-2 text-white top-3">
-      <div class="text-sm text-left">{_stats.profilesCount} Citizens</div>
-
-      <div class="w-auto -mt-1 leading-0">
-        {Math.floor((100 * _stats.profilesCount) / _stats.goals.nextGoal)}%
-      </div>
-      <div class="-ml-2 text-sm text-right whitespace-nowrap">
-        +{_stats.goals.nextGoal - _stats.profilesCount > 0 ? _stats.goals.nextGoal - _stats.profilesCount : 0} till next
-        party
-      </div>
+      {#if _stats.goals.nextGoal > 0}
+        <div class="text-sm text-left">{_stats.profilesCount} Citizens</div>
+        <div class="w-auto -mt-1 leading-0">
+          {Math.floor((100 * _stats.profilesCount) / _stats.goals.nextGoal)}%
+        </div>
+        <div class="-ml-2 text-sm text-right whitespace-nowrap">
+          +{_stats.goals.nextGoal - _stats.profilesCount > 0 ? _stats.goals.nextGoal - _stats.profilesCount : 0} till next
+          party
+        </div>
+      {/if}
     </div>
   </div>
   {#if $me && $me.__typename === "Profile"}
