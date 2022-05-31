@@ -6,6 +6,7 @@ import { stats } from "../../../shared/stores/stats";
 import ButtonContext from "../../../shared/atoms/button/buttonContext";
 import Button from "../../../shared/atoms/button/Button.svelte";
 import { me } from "../../../shared/stores/me";
+import {FibonacciGoals, LeaderboardEntry, MyInviteRank, Scalars, Stats} from "../../../shared/api/data/types";
 
 let leaderboardButton: ButtonContext = {
   label: "leaderboard",
@@ -25,45 +26,66 @@ let shareButton: ButtonContext = {
     push("#/home/share");
   },
 };
+
+let _stats: Stats = {
+  goals: {
+    nextGoal: 0,
+    lastGoal: 0,
+    currentValue: 0
+  },
+  leaderboard: [],
+  myRank: {
+    rank: 0,
+    redeemedInvitationsCount: 0
+  },
+  profilesCount: 0,
+  verificationsCount: 0
+};
+
+$: {
+  if ($stats) {
+    _stats = $stats;
+  }
+}
 </script>
 
 <section class="relative p-4 mb-4 bg-white rounded-lg shadow-md dashboard-card ">
-  {#if $stats}
-    <div class="absolute top-0 left-0 w-full text-center">
-      <progress
-        class="w-full h-10 rounded-t-lg progress progress-primary"
-        value="{$stats.profilesCount ? $stats.profilesCount : '0'}"
-        max="{$stats.goals.nextGoal}"></progress>
-      <div class="absolute grid w-full grid-cols-3 px-2 text-white top-3">
-        <div class="text-sm text-left">{$stats.profilesCount} Citizens</div>
 
-        <div class="w-auto -mt-1 leading-0">
-          {Math.floor((100 * $stats.profilesCount) / $stats.goals.nextGoal)}%
-        </div>
-        <div class="-ml-2 text-sm text-right whitespace-nowrap">
-          +{$stats.goals.nextGoal - $stats.profilesCount > 0 ? $stats.goals.nextGoal - $stats.profilesCount : 0} till next
-          party
-        </div>
+  <div class="absolute top-0 left-0 w-full text-center">
+    <progress
+      class="w-full h-10 rounded-t-lg progress progress-primary"
+      value="{_stats.profilesCount ? _stats.profilesCount : '0'}"
+      max="{_stats.goals.nextGoal}"></progress>
+    <div class="absolute grid w-full grid-cols-3 px-2 text-white top-3">
+      <div class="text-sm text-left">{_stats.profilesCount} Citizens</div>
+
+      <div class="w-auto -mt-1 leading-0">
+        {Math.floor((100 * _stats.profilesCount) / _stats.goals.nextGoal)}%
+      </div>
+      <div class="-ml-2 text-sm text-right whitespace-nowrap">
+        +{_stats.goals.nextGoal - _stats.profilesCount > 0 ? _stats.goals.nextGoal - _stats.profilesCount : 0} till next
+        party
       </div>
     </div>
-    {#if $me && $me.__typename == "Profile"}
-      <div class="flex flex-row justify-around mt-10">
-        <div class="flex flex-col self-center space-y-2 justify-items-center">
-          <div class="self-center text-6xl font-heading">
-            {$stats.myRank.rank}
-          </div>
-          <div class="text-sm text-dark-lightest">My leaderrank</div>
+  </div>
+  {#if $me && $me.__typename === "Profile"}
+    <div class="flex flex-row justify-around mt-10">
+      <div class="flex flex-col self-center space-y-2 justify-items-center">
+        <div class="self-center text-6xl font-heading">
+          {_stats.myRank.rank}
         </div>
-        <div class="flex flex-col self-center space-y-2 justify-items-center">
-          <div class="self-center text-6xl cursor-pointer font-heading" on:click="{() => push('#/home/invites')}">
-            {$stats.myRank.redeemedInvitationsCount}
-          </div>
-          <div class="text-sm text-dark-lightest">My invites</div>
-        </div>
+        <div class="text-sm text-dark-lightest">My leaderrank</div>
       </div>
-    {/if}
+      <div class="flex flex-col self-center space-y-2 justify-items-center">
+        <div class="self-center text-6xl cursor-pointer font-heading" on:click="{() => push('#/home/invites')}">
+          {_stats.myRank.redeemedInvitationsCount}
+        </div>
+        <div class="text-sm text-dark-lightest">My invites</div>
+      </div>
+    </div>
   {/if}
-  {#if $me && $me.__typename == "Profile"}
+
+  {#if $me && $me.__typename === "Profile"}
     <div class="flex flex-row justify-around mt-4 mb-1 text-center">
       <Button context="{leaderboardButton}" />
       <Button context="{shareButton}" />
