@@ -77,13 +77,13 @@ $: {
     <div class="flex flex-row justify-around mt-10">
       <div class="flex flex-col self-center space-y-2 justify-items-center">
         <div class="self-center text-6xl font-heading">
-          {_stats.myRank.rank}
+          {!$stats ? ". . ." : _stats.myRank.rank}
         </div>
         <div class="text-sm text-dark-lightest">My leaderrank</div>
       </div>
       <div class="flex flex-col self-center space-y-2 justify-items-center">
         <div class="self-center text-6xl cursor-pointer font-heading" on:click="{() => push('#/home/invites')}">
-          {_stats.myRank.redeemedInvitationsCount}
+          {!$stats ? ". . ." : _stats.myRank.redeemedInvitationsCount}
         </div>
         <div class="text-sm text-dark-lightest">My invites</div>
       </div>
