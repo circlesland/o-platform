@@ -1,9 +1,17 @@
 import {readable} from "svelte/store";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {Profile, SessionInfo} from "../api/data/types";
+import {
+  InitDocument,
+  InitQueryVariables,
+  Profile,
+  SessionInfo,
+  SessionInfoDocument,
+  SessionInfoQueryVariables
+} from "../api/data/types";
 import {displayableName} from "../functions/stringHelper";
 import {Subscriber} from "svelte/types/runtime/store";
 import {getSessionInfo} from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
+import {ApiClient} from "../apiConnection";
 
 let sessionInfo: SessionInfo | undefined = undefined;
 
@@ -16,7 +24,7 @@ export const me = {
     return sessionInfo;
   },
   reload: async () => {
-    sessionInfo = await getSessionInfo();
+    const sessionInfo = await ApiClient.query<SessionInfo, InitQueryVariables>(InitDocument, {});
 
     if (sessionInfo.profile) {
       window.o.publishEvent(<PlatformEvent>{
