@@ -1,12 +1,10 @@
 <script lang="ts">
-import CitizensProgressBar from "../atoms/CitizensProgressBar.svelte";
 import { push } from "svelte-spa-router";
-import ButtonGroup from "../../../shared/molecules/ButtonGroup/ButtonGroup.svelte";
 import { stats } from "../../../shared/stores/stats";
 import ButtonContext from "../../../shared/atoms/button/buttonContext";
 import Button from "../../../shared/atoms/button/Button.svelte";
 import { me } from "../../../shared/stores/me";
-import {FibonacciGoals, LeaderboardEntry, MyInviteRank, Scalars, Stats} from "../../../shared/api/data/types";
+import {Stats} from "../../../shared/api/data/types";
 
 let leaderboardButton: ButtonContext = {
   label: "leaderboard",
@@ -77,13 +75,13 @@ $: {
     <div class="flex flex-row justify-around mt-10">
       <div class="flex flex-col self-center space-y-2 justify-items-center">
         <div class="self-center text-6xl font-heading">
-          {_stats.myRank.rank}
+          {!$stats ? ". . ." : _stats.myRank.rank}
         </div>
         <div class="text-sm text-dark-lightest">My leaderrank</div>
       </div>
       <div class="flex flex-col self-center space-y-2 justify-items-center">
         <div class="self-center text-6xl cursor-pointer font-heading" on:click="{() => push('#/home/invites')}">
-          {_stats.myRank.redeemedInvitationsCount}
+          {!$stats ? ". . ." : _stats.myRank.redeemedInvitationsCount}
         </div>
         <div class="text-sm text-dark-lightest">My invites</div>
       </div>
