@@ -52,10 +52,14 @@ $: {
 <section class="relative p-4 mb-4 bg-white rounded-lg shadow-md dashboard-card ">
 
   <div class="absolute top-0 left-0 w-full text-center">
+    {#if _stats.goals.nextGoal > 0}
     <progress
       class="w-full h-10 rounded-t-lg progress progress-primary"
       value="{_stats.profilesCount ? _stats.profilesCount : '0'}"
       max="{_stats.goals.nextGoal}"></progress>
+    {:else}
+      <div class="w-full h-10 rounded-t-lg" style="background:#081b4a"></div>
+    {/if}
     <div class="absolute grid w-full grid-cols-3 px-2 text-white top-3">
       {#if _stats.goals.nextGoal > 0}
         <div class="text-sm text-left">{_stats.profilesCount} Citizens</div>
