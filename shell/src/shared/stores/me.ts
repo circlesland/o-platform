@@ -5,8 +5,6 @@ import {
   InitQueryVariables,
   Profile,
   SessionInfo,
-  SessionInfoDocument,
-  SessionInfoQueryVariables
 } from "../api/data/types";
 import {displayableName} from "../functions/stringHelper";
 import {Subscriber} from "svelte/types/runtime/store";
