@@ -90,15 +90,27 @@ function formatShippingAddress(address:PostAddress) {
         <span class="pb-2 align-baseline">I want this order to be delivered to me</span>
       </label>
     </div>
+    <div class="form-control">
+      <label class="cursor-pointer label">
+        <input
+          type="radio"
+          class="radio radio-primary radio-sm"
+          checked
+          bind:group="{deliveryType}"
+          name="deliveryType"
+          value={1} />
+        <span class="inline"> I want to pick this order up at the store</span>
+      </label>
+    </div>
     {#if deliveryType === 2}
       <div class="form-control">
         <label class="cursor-pointer label">
           {#if $me.shippingAddresses && $me.shippingAddresses.length > 0}
-          <select class="select select-bordered" bind:value="{shippingAddressId}">
-            {#each $me.shippingAddresses as shippingAddress}
-              <option value={shippingAddress.id}>{formatShippingAddress(shippingAddress)}</option>
-            {/each}
-          </select>
+            <select class="select select-bordered" bind:value="{shippingAddressId}">
+              {#each $me.shippingAddresses as shippingAddress}
+                <option value={shippingAddress.id}>{formatShippingAddress(shippingAddress)}</option>
+              {/each}
+            </select>
           {/if}
           <div>
             <button class="mt-2 btn btn-sm btn-primary"
@@ -117,18 +129,9 @@ function formatShippingAddress(address:PostAddress) {
         </label>
       </div>
     {/if}
-    <div class="form-control">
-      <label class="cursor-pointer label">
-        <input
-          type="radio"
-          class="radio radio-primary radio-sm"
-          checked
-          bind:group="{deliveryType}"
-          name="deliveryType"
-          value={1} />
-        <span class="inline"> I want to pick this order up at the store</span>
-      </label>
-    </div>
   </div>
 </div>
-<ProcessNavigation on:buttonClick="{() => submit(undefined)}" context="{context}" noSticky="{true}" />
+<ProcessNavigation isDisabled={deliveryType === 2 && (!$me.shippingAddresses || $me.shippingAddresses.length === 0)}
+                   on:buttonClick="{() => submit()}"
+                   context="{context}"
+                   noSticky="{true}" />
