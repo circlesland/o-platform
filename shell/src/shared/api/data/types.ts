@@ -2969,7 +2969,10 @@ export type StreamQuery = (
         & { deliveryMethod: (
           { __typename?: 'DeliveryMethod' }
           & Pick<DeliveryMethod, 'id' | 'name'>
-        ), lines?: Maybe<Array<(
+        ), deliveryAddress?: Maybe<(
+          { __typename?: 'PostAddress' }
+          & Pick<PostAddress, 'id' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
+        )>, lines?: Maybe<Array<(
           { __typename?: 'InvoiceLine' }
           & Pick<InvoiceLine, 'amount' | 'metadata'>
           & { offer?: Maybe<(
@@ -5146,6 +5149,16 @@ export const StreamDocument = gql`
           deliveryMethod {
             id
             name
+          }
+          deliveryAddress {
+            id
+            street
+            house
+            zip
+            city
+            state
+            country
+            cityGeonameid
           }
           createdAt
           cancelledAt
