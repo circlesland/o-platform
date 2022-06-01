@@ -13,7 +13,6 @@ let fullI18nData: I18n[] = [];
 let displayedTree: CTreeNode = new CTreeNode("root");
 let keyFilter: string = "";
 let valueFilter: string = "";
-let completeTree;
 let snapshot: StateSnapshot;
 
 async function createTree(rootData: I18n[]): Promise<CTreeNode> {
@@ -21,7 +20,6 @@ async function createTree(rootData: I18n[]): Promise<CTreeNode> {
   for (const row of rootData) {
     cTreenode.add(row.key, row);
   }
-  console.log(cTreenode);
   return cTreenode;
 }
 
