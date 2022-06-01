@@ -7,41 +7,39 @@ import StringEditor from "./StringEditor.svelte";
 
 export let rootNode: CTreeNode;
 
-
 let dispatch = createEventDispatcher();
 let snapshot: StateSnapshot = {};
 </script>
 
-<span
-  on:click="{() => {
-    rootNode.toggleExpanded();
-    snapshot[rootNode.snapId] = rootNode.expandState;
-    rootNode = rootNode;
-    dispatch("expand", {
-      newSnapshot: snapshot,
-      nodeToUpdate: rootNode
-    });
-    console.log("bvgjfkhskölifj", snapshot)
-  }}">
-  {rootNode.key}
-</span>
+  <span
+    on:click="{() => {
+      rootNode.toggleExpanded();
+      snapshot[rootNode.snapId] = rootNode.expandState;
+      rootNode = rootNode;
+      dispatch('expand', {
+        newSnapshot: snapshot,
+        nodeToUpdate: rootNode,
+      });
+    }}">
+    {rootNode.key}
+  </span>
 
-{#if rootNode.isExpanded}
-  {#if rootNode}
-    {#each rootNode.children as childNode}
-      <ul class="ml-2 mb-4">
-        {#if childNode.isLeaf}
-          {#each childNode.values as item}
-            <StringEditor
-              dataString="{item.value}"
-              dataKey="{item.key}"
-              dataLang="{item.lang}"
-              dataVersion="{item.version}" />
-          {/each}
-        {:else}
-          <svelte:self rootNode="{childNode}" on:expand />
-        {/if}
-      </ul>
-    {/each}
+  {#if rootNode.isExpanded}
+    {#if rootNode}
+      {#each rootNode.children as childNode}
+        <ul class="ml-2 mb-4">
+          {#if childNode.isLeaf}
+            {#each childNode.values as item}
+              <StringEditor
+                dataString="{item.value}"
+                dataKey="{item.key}"
+                dataLang="{item.lang}"
+                dataVersion="{item.version}" />
+            {/each}
+          {:else}
+            <svelte:self rootNode="{childNode}" on:expand />
+          {/if}
+        </ul>
+      {/each}
+    {/if}
   {/if}
-{/if}

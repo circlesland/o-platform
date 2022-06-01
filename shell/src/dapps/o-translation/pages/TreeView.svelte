@@ -56,28 +56,6 @@ async function refreshView() {
   console.log("snapshot", snapshot);
 }
 
-async function logTree() {
-  let data = await getI18nData();
-  completeTree = await createTree(data);
-
-  console.log(completeTree);
-
-  loppOverChildren(completeTree);
-
-  function loppOverChildren(tree) {
-    if (tree._children.length == 0) {
-      console.log(tree._key);
-      console.log(tree._values[0].key);
-    } else {
-      for (let i = 0; i < tree._children.length; i++) {
-        console.log(tree._key);
-        loppOverChildren(tree._children[i]);
-      }
-    }
-  }
-}
-
-//logTree();
 </script>
 
 <section>
@@ -91,10 +69,8 @@ async function logTree() {
     rootNode="{displayedTree}"
     on:expand="{(event) => {
       let partialSnapshot = event.detail.newSnapshot;
-      //console.log('partial snap', partialSnapshot);
       for (let property in partialSnapshot) {
         snapshot[property] = partialSnapshot[property];
       } 
-      //console.log('updated snapshot', snapshot);
     }}" />
 </section>

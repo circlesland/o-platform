@@ -56,7 +56,7 @@ async function writeValueToDb(value: string, lang: string, key: string) {
   });
 }
 </script>
-
+<div class="flex">
 <div class="table-cell break-all w-64 p-1">{dataString}</div>
 <div class="table-cell break-all w-64 p-1">
   {#each keyArray[0] as keyLink (keyLink)}
@@ -91,3 +91,4 @@ async function writeValueToDb(value: string, lang: string, key: string) {
     </div>
   </div>
 </form>
+</div>
