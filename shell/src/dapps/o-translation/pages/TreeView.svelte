@@ -39,7 +39,6 @@ async function filterItems(keyFilter: string, valueFilter: string, i18nData: I18
   const filteredByValue = filteredByKey.filter((item) =>
     item.value.toLowerCase().startsWith(valueFilter.toLocaleLowerCase())
   );
-  console.log("filtered", filteredByValue);
   return filteredByValue;
 }
 
@@ -53,7 +52,6 @@ async function refreshView() {
   } else {
     displayedTree.restoreStateSnapshot(snapshot);
   }
-  console.log("snapshot", snapshot);
 }
 
 </script>
