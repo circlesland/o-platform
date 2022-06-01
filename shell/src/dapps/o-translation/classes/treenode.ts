@@ -42,20 +42,12 @@ export class CTreeNode {
 
     function loopOverTree(tree) {
       for (let i = 0; i < tree._children.length; i++) {
-        stateSnapshot[tree._key] = tree._isExpanded;
+        stateSnapshot[tree._snapId] = tree._isExpanded;
 
         loopOverTree(tree._children[i]);
       }
     }
-    //console.log("states", stateSnapshot);
     return stateSnapshot;
-  }
-
-  public updateSnapshot(snapshot: StateSnapshot): boolean {
-    snapshot;
-    //console.log("blabla", snapshot);
-
-    return;
   }
 
   private _snapId: string = "";
@@ -115,7 +107,7 @@ export class CTreeNode {
   public restoreStateSnapshot(stateSnapshot: StateSnapshot): void {
     function restoreLoop(tree: CTreeNode) {
       for (let i = 0; i < tree._children.length; i++) {
-        tree._isExpanded = stateSnapshot[tree._key];
+        tree._isExpanded = stateSnapshot[tree._snapId];
         restoreLoop(tree._children[i]);
       }
     }
