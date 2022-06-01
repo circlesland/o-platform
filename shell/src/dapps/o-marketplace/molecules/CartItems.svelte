@@ -95,6 +95,8 @@ let shops: any = [];
 
     window.o.runProcess(purchase, {
       items: cartContents[shopIndex].items,
+      shop: cartContents[shopIndex].shop,
+      sellerProfile: cartContents[shopIndex].shop.owner,
       availableDeliveryMethods: [{
         id: 1,
         name: "Pickup at store"

@@ -75,27 +75,16 @@ const processDefinition = (processId: string) =>
         entry: [
           // loadAndSetCartContents,
           // TODO: BOTH ACTIONS ASSUME ALL ITEMS ARE FROM THE SAME SELLER
-          setFirstSellerAsSellerProfile,
           loadAndSetFirstShopMetadata,
         ],
         invoke: {
           src: async (context: PurchaseContext) => {
             context.dirtyFlags["init"] = true;
-            let shopId: number;
-            if (context.data.items && context.data.items.length) {
-              shopId = context.data.items[0].shopId;
-            }
 
-            if (shopId) {
-              context.data.shop = await ApiClient.query<Shop, QueryShopArgs>(ShopDocument, {
-                id: parseInt(shopId.toString())
-              });
-
-              context.data.total = 0;
-              context.data.items.forEach(o => {
-                context.data.total += o.qty * o.pricePerUnit;
-              });
-            }
+            context.data.total = 0;
+            context.data.items.forEach(o => {
+              context.data.total += o.qty * o.pricePerUnit;
+            });
             return context.data;
           },
           onDone: "#checkoutDelivery",
@@ -311,10 +300,6 @@ const createPurchaseService = async (context: PurchaseContext) => {
 //     context.data.items = cartContents;
 //   }
 // };
-
-const setFirstSellerAsSellerProfile = (context) => {
-  context.data.sellerProfile = context.data.items[0].createdByProfile;
-};
 
 const showCalculatePathWaitingMessage = () => {
   window.o.publishEvent(<PlatformEvent>{

@@ -1,24 +1,17 @@
 <script lang="ts">
-import { onMount } from "svelte";
-
-import CartItems from "../molecules/CartItems.svelte";
 import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
-import {Profile, Organisation, Shop, QueryShopArgs, ShopDocument} from "../../../shared/api/data/types";
 import { Currency } from "../../../shared/currency";
 import { _ } from "svelte-i18n";
 import ShopMetadata from "../../../shared/molecules/ShopMetadata.svelte";
+import {onMount} from "svelte";
 
 export let context: any;
-let profile: Profile | Organisation;
 let metadataError: Boolean = false;
 let placeholder: Boolean = true;
 let metadata: any;
 let isLoading: Boolean = true;
 
-onMount(async () => {
-  profile = context.data.sellerProfile;
-});
 
 function submit() {
   if (context.data.shop.purchaseMetaDataKeys && metadataError) {
@@ -31,6 +24,8 @@ function submit() {
   answer.data = context.data;
   context.process.sendAnswer(answer);
 }
+
+onMount(() => console.log("CheckoutSummary context:", context));
 
 function onkeydown(e: KeyboardEvent) {
   if (e.key == "Enter") {
@@ -55,10 +50,10 @@ function onkeydown(e: KeyboardEvent) {
         <div class="flex flex-col w-full">
           <header class=" rounded-xl headerImageContainer">
             <div class="relative rounded-xl image-wrapper">
-              <img src="{context.data.smallBannerUrl}" alt="" class="w-full rounded-xl" />
+              <img src="{context.data.shop.smallBannerUrl}" alt="" class="w-full rounded-xl" />
               <div
                 class="absolute right-0 px-2 mt-2 text-lg rounded-l-full sm:text-xl lg:pb-2 lg:pt-3 lg:pl-4 lg:pr-2 lg:text-3xl font-heading top-2 bg-light-lightest">
-                <span class="inline-block">{context.data.name}</span>
+                <span class="inline-block">{context.data.shop.name}</span>
               </div>
             </div>
           </header>
