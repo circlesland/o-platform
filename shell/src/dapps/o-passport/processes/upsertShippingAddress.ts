@@ -132,6 +132,7 @@ const processDefinition = (processId: string) =>
                   cityGeonameid: context.data.cityGeonameid
                 }
               });
+            context.data.id = result.id;
             return result;
           },
           onDone: "#success",
@@ -141,13 +142,10 @@ const processDefinition = (processId: string) =>
       success: {
         type: "final",
         id: "success",
-        entry: (context, event) => {
-          if (context.data.successAction) {
-            me.reload();
-            context.data.successAction(context.data);
-          }
-        },
         data: (context, event: any) => {
+          if (context.data.successAction) {
+            me.reload().then(() => context.data.successAction(context.data));
+          }
           return event.data;
         },
       },

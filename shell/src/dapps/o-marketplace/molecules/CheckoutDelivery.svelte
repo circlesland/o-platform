@@ -3,38 +3,46 @@ import { purchase } from "../processes/purchase";
 
 import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
-import { _ } from "svelte-i18n";
 import { onMount } from "svelte";
+import {EditorContext} from "@o-platform/o-editors/src/editorContext";
+import {
+  upsertShippingAddress,
+} from "../../o-passport/processes/upsertShippingAddress";
+import {me} from "../../../shared/stores/me";
+import {PostAddress} from "../../../shared/api/data/types";
 
-export let context: any;
+export let context: EditorContext;
 
 let checked: boolean = false;
 let balance: number = 0;
-let invoiceAmount: number = 0;
 let shippingAddressId: number;
 let deliveryType: number = 1;
 
-$: {
-  context = context;
-}
-
 onMount(() => {
-  if (context.data.shop.shop) {
-    if (context.data.shop.shop.deliveryMethods === null) {
+  console.log("onMount context:", context);
+  const availableDeliveryMethods = context.data.availableDeliveryMethods
+          ? context.data.availableDeliveryMethods
+          : context.params.availableDeliveryMethods;
+
+  if (availableDeliveryMethods) {
+    if (!context.data[context.field]) {
       deliveryType = 1;
-      submit(undefined);
-    } else if (context.data.shop.shop.deliveryMethods.length == 1) {
-      deliveryType = context.data.shop.shop.deliveryMethods[0].id;
-      submit(undefined);
+    } else {
+      deliveryType = context.data[context.field].deliveryMethodId;
+      shippingAddressId = context.data[context.field].shippingAddressId;
     }
   }
 });
 
-function submit(redirectTo?: string) {
+function submit() {
   const answer = new Continue();
-  context.data.deliveryMethodId = deliveryType;
 
-  answer.data = context.data;
+  answer.data = {
+    [context.field]: {
+      deliveryMethodId: deliveryType,
+      shippingAddressId: shippingAddressId
+    }
+  };
 
   context.process.sendAnswer(answer);
 }
@@ -43,6 +51,29 @@ function onkeydown(e: KeyboardEvent) {
   if (e.key == "Enter") {
     submit();
   }
+}
+
+async function restartPurchase(shippingAddressId: number, oldContext: EditorContext) {
+  window.o.runProcess(purchase, {
+    [context.field]: {
+      deliveryMethodId: 2, // TODO: Magic number stands for "delivery"
+      shippingAddressId: shippingAddressId
+    },
+    ...oldContext.data
+  });
+}
+
+function formatShippingAddress(address:PostAddress) {
+  let str = "";
+  if (address.name) {
+    str += address.name + ", ";
+  }
+  str += address.street + " ";
+  str += address.house + ", ";
+  //str += address.zip + " ";
+  str += address.city + "";
+  //str += address.country;
+  return str;
 }
 </script>
 
@@ -55,10 +86,37 @@ function onkeydown(e: KeyboardEvent) {
           class=" radio radio-primary radio-sm"
           bind:group="{deliveryType}"
           name="deliveryType"
-          value="{2}" />
+          value={2} />
         <span class="pb-2 align-baseline">I want this order to be delivered to me</span>
       </label>
     </div>
+    {#if deliveryType === 2}
+      <div class="form-control">
+        <label class="cursor-pointer label">
+          {#if $me.shippingAddresses && $me.shippingAddresses.length > 0}
+          <select class="select select-bordered" bind:value="{shippingAddressId}">
+            {#each $me.shippingAddresses as shippingAddress}
+              <option value={shippingAddress.id}>{formatShippingAddress(shippingAddress)}</option>
+            {/each}
+          </select>
+          {/if}
+          <div>
+            <button class="mt-2 btn btn-sm btn-primary"
+                    on:click={() => {
+              const currentContext = context;
+              window.o.runProcess(upsertShippingAddress, {
+                successAction: (data) => {
+                  console.log("RestartPurchaseProcess", data);
+                  setTimeout(() => {
+                    restartPurchase(data.id, currentContext);
+                  }, 30);
+                }
+              });
+            }}>Add Address</button>
+          </div>
+        </label>
+      </div>
+    {/if}
     <div class="form-control">
       <label class="cursor-pointer label">
         <input
@@ -67,27 +125,10 @@ function onkeydown(e: KeyboardEvent) {
           checked
           bind:group="{deliveryType}"
           name="deliveryType"
-          value="{1}" />
+          value={1} />
         <span class="inline"> I want to pick this order up at the store</span>
       </label>
     </div>
   </div>
-  {#if deliveryType == 2}
-    <div class="form-control">
-      <label class="cursor-pointer label">
-        <select class="select select-bordered" bind:value="{shippingAddressId}">
-          <option value="LIST">Thorsten Schau, Ehrengutstrasse 9</option>
-          <option value="TILES">Thorsten Rock c/o Steffi Graf, O-strasse 9, Berlin</option>
-        </select>
-        <div>
-          <button
-            class="mt-2 btn btn-sm btn-primary"
-            on:click="{() => {
-              // window.o.runProcess(upsertShippingAddress, {});
-            }}">Add Address</button>
-        </div>
-      </label>
-    </div>
-  {/if}
 </div>
 <ProcessNavigation on:buttonClick="{() => submit(undefined)}" context="{context}" noSticky="{true}" />

@@ -2125,16 +2125,16 @@ export type InitQuery = (
     )>, profile?: Maybe<(
       { __typename?: 'Profile' }
       & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'provenUniqueness' | 'circlesTokenAddress'>
-      & { shops?: Maybe<Array<(
+      & { shippingAddresses?: Maybe<Array<(
+        { __typename?: 'PostAddress' }
+        & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
+      )>>, shops?: Maybe<Array<(
         { __typename?: 'Shop' }
         & Pick<Shop, 'id'>
       )>>, city?: Maybe<(
         { __typename?: 'City' }
         & Pick<City, 'geonameid' | 'name' | 'country'>
-      )>, shippingAddresses?: Maybe<Array<(
-        { __typename?: 'PostAddress' }
-        & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'city' | 'cityGeonameid' | 'zip' | 'state' | 'country'>
-      )>>, memberships?: Maybe<Array<(
+      )>, memberships?: Maybe<Array<(
         { __typename?: 'Membership' }
         & Pick<Membership, 'isAdmin'>
         & { organisation: (
@@ -3933,6 +3933,17 @@ export const InitDocument = gql`
       displayCurrency
       cityGeonameid
       provenUniqueness
+      shippingAddresses {
+        id
+        name
+        street
+        house
+        zip
+        city
+        state
+        country
+        cityGeonameid
+      }
       shops {
         id
       }

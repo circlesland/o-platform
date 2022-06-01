@@ -58,5 +58,14 @@ function sortAlphabetically(a, b) {
     {#each displayContacts as contact(contact.contactAddress)}
       <ContactCard contact="{contact}" />
     {/each}
+    {#if displayContacts.length === 0}
+      <section class="flex items-center justify-center mb-2 ">
+        <div class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow">
+          <div class="flex flex-col items-start text-center">
+            <div>No entries</div>
+          </div>
+        </div>
+      </section>
+    {/if}
   {/if}
 </div>

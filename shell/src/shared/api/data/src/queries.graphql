@@ -30,6 +30,16 @@ query init {
       displayCurrency
       cityGeonameid
       provenUniqueness
+      shippingAddresses {
+        id
+        name
+        street
+        house
+        zip
+        city
+        state
+        country
+      }
       shops {
         id
       }

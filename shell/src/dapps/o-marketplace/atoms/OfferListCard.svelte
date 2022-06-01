@@ -1,16 +1,12 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
 import { Offer } from "../../../shared/api/data/types";
-import { purchase } from "../processes/purchase";
-import OfferCardField from "./OfferCardField.svelte";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { me } from "../../../shared/stores/me";
 import { cartContents } from "../stores/shoppingCartStore";
 import { truncateString } from "../../../shared/functions/truncateString";
-import Time from "svelte-time";
 import { _ } from "svelte-i18n";
-import { Environment } from "../../../shared/environment";
 
 export let param: Offer = <any>{
   categoryTag: {
@@ -50,15 +46,6 @@ function edit(dirtyFlags: { [field: string]: boolean }) {
 
 function loadDetailPage() {
   push("#/marketplace/detail/" + shopId + "/" + offer.id);
-}
-
-function buy() {
-  const shopMetadataJson = Environment.getShopMetadata(shopId);
-  window.o.runProcess(purchase, {
-    data: {
-      metadata: shopMetadataJson,
-    },
-  });
 }
 
 export let shopId: Number;
