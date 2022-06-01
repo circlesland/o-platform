@@ -422,6 +422,7 @@ export type Invoice = {
   cancelledAt?: Maybe<Scalars['String']>;
   cancelledBy?: Maybe<Profile>;
   createdAt?: Maybe<Scalars['String']>;
+  deliveryAddress?: Maybe<PostAddress>;
   deliveryMethod: DeliveryMethod;
   id: Scalars['Int'];
   invoiceNo: Scalars['String'];
@@ -614,6 +615,7 @@ export type MutationProofUniquenessArgs = {
 
 
 export type MutationPurchaseArgs = {
+  deliveryAddressId?: Maybe<Scalars['Int']>;
   deliveryMethodId: Scalars['Int'];
   lines: Array<PurchaseLineInput>;
 };
@@ -986,6 +988,7 @@ export type Purchase = {
   createdAt: Scalars['String'];
   createdByAddress: Scalars['String'];
   createdByProfile?: Maybe<Profile>;
+  deliveryAddress?: Maybe<PostAddress>;
   deliveryMethod: DeliveryMethod;
   id: Scalars['Int'];
   invoices?: Maybe<Array<Invoice>>;
@@ -1650,6 +1653,7 @@ export type UpsertShippingAddressMutation = (
 export type CreatePurchaseMutationVariables = Exact<{
   lines: Array<PurchaseLineInput> | PurchaseLineInput;
   deliveryMethodId: Scalars['Int'];
+  deliveryAddressId?: Maybe<Scalars['Int']>;
 }>;
 
 
@@ -2917,7 +2921,10 @@ export type StreamQuery = (
         & { deliveryMethod: (
           { __typename?: 'DeliveryMethod' }
           & Pick<DeliveryMethod, 'id' | 'name'>
-        ), lines?: Maybe<Array<(
+        ), deliveryAddress?: Maybe<(
+          { __typename?: 'PostAddress' }
+          & Pick<PostAddress, 'id' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
+        )>, lines?: Maybe<Array<(
           { __typename?: 'PurchaseLine' }
           & Pick<PurchaseLine, 'id' | 'amount' | 'metadata'>
           & { offer?: Maybe<(
@@ -3198,7 +3205,10 @@ export type AggregatesQuery = (
           & { deliveryMethod: (
             { __typename?: 'DeliveryMethod' }
             & Pick<DeliveryMethod, 'id' | 'name'>
-          ), buyerProfile?: Maybe<(
+          ), deliveryAddress?: Maybe<(
+            { __typename?: 'PostAddress' }
+            & Pick<PostAddress, 'id' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
+          )>, buyerProfile?: Maybe<(
             { __typename?: 'Profile' }
             & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
             & { verifications?: Maybe<Array<(
@@ -3421,8 +3431,12 @@ export const UpsertShippingAddressDocument = gql`
 }
     `;
 export const CreatePurchaseDocument = gql`
-    mutation createPurchase($lines: [PurchaseLineInput!]!, $deliveryMethodId: Int!) {
-  purchase(lines: $lines, deliveryMethodId: $deliveryMethodId) {
+    mutation createPurchase($lines: [PurchaseLineInput!]!, $deliveryMethodId: Int!, $deliveryAddressId: Int) {
+  purchase(
+    lines: $lines
+    deliveryMethodId: $deliveryMethodId
+    deliveryAddressId: $deliveryAddressId
+  ) {
     id
     buyerAddress
     buyerProfile {
@@ -5175,6 +5189,16 @@ export const StreamDocument = gql`
             id
             name
           }
+          deliveryAddress {
+            id
+            street
+            house
+            zip
+            city
+            state
+            country
+            cityGeonameid
+          }
           lines {
             id
             amount
@@ -5656,6 +5680,16 @@ export const AggregatesDocument = gql`
             deliveryMethod {
               id
               name
+            }
+            deliveryAddress {
+              id
+              street
+              house
+              zip
+              city
+              state
+              country
+              cityGeonameid
             }
             simplePickupCode
             buyerSignature

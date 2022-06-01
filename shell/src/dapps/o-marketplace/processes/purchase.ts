@@ -15,7 +15,7 @@ import {
   AnnouncePaymentDocument,
   EventType,
   CreatePurchaseMutationVariables,
-  DeliveryMethod, Shop, QueryShopArgs, ShopDocument,
+  DeliveryMethod, Shop
 } from "../../../shared/api/data/types";
 import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
@@ -276,6 +276,7 @@ const createPurchaseService = async (context: PurchaseContext) => {
 
   const result = await ApiClient.mutate<Invoice[], CreatePurchaseMutationVariables>(CreatePurchaseDocument, {
     deliveryMethodId: context.data.checkoutDelivery.deliveryMethodId,
+    deliveryAddressId: context.data.checkoutDelivery?.shippingAddressId,
     lines: Object.entries(linesGroupedByOffer).map((o) => {
       return <PurchaseLineInput>{
         offerId: parseInt(o[0]),

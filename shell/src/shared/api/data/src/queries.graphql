@@ -1291,6 +1291,16 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
             id
             name
           }
+          deliveryAddress {
+            id
+            street
+            house
+            zip
+            city
+            state
+            country
+            cityGeonameid
+          }
           lines {
             id
             amount
@@ -1771,6 +1781,16 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             deliveryMethod {
               id
               name
+            }
+            deliveryAddress {
+              id
+              street
+              house
+              zip
+              city
+              state
+              country
+              cityGeonameid
             }
             simplePickupCode
             buyerSignature
