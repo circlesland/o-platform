@@ -15,11 +15,13 @@ let snapshot: StateSnapshot = {};
 <span
   on:click="{() => {
     rootNode.toggleExpanded();
-    snapshot = rootNode.createStateSnapshot();
+    snapshot[rootNode.key] = rootNode.expandState;
     rootNode = rootNode;
     dispatch("expand", {
-      newSnapshot: snapshot
+      newSnapshot: snapshot,
+      nodeToUpdate: rootNode
     });
+    //console.log("bvgjfkhskölifj", snapshot)
   }}">
   {rootNode.key}
 </span>

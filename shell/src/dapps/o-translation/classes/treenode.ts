@@ -17,9 +17,16 @@ export class CTreeNode {
         keyParts = [keyPart].concat(keyParts);
         while (keyParts.length) {
           const remainingKeyPart = keyParts.shift();
-          const newNode = new CTreeNode(remainingKeyPart);
+          const newNode = new CTreeNode(remainingKeyPart, currentNode);
+          if (!currentNode._parent) {
+            currentNode._snapId = currentNode.key;
+          }
           currentNode._children.push(newNode);
           currentNode = newNode;
+
+          if (currentNode._parent) {
+            currentNode._snapId = currentNode.parent._snapId + "." + currentNode.key;
+          }
         }
       }
       if (keyParts.length == 0) {
@@ -40,21 +47,25 @@ export class CTreeNode {
         loopOverTree(tree._children[i]);
       }
     }
-    console.log("states", stateSnapshot);
+    //console.log("states", stateSnapshot);
     return stateSnapshot;
   }
 
-  public updateSnapshot(newSnapshot: StateSnapshot, oldSnapshot: StateSnapshot): StateSnapshot {
-    let updatedSnapshot: StateSnapshot = {};
+  public updateSnapshot(snapshot: StateSnapshot): boolean {
+    snapshot;
+    //console.log("blabla", snapshot);
 
-    for (let i = 0; i < Object.keys(newSnapshot).length; i++) {
+    return;
+  }
 
-//      console.log(Object.keys(newSnapshot)[i], Object.values(newSnapshot)[i])
-      console.log("bla")
-    }
+  private _snapId: string = "";
 
+  public get snapId(): string {
+    return this._snapId;
+  }
 
-    return updatedSnapshot;
+  public get expandState(): boolean {
+    return this._isExpanded;
   }
 
   public get children(): CTreeNode[] {
@@ -86,8 +97,15 @@ export class CTreeNode {
     this._isExpanded = !this._isExpanded;
   }
 
-  constructor(key: string) {
+  private _parent: CTreeNode;
+
+  public get parent(): CTreeNode {
+    return this._parent;
+  }
+  
+  constructor(key: string, parent?: CTreeNode) {
     this._key = key;
+    this._parent = parent;
   }
 
   public findChildByKey(keyPart: string): CTreeNode {

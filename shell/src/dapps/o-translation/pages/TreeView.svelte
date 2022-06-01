@@ -51,7 +51,8 @@ async function refreshView() {
   if (!snapshot && !(keyFilter.trim() != "" || valueFilter.trim() != "") && displayedTree) {
     snapshot = displayedTree.createStateSnapshot();
   }
-  console.log("snapshot", snapshot);
+  //console.log("snapshot", snapshot);
+  //displayedTree.createSnapId()
 }
 
 async function logTree() {
@@ -90,6 +91,18 @@ async function logTree() {
   <Tree
     rootNode="{displayedTree}"
     on:expand="{(event) => {
-      snapshot = displayedTree.updateSnapshot(event.detail.newSnapshot, snapshot);
+      let partialSnapshot = event.detail.newSnapshot
+      console.log(partialSnapshot)
+      //Object.assign(snapshot[event.detail.nodeToUpdate], {})
+      snapshot[event.detail.nodeToUpdate] = partialSnapshot;
+      //console.log("node to update", snapshot[event.detail.nodeToUpdate.key])
+      //console.log("snapshot", snapshot)
+      let pathParts = []
+      let currentNode = event.detail.nodeToUpdate;
+      while (currentNode) {
+        pathParts.push(currentNode.key);
+        currentNode = currentNode.parent;
+        console.log(pathParts)
+      }
     }}" />
 </section>
