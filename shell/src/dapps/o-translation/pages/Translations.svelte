@@ -9,8 +9,6 @@ import EditorView from "./EditorView.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
-
-const listArguments = {};
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />

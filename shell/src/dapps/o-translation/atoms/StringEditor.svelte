@@ -49,46 +49,49 @@ const selectChange = async function () {
 };
 
 async function writeValueToDb(value: string, lang: string, key: string) {
-  await ApiClient.query<I18n, MutationUpdateValueArgs>(UpdateValueDocument, {
+  return await ApiClient.query<I18n, MutationUpdateValueArgs>(UpdateValueDocument, {
     lang: lang,
     key: key,
     value: value,
   });
 }
 </script>
-<div class="flex">
-<div class="table-cell break-all w-64 p-1">{dataString}</div>
-<div class="table-cell break-all w-64 p-1">
-  {#each keyArray[0] as keyLink (keyLink)}
-    <p class="link link-primary text-secondary" on:click="{() => dispatch('searchKey', { keyLink })}">{keyLink}</p>
-  {/each}
-</div>
-<div class="table-cell p-1">{dataLang}</div>
-{#if dataVersion > 1}
-  <div class="table-cell p-1">
-    <select name="" id="" bind:value="{selectedVersion}" on:change="{() => selectChange()}">
-      {#each olderVersionData as data}
-        <option value="{data.version}">{data.version}</option>
-      {/each}
-    </select>
-  </div>
-{:else}
-  <div class="table-cell p-1">{dataVersion}</div>
-{/if}
 
-<form>
-  <div class="table-cell p-1">
-    <div class="flex">
-      <input bind:value="{inputValue}" class="input" type="text" placeholder="{dataString}" />
-      <button
-        class="bg-blue-100 rounded-lg m-1"
-        on:click="{async () => {
-          await writeValueToDb(inputValue, dataLang, dataKey);
-          dataString = inputValue;
-          inputValue = '';
-          dispatch('save');
-        }}">Save</button>
-    </div>
+<div class="flex">
+  <div class="table-cell break-all w-64 p-1">{dataString}</div>
+  <div class="table-cell break-all w-64 p-1">
+    {#each keyArray[0] as keyLink (keyLink)}
+      <p class="link link-primary text-secondary" on:click="{() => dispatch('searchKey', { keyLink })}">{keyLink}</p>
+    {/each}
   </div>
-</form>
+  <div class="table-cell p-1">{dataLang}</div>
+  {#if dataVersion > 1}
+    <div class="table-cell p-1">
+      <select name="" id="" bind:value="{selectedVersion}" on:change="{() => selectChange()}">
+        {#each olderVersionData as data}
+          <option value="{data.version}">{data.version}</option>
+        {/each}
+      </select>
+    </div>
+  {:else}
+    <div class="table-cell p-1">{dataVersion}</div>
+  {/if}
+
+  <form>
+    <div class="table-cell p-1">
+      <div class="flex">
+        <input bind:value="{inputValue}" class="input" type="text" placeholder="{dataString}" />
+        <button
+          class="bg-blue-100 rounded-lg m-1"
+          on:click="{async () => {
+            await writeValueToDb(inputValue, dataLang, dataKey);
+            dataString = inputValue;
+            inputValue = '';
+            loadOlderVersions(dataLang, dataKey);
+            selectedVersion++;
+            //dispatch('save');
+          }}">Save</button>
+      </div>
+    </div>
+  </form>
 </div>

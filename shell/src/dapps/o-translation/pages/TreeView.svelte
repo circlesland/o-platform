@@ -30,9 +30,6 @@ onMount(async () => {
   await refreshView();
 });
 
-async function getI18nData(): Promise<I18n[]> {
-  return await ApiClient.query<I18n[], GetAllStringsByMaxVersionQuery>(GetAllStringsByMaxVersionDocument, {});
-}
 
 async function filterItems(keyFilter: string, valueFilter: string, i18nData: I18n[]) {
   const filteredByKey = i18nData.filter((item) => item.key.includes(keyFilter));
@@ -60,7 +57,6 @@ async function refreshView() {
   });
   const filteredQueryResult = queryResult.filter((o) => isSelected(o.lang));
   sortByKey(filteredQueryResult);
-  console.log(filteredQueryResult);
   let filteredI18nData = await filterItems(keyFilter, valueFilter, filteredQueryResult);
 
   displayedTree = await createTree(filteredI18nData);
@@ -70,6 +66,11 @@ async function refreshView() {
   } else {
     displayedTree.restoreStateSnapshot(snapshot);
   }
+  console.log("refreshed")
+}
+
+$: {
+  refreshView();
 }
 
 const toggleLanguage = async (data: string) => {
