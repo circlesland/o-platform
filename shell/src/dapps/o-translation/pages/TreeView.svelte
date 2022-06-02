@@ -6,14 +6,16 @@ import {
   I18n,
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
+import { Environment } from "../../../shared/environment";
 import Tree from "../atoms/Tree.svelte";
 import { CTreeNode, StateSnapshot } from "../classes/treenode";
 
-let fullI18nData: I18n[] = [];
 let displayedTree: CTreeNode = new CTreeNode("root");
 let keyFilter: string = "";
 let valueFilter: string = "";
 let snapshot: StateSnapshot;
+let allLanguages: string[] = [];
+let languageList: string[] = [];
 
 async function createTree(rootData: I18n[]): Promise<CTreeNode> {
   let cTreenode = new CTreeNode("root");
@@ -24,7 +26,7 @@ async function createTree(rootData: I18n[]): Promise<CTreeNode> {
 }
 
 onMount(async () => {
-  fullI18nData = await getI18nData();
+  languageList.push(Environment.userLanguage);
   await refreshView();
 });
 
@@ -41,7 +43,25 @@ async function filterItems(keyFilter: string, valueFilter: string, i18nData: I18
 }
 
 async function refreshView() {
-  let filteredI18nData = await filterItems(keyFilter, valueFilter, fullI18nData);
+  const queryResult = await ApiClient.query<I18n[], GetAllStringsByMaxVersionQuery>(
+    GetAllStringsByMaxVersionDocument,
+    {}
+  );
+  const allLanguageKeysInQueryResult = queryResult.toLookup((o) => o.lang);
+  allLanguages = Object.keys(allLanguageKeysInQueryResult);
+  allLanguages.sort((a, b) => {
+    if (a < b) {
+      return -1;
+    }
+    if (a > b) {
+      return 1;
+    }
+    return 0;
+  });
+  const filteredQueryResult = queryResult.filter((o) => isSelected(o.lang));
+  sortByKey(filteredQueryResult);
+  console.log(filteredQueryResult);
+  let filteredI18nData = await filterItems(keyFilter, valueFilter, filteredQueryResult);
 
   displayedTree = await createTree(filteredI18nData);
 
@@ -52,21 +72,63 @@ async function refreshView() {
   }
 }
 
+const toggleLanguage = async (data: string) => {
+  if (languageList.includes(data)) {
+    const index = languageList.indexOf(data);
+    if (index > -1) {
+      languageList.splice(index, 1);
+    }
+  } else {
+    languageList.push(data);
+  }
+};
+
+function sortByKey(dataToSort: I18n[]) {
+  dataToSort.sort((a, b) => {
+    if (a.key < b.key) {
+      return -1;
+    }
+    if (a.key > b.key) {
+      return 1;
+    }
+    return 0;
+  });
+  return dataToSort;
+}
+
+function isSelected(languageCode: string) {
+  return languageList.indexOf(languageCode) > -1;
+}
 </script>
 
 <section>
-  <form on:input="{() => refreshView()}">
-    <input bind:value="{keyFilter}" class="input m-1" type="text" placeholder="dapps.o-banking..." />
-  </form>
-  <form on:input="{() => refreshView()}">
-    <input bind:value="{valueFilter}" class="input m-1" type="text" placeholder="String" />
-  </form>
+  <div class="flex">
+    <form on:input="{() => refreshView()}">
+      <input bind:value="{keyFilter}" class="input m-1" type="text" placeholder="dapps.o-banking..." />
+    </form>
+    <form on:input="{() => refreshView()}">
+      <input bind:value="{valueFilter}" class="input m-1" type="text" placeholder="String" />
+    </form>
+  </div>
+  <div class="flex">
+    {#each allLanguages as languageCode}
+      <button
+        on:click="{() => {
+          toggleLanguage(languageCode);
+          refreshView();
+        }}"
+        class="p-1 m-1 bg-blue-200 hover:bg-blue-500"
+        class:bg-red-200="{isSelected(languageCode)}">
+        {languageCode}
+      </button>
+    {/each}
+  </div>
   <Tree
     rootNode="{displayedTree}"
     on:expand="{(event) => {
       let partialSnapshot = event.detail.newSnapshot;
       for (let property in partialSnapshot) {
         snapshot[property] = partialSnapshot[property];
-      } 
+      }
     }}" />
 </section>
