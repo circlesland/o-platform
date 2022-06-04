@@ -297,6 +297,7 @@ type Invoice {
     cancelledAt: String
     cancelledBy: Profile
     createdAt: String
+    deliveryAddress: PostAddress
     deliveryMethod: DeliveryMethod!
     id: Int!
     invoiceNo: String!
@@ -403,7 +404,7 @@ type Mutation {
     importOrganisationsOfAccount: [Organisation!]!
     logout: LogoutResponse!
     proofUniqueness(humanodeToken: String!): ProofUniquenessResult!
-    purchase(deliveryMethodId: Int!, lines: [PurchaseLineInput!]!): [Invoice!]!
+    purchase(deliveryAddressId: Int, deliveryMethodId: Int!, lines: [PurchaseLineInput!]!): [Invoice!]!
     redeemClaimedInvitation: RedeemClaimedInvitationResult!
     rejectMembership(membershipId: Int!): RejectMembershipResult
     removeMember(groupId: String!, memberAddress: String!): RemoveMemberResult
@@ -602,6 +603,7 @@ type Purchase {
     createdAt: String!
     createdByAddress: String!
     createdByProfile: Profile
+    deliveryAddress: PostAddress
     deliveryMethod: DeliveryMethod!
     id: Int!
     invoices: [Invoice!]

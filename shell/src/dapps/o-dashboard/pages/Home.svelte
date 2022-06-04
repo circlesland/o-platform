@@ -70,17 +70,15 @@ async function fetchStats() {
 <div class="mx-auto md:w-2/3 xl:w-1/2">
   <div class="m-4 mb-40 ">
     <DashboardInvitesWidget stats="{statsResult}" />
-    <!--
-    <section class="flex items-start bg-white rounded-lg shadow-md">
-      <div class="flex flex-col w-full ">
+    <section class="flex items-start bg-white rounded-lg shadow-md cursor-pointer">
+      <div class="flex flex-col w-full" on:click={() => loadLink("/marketplace/locations")}>
         <header class="rounded-lg shadow-md headerImageContainer">
           <div class="relative rounded-lg image-wrapper">
-            <img src="/images/events/27_05_1800_Ruppertstr_28.jpg" alt="" class="rounded-lg" />
+            <img src="/images/events/Screenshot from 2022-06-04 15-34-14.png" alt="" class="rounded-lg" />
           </div>
         </header>
       </div>
     </section>
-    -->
     <div class="grid grid-cols-2 gap-4 mt-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"

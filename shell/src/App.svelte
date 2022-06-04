@@ -233,7 +233,7 @@ let _routes = {
 
 <Router
   routes="{_routes}"
-  on:routeLoaded="{() => {
+  on:routeLoaded={() => {
     if (!ubiMachineInterpreter && $me && $me.circlesAddress) {
       ubiMachineInterpreter = interpret(ubiMachine)
         .onEvent((event) => {
@@ -244,4 +244,4 @@ let _routes = {
         })
         .start();
     }
-  }}" />
+  }} />

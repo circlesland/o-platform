@@ -8,6 +8,7 @@ const dispatch = createEventDispatcher();
 export let context: EditorContext;
 export let type: string = "large";
 export let noSticky: boolean = false;
+export let isDisabled: boolean = false;
 </script>
 
 <div
@@ -20,9 +21,13 @@ export let noSticky: boolean = false;
         <button
           type="submit"
           on:click="{() => {
+            if (isDisabled)
+              return;
             dispatch('buttonClick');
           }}"
-          class="relative btn btn-primary btn-block"
+          class="relative btn btn-block"
+          class:btn-disabled={isDisabled}
+          class:btn-primary={!isDisabled}
           >{context.params.view && context.params.view.submitButtonText
             ? context.params.view.submitButtonText
             : "Submit"}
@@ -34,9 +39,13 @@ export let noSticky: boolean = false;
         <button
           type="submit"
           on:click="{() => {
+            if (isDisabled)
+              return;
             dispatch('buttonClick');
           }}"
-          class="btn btn-primary btn-square"
+          class="btn btn-square"
+          class:btn-disabled={isDisabled}
+          class:btn-primary={!isDisabled}
           ><Icons icon="submitsmall" />
         </button>
       {/if}

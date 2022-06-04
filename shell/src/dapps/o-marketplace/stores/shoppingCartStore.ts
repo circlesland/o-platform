@@ -16,10 +16,17 @@ cartContents.subscribe((value) => (localStorage.cartContents = JSON.stringify(va
 export const cartContentsByShop = derived(cartContents, async ($cartContents) => {
   const shopIds = $cartContents.groupBy((o) => o.shopId);
 
-  let shops = await Promise.all(
+  const shops = await Promise.all(
     Object.keys(shopIds).map(async (shopId) => {
       return {
-        shop: await ApiClient.query<Shop[], ShopQueryVariables>(ShopDocument, {
+        shop: await ApiClient.query<Shop & {
+          owner: {
+            id
+            name
+            avatarUrl
+            circlesAddress
+          }
+        }[], ShopQueryVariables>(ShopDocument, {
           id: parseInt(shopId.toString()),
         }),
         items: await orderItems(shopIds[shopId]),
