@@ -74,7 +74,7 @@ async function fetchStats() {
       <div class="flex flex-col w-full" on:click={() => loadLink("/marketplace/locations")}>
         <header class="rounded-lg shadow-md headerImageContainer">
           <div class="relative rounded-lg image-wrapper">
-            <img src="/images/events/KingsHouse_1.png" alt="" class="rounded-lg" />
+            <img src="/images/events/Screenshot from 2022-06-04 15-34-14.png" alt="" class="rounded-lg" />
           </div>
         </header>
       </div>
