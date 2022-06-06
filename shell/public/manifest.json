@@ -3,13 +3,18 @@
   "short_name": "Circles Land",
   "icons": [
     {
-      "src": "/android-chrome-192x192.png",
+      "src": "/images/192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/android-chrome-256x256.png",
+      "src": "/images/256x256.png",
       "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/512x512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ],
