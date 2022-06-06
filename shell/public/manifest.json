@@ -1,6 +1,7 @@
 {
   "name": "Cirlces Land",
   "short_name": "Circles Land",
+  "start_url": "https://staging.circles.land/#/home",
   "icons": [
     {
       "src": "/images/192x192.png",
