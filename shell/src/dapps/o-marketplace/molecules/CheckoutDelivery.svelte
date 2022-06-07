@@ -4,12 +4,10 @@ import { purchase } from "../processes/purchase";
 import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { onMount } from "svelte";
-import {EditorContext} from "@o-platform/o-editors/src/editorContext";
-import {
-  upsertShippingAddress,
-} from "../../o-passport/processes/upsertShippingAddress";
-import {me} from "../../../shared/stores/me";
-import {PostAddress} from "../../../shared/api/data/types";
+import { EditorContext } from "@o-platform/o-editors/src/editorContext";
+import { upsertShippingAddress } from "../../o-passport/processes/upsertShippingAddress";
+import { me } from "../../../shared/stores/me";
+import { PostAddress } from "../../../shared/api/data/types";
 
 export let context: EditorContext;
 
@@ -17,12 +15,12 @@ let checked: boolean = false;
 let balance: number = 0;
 let shippingAddressId: number;
 let deliveryType: number = 1;
+let error: string = null;
 
 onMount(() => {
-  console.log("onMount context:", context);
   const availableDeliveryMethods = context.data.availableDeliveryMethods
-          ? context.data.availableDeliveryMethods
-          : context.params.availableDeliveryMethods;
+    ? context.data.availableDeliveryMethods
+    : context.params.availableDeliveryMethods;
 
   if (availableDeliveryMethods) {
     if (!context.data[context.field]) {
@@ -35,16 +33,27 @@ onMount(() => {
 });
 
 function submit() {
-  const answer = new Continue();
+  let selectedCountry = null;
+  if (shippingAddressId) {
+    selectedCountry = $me.shippingAddresses.find((o) => o.id == shippingAddressId).country;
+  }
 
-  answer.data = {
-    [context.field]: {
-      deliveryMethodId: deliveryType,
-      shippingAddressId: shippingAddressId
-    }
-  };
+  console.log(selectedCountry);
+  console.log(shippingAddressId);
+  if (selectedCountry && selectedCountry != "Germany") {
+    error = "This shop only delivers to Germany. Please select or enter a German Postal Address.";
+  } else {
+    const answer = new Continue();
 
-  context.process.sendAnswer(answer);
+    answer.data = {
+      [context.field]: {
+        deliveryMethodId: deliveryType,
+        shippingAddressId: shippingAddressId,
+      },
+    };
+
+    context.process.sendAnswer(answer);
+  }
 }
 
 function onkeydown(e: KeyboardEvent) {
@@ -57,13 +66,13 @@ async function restartPurchase(shippingAddressId: number, oldContext: EditorCont
   window.o.runProcess(purchase, {
     [context.field]: {
       deliveryMethodId: 2, // TODO: Magic number stands for "delivery"
-      shippingAddressId: shippingAddressId
+      shippingAddressId: shippingAddressId,
     },
-    ...oldContext.data
+    ...oldContext.data,
   });
 }
 
-function formatShippingAddress(address:PostAddress) {
+function formatShippingAddress(address: PostAddress) {
   let str = "";
   if (address.name) {
     str += address.name + ", ";
@@ -77,6 +86,9 @@ function formatShippingAddress(address:PostAddress) {
 }
 </script>
 
+{#if error}
+  <div class="text-center text-alert">{error}</div>
+{/if}
 <div class="p-5">
   <div>
     <div class="form-control">
@@ -86,7 +98,7 @@ function formatShippingAddress(address:PostAddress) {
           class=" radio radio-primary radio-sm"
           bind:group="{deliveryType}"
           name="deliveryType"
-          value={2} />
+          value="{2}" />
         <span class="pb-2 align-baseline">I want this order to be delivered to me</span>
       </label>
     </div>
@@ -98,40 +110,42 @@ function formatShippingAddress(address:PostAddress) {
           checked
           bind:group="{deliveryType}"
           name="deliveryType"
-          value={1} />
+          value="{1}" />
         <span class="inline"> I want to pick this order up at the store</span>
       </label>
     </div>
     {#if deliveryType === 2}
-      <div class="form-control">
-        <label class="cursor-pointer label">
+      <div id="addreses" class="form-control">
+        <label class="cursor-pointer label" for="addresses">
           {#if $me.shippingAddresses && $me.shippingAddresses.length > 0}
             <select class="select select-bordered" bind:value="{shippingAddressId}">
               {#each $me.shippingAddresses as shippingAddress}
-                <option value={shippingAddress.id}>{formatShippingAddress(shippingAddress)}</option>
+                <option value="{shippingAddress.id}">{formatShippingAddress(shippingAddress)}</option>
               {/each}
             </select>
           {/if}
           <div>
-            <button class="mt-2 btn btn-sm btn-primary"
-                    on:click={() => {
-              const currentContext = context;
-              window.o.runProcess(upsertShippingAddress, {
-                successAction: (data) => {
-                  console.log("RestartPurchaseProcess", data);
-                  setTimeout(() => {
-                    restartPurchase(data.id, currentContext);
-                  }, 30);
-                }
-              });
-            }}>Add Address</button>
+            <button
+              class="mt-2 btn btn-sm btn-primary"
+              on:click="{() => {
+                const currentContext = context;
+                window.o.runProcess(upsertShippingAddress, {
+                  successAction: (data) => {
+                    console.log('RestartPurchaseProcess', data);
+                    setTimeout(() => {
+                      restartPurchase(data.id, currentContext);
+                    }, 30);
+                  },
+                });
+              }}">Add Address</button>
           </div>
         </label>
       </div>
     {/if}
   </div>
 </div>
-<ProcessNavigation isDisabled={deliveryType === 2 && (!$me.shippingAddresses || $me.shippingAddresses.length === 0)}
-                   on:buttonClick="{() => submit()}"
-                   context="{context}"
-                   noSticky="{true}" />
+<ProcessNavigation
+  isDisabled="{deliveryType === 2 && (!$me.shippingAddresses || $me.shippingAddresses.length === 0)}"
+  on:buttonClick="{() => submit()}"
+  context="{context}"
+  noSticky="{true}" />
