@@ -1,6 +1,0 @@
-[{
-        "relation": ["delegate_permission/common.handle_all_urls"],
-        "target" : { "namespace": "android_app", "package_name": "land.circles.staging.twa",
-                     "sha256_cert_fingerprints": ["93:30:37:13:2D:C3:51:CB:BD:66:A8:75:0F:C0:50:46:FF:E5:6E:66:7A:A0:FB:93:84:D6:9E:F6:91:6D:D5:34"] }
-      }
-]
