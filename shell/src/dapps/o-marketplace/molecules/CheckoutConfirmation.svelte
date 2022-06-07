@@ -68,7 +68,7 @@ function onkeydown(e: KeyboardEvent) {
         </div>
       </div>
     {/each}
-    {#if context.data.deliveryMethod == 1}
+    {#if context.data.deliveryMethod == 2}
       This order is being delivered to you.
     {:else}
       <div class="flex flex-col w-full mb-6 space-y-4 text-left ">

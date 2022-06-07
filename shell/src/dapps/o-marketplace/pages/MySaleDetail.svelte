@@ -59,16 +59,23 @@ async function load() {
   if (invoice) {
     const pickUpAction = {
       icon: "cash",
-      title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"),
+      title:
+        invoice.deliveryMethod.id == 2
+          ? "mark order shipped"
+          : window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"),
       action: async () => {
         const action = actions.find((o) => o.title == window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"));
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await mySales.completeSale(invoice.id);
       },
     };
+
     const unPickUpAction = {
       icon: "cash",
-      title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut"),
+      title:
+        invoice.deliveryMethod.id == 2
+          ? "mark order not shipped"
+          : window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut"),
       action: async () => {
         const action = actions.find(
           (o) => o.title == window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut")
@@ -180,20 +187,36 @@ onMount(async () => {
           class="inline-block text-xs "
           class:text-inactive="{!invoice.pickupCode}"
           class:text-success="{invoice.pickupCode}">
-          <span>{$_("dapps.o-marketplace.pages.mySales.pickupCode")}</span>
-          {#if invoice.pickupCode}
-            <Icons icon="check" size="{4}" customClass="inline" />
+          {#if invoice.deliveryMethod.id == 2}
+            <span>Delivery</span>
+            {#if invoice.pickupCode}
+              <Icons icon="check" size="{4}" customClass="inline" />
+            {/if}
+          {:else}
+            <span>{$_("dapps.o-marketplace.pages.mySales.pickupCode")}</span>
+            {#if invoice.pickupCode}
+              <Icons icon="check" size="{4}" customClass="inline" />
+            {/if}
           {/if}
         </div>
         <div
           class="inline-block text-xs"
           class:text-inactive="{!invoice.sellerSignature}"
           class:text-success="{invoice.sellerSignature}">
-          <span>{$_("dapps.o-marketplace.pages.mySales.pickedUp")}</span>
-          {#if invoice.sellerSignature}
-            <Icons icon="check" size="{4}" customClass="inline" />
+          {#if invoice.deliveryMethod.id == 2}
+            <span>Order shipped</span>
+            {#if invoice.sellerSignature}
+              <Icons icon="check" size="{4}" customClass="inline" />
+            {:else}
+              <Icons icon="closex" size="{2}" customClass="inline" />
+            {/if}
           {:else}
-            <Icons icon="closex" size="{2}" customClass="inline" />
+            <span>{$_("dapps.o-marketplace.pages.mySales.pickedUp")}</span>
+            {#if invoice.sellerSignature}
+              <Icons icon="check" size="{4}" customClass="inline" />
+            {:else}
+              <Icons icon="closex" size="{2}" customClass="inline" />
+            {/if}
           {/if}
         </div>
       </div>
@@ -207,9 +230,9 @@ onMount(async () => {
         </div>
       </div>
     </section>
-  {:else if !isLoading && buyerProfile && groupedItems}
+  {:else if !isLoading && buyerProfile && groupedItems && invoice}
     <div class="mt-6">
-      <div class="flex flex-row items-stretch p-2 mb-6 bg-light-lighter">
+      <div class="p-2 mb-6 bg-light-lighter">
         <div
           class="flex flex-row items-center content-start self-end space-x-2 text-base font-medium text-left cursor-pointer"
           on:click="{() => push(`#/contacts/profile/${buyerProfile.circlesAddress}`)}">
@@ -260,7 +283,19 @@ onMount(async () => {
         </div>
       {/each}
     </div>
-
+    {#if invoice.deliveryMethod.id == 2}
+      <div class="mt-6">
+        <strong>Ship to:</strong>
+        <br />
+        {buyerProfile.displayName}
+        <br />
+        {`${invoice.deliveryAddress.street} ${invoice.deliveryAddress.house}`}
+        <br />
+        {`${invoice.deliveryAddress.zip} ${invoice.deliveryAddress.city}`}
+        <br />
+        {invoice.deliveryAddress.country}
+      </div>
+    {/if}
     <DetailActionBar actions="{actions}" />
   {/if}
 </div>
