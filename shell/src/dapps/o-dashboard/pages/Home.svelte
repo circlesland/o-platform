@@ -4,11 +4,7 @@ import { onMount } from "svelte";
 import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import {
-  Capability,
-  CapabilityType,
-  StatsDocument
-} from "../../../shared/api/data/types";
+import { Capability, CapabilityType, StatsDocument } from "../../../shared/api/data/types";
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import { Environment } from "../../../shared/environment";
 import { _ } from "svelte-i18n";
@@ -70,7 +66,7 @@ async function fetchStats() {
 <div class="mx-auto md:w-2/3 xl:w-1/2">
   <div class="m-4 mb-40 ">
     <DashboardInvitesWidget stats="{statsResult}" />
-    <section class="flex items-start bg-white rounded-lg shadow-md cursor-pointer">
+    <!-- <section class="flex items-start bg-white rounded-lg shadow-md cursor-pointer">
       <div class="flex flex-col w-full" on:click={() => loadLink("/marketplace/locations")}>
         <header class="rounded-lg shadow-md headerImageContainer">
           <div class="relative rounded-lg image-wrapper">
@@ -78,7 +74,7 @@ async function fetchStats() {
           </div>
         </header>
       </div>
-    </section>
+    </section> -->
     <div class="grid grid-cols-2 gap-4 mt-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
@@ -169,8 +165,8 @@ async function fetchStats() {
       {/if}
       {#if hasTickets}
         <section
-                class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-                on:click="{() => loadLink('/marketplace/my-tickets')}">
+          class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+          on:click="{() => loadLink('/marketplace/my-tickets')}">
           <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
             <div class="pt-2 text-primary">
               <Icon name="ticket" class="w-20 h-20 heroicon" />
