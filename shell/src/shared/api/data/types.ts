@@ -535,6 +535,7 @@ export type Mutation = {
   claimInvitation: ClaimInvitationResult;
   completePurchase: Invoice;
   completeSale: Invoice;
+  confirmLegalAge: Scalars['Boolean'];
   createTestInvitation: CreateInvitationResult;
   deleteShippingAddress?: Maybe<PostAddress>;
   importOrganisationsOfAccount: Array<Organisation>;
@@ -1449,6 +1450,7 @@ export type ShopCategoryInput = {
 };
 
 export type ShopInput = {
+  adultOnly?: Maybe<Scalars['Boolean']>;
   description: Scalars['String'];
   enabled: Scalars['Boolean'];
   healthInfosLink?: Maybe<Scalars['String']>;
@@ -2084,6 +2086,14 @@ export type UpsertShopCategoryEntriesMutation = (
     { __typename?: 'UpsertShopCategoryEntriesResult' }
     & Pick<UpsertShopCategoryEntriesResult, 'inserted' | 'updated'>
   ) }
+);
+
+export type ConfirmLegalAgeMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ConfirmLegalAgeMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'confirmLegalAge'>
 );
 
 export type UpsertOfferMutationVariables = Exact<{
@@ -3892,6 +3902,11 @@ export const UpsertShopCategoryEntriesDocument = gql`
     inserted
     updated
   }
+}
+    `;
+export const ConfirmLegalAgeDocument = gql`
+    mutation confirmLegalAge {
+  confirmLegalAge
 }
     `;
 export const UpsertOfferDocument = gql`
@@ -6075,6 +6090,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     upsertShopCategoryEntries(variables: UpsertShopCategoryEntriesMutationVariables): Promise<UpsertShopCategoryEntriesMutation> {
       return withWrapper(() => client.request<UpsertShopCategoryEntriesMutation>(print(UpsertShopCategoryEntriesDocument), variables));
+    },
+    confirmLegalAge(variables?: ConfirmLegalAgeMutationVariables): Promise<ConfirmLegalAgeMutation> {
+      return withWrapper(() => client.request<ConfirmLegalAgeMutation>(print(ConfirmLegalAgeDocument), variables));
     },
     upsertOffer(variables: UpsertOfferMutationVariables): Promise<UpsertOfferMutation> {
       return withWrapper(() => client.request<UpsertOfferMutation>(print(UpsertOfferDocument), variables));

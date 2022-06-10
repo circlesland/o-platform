@@ -399,6 +399,7 @@ type Mutation {
     claimInvitation(code: String!): ClaimInvitationResult!
     completePurchase(invoiceId: Int!, revoke: Boolean): Invoice!
     completeSale(invoiceId: Int!, revoke: Boolean): Invoice!
+    confirmLegalAge: Boolean!
     createTestInvitation: CreateInvitationResult!
     deleteShippingAddress(id: Int!): PostAddress
     importOrganisationsOfAccount: [Organisation!]!
@@ -1175,6 +1176,7 @@ input ShopCategoryInput {
 }
 
 input ShopInput {
+    adultOnly: Boolean
     description: String!
     enabled: Boolean!
     healthInfosLink: String

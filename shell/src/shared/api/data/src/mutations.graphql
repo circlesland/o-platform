@@ -479,6 +479,10 @@ mutation upsertShopCategoryEntries($shopCategoryEntries: [ShopCategoryEntryInput
   }
 }
 
+mutation  confirmLegalAge {
+  confirmLegalAge
+}
+
 mutation upsertOffer($offer: OfferInput!) {
   upsertOffer(offer: $offer) {
     id
