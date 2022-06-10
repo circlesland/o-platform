@@ -5,6 +5,7 @@ import { Profile, Organisation } from "../../../shared/api/data/types";
 import { _ } from "svelte-i18n";
 import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";
 import { push } from "svelte-spa-router";
+import formatShippingAddress from "../../../shared/functions/formatPostAddress";
 
 export let context: any;
 
@@ -81,7 +82,7 @@ function onkeydown(e: KeyboardEvent) {
           </h1>
         </div>
 
-        <div>
+        <div class="text-center">
           {$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup1")}
         </div>
 
@@ -92,7 +93,7 @@ function onkeydown(e: KeyboardEvent) {
             </center>
           </div>
         </div>
-        <div class="text-sm">
+        <div class="text-sm text-center">
           {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode1")}<span class="text-primary-dark"
             >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode2")}</span
           >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode3")}
@@ -110,9 +111,19 @@ function onkeydown(e: KeyboardEvent) {
           {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5")}
         </div>
 
-        <div class="pt-2 text-sm font-bold">
-          {$_("dapps.o-marketplace.molecules.checkoutConfirm.pickupLocation")}
+        <div class="flex flex-col mt-4 space-y-2 text-center">
+          {#if context.data.shop.pickupAddress}
+            <div>You can pick up your order at:</div>
+
+            <div class="font-bold">{@html formatShippingAddress(context.data.shop.pickupAddress, true)}</div>
+          {/if}
+          {#if context.data.shop.openingHours}
+            <div class="pt-2">Our Opening Hours are:</div>
+
+            <div>{context.data.shop.openingHours}</div>
+          {/if}
         </div>
+
         <!-- <div class="pt-2 text-sm">
         <span class="font-bold">Basic Income Lab GmbH</span><br />
         Reifenstuelstrasse 6<br />

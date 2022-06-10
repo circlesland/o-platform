@@ -3327,7 +3327,10 @@ export type ShopQuery = (
     ), deliveryMethods?: Maybe<Array<(
       { __typename?: 'DeliveryMethod' }
       & Pick<DeliveryMethod, 'id' | 'name'>
-    )>>, categories?: Maybe<Array<(
+    )>>, pickupAddress?: Maybe<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+    )>, categories?: Maybe<Array<(
       { __typename?: 'ShopCategory' }
       & Pick<ShopCategory, 'id' | 'name' | 'description' | 'sortOrder' | 'shopId' | 'smallBannerUrl' | 'largeBannerUrl' | 'private' | 'enabled' | 'createdAt' | 'productListingStyle'>
       & { entries?: Maybe<Array<(
@@ -5855,6 +5858,15 @@ export const ShopDocument = gql`
     deliveryMethods {
       id
       name
+    }
+    pickupAddress {
+      name
+      street
+      house
+      zip
+      city
+      state
+      country
     }
     categories {
       id

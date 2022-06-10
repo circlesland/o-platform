@@ -1932,6 +1932,15 @@ query shop($id: Int!) {
       id
       name
     }
+    pickupAddress {
+      name
+      street
+      house
+      zip
+      city
+      state
+      country
+    }
     categories {
       id
       name

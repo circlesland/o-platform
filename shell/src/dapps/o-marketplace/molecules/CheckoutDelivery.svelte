@@ -8,6 +8,7 @@ import { EditorContext } from "@o-platform/o-editors/src/editorContext";
 import { upsertShippingAddress } from "../../o-passport/processes/upsertShippingAddress";
 import { me } from "../../../shared/stores/me";
 import { PostAddress } from "../../../shared/api/data/types";
+import formatShippingAddress from "../../../shared/functions/formatPostAddress";
 
 export let context: EditorContext;
 
@@ -71,19 +72,6 @@ async function restartPurchase(shippingAddressId: number, oldContext: EditorCont
     ...oldContext.data,
   });
 }
-
-function formatShippingAddress(address: PostAddress) {
-  let str = "";
-  if (address.name) {
-    str += address.name + ", ";
-  }
-  str += address.street + " ";
-  str += address.house + ", ";
-  //str += address.zip + " ";
-  str += address.city + "";
-  //str += address.country;
-  return str;
-}
 </script>
 
 {#if error}
@@ -140,6 +128,19 @@ function formatShippingAddress(address: PostAddress) {
               }}">Add Address</button>
           </div>
         </label>
+      </div>
+    {:else}
+      <div class="flex flex-col mt-4 space-y-2 text-center">
+        {#if context.data.shop.pickupAddress}
+          <div>You can pick up your order at:</div>
+
+          <div class="font-bold">{@html formatShippingAddress(context.data.shop.pickupAddress, true)}</div>
+        {/if}
+        {#if context.data.shop.openingHours}
+          <div class="pt-2">Our Opening Hours are:</div>
+
+          <div>{context.data.shop.openingHours}</div>
+        {/if}
       </div>
     {/if}
   </div>

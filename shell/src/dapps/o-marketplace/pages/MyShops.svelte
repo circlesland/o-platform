@@ -18,6 +18,8 @@ import {
   OrganisationsByAddressDocument,
   Profile,
   ShopsQueryVariables,
+  PostAddress,
+  PostAddressInput,
 } from "../../../shared/api/data/types";
 import { Environment } from "../../../shared/environment";
 import { Readable } from "svelte/store";
@@ -35,6 +37,8 @@ import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import Editor from "@tinymce/tinymce-svelte";
+
+import formatShippingAddress from "../../../shared/functions/formatPostAddress";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -59,7 +63,7 @@ onMount(async () => {
 });
 
 const tinymceloaded = () => {
-  tiny = window.tinymce.init({
+  const tiny = window.tinymce.init({
     //include the tinymce.init statement with the window function
     selector: "textarea",
   });
@@ -174,6 +178,7 @@ async function createNewShop() {
     description: "",
     legalText: "",
     tosLink: "",
+    openingHours: "",
     privacyPolicyLink: "",
     healthInfosLink: "",
     largeBannerUrl: "",
@@ -206,6 +211,7 @@ async function createNewShop() {
   <!-- <div class="flex flex-wrap items-stretch space-x-4 space-y-8"> -->
   {#if shops}
     {#each shops as shop, index (shop.id)}
+      {console.log("SHOP", shop)}
       <section
         class="flex items-start px-4 mx-auto mb-20 md:w-2/3 xl:w-1/2 rounded-xl"
         class:active="{editShopId == shop.id}">
@@ -246,7 +252,7 @@ async function createNewShop() {
                     </span>
                   </span>
                 </div>
-                <div class="absolute z-10 p-1 text-white bg-gray-500 left-2 bottom-10">
+                <div class="absolute z-10 p-2 text-white bg-gray-500 bg-opacity-50 rounded-lg left-2 bottom-2">
                   <input
                     type="checkbox"
                     class="inline-block toggle toggle-primary"
@@ -254,7 +260,7 @@ async function createNewShop() {
                     bind:checked="{shop.enabled}" />
                   <div class="inline-block align-top">Enabled?</div>
                 </div>
-                <div class="absolute z-10 p-1 text-white bg-gray-500 left-2 bottom-2">
+                <div class="absolute z-10 p-2 text-white bg-gray-500 bg-opacity-50 rounded-lg left-40 bottom-2">
                   <input
                     type="checkbox"
                     class="inline-block toggle toggle-primary"
@@ -318,6 +324,30 @@ async function createNewShop() {
                   placeholder="Description"
                   bind:value="{shop.description}" /> -->
               </div>
+              <!-- <h1 class="w-full mt-2 text-left label">Pick-up Address</h1>
+
+              <div class="w-full">
+                <Editor scriptSrc="tinymce/tinymce.min.js" bind:value="{shop.pickupAddress}" />
+                <div class="flex flex-row justify-end w-full mt-2 space-x-2">
+                  <button class="inline btn btn-primary" on:click="{() => submit()}"> Save Address </button>
+                </div>
+
+              </div> -->
+
+              <h1 class="w-full mt-2 text-left label">Opening Hours</h1>
+
+              <div class="w-full">
+                <Editor scriptSrc="tinymce/tinymce.min.js" bind:value="{shop.openingHours}" />
+                <div class="flex flex-row justify-end w-full mt-2 space-x-2">
+                  <button class="inline btn btn-primary" on:click="{() => submit()}"> Save Opening Hours </button>
+                </div>
+                <!-- <input
+                  type="text"
+                  class="flex-grow font-primary input"
+                  placeholder="Description"
+                  bind:value="{shop.description}" /> -->
+              </div>
+
               <h1 class="w-full mt-2 text-left label">Legal Text</h1>
 
               <div class="w-full">
@@ -389,8 +419,14 @@ async function createNewShop() {
               -->
               </div>
             {:else}
-              <h1>Description</h1>
+              <h1 class="mt-4">Description</h1>
               <div class="w-full mt-2 text-sm">{@html shop.description}</div>
+              <h1 class="mt-4">Pickup Address</h1>
+              <div class="w-full mt-2 text-sm">
+                {shop.pickupAddress ? formatShippingAddress(shop.pickupAddress) : "not set"}
+              </div>
+              <h1 class="mt-4">Opening Hours</h1>
+              <div class="w-full mt-2 text-sm">{@html shop.openingHours || "not set"}</div>
               <h1 class="mt-4">Legal Text</h1>
               <div class="w-full mt-2 text-sm">{@html shop.legalText}</div>
               <div class="flex flex-row justify-center mt-4 space-x-4 text-xs">
