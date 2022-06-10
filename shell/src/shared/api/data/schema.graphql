@@ -763,6 +763,7 @@ type SessionInfo {
 }
 
 type Shop {
+    adultOnly: Boolean
     categories: [ShopCategory!]
     createdAt: Date!
     deliveryMethods: [DeliveryMethod!]

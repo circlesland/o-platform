@@ -1368,6 +1368,7 @@ export type SessionInfo = {
 
 export type Shop = {
   __typename?: 'Shop';
+  adultOnly?: Maybe<Scalars['Boolean']>;
   categories?: Maybe<Array<ShopCategory>>;
   createdAt: Scalars['Date'];
   deliveryMethods?: Maybe<Array<DeliveryMethod>>;
@@ -2036,7 +2037,7 @@ export type UpsertShopMutation = (
   { __typename?: 'Mutation' }
   & { upsertShop: (
     { __typename?: 'Shop' }
-    & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'productListingStyle'>
+    & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'adultOnly' | 'private' | 'productListingStyle'>
     & { owner: (
       { __typename?: 'Organisation' }
       & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
@@ -3309,7 +3310,7 @@ export type ShopQuery = (
   { __typename?: 'Query' }
   & { shop?: Maybe<(
     { __typename?: 'Shop' }
-    & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'productListingStyle' | 'shopListingStyle' | 'purchaseMetaDataKeys' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink' | 'ownerId'>
+    & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'productListingStyle' | 'shopListingStyle' | 'purchaseMetaDataKeys' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink' | 'adultOnly' | 'ownerId'>
     & { owner: (
       { __typename?: 'Organisation' }
       & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
@@ -3344,7 +3345,7 @@ export type ShopsQuery = (
   { __typename?: 'Query' }
   & { shops: Array<(
     { __typename?: 'Shop' }
-    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink'>
+    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId' | 'adultOnly' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink'>
     & { deliveryMethods?: Maybe<Array<(
       { __typename?: 'DeliveryMethod' }
       & Pick<DeliveryMethod, 'id' | 'name'>
@@ -3367,7 +3368,7 @@ export type ShopsByIdQuery = (
   { __typename?: 'Query' }
   & { shopsById: Array<(
     { __typename?: 'Shop' }
-    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink'>
+    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId' | 'tosLink' | 'adultOnly' | 'privacyPolicyLink' | 'healthInfosLink'>
     & { deliveryMethods?: Maybe<Array<(
       { __typename?: 'DeliveryMethod' }
       & Pick<DeliveryMethod, 'id' | 'name'>
@@ -3835,6 +3836,7 @@ export const UpsertShopDocument = gql`
     smallBannerUrl
     largeBannerUrl
     openingHours
+    adultOnly
     private
     productListingStyle
     owner {
@@ -5827,6 +5829,7 @@ export const ShopDocument = gql`
     tosLink
     privacyPolicyLink
     healthInfosLink
+    adultOnly
     ownerId
     owner {
       id
@@ -5895,6 +5898,7 @@ export const ShopsDocument = gql`
     productListingStyle
     sortOrder
     ownerId
+    adultOnly
     tosLink
     privacyPolicyLink
     healthInfosLink
@@ -5938,6 +5942,7 @@ export const ShopsByIdDocument = gql`
     sortOrder
     ownerId
     tosLink
+    adultOnly
     privacyPolicyLink
     healthInfosLink
     deliveryMethods {

@@ -423,6 +423,7 @@ mutation upsertShop($shop: ShopInput!) {
     smallBannerUrl
     largeBannerUrl
     openingHours
+    adultOnly
     private
     productListingStyle
     owner {

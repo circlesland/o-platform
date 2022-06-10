@@ -1920,6 +1920,7 @@ query shop($id: Int!) {
     tosLink
     privacyPolicyLink
     healthInfosLink
+    adultOnly
     ownerId
     owner {
       id
@@ -1987,6 +1988,7 @@ query shops($ownerId: Int) {
     productListingStyle
     sortOrder
     ownerId
+    adultOnly
     tosLink
     privacyPolicyLink
     healthInfosLink
@@ -2029,6 +2031,7 @@ query shopsById($ids: [Int!]!) {
     sortOrder
     ownerId
     tosLink
+    adultOnly
     privacyPolicyLink
     healthInfosLink
     deliveryMethods {
