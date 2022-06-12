@@ -1268,6 +1268,35 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           lines {
             amount
             metadata
+            shop {
+              id
+              name
+              description
+              legalText
+              smallBannerUrl
+              largeBannerUrl
+              openingHours
+              private
+              enabled
+              productListingStyle
+              shopListingStyle
+              purchaseMetaDataKeys
+              tosLink
+              privacyPolicyLink
+              healthInfosLink
+              adultOnly
+              ownerId
+              owner {
+                id
+                name
+                avatarUrl
+                circlesAddress
+              }
+              deliveryMethods {
+                id
+                name
+              }
+            }
             offer {
               id
               title
@@ -1315,6 +1344,35 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
             id
             amount
             metadata
+            shop {
+              id
+              name
+              description
+              legalText
+              smallBannerUrl
+              largeBannerUrl
+              openingHours
+              private
+              enabled
+              productListingStyle
+              shopListingStyle
+              purchaseMetaDataKeys
+              tosLink
+              privacyPolicyLink
+              healthInfosLink
+              adultOnly
+              ownerId
+              owner {
+                id
+                name
+                avatarUrl
+                circlesAddress
+              }
+              deliveryMethods {
+                id
+                name
+              }
+            }
             offer {
               id
               pictureUrl
@@ -1657,6 +1715,35 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             id
             amount
             metadata
+            shop {
+              id
+              name
+              description
+              legalText
+              smallBannerUrl
+              largeBannerUrl
+              openingHours
+              private
+              enabled
+              productListingStyle
+              shopListingStyle
+              purchaseMetaDataKeys
+              tosLink
+              privacyPolicyLink
+              healthInfosLink
+              adultOnly
+              ownerId
+              owner {
+                id
+                name
+                avatarUrl
+                circlesAddress
+              }
+              deliveryMethods {
+                id
+                name
+              }
+            }
             offer {
               id
               version
@@ -1758,6 +1845,35 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             id
             amount
             metadata
+            shop {
+              id
+              name
+              description
+              legalText
+              smallBannerUrl
+              largeBannerUrl
+              openingHours
+              private
+              enabled
+              productListingStyle
+              shopListingStyle
+              purchaseMetaDataKeys
+              tosLink
+              privacyPolicyLink
+              healthInfosLink
+              adultOnly
+              ownerId
+              owner {
+                id
+                name
+                avatarUrl
+                circlesAddress
+              }
+              deliveryMethods {
+                id
+                name
+              }
+            }
             offer {
               id
               version

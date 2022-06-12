@@ -445,6 +445,7 @@ export type InvoiceLine = {
   id: Scalars['Int'];
   metadata?: Maybe<Scalars['String']>;
   offer?: Maybe<Offer>;
+  shop?: Maybe<Shop>;
 };
 
 export type LeaderboardEntry = {
@@ -1003,12 +1004,14 @@ export type PurchaseLine = {
   id: Scalars['Int'];
   metadata?: Maybe<Scalars['String']>;
   offer?: Maybe<Offer>;
+  shop?: Maybe<Shop>;
 };
 
 export type PurchaseLineInput = {
   amount: Scalars['Int'];
   metadata?: Maybe<Scalars['String']>;
   offerId: Scalars['Int'];
+  shopId: Scalars['Int'];
 };
 
 export type Purchased = IEventPayload & {
@@ -1339,6 +1342,7 @@ export type SalesLine = {
   id: Scalars['Int'];
   metadata?: Maybe<Scalars['String']>;
   offer: Offer;
+  shop?: Maybe<Shop>;
 };
 
 export type SearchInput = {
@@ -2938,7 +2942,17 @@ export type StreamQuery = (
         )>, lines?: Maybe<Array<(
           { __typename?: 'PurchaseLine' }
           & Pick<PurchaseLine, 'id' | 'amount' | 'metadata'>
-          & { offer?: Maybe<(
+          & { shop?: Maybe<(
+            { __typename?: 'Shop' }
+            & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'productListingStyle' | 'shopListingStyle' | 'purchaseMetaDataKeys' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink' | 'adultOnly' | 'ownerId'>
+            & { owner: (
+              { __typename?: 'Organisation' }
+              & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
+            ), deliveryMethods?: Maybe<Array<(
+              { __typename?: 'DeliveryMethod' }
+              & Pick<DeliveryMethod, 'id' | 'name'>
+            )>> }
+          )>, offer?: Maybe<(
             { __typename?: 'Offer' }
             & Pick<Offer, 'id' | 'pictureUrl' | 'title' | 'description' | 'pricePerUnit'>
             & { tags?: Maybe<Array<(
@@ -2986,7 +3000,17 @@ export type StreamQuery = (
         )>, lines?: Maybe<Array<(
           { __typename?: 'InvoiceLine' }
           & Pick<InvoiceLine, 'amount' | 'metadata'>
-          & { offer?: Maybe<(
+          & { shop?: Maybe<(
+            { __typename?: 'Shop' }
+            & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'productListingStyle' | 'shopListingStyle' | 'purchaseMetaDataKeys' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink' | 'adultOnly' | 'ownerId'>
+            & { owner: (
+              { __typename?: 'Organisation' }
+              & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
+            ), deliveryMethods?: Maybe<Array<(
+              { __typename?: 'DeliveryMethod' }
+              & Pick<DeliveryMethod, 'id' | 'name'>
+            )>> }
+          )>, offer?: Maybe<(
             { __typename?: 'Offer' }
             & Pick<Offer, 'id' | 'title' | 'pictureUrl' | 'pricePerUnit'>
             & { tags?: Maybe<Array<(
@@ -3152,7 +3176,17 @@ export type AggregatesQuery = (
         ), lines?: Maybe<Array<(
           { __typename?: 'PurchaseLine' }
           & Pick<PurchaseLine, 'id' | 'amount' | 'metadata'>
-          & { offer?: Maybe<(
+          & { shop?: Maybe<(
+            { __typename?: 'Shop' }
+            & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'productListingStyle' | 'shopListingStyle' | 'purchaseMetaDataKeys' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink' | 'adultOnly' | 'ownerId'>
+            & { owner: (
+              { __typename?: 'Organisation' }
+              & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
+            ), deliveryMethods?: Maybe<Array<(
+              { __typename?: 'DeliveryMethod' }
+              & Pick<DeliveryMethod, 'id' | 'name'>
+            )>> }
+          )>, offer?: Maybe<(
             { __typename?: 'Offer' }
             & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'timeCirclesPriceShare'>
             & { createdByProfile?: Maybe<(
@@ -3202,7 +3236,17 @@ export type AggregatesQuery = (
         )>, lines?: Maybe<Array<(
           { __typename?: 'SalesLine' }
           & Pick<SalesLine, 'id' | 'amount' | 'metadata'>
-          & { offer: (
+          & { shop?: Maybe<(
+            { __typename?: 'Shop' }
+            & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'productListingStyle' | 'shopListingStyle' | 'purchaseMetaDataKeys' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink' | 'adultOnly' | 'ownerId'>
+            & { owner: (
+              { __typename?: 'Organisation' }
+              & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
+            ), deliveryMethods?: Maybe<Array<(
+              { __typename?: 'DeliveryMethod' }
+              & Pick<DeliveryMethod, 'id' | 'name'>
+            )>> }
+          )>, offer: (
             { __typename?: 'Offer' }
             & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'timeCirclesPriceShare'>
             & { createdByProfile?: Maybe<(
@@ -5189,6 +5233,35 @@ export const StreamDocument = gql`
           lines {
             amount
             metadata
+            shop {
+              id
+              name
+              description
+              legalText
+              smallBannerUrl
+              largeBannerUrl
+              openingHours
+              private
+              enabled
+              productListingStyle
+              shopListingStyle
+              purchaseMetaDataKeys
+              tosLink
+              privacyPolicyLink
+              healthInfosLink
+              adultOnly
+              ownerId
+              owner {
+                id
+                name
+                avatarUrl
+                circlesAddress
+              }
+              deliveryMethods {
+                id
+                name
+              }
+            }
             offer {
               id
               title
@@ -5236,6 +5309,35 @@ export const StreamDocument = gql`
             id
             amount
             metadata
+            shop {
+              id
+              name
+              description
+              legalText
+              smallBannerUrl
+              largeBannerUrl
+              openingHours
+              private
+              enabled
+              productListingStyle
+              shopListingStyle
+              purchaseMetaDataKeys
+              tosLink
+              privacyPolicyLink
+              healthInfosLink
+              adultOnly
+              ownerId
+              owner {
+                id
+                name
+                avatarUrl
+                circlesAddress
+              }
+              deliveryMethods {
+                id
+                name
+              }
+            }
             offer {
               id
               pictureUrl
@@ -5579,6 +5681,35 @@ export const AggregatesDocument = gql`
             id
             amount
             metadata
+            shop {
+              id
+              name
+              description
+              legalText
+              smallBannerUrl
+              largeBannerUrl
+              openingHours
+              private
+              enabled
+              productListingStyle
+              shopListingStyle
+              purchaseMetaDataKeys
+              tosLink
+              privacyPolicyLink
+              healthInfosLink
+              adultOnly
+              ownerId
+              owner {
+                id
+                name
+                avatarUrl
+                circlesAddress
+              }
+              deliveryMethods {
+                id
+                name
+              }
+            }
             offer {
               id
               version
@@ -5680,6 +5811,35 @@ export const AggregatesDocument = gql`
             id
             amount
             metadata
+            shop {
+              id
+              name
+              description
+              legalText
+              smallBannerUrl
+              largeBannerUrl
+              openingHours
+              private
+              enabled
+              productListingStyle
+              shopListingStyle
+              purchaseMetaDataKeys
+              tosLink
+              privacyPolicyLink
+              healthInfosLink
+              adultOnly
+              ownerId
+              owner {
+                id
+                name
+                avatarUrl
+                circlesAddress
+              }
+              deliveryMethods {
+                id
+                name
+              }
+            }
             offer {
               id
               version
