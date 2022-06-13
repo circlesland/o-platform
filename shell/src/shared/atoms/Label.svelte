@@ -12,6 +12,7 @@ import {
 } from "../api/data/types";
 import { ApiClient } from "../apiConnection";
 import { Environment } from "../environment";
+import { _ } from "svelte-i18n";
 
 ["c", "a", "b"].sort(function (a, b) {
   return (
@@ -83,4 +84,4 @@ function labelClicked(e: MouseEvent) {
 }
 </script>
 
-<div on:click="{labelClicked}">{value}</div>
+<div on:click="{labelClicked}">{$_(`${key}`)}</div>

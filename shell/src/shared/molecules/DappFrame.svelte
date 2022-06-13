@@ -56,6 +56,7 @@ import { mySales } from "../stores/mySales";
 import { Stopped } from "@o-platform/o-process/dist/events/stopped";
 import { ApiClient } from "../apiConnection";
 import { Environment } from "../environment";
+import { addMessages } from "svelte-i18n";
 
 export let params: {
   dappId: string;
@@ -971,9 +972,12 @@ let firstUrlChangedCall = true;
 let i18nStrings: I18n;
 let language = Environment.userLanguage;
 
+let i18nDictionary = {};
 
 function buildI18nDictonary(sourceData) {
-
+  for (let i = 0; i < sourceData.length; i++) {
+    i18nDictionary[sourceData[i].key] = sourceData[i].value
+  }
 }
 
 async function handleUrlChanged() {
@@ -983,7 +987,8 @@ async function handleUrlChanged() {
     }).then((i18nResult) => {
       i18nStrings = i18nResult;
     });
-    console.log("i18nStrings", i18nStrings);
+    buildI18nDictonary(i18nStrings)
+    addMessages("dictionary", i18nDictionary)
 
     // log(`handleUrlChanged()`);
     const navArgs = <GenerateNavManifestArgs>{};
