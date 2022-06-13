@@ -30,6 +30,7 @@ import { UserActions, UserActionItem } from "../../../shared/userActions";
 import { _ } from "svelte-i18n";
 import { Environment } from "../../../shared/environment";
 import {param} from "../atoms/ChatListCard.svelte";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let id: string;
 

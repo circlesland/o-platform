@@ -5,10 +5,10 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import ContactCard from "../atoms/ContactCard.svelte";
 import { contacts } from "../../../shared/stores/contacts";
 
-import { _ } from "svelte-i18n";
 import {onMount} from "svelte";
 import {Contact} from "../../../shared/api/data/types";
 import {trustFromContactMetadata} from "../../../shared/functions/trustFromContactMetadata";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
