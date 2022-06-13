@@ -29,6 +29,7 @@ import {
   EventsDocument,
   EventType,
   GetAllStringsByLanguageDocument,
+  GetAllStringsByMaxVersionAndLangDocument,
   GetAllStringsByMaxVersionDocument,
   GetStringByLanguageDocument,
   GetStringByMaxVersionDocument,
@@ -36,6 +37,7 @@ import {
   NotificationEvent,
   Purchased,
   QueryGetAllStringsByLanguageArgs,
+  QueryGetAllStringsByMaxVersionAndLangArgs,
   QueryGetStringByLanguageArgs,
   QueryGetStringByMaxVersionArgs,
   SessionInfo,
@@ -54,7 +56,6 @@ import { mySales } from "../stores/mySales";
 import { Stopped } from "@o-platform/o-process/dist/events/stopped";
 import { ApiClient } from "../apiConnection";
 import { Environment } from "../environment";
-import { allI18nStrings } from "../stores/allStrings";
 
 export let params: {
   dappId: string;
@@ -977,14 +978,13 @@ function buildI18nDictonary(sourceData) {
 
 async function handleUrlChanged() {
   if (!i18nStrings) {
-    await ApiClient.query<I18n, QueryGetStringByMaxVersionArgs>(GetAllStringsByMaxVersionDocument, {
+    await ApiClient.query<I18n, QueryGetAllStringsByMaxVersionAndLangArgs>(GetAllStringsByMaxVersionAndLangDocument, {
       lang: language[0] + language[1],
     }).then((i18nResult) => {
       i18nStrings = i18nResult;
     });
     console.log("i18nStrings", i18nStrings);
 
-    allI18nStrings.set(i18nStrings);
     // log(`handleUrlChanged()`);
     const navArgs = <GenerateNavManifestArgs>{};
     dapp = findDappById(params.dappId);
