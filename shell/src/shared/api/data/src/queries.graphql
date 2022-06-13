@@ -1250,6 +1250,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
             name
           }
           deliveryAddress {
+            name
             id
             street
             house
@@ -1331,6 +1332,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
             name
           }
           deliveryAddress {
+            name
             id
             street
             house
@@ -1362,6 +1364,15 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
               healthInfosLink
               adultOnly
               ownerId
+              pickupAddress {
+                name
+                street
+                house
+                zip
+                city
+                state
+                country
+              }
               owner {
                 id
                 name
@@ -1909,6 +1920,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
               name
             }
             deliveryAddress {
+              name
               id
               street
               house

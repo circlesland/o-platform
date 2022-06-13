@@ -2938,14 +2938,17 @@ export type StreamQuery = (
           & Pick<DeliveryMethod, 'id' | 'name'>
         ), deliveryAddress?: Maybe<(
           { __typename?: 'PostAddress' }
-          & Pick<PostAddress, 'id' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
+          & Pick<PostAddress, 'name' | 'id' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
         )>, lines?: Maybe<Array<(
           { __typename?: 'PurchaseLine' }
           & Pick<PurchaseLine, 'id' | 'amount' | 'metadata'>
           & { shop?: Maybe<(
             { __typename?: 'Shop' }
             & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'productListingStyle' | 'shopListingStyle' | 'purchaseMetaDataKeys' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink' | 'adultOnly' | 'ownerId'>
-            & { owner: (
+            & { pickupAddress?: Maybe<(
+              { __typename?: 'PostAddress' }
+              & Pick<PostAddress, 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+            )>, owner: (
               { __typename?: 'Organisation' }
               & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
             ), deliveryMethods?: Maybe<Array<(
@@ -2996,7 +2999,7 @@ export type StreamQuery = (
           & Pick<DeliveryMethod, 'id' | 'name'>
         ), deliveryAddress?: Maybe<(
           { __typename?: 'PostAddress' }
-          & Pick<PostAddress, 'id' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
+          & Pick<PostAddress, 'name' | 'id' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
         )>, lines?: Maybe<Array<(
           { __typename?: 'InvoiceLine' }
           & Pick<InvoiceLine, 'amount' | 'metadata'>
@@ -3265,7 +3268,7 @@ export type AggregatesQuery = (
             & Pick<DeliveryMethod, 'id' | 'name'>
           ), deliveryAddress?: Maybe<(
             { __typename?: 'PostAddress' }
-            & Pick<PostAddress, 'id' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
+            & Pick<PostAddress, 'name' | 'id' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
           )>, buyerProfile?: Maybe<(
             { __typename?: 'Profile' }
             & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
@@ -5215,6 +5218,7 @@ export const StreamDocument = gql`
             name
           }
           deliveryAddress {
+            name
             id
             street
             house
@@ -5296,6 +5300,7 @@ export const StreamDocument = gql`
             name
           }
           deliveryAddress {
+            name
             id
             street
             house
@@ -5327,6 +5332,15 @@ export const StreamDocument = gql`
               healthInfosLink
               adultOnly
               ownerId
+              pickupAddress {
+                name
+                street
+                house
+                zip
+                city
+                state
+                country
+              }
               owner {
                 id
                 name
@@ -5875,6 +5889,7 @@ export const AggregatesDocument = gql`
               name
             }
             deliveryAddress {
+              name
               id
               street
               house

@@ -296,6 +296,7 @@ onMount(async () => {
         {invoice.deliveryAddress.country}
       </div>
     {/if}
+
     <DetailActionBar actions="{actions}" />
   {/if}
 </div>
