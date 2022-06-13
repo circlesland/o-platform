@@ -170,7 +170,7 @@ async function fetchStats() {
           on:click="{() => loadLink('/translations')}">
           <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
             <div class="pt-2 text-primary">
-              <Icons icon="check" size="{12}" />
+              <Icon icon="badge-check" class="w-20 h-20 heroicon"  />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
               <Label key="dapps.o-dashboard.pages.home.verified" />

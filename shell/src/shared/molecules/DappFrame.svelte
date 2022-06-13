@@ -28,18 +28,11 @@ import {
   Capability,
   EventsDocument,
   EventType,
-  GetAllStringsByLanguageDocument,
   GetAllStringsByMaxVersionAndLangDocument,
-  GetAllStringsByMaxVersionDocument,
-  GetStringByLanguageDocument,
-  GetStringByMaxVersionDocument,
   I18n,
   NotificationEvent,
   Purchased,
-  QueryGetAllStringsByLanguageArgs,
   QueryGetAllStringsByMaxVersionAndLangArgs,
-  QueryGetStringByLanguageArgs,
-  QueryGetStringByMaxVersionArgs,
   SessionInfo,
 } from "../api/data/types";
 import { contacts } from "../stores/contacts";
