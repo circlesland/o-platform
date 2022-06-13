@@ -36,7 +36,8 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
           "
           class="rounded-t-xl" />
         {#if entry.product.pricePerUnit}
-          <div class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
+          <div
+            class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
             <span class="inline-block">{entry.product.pricePerUnit}</span>
             <span class="inline-block">€</span>
           </div>
@@ -107,7 +108,7 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
 .image-wrapper {
   position: relative;
   /* padding-bottom: 56.2%;b 16:9 */
-  padding-bottom: 75%; /* 4:3 */
+  padding-bottom: 100%; /* 4:3 */
 }
 
 .image-wrapper img {

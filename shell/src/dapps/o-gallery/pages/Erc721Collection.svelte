@@ -30,19 +30,23 @@ let issuerProfile: Profile | Organisation;
 
 const imageCache = {
   "https://staging.circles.land/images/events/stroke.png": {
-    preview: "/images/nfts/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC_preview.jpg",
+    preview:
+      "/images/nfts/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC_preview.jpg",
     full: "/images/nfts/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC.png",
   },
   "https://ipfs.io/ipfs/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC": {
-    preview: "/images/nfts/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC_preview.jpg",
+    preview:
+      "/images/nfts/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC_preview.jpg",
     full: "/images/nfts/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC.png",
   },
   "ipfs://Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC": {
-    preview: "/images/nfts/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC_preview.jpg",
+    preview:
+      "/images/nfts/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC_preview.jpg",
     full: "/images/nfts/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC/Qmbgs466qLpp7PUEjn2SWDcKubq9ofMgNF4zH2KZyvGHYC.png",
   },
   "ipfs://QmZfiYNWhXmjSRPXeGYDrAduP8QCyfoMqjd2bXvvmQJA44": {
-    preview: "/images/nfts/QmZfiYNWhXmjSRPXeGYDrAduP8QCyfoMqjd2bXvvmQJA44/QmZfiYNWhXmjSRPXeGYDrAduP8QCyfoMqjd2bXvvmQJA44_preview.jpg",
+    preview:
+      "/images/nfts/QmZfiYNWhXmjSRPXeGYDrAduP8QCyfoMqjd2bXvvmQJA44/QmZfiYNWhXmjSRPXeGYDrAduP8QCyfoMqjd2bXvvmQJA44_preview.jpg",
     full: "/images/nfts/QmZfiYNWhXmjSRPXeGYDrAduP8QCyfoMqjd2bXvvmQJA44/QmZfiYNWhXmjSRPXeGYDrAduP8QCyfoMqjd2bXvvmQJA44.png",
   },
 };
@@ -138,7 +142,7 @@ function getFullUrl(token: Erc721Token) {
 .image-wrapper {
   position: relative;
   /* padding-bottom: 56.2%;b 16:9 */
-  padding-bottom: 75%; /* 4:3 */
+  padding-bottom: 100%; /* 4:3 */
 }
 
 .image-wrapper img {
