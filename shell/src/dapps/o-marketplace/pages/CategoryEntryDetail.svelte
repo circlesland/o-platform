@@ -192,7 +192,7 @@ function addToCart(item: Offer & { shopId: number }) {
 .image-wrapper {
   position: relative;
   /* padding-bottom: 56.2%;b 16:9 */
-  padding-bottom: 75%; /* 4:3 */
+  padding-bottom: 100%; /* 4:3 */
 }
 
 .image-wrapper img {
