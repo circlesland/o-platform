@@ -1,5 +1,3 @@
-import { I18n } from "./api/data/types";
-
 /**
  * Contains environment variables which are filled in by webpack.
  */

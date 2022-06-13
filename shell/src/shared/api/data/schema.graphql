@@ -396,6 +396,7 @@ type Mutation {
     acceptMembership(membershipId: Int!): AcceptMembershipResult
     acknowledge(safeAddress: String, until: Date!): Boolean!
     addMember(groupId: String!, memberAddress: String!): AddMemberResult
+    addNewLang(langToCopyFrom: String, langToCreate: String): Int
     announcePayment(invoiceId: Int!, transactionHash: String!): AnnouncePaymentResult!
     claimInvitation(code: String!): ClaimInvitationResult!
     completePurchase(invoiceId: Int!, revoke: Boolean): Invoice!
@@ -416,6 +417,7 @@ type Mutation {
     sendMessage(content: String!, fromSafeAddress: String, toSafeAddress: String!): SendMessageResult!
     tagTransaction(tag: CreateTagInput!, transactionHash: String!): TagTransactionResult!
     updateSafe(data: UpdateSafeInput!): UpdateSafeResponse!
+    updateValue(createdBy: String, key: String, lang: String, value: String): i18n
     upsertOffer(offer: OfferInput!): Offer!
     upsertOrganisation(organisation: UpsertOrganisationInput!): CreateOrganisationResult!
     upsertProfile(data: UpsertProfileInput!): Profile!
@@ -643,6 +645,14 @@ type Query {
     events(filter: ProfileEventFilter, pagination: PaginationArgs!, safeAddress: String!, types: [EventType!]!): [ProfileEvent!]!
     findInvitationCreator(code: String!): Profile
     findSafesByOwner(owner: String!): [SafeInfo!]!
+    getAllStrings: [i18n]
+    getAllStringsByLanguage(lang: String): [i18n]
+    getAllStringsByMaxVersion: [i18n]
+    getAllStringsByMaxVersionAndLang(lang: String): [i18n]
+    getAvailableLanguages: [i18n]
+    getOlderVersionsByKeyAndLang(key: String, lang: String): [i18n]
+    getStringByLanguage(lang: String): [i18n!]
+    getStringByMaxVersion(key: String, lang: String): i18n
     hubSignupTransaction: ProfileEvent
     init: SessionInfo!
     invitationTransaction: ProfileEvent
@@ -910,6 +920,14 @@ type WelcomeMessage implements IEventPayload {
     invitedBy: String!
     invitedBy_profile: Profile
     transaction_hash: String
+}
+
+type i18n {
+    createdBy: String
+    key: String
+    lang: String
+    value: String
+    version: Int
 }
 
 enum AccountType {
