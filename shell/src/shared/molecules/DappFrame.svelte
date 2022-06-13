@@ -990,7 +990,7 @@ let i18nDictionary = {};
 
 function buildI18nDictonary(sourceData) {
   for (let i = 0; i < sourceData.length; i++) {
-    i18nDictionary[sourceData[i].key] = sourceData[i].value
+    i18nDictionary[sourceData[i].key] = sourceData[i].value;
   }
 }
 
@@ -1001,128 +1001,67 @@ async function handleUrlChanged() {
     }).then((i18nResult) => {
       i18nStrings = i18nResult;
     });
-    buildI18nDictonary(i18nStrings)
-    addMessages("dictionary", i18nDictionary)
+    buildI18nDictonary(i18nStrings);
+    addMessages("dictionary", i18nDictionary);
+  }
+  console.log(i18nStrings);
+  // log(`handleUrlChanged()`);
+  const navArgs = <GenerateNavManifestArgs>{};
+  dapp = findDappById(params.dappId);
+  runtimeDapp = dapp ? await RuntimeDapps.instance().getRuntimeDapp(dapp) : null;
 
-    // log(`handleUrlChanged()`);
-    const navArgs = <GenerateNavManifestArgs>{};
-    dapp = findDappById(params.dappId);
-    runtimeDapp = dapp ? await RuntimeDapps.instance().getRuntimeDapp(dapp) : null;
-
-    if (!runtimeDapp) {
-      // throw new Error(`Couldn't find a dapp with the id: ${params.dappId}`);
-      // log(
-      //   `handleUrlChanged() - Couldn't find a dapp with the id: ${params.dappId} - going to /`
-      // );
-      sessionStorage.removeItem("desiredRoute");
-      await push("/");
-      return;
-    }
-
-    const findRouteResult = findRoutableByParams(runtimeDapp, params);
-    if (!findRouteResult.found) {
-      throw new Error(
-        window.i18n("shared.molecules.dappFrame.errors.couldNotFindParams", {
-          values: { params: JSON.stringify(params, null, 2) },
-        })
-      );
-    }
-    if (findRouteResult.routable.type == "trigger") {
-      (<Trigger<any, any>>findRouteResult.routable).action(findRouteResult.params, runtimeDapp);
-      return;
-    }
-
-    routable = findRouteResult.routable;
+  if (!runtimeDapp) {
+    // throw new Error(`Couldn't find a dapp with the id: ${params.dappId}`);
     // log(
-    //   `handleUrlChanged() - Found routable: ${routable.title} (type: ${routable.type})`
+    //   `handleUrlChanged() - Couldn't find a dapp with the id: ${params.dappId} - going to /`
     // );
+    sessionStorage.removeItem("desiredRoute");
+    await push("/");
+    return;
+  }
 
-    currentParams = JSON.parse(JSON.stringify(params));
-    if (findRouteResult.routable.type === "page") {
-      const page: Page<any, any> = <any>findRouteResult.routable;
-      if (page.position === "modal") {
-        if (!layout.main) {
-          // Check if the modal page was called directly. In this case the default main
-          // page of the corresponding dapp must be loaded as well.
-          const defaultRoute = findNextRoute(runtimeDapp, {
-            params: params,
-            scrollY: 0,
-          });
-          if (defaultRoute && defaultRoute.type === "page") {
-            showMainPage(runtimeDapp, <any>defaultRoute, findRouteResult.params);
-          } else {
-            // TODO: 404
-          }
+  const findRouteResult = findRoutableByParams(runtimeDapp, params);
+  if (!findRouteResult.found) {
+    throw new Error(
+      window.i18n("shared.molecules.dappFrame.errors.couldNotFindParams", {
+        values: { params: JSON.stringify(params, null, 2) },
+      })
+    );
+  }
+  if (findRouteResult.routable.type == "trigger") {
+    (<Trigger<any, any>>findRouteResult.routable).action(findRouteResult.params, runtimeDapp);
+    return;
+  }
+
+  routable = findRouteResult.routable;
+  // log(
+  //   `handleUrlChanged() - Found routable: ${routable.title} (type: ${routable.type})`
+  // );
+
+  currentParams = JSON.parse(JSON.stringify(params));
+  if (findRouteResult.routable.type === "page") {
+    const page: Page<any, any> = <any>findRouteResult.routable;
+    if (page.position === "modal") {
+      if (!layout.main) {
+        // Check if the modal page was called directly. In this case the default main
+        // page of the corresponding dapp must be loaded as well.
+        const defaultRoute = findNextRoute(runtimeDapp, {
+          params: params,
+          scrollY: 0,
+        });
+        if (defaultRoute && defaultRoute.type === "page") {
+          showMainPage(runtimeDapp, <any>defaultRoute, findRouteResult.params);
+        } else {
+          // TODO: 404
         }
-        showModalPage(true, runtimeDapp, page, findRouteResult.params);
-        navArgs.centerIsOpen = true;
-      } else {
-        await hideCenter();
-        navArgs.centerIsOpen = false;
-        baseParams = currentParams;
-        showMainPage(runtimeDapp, page, findRouteResult.params);
       }
-    }
-  } else {
-    console.log(i18nStrings);
-    // log(`handleUrlChanged()`);
-    const navArgs = <GenerateNavManifestArgs>{};
-    dapp = findDappById(params.dappId);
-    runtimeDapp = dapp ? await RuntimeDapps.instance().getRuntimeDapp(dapp) : null;
-
-    if (!runtimeDapp) {
-      // throw new Error(`Couldn't find a dapp with the id: ${params.dappId}`);
-      // log(
-      //   `handleUrlChanged() - Couldn't find a dapp with the id: ${params.dappId} - going to /`
-      // );
-      sessionStorage.removeItem("desiredRoute");
-      await push("/");
-      return;
-    }
-
-    const findRouteResult = findRoutableByParams(runtimeDapp, params);
-    if (!findRouteResult.found) {
-      throw new Error(
-        window.i18n("shared.molecules.dappFrame.errors.couldNotFindParams", {
-          values: { params: JSON.stringify(params, null, 2) },
-        })
-      );
-    }
-    if (findRouteResult.routable.type == "trigger") {
-      (<Trigger<any, any>>findRouteResult.routable).action(findRouteResult.params, runtimeDapp);
-      return;
-    }
-
-    routable = findRouteResult.routable;
-    // log(
-    //   `handleUrlChanged() - Found routable: ${routable.title} (type: ${routable.type})`
-    // );
-
-    currentParams = JSON.parse(JSON.stringify(params));
-    if (findRouteResult.routable.type === "page") {
-      const page: Page<any, any> = <any>findRouteResult.routable;
-      if (page.position === "modal") {
-        if (!layout.main) {
-          // Check if the modal page was called directly. In this case the default main
-          // page of the corresponding dapp must be loaded as well.
-          const defaultRoute = findNextRoute(runtimeDapp, {
-            params: params,
-            scrollY: 0,
-          });
-          if (defaultRoute && defaultRoute.type === "page") {
-            showMainPage(runtimeDapp, <any>defaultRoute, findRouteResult.params);
-          } else {
-            // TODO: 404
-          }
-        }
-        showModalPage(true, runtimeDapp, page, findRouteResult.params);
-        navArgs.centerIsOpen = true;
-      } else {
-        await hideCenter();
-        navArgs.centerIsOpen = false;
-        baseParams = currentParams;
-        showMainPage(runtimeDapp, page, findRouteResult.params);
-      }
+      showModalPage(true, runtimeDapp, page, findRouteResult.params);
+      navArgs.centerIsOpen = true;
+    } else {
+      await hideCenter();
+      navArgs.centerIsOpen = false;
+      baseParams = currentParams;
+      showMainPage(runtimeDapp, page, findRouteResult.params);
     }
   }
 
