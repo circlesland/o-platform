@@ -30,7 +30,6 @@ onMount(async () => {
   await refreshView();
 });
 
-
 async function filterItems(keyFilter: string, valueFilter: string, i18nData: I18n[]) {
   const filteredByKey = i18nData.filter((item) => item.key.includes(keyFilter));
   const filteredByValue = filteredByKey.filter((item) =>
@@ -66,7 +65,7 @@ async function refreshView() {
   } else {
     displayedTree.restoreStateSnapshot(snapshot);
   }
-  console.log("refreshed")
+  console.log("refreshed");
 }
 
 $: {
@@ -102,12 +101,14 @@ function isSelected(languageCode: string) {
 }
 </script>
 
-<section>
-  <div class="flex">
-    <form on:input="{() => refreshView()}">
+
+
+<section class="relative mb20 -mt-3">
+  <div class="flex grow">
+    <form on:input="{() => refreshView()}" class="justify-start">
       <input bind:value="{keyFilter}" class="input m-1" type="text" placeholder="dapps.o-banking..." />
     </form>
-    <form on:input="{() => refreshView()}">
+    <form on:input="{() => refreshView()}" class="justify-end">
       <input bind:value="{valueFilter}" class="input m-1" type="text" placeholder="String" />
     </form>
   </div>
@@ -124,7 +125,8 @@ function isSelected(languageCode: string) {
       </button>
     {/each}
   </div>
-  <Tree
+
+  <Tree 
     rootNode="{displayedTree}"
     on:expand="{(event) => {
       let partialSnapshot = event.detail.newSnapshot;

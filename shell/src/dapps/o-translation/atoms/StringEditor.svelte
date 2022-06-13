@@ -9,7 +9,6 @@ import {
   UpdateValueDocument,
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
-import { createEventDispatcher } from "svelte";
 
 export let dataKey: string;
 export let dataLang: string;
@@ -21,8 +20,6 @@ let keyArray = [];
 let selectedVersion: number = dataVersion;
 let inputValue: string;
 let olderVersionData = [];
-
-const dispatch = createEventDispatcher();
 
 keyArray.concat(keyArray.push(dataKey.split(".")));
 
@@ -57,41 +54,39 @@ async function writeValueToDb(value: string, lang: string, key: string) {
 }
 </script>
 
-<div class="flex">
-  <div class="table-cell break-all w-64 p-1">{dataString}</div>
-  <div class="table-cell break-all w-64 p-1">
-    {#each keyArray[0] as keyLink (keyLink)}
-      <p class="link link-primary text-secondary" on:click="{() => dispatch('searchKey', { keyLink })}">{keyLink}</p>
-    {/each}
-  </div>
-  <div class="table-cell p-1">{dataLang}</div>
-  {#if dataVersion > 1}
-    <div class="table-cell p-1">
-      <select name="" id="" bind:value="{selectedVersion}" on:change="{() => selectChange()}">
-        {#each olderVersionData as data}
-          <option value="{data.version}">{data.version}</option>
-        {/each}
-      </select>
-    </div>
-  {:else}
-    <div class="table-cell p-1">{dataVersion}</div>
-  {/if}
+<div class="table">
+  <div class="table-row-group">
+    <div class="table-row">
+      <div class="table-cell break-all w-64 p-1">{dataString}</div>
+      <!--<div class="table-cell p-1">{dataLang}</div>-->
+      <img src={"/country-flags/svg/" + dataLang + ".svg"} alt="blasjgdhla" class="table-cell w-10 h-10">
+      {#if dataVersion > 1}
+        <div class="table-cell p-1 w-20">
+          <select name="" id="" bind:value="{selectedVersion}" on:change="{() => selectChange()}">
+            {#each olderVersionData as data}
+              <option value="{data.version}">{data.version}</option>
+            {/each}
+          </select>
+        </div>
+      {:else}
+        <div class="table-cell p-1 w-20">{dataVersion}</div>
+      {/if}
 
-  <form>
-    <div class="table-cell p-1">
-      <div class="flex">
-        <input bind:value="{inputValue}" class="input" type="text" placeholder="{dataString}" />
-        <button
-          class="bg-blue-100 rounded-lg m-1"
-          on:click="{async () => {
-            await writeValueToDb(inputValue, dataLang, dataKey);
-            dataString = inputValue;
-            inputValue = '';
-            loadOlderVersions(dataLang, dataKey);
-            selectedVersion++;
-            //dispatch('save');
-          }}">Save</button>
+      <div class="table-cell p-1">
+        <div class="flex">
+          <input bind:value="{inputValue}" class="input" type="text" placeholder="{dataString}" />
+          <button
+            class="bg-blue-100 rounded-lg m-1"
+            on:click="{async () => {
+              let updatedObject = await writeValueToDb(inputValue, dataLang, dataKey);
+              await loadOlderVersions(dataLang, dataKey);
+              dataVersion = updatedObject.version;
+              dataString = updatedObject.value;
+              selectedVersion = updatedObject.version;
+              inputValue = '';
+            }}">Save</button>
+        </div>
       </div>
     </div>
-  </form>
+  </div>
 </div>

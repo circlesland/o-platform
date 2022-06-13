@@ -555,7 +555,7 @@ export type Mutation = {
   importOrganisationsOfAccount: Array<Organisation>;
   verifySafe: VerifySafeResult;
   revokeSafeVerification: VerifySafeResult;
-  updateValue?: Maybe<Scalars['Int']>;
+  updateValue: I18n;
   addNewLang?: Maybe<Scalars['Int']>;
   proofUniqueness: ProofUniquenessResult;
 };
@@ -1083,6 +1083,7 @@ export type Query = {
   getStringByMaxVersion?: Maybe<I18n>;
   getAvailableLanguages?: Maybe<Array<Maybe<I18n>>>;
   getAllStringsByMaxVersion?: Maybe<Array<Maybe<I18n>>>;
+  getAllStringsByMaxVersionAndLang?: Maybe<Array<Maybe<I18n>>>;
   getOlderVersionsByKeyAndLang?: Maybe<Array<Maybe<I18n>>>;
   clientAssertionJwt: Scalars['String'];
 };
@@ -1235,6 +1236,11 @@ export type QueryGetStringByLanguageArgs = {
 export type QueryGetStringByMaxVersionArgs = {
   lang?: Maybe<Scalars['String']>;
   key?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetAllStringsByMaxVersionAndLangArgs = {
+  lang?: Maybe<Scalars['String']>;
 };
 
 
@@ -1768,7 +1774,10 @@ export type UpdateValueMutationVariables = Exact<{
 
 export type UpdateValueMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'updateValue'>
+  & { updateValue: (
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'value' | 'version'>
+  ) }
 );
 
 export type ClaimInvitationMutationVariables = Exact<{
@@ -3311,6 +3320,19 @@ export type GetAllStringsByMaxVersionQuery = (
   )>>> }
 );
 
+export type GetAllStringsByMaxVersionAndLangQueryVariables = Exact<{
+  lang?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetAllStringsByMaxVersionAndLangQuery = (
+  { __typename?: 'Query' }
+  & { getAllStringsByMaxVersionAndLang?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )>>> }
+);
+
 export type GetStringByMaxVersionQueryVariables = Exact<{
   lang?: Maybe<Scalars['String']>;
   key?: Maybe<Scalars['String']>;
@@ -3626,7 +3648,13 @@ export const AddNewLangDocument = gql`
     `;
 export const UpdateValueDocument = gql`
     mutation updateValue($lang: String, $key: String, $createdBy: String, $value: String) {
-  updateValue(lang: $lang, key: $key, createdBy: $createdBy, value: $value)
+  updateValue(lang: $lang, key: $key, createdBy: $createdBy, value: $value) {
+    lang
+    key
+    createdBy
+    value
+    version
+  }
 }
     `;
 export const ClaimInvitationDocument = gql`
@@ -5802,6 +5830,17 @@ export const GetAllStringsByMaxVersionDocument = gql`
   }
 }
     `;
+export const GetAllStringsByMaxVersionAndLangDocument = gql`
+    query getAllStringsByMaxVersionAndLang($lang: String) {
+  getAllStringsByMaxVersionAndLang(lang: $lang) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+    `;
 export const GetStringByMaxVersionDocument = gql`
     query getStringByMaxVersion($lang: String, $key: String) {
   getStringByMaxVersion(lang: $lang, key: $key) {
@@ -6263,6 +6302,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getAllStringsByMaxVersion(variables?: GetAllStringsByMaxVersionQueryVariables): Promise<GetAllStringsByMaxVersionQuery> {
       return withWrapper(() => client.request<GetAllStringsByMaxVersionQuery>(print(GetAllStringsByMaxVersionDocument), variables));
+    },
+    getAllStringsByMaxVersionAndLang(variables?: GetAllStringsByMaxVersionAndLangQueryVariables): Promise<GetAllStringsByMaxVersionAndLangQuery> {
+      return withWrapper(() => client.request<GetAllStringsByMaxVersionAndLangQuery>(print(GetAllStringsByMaxVersionAndLangDocument), variables));
     },
     getStringByMaxVersion(variables?: GetStringByMaxVersionQueryVariables): Promise<GetStringByMaxVersionQuery> {
       return withWrapper(() => client.request<GetStringByMaxVersionQuery>(print(GetStringByMaxVersionDocument), variables));

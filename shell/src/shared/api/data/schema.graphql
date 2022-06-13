@@ -1237,7 +1237,12 @@ type Mutation {
   importOrganisationsOfAccount: [Organisation!]!
   verifySafe(safeAddress: String!): VerifySafeResult!
   revokeSafeVerification(safeAddress: String!): VerifySafeResult!
-  updateValue(lang: String, key: String, createdBy: String, value: String): Int
+  updateValue(
+    lang: String
+    key: String
+    createdBy: String
+    value: String
+  ): i18n!
   addNewLang(langToCreate: String, langToCopyFrom: String): Int
   proofUniqueness(humanodeToken: String!): ProofUniquenessResult!
 }
@@ -1296,6 +1301,7 @@ type Query {
   getStringByMaxVersion(lang: String, key: String): i18n
   getAvailableLanguages: [i18n]
   getAllStringsByMaxVersion: [i18n]
+  getAllStringsByMaxVersionAndLang(lang: String): [i18n]
   getOlderVersionsByKeyAndLang(key: String, lang: String): [i18n]
   clientAssertionJwt: String!
 }

@@ -71,7 +71,13 @@ mutation addNewLang($langToCreate: String, $langToCopyFrom: String) {
 }
 
 mutation updateValue($lang: String, $key: String, $createdBy: String, $value: String) {
-  updateValue(lang: $lang, key: $key, createdBy: $createdBy, value: $value)
+  updateValue(lang: $lang, key: $key, createdBy: $createdBy, value: $value) {
+    lang
+    key
+    createdBy
+    value
+    version
+  }
 }
 
 mutation claimInvitation($code: String!) {
