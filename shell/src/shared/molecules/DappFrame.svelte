@@ -491,6 +491,17 @@ function initSession(session: SessionInfo) {
 
 async function init() {
   // log(`init()`);
+  setNav({
+    centerContainsProcess: false,
+    centerIsOpen: false,
+    rightIsOpen: false,
+    leftIsOpen: false,
+    notificationCount: $inbox ? $inbox.length : 0,
+  });
+  if (!identityChecked && !dapp.anonymous) {
+    //window.o.runProcess(identify, {}, {});
+    identityChecked = true;
+  }
   const session = await me.getSessionInfo();
   if (!$me || !session.isLoggedOn || !sessionStorage.getItem("circlesKey")) {
     // TODO: Stash the current URL away and redirect the user to it after authentication
@@ -947,17 +958,6 @@ onMount(async () => {
       await window.o.requestEvent<ProcessStarted>(requestEvent);
     showModalProcess(processStarted.processId);
   };
-  setNav({
-    centerContainsProcess: false,
-    centerIsOpen: false,
-    rightIsOpen: false,
-    leftIsOpen: false,
-    notificationCount: $inbox ? $inbox.length : 0,
-  });
-  if (!identityChecked && !dapp.anonymous) {
-    //window.o.runProcess(identify, {}, {});
-    identityChecked = true;
-  }
 });
 
 function showQuickActions() {
