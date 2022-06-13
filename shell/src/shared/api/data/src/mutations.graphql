@@ -13,8 +13,8 @@ mutation upsertShippingAddress($data: PostAddressInput!) {
   }
 }
 
-mutation createPurchase($lines: [PurchaseLineInput!]! $deliveryMethodId: Int!) {
-  purchase(lines: $lines deliveryMethodId: $deliveryMethodId) {
+mutation createPurchase($lines: [PurchaseLineInput!]! $deliveryMethodId: Int! $deliveryAddressId: Int) {
+  purchase(lines: $lines deliveryMethodId: $deliveryMethodId deliveryAddressId: $deliveryAddressId) {
     id
     buyerAddress
     buyerProfile {
@@ -433,9 +433,11 @@ mutation upsertShop($shop: ShopInput!) {
     id
     name
     description
+    legalText
     smallBannerUrl
     largeBannerUrl
     openingHours
+    adultOnly
     private
     productListingStyle
     owner {
@@ -491,6 +493,10 @@ mutation upsertShopCategoryEntries($shopCategoryEntries: [ShopCategoryEntryInput
   }
 }
 
+mutation  confirmLegalAge {
+  confirmLegalAge
+}
+
 mutation upsertOffer($offer: OfferInput!) {
   upsertOffer(offer: $offer) {
     id
@@ -509,7 +515,7 @@ mutation upsertOffer($offer: OfferInput!) {
   }
 }
 
-mutation proofUniqueness($humanodeToken:String!) {
+mutation proofUniqueness($humanodeToken: String!) {
   proofUniqueness(humanodeToken: $humanodeToken) {
     existingSafe
   }

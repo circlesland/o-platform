@@ -1,4 +1,5 @@
 <script lang="ts">
+  import {onMount} from "svelte";
   import Label from "../../../atoms/Label.svelte";
 
   export let props;
@@ -7,13 +8,13 @@
     window.runInitMachine();
   }
 
-  setTimeout(() => {
-    if (sessionStorage.getItem("desiredRoute")) {
-      login();
-    }
-  }, 30);
-
-  console.log("PROPS ", props);
+  onMount(() => {
+    setTimeout(() => {
+      if (sessionStorage.getItem("desiredRoute") && !sessionStorage.getItem("notFirst")) {
+        login();
+      }
+    }, 30);
+  });
 </script>
 
 <div class="h-12 col-start-2 py-3 bg-white rounded-full w-36 place-self-center">

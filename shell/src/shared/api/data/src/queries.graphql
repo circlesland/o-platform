@@ -7,6 +7,7 @@ query init {
     capabilities {
       type
     }
+    useShortSignup
     profile {
       id
       circlesAddress
@@ -28,6 +29,17 @@ query init {
       displayTimeCircles
       displayCurrency
       cityGeonameid
+      provenUniqueness
+      shippingAddresses {
+        id
+        name
+        street
+        house
+        zip
+        city
+        state
+        country
+      }
       shops {
         id
       }
@@ -112,6 +124,7 @@ query sessionInfo {
     capabilities {
       type
     }
+    useShortSignup
   }
 }
 
@@ -177,6 +190,7 @@ query stats {
         dream
         avatarUrl
         cityGeonameid
+        provenUniqueness
         city {
           geonameid
           name
@@ -208,6 +222,7 @@ query findSafesByOwner($owner: String!) {
       dream
       avatarUrl
       cityGeonameid
+      provenUniqueness
       city {
         geonameid
         name
@@ -262,6 +277,7 @@ query myProfile {
     displayTimeCircles
     displayCurrency
     cityGeonameid
+    provenUniqueness
     shops {
       id
     }
@@ -329,6 +345,7 @@ query profiles($id: [Int!]!) {
     dream
     avatarUrl
     displayCurrency
+    provenUniqueness
     city {
       geonameid
       name
@@ -414,6 +431,7 @@ query profilesByName($searchString: String!) {
     dream
     country
     displayCurrency
+    provenUniqueness
     city {
       geonameid
       name
@@ -453,6 +471,7 @@ query getRecentProfiles($pagination: PaginationArgs) {
     dream
     country
     avatarUrl
+    provenUniqueness
     city {
       geonameid
       name
@@ -491,6 +510,7 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
     lastName
     dream
     avatarUrl
+    provenUniqueness
     city {
       geonameid
       name
@@ -549,6 +569,7 @@ query profilesByIds($id: [Int!]!) {
     lastName
     dream
     avatarUrl
+    provenUniqueness
     city {
       geonameid
       name
@@ -588,6 +609,7 @@ query trustRelations($safeAddress: String!) {
       successorOfCirclesAddress
       circlesAddress
       displayCurrency
+      provenUniqueness
     }
     direction
     otherSafeAddress
@@ -600,6 +622,7 @@ query trustRelations($safeAddress: String!) {
       successorOfCirclesAddress
       circlesAddress
       displayCurrency
+      provenUniqueness
       verifications {
         createdAt
         revokedAt
@@ -638,6 +661,7 @@ query profileById($id: Int!) {
       country
       name
     }
+    provenUniqueness
     verifications {
       createdAt
       revokedAt
@@ -676,6 +700,7 @@ query profileBySafeAddress($safeAddress: String!) {
       country
       name
     }
+    provenUniqueness
     memberships {
       isAdmin
       organisation {
@@ -767,6 +792,7 @@ query organisations($pagination: PaginationArgs) {
       id
       name
       description
+      legalText
       largeBannerUrl
       smallBannerUrl
     }
@@ -807,6 +833,7 @@ query organisationsByAddress($addresses: [String!]!) {
       id
       name
       description
+      legalText
       smallBannerUrl
       largeBannerUrl
     }
@@ -836,6 +863,7 @@ query organisationsByAddress($addresses: [String!]!) {
         firstName
         lastName
         dream
+        provenUniqueness
         city {
           geonameid
           country
@@ -877,6 +905,7 @@ query commonTrust($safeAddress1: String!, $safeAddress2: String!) {
       successorOfCirclesAddress
       circlesAddress
       displayCurrency
+      provenUniqueness
     }
   }
 }
@@ -929,6 +958,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
       firstName
       lastName
       avatarUrl
+      provenUniqueness
     }
     direction
     type
@@ -944,6 +974,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         to
         to_profile {
@@ -954,6 +985,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         flow
         transfers {
@@ -967,6 +999,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
             avatarUrl
             circlesAddress
             displayCurrency
+            provenUniqueness
           }
           to
           to_profile {
@@ -977,6 +1010,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
             avatarUrl
             circlesAddress
             displayCurrency
+            provenUniqueness
           }
           value
         }
@@ -998,6 +1032,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         limit
       }
@@ -1018,6 +1053,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         to
         to_profile {
@@ -1028,6 +1064,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         value
       }
@@ -1048,6 +1085,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         to
         to_profile {
@@ -1058,6 +1096,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         value
       }
@@ -1079,6 +1118,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         to
         to_profile {
@@ -1089,6 +1129,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         text
       }
@@ -1102,6 +1143,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         organisation
         organisation_profile {
@@ -1123,6 +1165,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         organisation
         organisation_profile {
@@ -1142,6 +1185,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         organisation
         organisation_profile {
@@ -1161,6 +1205,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
       }
       ... on InvitationCreated {
@@ -1179,6 +1224,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
       }
       ... on SaleEvent {
@@ -1191,6 +1237,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         invoice {
           id
@@ -1198,6 +1245,20 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           buyerSignedDate
           sellerSignature
           sellerSignedDate
+          deliveryMethod {
+            id
+            name
+          }
+          deliveryAddress {
+            id
+            street
+            house
+            zip
+            city
+            state
+            country
+            cityGeonameid
+          }
           createdAt
           cancelledAt
           cancelReason
@@ -1207,6 +1268,35 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           lines {
             amount
             metadata
+            shop {
+              id
+              name
+              description
+              legalText
+              smallBannerUrl
+              largeBannerUrl
+              openingHours
+              private
+              enabled
+              productListingStyle
+              shopListingStyle
+              purchaseMetaDataKeys
+              tosLink
+              privacyPolicyLink
+              healthInfosLink
+              adultOnly
+              ownerId
+              owner {
+                id
+                name
+                avatarUrl
+                circlesAddress
+              }
+              deliveryMethods {
+                id
+                name
+              }
+            }
             offer {
               id
               title
@@ -1229,6 +1319,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
         purchase {
           id
@@ -1239,10 +1330,49 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
             id
             name
           }
+          deliveryAddress {
+            id
+            street
+            house
+            zip
+            city
+            state
+            country
+            cityGeonameid
+          }
           lines {
             id
             amount
             metadata
+            shop {
+              id
+              name
+              description
+              legalText
+              smallBannerUrl
+              largeBannerUrl
+              openingHours
+              private
+              enabled
+              productListingStyle
+              shopListingStyle
+              purchaseMetaDataKeys
+              tosLink
+              privacyPolicyLink
+              healthInfosLink
+              adultOnly
+              ownerId
+              owner {
+                id
+                name
+                avatarUrl
+                circlesAddress
+              }
+              deliveryMethods {
+                id
+                name
+              }
+            }
             offer {
               id
               pictureUrl
@@ -1258,6 +1388,10 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           invoices {
             id
             pickupCode
+            deliveryMethod {
+              id
+              name
+            }
             simplePickupCode
             buyerProfile {
               id
@@ -1267,6 +1401,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
               avatarUrl
               circlesAddress
               displayCurrency
+              provenUniqueness
             }
             sellerProfile {
               id
@@ -1276,6 +1411,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
               avatarUrl
               circlesAddress
               displayCurrency
+              provenUniqueness
             }
             paymentTransactionHash
             createdAt
@@ -1329,6 +1465,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
           avatarUrl
           circlesAddress
           displayCurrency
+          provenUniqueness
         }
       }
     }
@@ -1347,6 +1484,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
       avatarUrl
       circlesAddress
       displayCurrency
+      provenUniqueness
     }
     payload {
       ... on Offers {
@@ -1363,6 +1501,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             circlesAddress
             displayCurrency
             smallBannerUrl
+            provenUniqueness
           }
           tags {
             typeId
@@ -1379,7 +1518,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
           timeCirclesPriceShare
         }
       }
-      ...on Erc721Tokens {
+      ... on Erc721Tokens {
         lastUpdatedAt
         balances {
           token_no
@@ -1393,6 +1532,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             avatarUrl
             firstName
             lastName
+            provenUniqueness
           }
           token_no
           token_url
@@ -1411,6 +1551,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             avatarUrl
             circlesAddress
             displayCurrency
+            provenUniqueness
           }
           token_balance
         }
@@ -1428,6 +1569,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             avatarUrl
             circlesAddress
             displayCurrency
+            provenUniqueness
           }
           token_balance
         }
@@ -1452,6 +1594,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             avatarUrl
             circlesAddress
             displayCurrency
+            provenUniqueness
             city {
               geonameid
               name
@@ -1519,6 +1662,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             successorOfCirclesAddress
             circlesAddress
             displayCurrency
+            provenUniqueness
           }
           ... on Organisation {
             circlesAddress
@@ -1560,6 +1704,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             avatarUrl
             circlesAddress
             displayCurrency
+            provenUniqueness
           }
           deliveryMethod {
             id
@@ -1570,6 +1715,35 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             id
             amount
             metadata
+            shop {
+              id
+              name
+              description
+              legalText
+              smallBannerUrl
+              largeBannerUrl
+              openingHours
+              private
+              enabled
+              productListingStyle
+              shopListingStyle
+              purchaseMetaDataKeys
+              tosLink
+              privacyPolicyLink
+              healthInfosLink
+              adultOnly
+              ownerId
+              owner {
+                id
+                name
+                avatarUrl
+                circlesAddress
+              }
+              deliveryMethods {
+                id
+                name
+              }
+            }
             offer {
               id
               version
@@ -1586,6 +1760,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
                 avatarUrl
                 circlesAddress
                 displayCurrency
+                provenUniqueness
               }
               tags {
                 typeId
@@ -1599,6 +1774,10 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             paymentTransactionHash
             buyerAddress
             pickupCode
+            deliveryMethod {
+              id
+              name
+            }
             simplePickupCode
             buyerSignature
             buyerSignedDate
@@ -1615,6 +1794,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
               avatarUrl
               circlesAddress
               displayCurrency
+              provenUniqueness
             }
           }
         }
@@ -1632,6 +1812,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             avatarUrl
             circlesAddress
             displayCurrency
+            provenUniqueness
           }
           buyerProfile {
             id
@@ -1664,6 +1845,35 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             id
             amount
             metadata
+            shop {
+              id
+              name
+              description
+              legalText
+              smallBannerUrl
+              largeBannerUrl
+              openingHours
+              private
+              enabled
+              productListingStyle
+              shopListingStyle
+              purchaseMetaDataKeys
+              tosLink
+              privacyPolicyLink
+              healthInfosLink
+              adultOnly
+              ownerId
+              owner {
+                id
+                name
+                avatarUrl
+                circlesAddress
+              }
+              deliveryMethods {
+                id
+                name
+              }
+            }
             offer {
               id
               version
@@ -1680,6 +1890,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
                 avatarUrl
                 circlesAddress
                 displayCurrency
+                provenUniqueness
               }
               tags {
                 typeId
@@ -1693,6 +1904,20 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
             paymentTransactionHash
             buyerAddress
             pickupCode
+            deliveryMethod {
+              id
+              name
+            }
+            deliveryAddress {
+              id
+              street
+              house
+              zip
+              city
+              state
+              country
+              cityGeonameid
+            }
             simplePickupCode
             buyerSignature
             buyerSignedDate
@@ -1709,6 +1934,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
               avatarUrl
               circlesAddress
               displayCurrency
+              provenUniqueness
               verifications {
                 createdAt
                 revokedAt
@@ -1854,6 +2080,7 @@ query verifications($pagination: PaginationArgs, $filter: VerifiedSafesFilter) {
       avatarUrl
       circlesAddress
       displayCurrency
+      provenUniqueness
     }
   }
 }
@@ -1874,6 +2101,7 @@ query shop($id: Int!) {
     id
     name
     description
+    legalText
     smallBannerUrl
     largeBannerUrl
     openingHours
@@ -1885,6 +2113,7 @@ query shop($id: Int!) {
     tosLink
     privacyPolicyLink
     healthInfosLink
+    adultOnly
     ownerId
     owner {
       id
@@ -1895,6 +2124,15 @@ query shop($id: Int!) {
     deliveryMethods {
       id
       name
+    }
+    pickupAddress {
+      name
+      street
+      house
+      zip
+      city
+      state
+      country
     }
     categories {
       id
@@ -1928,6 +2166,7 @@ query shop($id: Int!) {
             displayName
             avatarUrl
             circlesAddress
+            provenUniqueness
           }
         }
       }
@@ -1941,6 +2180,7 @@ query shops($ownerId: Int) {
     createdAt
     name
     description
+    legalText
     smallBannerUrl
     largeBannerUrl
     openingHours
@@ -1950,6 +2190,10 @@ query shops($ownerId: Int) {
     productListingStyle
     sortOrder
     ownerId
+    adultOnly
+    tosLink
+    privacyPolicyLink
+    healthInfosLink
     deliveryMethods {
       id
       name
@@ -1978,6 +2222,7 @@ query shopsById($ids: [Int!]!) {
     createdAt
     name
     description
+    legalText
     smallBannerUrl
     largeBannerUrl
     openingHours
@@ -1987,6 +2232,10 @@ query shopsById($ids: [Int!]!) {
     productListingStyle
     sortOrder
     ownerId
+    tosLink
+    adultOnly
+    privacyPolicyLink
+    healthInfosLink
     deliveryMethods {
       id
       name

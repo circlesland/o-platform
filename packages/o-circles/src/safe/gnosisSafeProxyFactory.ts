@@ -44,7 +44,7 @@ export class GnosisSafeProxyFactory extends Web3Contract {
         1, // threshold (how many owners are required to sign a transaction -> 1)
         ZERO_ADDRESS, // delegatecall for modules (none)
         "0x", // init data for modules (none)
-        ZERO_ADDRESS, // fallbackHandler
+        "0xf48f2b2d2a534e402487b3ee7c18c33aec0fe5e4", // fallbackHandler
         ZERO_ADDRESS, // paymentToken (none defaults to ETH)
         0, // payment
         ZERO_ADDRESS // paymentReceiver
@@ -57,7 +57,7 @@ export class GnosisSafeProxyFactory extends Web3Contract {
         .estimateGas()
     );
 
-    const createProxyData = await this.contract.methods
+    const createProxyData = this.contract.methods
       .createProxy(this.masterSafeAddress, proxySetupData)
       .encodeABI();
 

@@ -5,18 +5,13 @@ import { Profile, Organisation } from "../../../shared/api/data/types";
 import { _ } from "svelte-i18n";
 import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";
 import { push } from "svelte-spa-router";
+import formatShippingAddress from "../../../shared/functions/formatPostAddress";
 
 export let context: any;
-let profile: Profile | Organisation;
-let groupedItems;
 
 console.log("CONTEXT", context);
 $: {
   context = context;
-
-  profile = context.data.sellerProfile;
-
-  groupedItems = context.data ? orderItems(context.data.items) : {};
 }
 
 let classes: string;
@@ -36,69 +31,37 @@ function onkeydown(e: KeyboardEvent) {
     submit();
   }
 }
-
-function orderItems(items) {
-  const orderedCart = {};
-  items.forEach((item) => {
-    orderedCart[item.id] = {
-      item: item,
-      qty: orderedCart[item.id] ? orderedCart[item.id].qty + 1 : 1,
-    };
-  });
-
-  return Object.entries(orderedCart).map(([id, item]) => ({ id, item }));
-}
 </script>
 
-{#if context.data && profile && groupedItems}
+{#if context.data}
   <div class="mt-2">
-    <!-- <div class="flex flex-row items-stretch p-2 mb-6 bg-light-lighter">
-      <div
-        class="flex flex-row items-center content-start self-end space-x-2 text-base font-medium text-left ">
-        <div class="inline-flex">
-          <UserImage
-            profile="{context.data.sellerProfile}"
-            size="{5}"
-            gradientRing="{false}" />
-        </div>
-        <div>
-          {context.data.sellerProfile.firstName}
-          {context.data.sellerProfile.lastName
-            ? context.data.sellerProfile.lastName
-            : ""}
-        </div>
-      </div>
-    </div> -->
-    {#each groupedItems as groupPurchase, i}
+    {#each context.data.items as item, index}
       <div class="flex items-center justify-between w-full pb-6 mb-6 border-b">
         <div class="flex items-center w-full">
-          <img
-            src="{groupPurchase.item.item.pictureUrl}"
-            alt="{groupPurchase.item.item.title}"
-            class="w-20 rounded-full mask mask-circle" />
+          <img src="{item.pictureUrl}" alt="{item.title}" class="w-20 rounded-full mask mask-circle" />
           <div class="flex flex-col items-start w-full ml-2 space-y-2">
             <div class="flex flex-row justify-between w-full">
               <div class="md:text-md">
-                <a href="#/marketplace/{groupPurchase.item.item.id}" alt="{groupPurchase.item.item.title}">
-                  {groupPurchase.item.item.title}
+                <a href="#/marketplace/{item.id}" alt="{item.title}">
+                  {item.title}
                 </a>
               </div>
             </div>
             <div class="flex items-center justify-end w-full">
               <div class="flex-grow text-sm text-left text-dark-lightest">
-                1 {groupPurchase.item.item.unitTag ? groupPurchase.item.item.unitTag.value : "item"}
+                1 {item.unitTag ? item.unitTag.value : "item"}
               </div>
 
               <div class="flex pr-8">
                 <input
                   type="text"
-                  value="{groupPurchase.item.qty}"
+                  value="{item.qty}"
                   disabled
                   class="w-8 h-6 px-2 mx-2 text-sm text-center bg-gray-100 border rounded focus:outline-none" />
               </div>
               <div class="items-center">
                 <span class="whitespace-nowrap">
-                  {groupPurchase.item.item.pricePerUnit} €
+                  {item.pricePerUnit} €
                 </span>
               </div>
             </div>
@@ -106,7 +69,7 @@ function orderItems(items) {
         </div>
       </div>
     {/each}
-    {#if context.data.deliveryMethod == 1}
+    {#if context.data.deliveryMethod == 2}
       This order is being delivered to you.
     {:else}
       <div class="flex flex-col w-full mb-6 space-y-4 text-left ">
@@ -119,7 +82,7 @@ function orderItems(items) {
           </h1>
         </div>
 
-        <div>
+        <div class="text-center">
           {$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup1")}
         </div>
 
@@ -130,7 +93,7 @@ function orderItems(items) {
             </center>
           </div>
         </div>
-        <div class="text-sm">
+        <div class="text-sm text-center">
           {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode1")}<span class="text-primary-dark"
             >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode2")}</span
           >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode3")}
@@ -148,9 +111,19 @@ function orderItems(items) {
           {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5")}
         </div>
 
-        <div class="pt-2 text-sm font-bold">
-          {$_("dapps.o-marketplace.molecules.checkoutConfirm.pickupLocation")}
+        <div class="flex flex-col mt-4 space-y-2 text-center">
+          {#if context.data.shop.pickupAddress}
+            <div>You can pick up your order at:</div>
+
+            <div class="font-bold">{@html formatShippingAddress(context.data.shop.pickupAddress, true)}</div>
+          {/if}
+          {#if context.data.shop.openingHours}
+            <div class="pt-2">Our Opening Hours are:</div>
+
+            <div>{context.data.shop.openingHours}</div>
+          {/if}
         </div>
+
         <!-- <div class="pt-2 text-sm">
         <span class="font-bold">Basic Income Lab GmbH</span><br />
         Reifenstuelstrasse 6<br />

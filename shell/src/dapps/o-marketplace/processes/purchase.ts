@@ -9,14 +9,13 @@ import CheckoutSummary from "../../o-marketplace/molecules/CheckoutSummary.svelt
 import CheckoutConfirmation from "../../o-marketplace/molecules/CheckoutConfirmation.svelte";
 import {
   Profile,
-  Offer,
   CreatePurchaseDocument,
   PurchaseLineInput,
   Invoice,
   AnnouncePaymentDocument,
   EventType,
   CreatePurchaseMutationVariables,
-  Purchase,
+  DeliveryMethod, Shop
 } from "../../../shared/api/data/types";
 import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
@@ -26,26 +25,36 @@ import { Currency } from "../../../shared/currency";
 
 import { fTransferCircles, fTransferCirclesHashOnly, TransitivePath } from "../../o-banking/processes/transferCircles";
 
-import { cartContents } from "../stores/shoppingCartStore";
+import {cartContents, totalPrice} from "../stores/shoppingCartStore";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { findDirectTransfers } from "../../o-banking/processes/transfer";
 import { myPurchases } from "../../../shared/stores/myPurchases";
 import { Environment } from "../../../shared/environment";
 import { setWindowLastError } from "../../../shared/processes/actions/setWindowLastError";
 import { ApiClient } from "../../../shared/apiConnection";
+import { ShoppingCartItem } from "../types/ShoppingCartItem";
+
+export type CheckoutDeliveryData = {
+  deliveryMethodId?: number;
+  shippingAddressId?: number;
+};
 
 export type PurchaseContextData = {
-  items: (Offer & { shopId: number })[];
+  availableDeliveryMethods: DeliveryMethod[];
+  items: ShoppingCartItem[];
+  shop: Shop;
+  total: number;
   metadata?: string;
+  checkoutDelivery?: CheckoutDeliveryData;
   sellerProfile?: Profile;
-  invoices: Invoice[];
-  pickupCode: string;
-  simplePickupCode: string;
-  payableInvoices: {
+  invoices?: Invoice[];
+  pickupCode?: string;
+  simplePickupCode?: string;
+  payableInvoices?: {
     invoice: Invoice;
     path: TransitivePath;
   }[];
-  paidInvoices: {
+  paidInvoices?: {
     invoice: Invoice;
     path: TransitivePath;
   }[];
@@ -64,21 +73,34 @@ const processDefinition = (processId: string) =>
       init: {
         id: "init",
         entry: [
-          loadAndSetCartContents,
+          // loadAndSetCartContents,
           // TODO: BOTH ACTIONS ASSUME ALL ITEMS ARE FROM THE SAME SELLER
-          setFirstSellerAsSellerProfile,
           loadAndSetFirstShopMetadata,
         ],
-        always: "#checkoutDelivery",
+        invoke: {
+          src: async (context: PurchaseContext) => {
+            context.dirtyFlags["init"] = true;
+
+            context.data.total = 0;
+            context.data.items.forEach(o => {
+              context.data.total += o.qty * o.pricePerUnit;
+            });
+            return context.data;
+          },
+          onDone: "#checkoutDelivery",
+        },
       },
 
       checkoutDelivery: prompt<PurchaseContext, any>({
         id: "checkoutDelivery",
-        field: "deliveryMethod",
+        field: "checkoutDelivery",
         component: CheckoutDelivery,
-        params: {
-          view: editorContent.delivery,
-          submitButtonText: editorContent.delivery.submitButtonText,
+        params: (context) => {
+          return {
+            view: editorContent.delivery,
+            submitButtonText: editorContent.delivery.submitButtonText,
+            availableDeliveryMethods: context.data.availableDeliveryMethods
+          }
         },
         navigation: {
           next: "#checkoutSummary",
@@ -88,6 +110,7 @@ const processDefinition = (processId: string) =>
       checkoutSummary: prompt<PurchaseContext, any>({
         id: "checkoutSummary",
         field: "metadata",
+        entry: (context) => console.log("checkoutSummary context:", context),
         component: CheckoutSummary,
         params: {
           view: editorContent.summary,
@@ -219,7 +242,7 @@ const editorContent: { [x: string]: EditorViewContext } = {
   },
 };
 
-const loadAndSetFirstShopMetadata = (context) => {
+const loadAndSetFirstShopMetadata = (context: PurchaseContext) => {
   context.data.metadata = JSON.parse(
     context.data.items.length > 0 ? Environment.getShopMetadata(context.data.items[0].shopId) : "undefined"
   );
@@ -236,20 +259,22 @@ const showCreatePurchaseWaitingMessage = () =>
     message: window.i18n("dapps.o-marketplace.processes.purchases.createPurchase.message"),
   });
 
-const createPurchaseService = async (context) => {
-  console.log("METADAATATATA: ", context.data.metadata);
+const createPurchaseService = async (context: PurchaseContext) => {
+  console.log("createPurchaseService context:", context);
   const linesGroupedByOffer: { [offerId: number]: number } = {};
   context.data.items.forEach((o) => {
-    linesGroupedByOffer[o.id] = linesGroupedByOffer[o.id] ? linesGroupedByOffer[o.id] + 1 : 1;
+    linesGroupedByOffer[o.offerId] = o.qty;
   });
 
-  const result = await ApiClient.mutate<Purchase, CreatePurchaseMutationVariables>(CreatePurchaseDocument, {
-    deliveryMethodId: 1,
+  const result = await ApiClient.mutate<Invoice[], CreatePurchaseMutationVariables>(CreatePurchaseDocument, {
+    deliveryMethodId: context.data.checkoutDelivery.deliveryMethodId,
+    deliveryAddressId: context.data.checkoutDelivery?.shippingAddressId,
     lines: Object.entries(linesGroupedByOffer).map((o) => {
       return <PurchaseLineInput>{
         offerId: parseInt(o[0]),
         amount: o[1],
         metadata: JSON.stringify(context.data.metadata),
+        shopId: context.data.shop.id
       };
     }),
   });
@@ -261,16 +286,14 @@ const createPurchaseService = async (context) => {
   myPurchases.refresh();
 };
 
-const loadAndSetCartContents = (context: ProcessContext<PurchaseContextData>) => {
-  const cartContents = JSON.parse(localStorage.getItem("cartContents"));
-  if (cartContents) {
-    context.data.items = cartContents;
-  }
-};
+// TODO: REMOVE Purchased items from cartStore.
 
-const setFirstSellerAsSellerProfile = (context) => {
-  context.data.sellerProfile = context.data.items[0].createdByProfile;
-};
+// const loadAndSetCartContents = (context: ProcessContext<PurchaseContextData>) => {
+//   const cartContents = JSON.parse(localStorage.getItem("cartContents"));
+//   if (cartContents) {
+//     context.data.items = cartContents;
+//   }
+// };
 
 const showCalculatePathWaitingMessage = () => {
   window.o.publishEvent(<PlatformEvent>{
@@ -305,8 +328,6 @@ const calculatePathService = async (context) => {
       });
     }
   }
-
-  console.log(JSON.stringify(context.data.payableInvoices, null, 2));
 };
 
 const showPaymentTransferWaitingMessage = () => {

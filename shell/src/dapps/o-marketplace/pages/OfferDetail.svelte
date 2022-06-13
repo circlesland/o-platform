@@ -91,11 +91,12 @@ onMount(async () => {
                 alt="
                 "
                 class="w-full rounded-t-xl" />
-              <div
-                class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
-                <span class="inline-block">{o.pricePerUnit}</span>
-                <span class="inline-block">€</span>
-              </div>
+              {#if o.pricePerUnit > 0}
+                <div class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
+                  <span class="inline-block">{o.pricePerUnit}</span>
+                  <span class="inline-block">€</span>
+                </div>
+              {/if}
 
               {#if shop && shop.deliveryMethods}
                 {#each shop.deliveryMethods as deliveryMethod, i}
@@ -131,27 +132,29 @@ onMount(async () => {
             {/if}
 
             <!-- {#if o.deliveryTermsTag} -->
-            <div class="flex flex-col space-y-1 text-right">
-              <div class="pt-2 text-sm">
-                <div class="">
-                  <span class="text-xs"
-                    >Available for delivery <Icon name="truck" class="inline w-5 h-5 heroicon smallicon" /></span>
-                </div>
-                <div class="pb-2 ">
-                  <span class="text-xs"
-                    >Available for in-Store pickup
-                    <Icon name="home" class="inline w-5 h-5 heroicon smallicon" /></span>
-                  <br />
-                  <br />
-                  Basic Income Lab GmbH<br />
-                  Reifenstuelstrasse 6<br />
-                  80469 München<br />
-                  {#if shop && shop.openingHours}
-                    <span class="text-xs text-dark-lightest">Shop hours: {shop.openingHours}</span>
-                  {/if}
+            {#if o.pricePerUnit > 0}
+              <div class="flex flex-col space-y-1 text-right">
+                <div class="pt-2 text-sm">
+                  <div class="">
+                    <span class="text-xs"
+                      >Available for delivery <Icon name="truck" class="inline w-5 h-5 heroicon smallicon" /></span>
+                  </div>
+                  <div class="pb-2 ">
+                    <span class="text-xs"
+                      >Available for in-Store pickup
+                      <Icon name="home" class="inline w-5 h-5 heroicon smallicon" /></span>
+                    <br />
+                    <br />
+                    Basic Income Lab GmbH<br />
+                    Reifenstuelstrasse 6<br />
+                    80469 München<br />
+                    {#if shop && shop.openingHours}
+                      <span class="text-xs text-dark-lightest">Shop hours: {shop.openingHours}</span>
+                    {/if}
+                  </div>
                 </div>
               </div>
-            </div>
+            {/if}
           </div>
         </div>
       </section>
@@ -166,12 +169,14 @@ onMount(async () => {
             </button>
           </div>
           <div class="flex-grow">
-            <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => addToCart(o, shopId)}">
-              {$_("dapps.o-marketplace.pages.offerDetail.addToCart")}
-              <div class="absolute mr-1 right-2">
-                <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
-              </div>
-            </button>
+            {#if o.pricePerUnit > 0}
+              <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => addToCart(o, shopId)}">
+                {$_("dapps.o-marketplace.pages.offerDetail.addToCart")}
+                <div class="absolute mr-1 right-2">
+                  <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
+                </div>
+              </button>
+            {/if}
           </div>
         </div>
       </div>

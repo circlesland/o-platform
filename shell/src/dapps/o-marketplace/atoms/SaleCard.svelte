@@ -22,7 +22,6 @@ $: {
     const saleEvent = event.payload as SaleEvent;
     sale = saleEvent;
     invoice = sale.invoice;
-    console.log("SALE EVENT: ", sale);
   }
 
   const pickUpAction = {
@@ -130,7 +129,11 @@ function getTableNoFromMetadata(metadataJson: string | undefined) {
           <div>
             {#if !sale.invoice.cancelledAt}
               {#if !invoice.sellerSignature}
-                {#if sale.invoice.simplePickupCode}
+                {#if invoice.deliveryMethod.id == 2}
+                  <Button context="{buttonContext}">
+                    <Icons icon="truck" size="{6}" customClass="inline smallicon" />
+                  </Button>
+                {:else if sale.invoice.simplePickupCode}
                   <Button context="{buttonContext}">
                     {sale.invoice.simplePickupCode}
                   </Button>
@@ -160,21 +163,39 @@ function getTableNoFromMetadata(metadataJson: string | undefined) {
             {/if}
           </div>
 
-          <div
-            class="inline-block mb-2 text-xs"
-            class:text-primary-lighter="{!sale.invoice.sellerSignature}"
-            class:text-success="{sale.invoice.sellerSignature}">
-            {#if !sale.invoice.sellerSignature}
-              <span>{$_("dapps.o-marketplace.pages.mySales.notPickedUp")}</span>
-            {:else}
-              <span>{$_("dapps.o-marketplace.pages.mySales.pickedUp")}</span>
-            {/if}
-            {#if sale.invoice.sellerSignature}
-              <Icons icon="check" size="{4}" customClass="inline" />
-            {:else}
-              <Icons icon="closex" size="{2}" customClass="inline" />
-            {/if}
-          </div>
+          {#if sale.invoice.deliveryMethod.id == 1}
+            <div
+              class="inline-block mb-2 text-xs"
+              class:text-primary-lighter="{!sale.invoice.sellerSignature}"
+              class:text-success="{sale.invoice.sellerSignature}">
+              {#if !sale.invoice.sellerSignature}
+                <span>{$_("dapps.o-marketplace.pages.mySales.notPickedUp")}</span>
+              {:else}
+                <span>{$_("dapps.o-marketplace.pages.mySales.pickedUp")}</span>
+              {/if}
+              {#if sale.invoice.sellerSignature}
+                <Icons icon="check" size="{4}" customClass="inline" />
+              {:else}
+                <Icons icon="closex" size="{2}" customClass="inline" />
+              {/if}
+            </div>
+          {:else if sale.invoice.deliveryMethod.id == 2}
+            <div
+              class="inline-block mb-2 text-xs"
+              class:text-primary-lighter="{!sale.invoice.sellerSignature}"
+              class:text-success="{sale.invoice.sellerSignature}">
+              {#if !sale.invoice.sellerSignature}
+                <span>Not yet shipped</span>
+              {:else}
+                <span>Items have been shipped</span>
+              {/if}
+              {#if sale.invoice.sellerSignature}
+                <Icons icon="check" size="{4}" customClass="inline" />
+              {:else}
+                <Icons icon="closex" size="{2}" customClass="inline" />
+              {/if}
+            </div>
+          {/if}
         </div>
       </div>
     </div>

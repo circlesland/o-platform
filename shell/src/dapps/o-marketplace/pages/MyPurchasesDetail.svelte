@@ -55,7 +55,7 @@ async function load() {
       sellerProfile = (<Purchased>loadedEvent.payload).seller_profile;
     }
   }
-
+  console.log("PURCHASE", purchase);
   groupedItems = purchase ? orderItems(purchase.lines) : {};
   isLoading = false;
 }
@@ -116,30 +116,35 @@ onMount(async () => {
       },
     };
 
-    actions.push(
-      {
-        icon: "cash",
-        title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.transaction"),
-        action: () => push(`#/banking/transactions/${purchase.invoices[0].paymentTransactionHash}`),
-      }
-      // {
-      //   icon: "document",
-      //   title: window.i18n(
-      //     "dapps.o-marketplace.pages.myPurchaseDetail.downloadInvoice"
-      //   ),
-      //   action: async () => {
-      //     for (let invoice of purchase.invoices) {
-      //       const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
-      //         InvoiceDocument,
-      //         {
-      //           invoiceId: invoice.id,
-      //         }
-      //       );
-      //       saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
-      //     }
-      //   },
-      // }
-    );
+    if (
+      purchase.invoices[0].paymentTransactionHash &&
+      !purchase.invoices[0].paymentTransactionHash.startsWith("0x0000000000000000")
+    ) {
+      actions.push(
+        {
+          icon: "cash",
+          title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.transaction"),
+          action: () => push(`#/banking/transactions/${purchase.invoices[0].paymentTransactionHash}`),
+        }
+        // {
+        //   icon: "document",
+        //   title: window.i18n(
+        //     "dapps.o-marketplace.pages.myPurchaseDetail.downloadInvoice"
+        //   ),
+        //   action: async () => {
+        //     for (let invoice of purchase.invoices) {
+        //       const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
+        //         InvoiceDocument,
+        //         {
+        //           invoiceId: invoice.id,
+        //         }
+        //       );
+        //       saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
+        //     }
+        //   },
+        // }
+      );
+    }
   }
 
   shellEventSubscription = window.o.events.subscribe(async (event: PlatformEvent) => {
@@ -228,9 +233,11 @@ onMount(async () => {
                     class="w-8 h-6 px-2 mx-2 text-sm text-center bg-gray-100 border rounded focus:outline-none" />
                 </div>
                 <div class="items-center">
-                  <span class="whitespace-nowrap">
-                    {groupPurchase.item.item.offer.pricePerUnit} €
-                  </span>
+                  {#if groupPurchase.item.item.offer.pricePerUnit > 0}
+                    <span class="whitespace-nowrap">
+                      {groupPurchase.item.item.offer.pricePerUnit} €
+                    </span>
+                  {/if}
                 </div>
               </div>
             </div>
@@ -275,6 +282,19 @@ onMount(async () => {
         </div> -->
       </div>
     {/each}
+    <!-- <div class="flex flex-col mt-4 space-y-2 text-center">
+      {#if context.data.shop.pickupAddress}
+        <div>You can pick up your order at:</div>
+
+        <div class="font-bold">{@html formatShippingAddress(context.data.shop.pickupAddress, true)}</div>
+      {/if}
+      {#if context.data.shop.openingHours}
+        <div class="pt-2">Our Opening Hours are:</div>
+
+        <div>{context.data.shop.openingHours}</div>
+      {/if}
+    </div> -->
+
     <DetailActionBar actions="{actions}" />
   {/if}
 </div>

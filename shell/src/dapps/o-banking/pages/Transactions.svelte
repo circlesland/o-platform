@@ -19,9 +19,9 @@ export let routable: Routable;
 <div class="px-4 mx-auto mb-20 -mt-3 md:w-2/3 xl:w-1/2">
   <EventList
     store={myTransactions}
-    views="{{
-      [EventType.CrcHubTransfer]: TransactionCard,
-      [EventType.CrcMinting]: TransactionCard,
-      [EventType.Erc20Transfer]: TransactionCard,
-    }}" />
+    views={{
+      [EventType.CrcHubTransfer]: {component: TransactionCard},
+      [EventType.CrcMinting]: {component: TransactionCard},
+      [EventType.Erc20Transfer]: {component: TransactionCard},
+    }} />
 </div>

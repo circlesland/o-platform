@@ -1,0 +1,29 @@
+<script lang="ts">
+  import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+  import MyTicketCard from "../atoms/MyTicketCard.svelte";
+  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
+  import {Routable} from "@o-platform/o-interfaces/dist/routable";
+  import EventList from "../../../shared/molecules/Lists/EventList.svelte";
+  import {EventType} from "../../../shared/api/data/types";
+  import {myPurchases} from "../../../shared/stores/myPurchases";
+
+  export let runtimeDapp: RuntimeDapp<any>;
+  export let routable: Routable;
+</script>
+
+<SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
+
+<div class="px-4 mx-auto mb-20 -mt-3 md:w-2/3 xl:w-1/2">
+
+  <EventList store={myPurchases}
+             views={{[EventType.Purchased]: {
+                 function: (event) => {
+                   const purchase = event.payload.purchase;
+                   if (purchase.deliveryMethod.id === 3) {
+                     return MyTicketCard;
+                   } else {
+                     return null;
+                   }
+                }
+             }}} />
+</div>

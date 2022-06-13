@@ -365,12 +365,13 @@ export const en = {
             totalCitizens: "Total Citizens",
             verifiedCitizens: "Verified Citizens",
             passport: "passport",
+            tickets: "My tickets",
             contacts: "contacts",
             chat: "chat",
             banking: "banking",
             market: "market",
             verified: "verified",
-            gallery: "gallery",
+            gallery: "nft gallery",
           },
           invites: {
             invites: "Invites",
@@ -567,6 +568,7 @@ export const en = {
             cancelled: "cancelled",
             paymentPending: "payment pending",
             pickupCode: "pick-up code",
+            entranceCode: "ticket code",
             pickedUp: " picked up ",
           },
           myPurchaseDetail: {
@@ -583,6 +585,19 @@ export const en = {
             showThisCode: "show this code to the seller when you pick up your Order.",
             noCode: "No pickup code yet ..",
             location: "Pick-Up Location for this Order is:",
+          },
+          "myTicketDetail": {
+            "chat": "Chat",
+            "transaction": "Transaction",
+            "downloadInvoice": "Download Invoice",
+            "purchaseDetails": "Ticket details",
+            "purchaseDate": "Purchase Date: ",
+            "loadingPurchases": "Loading ticket...",
+            "yourPickupCode": "Your ticket code",
+            "yourPickupNumber": "Your ticket number:",
+            "showThisCode": "show this code on the event's check-in or door.",
+            "noCode": "No ticket code yet ..",
+            "location": "The location of this event is:"
           },
           mySaleDetail: {
             chat: "Chat",
@@ -804,7 +819,7 @@ export const en = {
               },
               redeemInvitation: {
                 message: "Please wait, redeeming your Invitation...",
-                error: "Couldn't redeem an invitation: {contextMessages}",
+                error: "Couldn't redeem your invitation. Please reload the page and try again.",
                 onError: "The following error occurred while redeeming you claimed invitation:",
               },
               checkIfRedeemed: {
@@ -1185,6 +1200,11 @@ export const en = {
                 description:
                   "So we make it count! Your passionate heart generates 24 Circles a day. Welcome to a world where your life time buys goods and services! Enjoy your freedom to spend your time however you want!",
                 submitButtonText: "Be free!",
+              },
+              "mint": {
+                "title": "Mint your NFT",
+                "description": "Write something nice here ...",
+                "submitButtonText": "Do it!"
               },
               firstName: {
                 title: "What is your first name?",

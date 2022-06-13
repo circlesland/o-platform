@@ -1,9 +1,15 @@
 import {readable} from "svelte/store";
 import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
-import {Profile, SessionInfo} from "../api/data/types";
+import {
+  InitDocument,
+  InitQueryVariables,
+  Profile,
+  SessionInfo,
+} from "../api/data/types";
 import {displayableName} from "../functions/stringHelper";
 import {Subscriber} from "svelte/types/runtime/store";
 import {getSessionInfo} from "../../dapps/o-passport/processes/identify/services/getSessionInfo";
+import {ApiClient} from "../apiConnection";
 
 let sessionInfo: SessionInfo | undefined = undefined;
 
@@ -14,6 +20,16 @@ export const me = {
       sessionInfo = await getSessionInfo();
     }
     return sessionInfo;
+  },
+  reload: async () => {
+    const sessionInfo = await ApiClient.query<SessionInfo, InitQueryVariables>(InitDocument, {});
+
+    if (sessionInfo.profile) {
+      window.o.publishEvent(<PlatformEvent>{
+        type: "shell.authenticated",
+        profile: sessionInfo.profile,
+      });
+    }
   }
 };
 const _me = readable<Profile|null>(null, function start(set) {

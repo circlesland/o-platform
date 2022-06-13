@@ -38,7 +38,7 @@ async function loadSale(id) {
     sale = null;
   }
 
-  if (!sale) {
+  if (!sale || sale.invoice.sellerSignature) {
     statusText = window.i18n(
       "dapps.o-marketplace.pages.scanPurchase.invalidOrderCode"
     );

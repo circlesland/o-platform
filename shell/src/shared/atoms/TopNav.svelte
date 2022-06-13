@@ -38,7 +38,7 @@ $: {
       {:else if (routable ? routable.title : "<<No dapp>>") != (runtimeDapp ? runtimeDapp.title : "<<No dapp>>")}
         <span class="text-md">{routable.title}</span>
       {/if} -->
-      <span class="text-md text-primary">Public Beta</span>
+      <span class="text-md text-primary text-secondary">Beta</span>
     </div>
 
     <div class="col-start-3 pr-1 place-self-center justify-self-end">

@@ -40,11 +40,13 @@ export type UpsertIdentityContextData = {
 export type UpsertIdentityContext = ProcessContext<UpsertIdentityContextData>;
 
 const editorContent: { [x: string]: EditorViewContext } = {
+  /*
   info: {
     title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.info.title"),
     description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.info.description"),
     submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.info.submitButtonText"),
   },
+   */
   firstName: {
     title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.title"),
     description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.description"),
@@ -65,21 +67,6 @@ const editorContent: { [x: string]: EditorViewContext } = {
       "dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.submitButtonText"
     ),
   },
-  // dream: {
-  //   title: window.i18n(
-  //     "dapps.o-passport.processes.upsertIdentity.editorContent.dream.title"
-  //   ),
-  //   description: window.i18n(
-  //     "dapps.o-passport.processes.upsertIdentity.editorContent.dream.description"
-  //   ),
-  //   placeholder: window.i18n(
-  //     "dapps.o-passport.processes.upsertIdentity.editorContent.dream.placeholder"
-  //   ),
-  //   submitButtonText: window.i18n(
-  //     "dapps.o-passport.processes.upsertIdentity.editorContent.dream.submitButtonText"
-  //   ),
-  //   maxLength: "150",
-  // },
   city: {
     title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.city.title"),
     description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.city.description"),
@@ -103,31 +90,17 @@ const editorContent: { [x: string]: EditorViewContext } = {
 const processDefinition = (processId: string) =>
   createMachine<UpsertIdentityContext, any>({
     id: `${processId}:upsertIdentity`,
-    initial: "info",
+    initial: "emailAddress",
 
     states: {
       // Include a default 'error' state that propagates the error by re-throwing it in an action.
       // TODO: Check if this works as intended
       ...fatalError<UpsertIdentityContext, any>("error"),
 
-      // init: {
-      //   always: [
-      //     {
-      //       cond: (context) =>
-      //         !context.dirtyFlags["emailAddress"] &&
-      //         !!context.data.emailAddress &&
-      //         context.data.emailAddress.trim() != "",
-      //       target: "#newsletter",
-      //     },
-      //     {
-      //       target: "#info",
-      //     },
-      //   ],
-      // },
-
+/*
       info: prompt({
         id: "info",
-        field: "__",
+        field: "info",
         component: HtmlViewer,
         params: {
           view: editorContent.info,
@@ -135,11 +108,16 @@ const processDefinition = (processId: string) =>
           hideNav: false,
         },
         navigation: {
+          canSkip: () => false,
+          canGoBack: () => false,
           next: "#emailAddress",
         },
       }),
 
+ */
+
       emailAddress: prompt<UpsertIdentityContext, any>({
+        id: "emailAddress",
         field: "emailAddress",
         component: EmailAddressEditor,
         params: {
@@ -188,7 +166,7 @@ const processDefinition = (processId: string) =>
         navigation: {
           canGoBack: () => true,
           previous: "#emailAddress",
-          canSkip: () => true,
+          canSkip: () => false,
           skip: "#firstName",
         },
       }),
@@ -232,32 +210,6 @@ const processDefinition = (processId: string) =>
           canSkip: () => true,
         },
       }),
-
-      // dream: prompt<UpsertIdentityContext, any>({
-      //   field: "dream",
-      //   component: TextareaEditor,
-      //   params: { view: editorContent.dream },
-      //   dataSchema: yup
-      //     .string()
-      //     .nullable()
-      //     .notRequired()
-      //     .max(
-      //       150,
-      //       window.i18n(
-      //         "dapps.o-passport.processes.upsertIdentity.maximumChars"
-      //       )
-      //     ),
-      //   navigation: {
-      //     next: [
-      //       {
-      //         target: "#avatarUrl",
-      //       },
-      //     ],
-      //     canSkip: () => true,
-      //     skip: "#avatarUrl",
-      //     previous: "#country",
-      //   },
-      // }),
 
       avatarUrl: promptFile<UpsertIdentityContext, any>({
         field: "avatarUrl",
@@ -330,10 +282,6 @@ const processDefinition = (processId: string) =>
           }
         },
         data: (context, event: any) => {
-          /*window.o.publishEvent(<PlatformEvent>{
-            type: "shell.authenticated",
-            profile: event.data,
-          });*/
           return event.data;
         },
       },

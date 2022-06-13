@@ -6,11 +6,8 @@ import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { Capability, CapabilityType, StatsDocument } from "../../../shared/api/data/types";
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
-import Icons from "../../../shared/molecules/Icons.svelte";
 import { Environment } from "../../../shared/environment";
 import { _ } from "svelte-i18n";
-import CitizensProgressBar from "../atoms/CitizensProgressBar.svelte";
-import DashboardEventsWidget from "../molecules/DashboardEventsWidget.svelte";
 import DashboardInvitesWidget from "../molecules/DashboardInvitesWidget.svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 import Label from "../../../shared/atoms/Label.svelte";
@@ -24,8 +21,7 @@ $: me;
 
 let disableBanking: boolean = false;
 let canVerify: boolean = false;
-
-let showInviteButton = false;
+let hasTickets: boolean = false;
 
 let profilesCount: number;
 let statsResult: any;
@@ -37,6 +33,7 @@ const init = async () => {
   const sessionInfo = await me.getSessionInfo();
   capabilities = sessionInfo.capabilities;
   canVerify = capabilities && capabilities.find((o) => o.type == CapabilityType.Verify) && Environment.allowVerify;
+  hasTickets = capabilities && !!capabilities.find((o) => o.type == CapabilityType.Tickets);
 
   statsResult = await fetchStats();
   profilesCount = statsResult.data.stats.profilesCount;
@@ -72,8 +69,16 @@ async function fetchStats() {
   <div class="m-4 mb-40 ">
     <LangSwitcher />
     <DashboardInvitesWidget stats="{statsResult}" />
-    <!-- <DashboardEventsWidget profilesCount="{profilesCount}" /> -->
-    <div class="grid grid-cols-2 gap-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
+    <!-- <section class="flex items-start bg-white rounded-lg shadow-md cursor-pointer">
+      <div class="flex flex-col w-full" on:click={() => loadLink("/marketplace/locations")}>
+        <header class="rounded-lg shadow-md headerImageContainer">
+          <div class="relative rounded-lg image-wrapper">
+            <img src="/images/events/Screenshot from 2022-06-04 15-34-14.png" alt="" class="rounded-lg" />
+          </div>
+        </header>
+      </div>
+    </section> -->
+    <div class="grid grid-cols-2 gap-4 mt-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
         on:click="{() => loadLink('/passport/profile')}">
@@ -169,6 +174,20 @@ async function fetchStats() {
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
               <Label key="dapps.o-dashboard.pages.home.verified" />
+            </div>
+          </div>
+        </section>
+      {/if}
+      {#if hasTickets}
+        <section
+          class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+          on:click="{() => loadLink('/marketplace/my-tickets')}">
+          <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+            <div class="pt-2 text-primary">
+              <Icon name="ticket" class="w-20 h-20 heroicon" />
+            </div>
+            <div class="mt-4 text-3xl font-heading text-dark">
+              {$_("dapps.o-dashboard.pages.home.tickets")}
             </div>
           </div>
         </section>
