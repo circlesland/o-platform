@@ -139,7 +139,7 @@ async function restartPurchase(shippingAddressId: number, oldContext: EditorCont
         {#if context.data.shop.openingHours}
           <div class="pt-2">Our Opening Hours are:</div>
 
-          <div>{context.data.shop.openingHours}</div>
+          <div>{@html context.data.shop.openingHours}</div>
         {/if}
       </div>
     {/if}

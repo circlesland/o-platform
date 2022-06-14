@@ -120,7 +120,7 @@ function onkeydown(e: KeyboardEvent) {
           {#if context.data.shop.openingHours}
             <div class="pt-2">Our Opening Hours are:</div>
 
-            <div>{context.data.shop.openingHours}</div>
+            <div>{@html context.data.shop.openingHours}</div>
           {/if}
         </div>
 

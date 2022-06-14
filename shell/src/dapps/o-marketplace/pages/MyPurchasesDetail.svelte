@@ -309,7 +309,7 @@ onMount(async () => {
           {#if purchase.lines[0].shop.openingHours}
             <div class="pt-2">Our Opening Hours are:</div>
 
-            <div>{purchase.lines[0].shop.openingHours}</div>
+            <div>{@html purchase.lines[0].shop.openingHours}</div>
           {/if}
         </div>
       {/if}
