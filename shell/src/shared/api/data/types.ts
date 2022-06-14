@@ -2346,7 +2346,10 @@ export type MyProfileQuery = (
     )>>, city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
-    )>, memberships?: Maybe<Array<(
+    )>, shippingAddresses?: Maybe<Array<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+    )>>, memberships?: Maybe<Array<(
       { __typename?: 'Membership' }
       & Pick<Membership, 'isAdmin'>
       & { organisation: (
@@ -2388,7 +2391,10 @@ export type ProfilesQuery = (
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country'>
-    )>, memberships?: Maybe<Array<(
+    )>, shippingAddresses?: Maybe<Array<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+    )>>, memberships?: Maybe<Array<(
       { __typename?: 'Membership' }
       & Pick<Membership, 'isAdmin'>
       & { organisation: (
@@ -2454,7 +2460,10 @@ export type ProfilesByNameQuery = (
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country'>
-    )>, verifications?: Maybe<Array<(
+    )>, shippingAddresses?: Maybe<Array<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+    )>>, verifications?: Maybe<Array<(
       { __typename?: 'Verification' }
       & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
@@ -2510,7 +2519,10 @@ export type ProfilesByCirclesAddressQuery = (
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country'>
-    )>, memberships?: Maybe<Array<(
+    )>, shippingAddresses?: Maybe<Array<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+    )>>, memberships?: Maybe<Array<(
       { __typename?: 'Membership' }
       & Pick<Membership, 'isAdmin'>
       & { organisation: (
@@ -2549,7 +2561,10 @@ export type ProfilesByIdsQuery = (
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country'>
-    )>, verifications?: Maybe<Array<(
+    )>, shippingAddresses?: Maybe<Array<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+    )>>, verifications?: Maybe<Array<(
       { __typename?: 'Verification' }
       & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
@@ -2609,7 +2624,10 @@ export type ProfileByIdQuery = (
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'country' | 'name'>
-    )>, verifications?: Maybe<Array<(
+    )>, shippingAddresses?: Maybe<Array<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+    )>>, verifications?: Maybe<Array<(
       { __typename?: 'Verification' }
       & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
@@ -2633,10 +2651,16 @@ export type ProfileBySafeAddressQuery = (
   { __typename?: 'Query' }
   & { profilesBySafeAddress: Array<(
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'successorOfCirclesAddress' | 'circlesSafeOwner' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'provenUniqueness'>
-    & { city?: Maybe<(
+    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'provenUniqueness' | 'circlesTokenAddress'>
+    & { shippingAddresses?: Maybe<Array<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
+    )>>, shops?: Maybe<Array<(
+      { __typename?: 'Shop' }
+      & Pick<Shop, 'id'>
+    )>>, city?: Maybe<(
       { __typename?: 'City' }
-      & Pick<City, 'geonameid' | 'country' | 'name'>
+      & Pick<City, 'geonameid' | 'name' | 'country'>
     )>, memberships?: Maybe<Array<(
       { __typename?: 'Membership' }
       & Pick<Membership, 'isAdmin'>
@@ -2653,13 +2677,19 @@ export type ProfileBySafeAddressQuery = (
       & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
       & { verifierProfile?: Maybe<(
         { __typename?: 'Organisation' }
-        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name' | 'displayName'>
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
         & { city?: Maybe<(
           { __typename?: 'City' }
           & Pick<City, 'geonameid' | 'name' | 'country'>
         )> }
       )> }
-    )>> }
+    )>>, claimedInvitation?: Maybe<(
+      { __typename?: 'ClaimedInvitation' }
+      & Pick<ClaimedInvitation, 'claimedAt'>
+    )>, invitationTransaction?: Maybe<(
+      { __typename?: 'ProfileEvent' }
+      & Pick<ProfileEvent, 'timestamp' | 'transaction_hash'>
+    )> }
   )> }
 );
 
@@ -2734,7 +2764,10 @@ export type OrganisationsByAddressQuery = (
       & { city?: Maybe<(
         { __typename?: 'City' }
         & Pick<City, 'geonameid' | 'country' | 'name'>
-      )>, verifications?: Maybe<Array<(
+      )>, shippingAddresses?: Maybe<Array<(
+        { __typename?: 'PostAddress' }
+        & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+      )>>, verifications?: Maybe<Array<(
         { __typename?: 'Verification' }
         & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
         & { verifierProfile?: Maybe<(
@@ -4291,6 +4324,16 @@ export const MyProfileDocument = gql`
       longitude
       population
     }
+    shippingAddresses {
+      id
+      name
+      street
+      house
+      zip
+      city
+      state
+      country
+    }
     memberships {
       isAdmin
       organisation {
@@ -4352,6 +4395,16 @@ export const ProfilesDocument = gql`
     city {
       geonameid
       name
+      country
+    }
+    shippingAddresses {
+      id
+      name
+      street
+      house
+      zip
+      city
+      state
       country
     }
     memberships {
@@ -4443,6 +4496,16 @@ export const ProfilesByNameDocument = gql`
       name
       country
     }
+    shippingAddresses {
+      id
+      name
+      street
+      house
+      zip
+      city
+      state
+      country
+    }
     verifications {
       createdAt
       revokedAt
@@ -4524,6 +4587,16 @@ export const ProfilesByCirclesAddressDocument = gql`
       name
       country
     }
+    shippingAddresses {
+      id
+      name
+      street
+      house
+      zip
+      city
+      state
+      country
+    }
     memberships {
       isAdmin
       organisation {
@@ -4582,6 +4655,16 @@ export const ProfilesByIdsDocument = gql`
     city {
       geonameid
       name
+      country
+    }
+    shippingAddresses {
+      id
+      name
+      street
+      house
+      zip
+      city
+      state
       country
     }
     verifications {
@@ -4672,6 +4755,16 @@ export const ProfileByIdDocument = gql`
       country
       name
     }
+    shippingAddresses {
+      id
+      name
+      street
+      house
+      zip
+      city
+      state
+      country
+    }
     provenUniqueness
     verifications {
       createdAt
@@ -4698,21 +4791,56 @@ export const ProfileBySafeAddressDocument = gql`
     query profileBySafeAddress($safeAddress: String!) {
   profilesBySafeAddress(safeAddresses: [$safeAddress]) {
     id
-    successorOfCirclesAddress
-    circlesSafeOwner
     circlesAddress
     displayCurrency
-    avatarUrl
+    circlesSafeOwner
+    invitationLink
+    successorOfCirclesAddress
     displayName
     firstName
     lastName
+    emailAddress
+    askedForEmailAddress
     dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+    newsletter
+    displayTimeCircles
+    displayCurrency
+    cityGeonameid
+    provenUniqueness
+    shippingAddresses {
+      id
+      name
+      street
+      house
+      zip
+      city
+      state
+      country
+      cityGeonameid
+    }
+    shops {
+      id
+    }
     city {
       geonameid
-      country
       name
+      country
     }
-    provenUniqueness
+    shippingAddresses {
+      id
+      name
+      street
+      house
+      city
+      cityGeonameid
+      zip
+      state
+      country
+    }
     memberships {
       isAdmin
       organisation {
@@ -4743,7 +4871,6 @@ export const ProfileBySafeAddressDocument = gql`
         displayCurrency
         avatarUrl
         name
-        displayName
         city {
           geonameid
           name
@@ -4751,6 +4878,14 @@ export const ProfileBySafeAddressDocument = gql`
         }
       }
     }
+    claimedInvitation {
+      claimedAt
+    }
+    invitationTransaction {
+      timestamp
+      transaction_hash
+    }
+    circlesTokenAddress
   }
 }
     `;
@@ -4860,6 +4995,16 @@ export const OrganisationsByAddressDocument = gql`
           geonameid
           country
           name
+        }
+        shippingAddresses {
+          id
+          name
+          street
+          house
+          zip
+          city
+          state
+          country
         }
         verifications {
           createdAt
