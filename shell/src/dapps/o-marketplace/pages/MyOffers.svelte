@@ -5,6 +5,8 @@ import { onMount } from "svelte";
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import Editor from "@tinymce/tinymce-svelte";
+
 import {
   Shop,
   Offer,
@@ -353,13 +355,17 @@ function addProduct(categoryId) {
                   </div>
 
                   <div class="table-cell p-1 break-all">
-                    <input
+                    <Editor
+                      scriptSrc="tinymce/tinymce.min.js"
+                      bind:value="{entry.product.description}"
+                      on:input="{() => changeEntry(entry.id, entry)}" />
+                    <!-- <input
                       type="text"
                       size="30"
                       class="input"
                       placeholder="{entry.product.description}"
                       bind:value="{entry.product.description}"
-                      on:input="{() => changeEntry(entry.id, entry)}" />
+                      on:input="{() => changeEntry(entry.id, entry)}" /> -->
                   </div>
 
                   <div class="table-cell w-20 p-1 break-all">
@@ -404,7 +410,7 @@ function addProduct(categoryId) {
         {#if showModal}
           <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
             {#if editImage}
-              <ImageUpload on:submit="{handleImageUpload}" cropShape="square" aspect="{1 / 1}" maxWidth="{300}" />
+              <ImageUpload on:submit="{handleImageUpload}" cropShape="square" aspect="{1 / 1}" maxWidth="{800}" />
             {:else}
               <div class="flex flex-col w-full h-full p-4">
                 <button

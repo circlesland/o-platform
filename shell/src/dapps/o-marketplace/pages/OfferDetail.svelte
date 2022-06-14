@@ -92,7 +92,8 @@ onMount(async () => {
                 "
                 class="w-full rounded-t-xl" />
               {#if o.pricePerUnit > 0}
-                <div class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
+                <div
+                  class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
                   <span class="inline-block">{o.pricePerUnit}</span>
                   <span class="inline-block">€</span>
                 </div>
@@ -201,7 +202,7 @@ onMount(async () => {
 .image-wrapper {
   position: relative;
   /* padding-bottom: 56.2%;b 16:9 */
-  padding-bottom: 75%; /* 4:3 */
+  padding-bottom: 100%; /* 4:3 */
 }
 
 .image-wrapper img {

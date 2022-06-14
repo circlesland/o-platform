@@ -13,8 +13,8 @@ mutation upsertShippingAddress($data: PostAddressInput!) {
   }
 }
 
-mutation createPurchase($lines: [PurchaseLineInput!]! $deliveryMethodId: Int! $deliveryAddressId: Int) {
-  purchase(lines: $lines deliveryMethodId: $deliveryMethodId deliveryAddressId: $deliveryAddressId) {
+mutation createPurchase($lines: [PurchaseLineInput!]!, $deliveryMethodId: Int!, $deliveryAddressId: Int) {
+  purchase(lines: $lines, deliveryMethodId: $deliveryMethodId, deliveryAddressId: $deliveryAddressId) {
     id
     buyerAddress
     buyerProfile {
@@ -423,6 +423,7 @@ mutation upsertShop($shop: ShopInput!) {
     smallBannerUrl
     largeBannerUrl
     openingHours
+    adultOnly
     private
     productListingStyle
     owner {
@@ -476,6 +477,10 @@ mutation upsertShopCategoryEntries($shopCategoryEntries: [ShopCategoryEntryInput
     inserted
     updated
   }
+}
+
+mutation confirmLegalAge($age: Int!) {
+  confirmLegalAge(age: $age)
 }
 
 mutation upsertOffer($offer: OfferInput!) {

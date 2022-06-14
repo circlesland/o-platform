@@ -33,7 +33,7 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
       <div class="flex flex-row space-x-2">
         {#if entry.product.pictureUrl}
           <div>
-            <div class="flex items-center w-full">
+            <div class="flex items-center w-20">
               <img class="w-20 h-20 rounded-md" src="{entry.product.pictureUrl}" alt="{entry.product.title}" />
             </div>
           </div>

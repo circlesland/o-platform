@@ -16,7 +16,8 @@ import { push } from "svelte-spa-router";
 import { saveBufferAs } from "../../../shared/saveBufferAs";
 import { ApiClient } from "../../../shared/apiConnection";
 
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "../../../shared/atoms/UserImage.svelte";
+import formatShippingAddress from "../../../shared/functions/formatPostAddress";
 
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import { _ } from "svelte-i18n";
@@ -116,30 +117,33 @@ onMount(async () => {
       },
     };
 
-    if (purchase.invoices[0].paymentTransactionHash
-      && !purchase.invoices[0].paymentTransactionHash.startsWith("0x0000000000000000")) {
-      actions.push({
-                icon: "cash",
-                title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.transaction"),
-                action: () => push(`#/banking/transactions/${purchase.invoices[0].paymentTransactionHash}`),
-              }
-              // {
-              //   icon: "document",
-              //   title: window.i18n(
-              //     "dapps.o-marketplace.pages.myPurchaseDetail.downloadInvoice"
-              //   ),
-              //   action: async () => {
-              //     for (let invoice of purchase.invoices) {
-              //       const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
-              //         InvoiceDocument,
-              //         {
-              //           invoiceId: invoice.id,
-              //         }
-              //       );
-              //       saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
-              //     }
-              //   },
-              // }
+    if (
+      purchase.invoices[0].paymentTransactionHash &&
+      !purchase.invoices[0].paymentTransactionHash.startsWith("0x0000000000000000")
+    ) {
+      actions.push(
+        {
+          icon: "cash",
+          title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.transaction"),
+          action: () => push(`#/banking/transactions/${purchase.invoices[0].paymentTransactionHash}`),
+        }
+        // {
+        //   icon: "document",
+        //   title: window.i18n(
+        //     "dapps.o-marketplace.pages.myPurchaseDetail.downloadInvoice"
+        //   ),
+        //   action: async () => {
+        //     for (let invoice of purchase.invoices) {
+        //       const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
+        //         InvoiceDocument,
+        //         {
+        //           invoiceId: invoice.id,
+        //         }
+        //       );
+        //       saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
+        //     }
+        //   },
+        // }
       );
     }
   }
@@ -243,31 +247,53 @@ onMount(async () => {
       {/each}
     </div>
     {#each purchase.invoices as invoice}
-      <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
-        <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
-          <h1 class="p-2 text-center text-white uppercase bg-dark-dark">
-            {#if invoice.simplePickupCode}
-              {$_("dapps.o-marketplace.pages.myPurchaseDetail.yourPickupNumber")}
-              {invoice.simplePickupCode}
-            {/if}
-          </h1>
-        </div>
-
-        <div class="w-full text-center">
-          {#if !invoice.pickupCode}
-            <h1 class="text-3xl uppercase font-heading">
-              {$_("dapps.o-marketplace.pages.myPurchaseDetail.noCode")}
+      {#if invoice.deliveryMethod.id == 2}
+        <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
+          <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
+            <h1
+              class="p-2 text-center text-white uppercase"
+              class:bg-dark-dark="{!invoice.sellerSignature}"
+              class:bg-success-dark="{invoice.sellerSignature}">
+              {#if invoice.sellerSignature}
+                Your order has been shipped
+              {:else if invoice.simplePickupCode}
+                {$_("dapps.o-marketplace.pages.myPurchaseDetail.yourPickupNumber")}
+                {invoice.simplePickupCode}
+              {/if}
             </h1>
-          {:else}
-            <div class="container mt-6">
-              <center>
-                <QrCode value="{invoice.pickupCode}" size="{250}" />
-              </center>
-            </div>
-          {/if}
+          </div>
+          <div class="w-full text-center">Your Order will be delivered to:</div>
+          <div class="w-full text-center">
+            {@html formatShippingAddress(purchase.deliveryAddress, true)}
+          </div>
         </div>
+      {/if}
+      {#if invoice.deliveryMethod.id == 1}
+        <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
+          <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
+            <h1 class="p-2 text-center text-white uppercase bg-dark-dark">
+              {#if invoice.simplePickupCode}
+                {$_("dapps.o-marketplace.pages.myPurchaseDetail.yourPickupNumber")}
+                {invoice.simplePickupCode}
+              {/if}
+            </h1>
+          </div>
 
-        <!-- <div class="pt-2 text-sm">
+          <div class="w-full text-center">
+            {#if !invoice.pickupCode}
+              <h1 class="text-3xl uppercase font-heading">
+                {$_("dapps.o-marketplace.pages.myPurchaseDetail.noCode")}
+              </h1>
+            {:else}
+              <div class="container mt-6">
+                <center>
+                  <QrCode value="{invoice.pickupCode}" size="{250}" />
+                </center>
+              </div>
+            {/if}
+          </div>
+
+          <!-- <div class="pt-2 text-sm">
           {$_("dapps.o-marketplace.pages.myPurchaseDetail.location")}
         </div>
         <div class="pt-2 text-sm">
@@ -277,8 +303,35 @@ onMount(async () => {
           <span class="text-sm font-thin"
             >Shop hours: Mo - Fr&nbsp;&nbsp;&nbsp;14:00 - 20:00</span>
         </div> -->
-      </div>
+        </div>
+
+        <div class="flex flex-col mt-8 space-y-2 text-center">
+          {#if purchase.lines[0].shop.pickupAddress}
+            <div>Please pick your order up at:</div>
+
+            <div class="font-bold">{@html formatShippingAddress(purchase.lines[0].shop.pickupAddress, true)}</div>
+          {/if}
+          {#if purchase.lines[0].shop.openingHours}
+            <div class="pt-2">Our Opening Hours are:</div>
+
+            <div>{@html purchase.lines[0].shop.openingHours}</div>
+          {/if}
+        </div>
+      {/if}
     {/each}
+    <!-- <div class="flex flex-col mt-4 space-y-2 text-center">
+      {#if context.data.shop.pickupAddress}
+        <div>You can pick up your order at:</div>
+
+        <div class="font-bold">{@html formatShippingAddress(context.data.shop.pickupAddress, true)}</div>
+      {/if}
+      {#if context.data.shop.openingHours}
+        <div class="pt-2">Our Opening Hours are:</div>
+
+        <div>{context.data.shop.openingHours}</div>
+      {/if}
+    </div> -->
+
     <DetailActionBar actions="{actions}" />
   {/if}
 </div>

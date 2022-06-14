@@ -266,14 +266,6 @@ const createPurchaseService = async (context: PurchaseContext) => {
     linesGroupedByOffer[o.offerId] = o.qty;
   });
 
-  let rere = Object.entries(linesGroupedByOffer).map((o) => {
-    return <PurchaseLineInput>{
-      offerId: parseInt(o[0]),
-      amount: o[1],
-      metadata: JSON.stringify(context.data.metadata),
-    };
-  });
-
   const result = await ApiClient.mutate<Invoice[], CreatePurchaseMutationVariables>(CreatePurchaseDocument, {
     deliveryMethodId: context.data.checkoutDelivery.deliveryMethodId,
     deliveryAddressId: context.data.checkoutDelivery?.shippingAddressId,
@@ -282,6 +274,7 @@ const createPurchaseService = async (context: PurchaseContext) => {
         offerId: parseInt(o[0]),
         amount: o[1],
         metadata: JSON.stringify(context.data.metadata),
+        shopId: context.data.shop.id
       };
     }),
   });
