@@ -250,8 +250,13 @@ onMount(async () => {
       {#if invoice.deliveryMethod.id == 2}
         <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
           <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
-            <h1 class="p-2 text-center text-white uppercase bg-dark-dark">
-              {#if invoice.simplePickupCode}
+            <h1
+              class="p-2 text-center text-white uppercase"
+              class:bg-dark-dark="{!invoice.sellerSignature}"
+              class:bg-success-dark="{invoice.sellerSignature}">
+              {#if invoice.sellerSignature}
+                Your order has been shipped
+              {:else if invoice.simplePickupCode}
                 {$_("dapps.o-marketplace.pages.myPurchaseDetail.yourPickupNumber")}
                 {invoice.simplePickupCode}
               {/if}
