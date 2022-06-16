@@ -1789,6 +1789,11 @@
   resolved "https://registry.npmjs.org/@istanbuljs/schema/-/schema-0.1.3.tgz"
   integrity sha512-ZXRY4jNvVgSVQ8DL3LTcakaAtXwTVUxE81hslsyD2AtoXW/wVob10HkOJ1X/pAlcI7D+2YoZKg5do8G/w6RYgA==
 
+"@jaensen/timecircles@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/@jaensen/timecircles/-/timecircles-1.0.3.tgz"
+  integrity sha512-sIt8wpVD8zmp/zZUuzxGG4KD0sEu8NbrkXPeDAqYxqpoppSZVftoUyziNUFVf8jR9/eSM5El0bfxigTkUlEBqg==
+
 "@jest/console@^27.5.1":
   version "27.5.1"
   resolved "https://registry.npmjs.org/@jest/console/-/console-27.5.1.tgz"
@@ -3253,9 +3258,9 @@
   integrity sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==
 
 "@types/node@*", "@types/node@>=6":
-  version "17.0.42"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.42.tgz#d7e8f22700efc94d125103075c074396b5f41f9b"
-  integrity sha512-Q5BPGyGKcvQgAMbsr7qEGN/kIPN6zZecYYABeTDBizOsau+2NMdSVTar9UQw21A2+JyA2KRNDYaYrPB0Rpk2oQ==
+  version "17.0.43"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.43.tgz#7f16898cdd791c9d64069000ad448b47b3ca8353"
+  integrity sha512-jnUpgw8fL9kP2iszfIDyBQtw5Mf4/XSqy0Loc1J9pI14ejL83XcCEvSf50Gs/4ET0I9VCCDoOfufQysj0S66xA==
 
 "@types/node@11.11.6":
   version "11.11.6"
