@@ -9,7 +9,8 @@ import {cartContents} from "../stores/shoppingCartStore";
 export type AddToCartContextData = {
   offerId: number,
   shopId: number,
-  successAction?: (data: AddToCartContextData) => void
+  successAction?: (data: AddToCartContextData) => Promise<void>,
+  redirectTo?: string
 };
 
 export type AddToCartContext = ProcessContext<AddToCartContextData>;
@@ -58,12 +59,16 @@ const processDefinition = (processId: string) =>
         type: "final",
         id: "success",
         entry: (context) => {
-          if (context.data.successAction) {
-            context.data.successAction(context.data);
+        },
+        invoke: {
+          src: async (context) => {
+            if (context.data.successAction) {
+              await context.data.successAction(context.data);
+            }
           }
         },
         data: (context, event: any) => {
-          return "yeah!";
+          return context.data;
         },
       },
     }

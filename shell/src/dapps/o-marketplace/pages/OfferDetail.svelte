@@ -3,12 +3,11 @@ import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
-import { cartContents } from "../stores/shoppingCartStore";
 import { push } from "svelte-spa-router";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { offers } from "../../../shared/stores/offers";
 import { _ } from "svelte-i18n";
-import { Offer, Shop, ShopCategory, ShopDocument, ShopQueryVariables } from "../../../shared/api/data/types";
+import { Offer, Shop, ShopDocument, ShopQueryVariables } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
 import {addToCart, AddToCartContextData} from "../processes/addToCart";
 
@@ -39,15 +38,10 @@ async function load() {
 export let shopId: Number; // ATTENTION SHOPID IS HARDCODED BELOW AT THE API CALL!!!!!!!
 
 function _addToCart(item: Offer, shopId: number) {
-  /*
-  item.shopId = shopId;
-  $cartContents = $cartContents ? [...$cartContents, item] : [item];
-  push(`#/marketplace/cart`);
-  */
   window.o.runProcess(addToCart, <AddToCartContextData>{
     offerId: parseInt(item.id.toString()),
     shopId: parseInt(shopId.toString()),
-    successAction: () => push(`#/marketplace/cart`)
+    redirectTo: `#/marketplace/cart`
   });
 }
 

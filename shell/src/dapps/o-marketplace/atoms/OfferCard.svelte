@@ -3,7 +3,6 @@ import { push } from "svelte-spa-router";
 import { Offer, ShopCategoryEntry } from "../../../shared/api/data/types";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
-import { cartContents } from "../stores/shoppingCartStore";
 import { truncateString } from "../../../shared/functions/truncateString";
 import { _ } from "svelte-i18n";
 import {addToCart, AddToCartContextData} from "../processes/addToCart";
@@ -17,14 +16,10 @@ function loadDetailPage() {
 }
 
 function _addToCart(item: Offer & { shopId: number }) {
-  /*
-  $cartContents = $cartContents ? [...$cartContents, item] : [item];
-  push(`#/marketplace/cart`);
-  */
   window.o.runProcess(addToCart, <AddToCartContextData>{
     offerId: parseInt(item.id.toString()),
     shopId: parseInt(item.shopId.toString()),
-    successAction: () => push(`#/marketplace/cart`)
+    redirectTo: `#/marketplace/cart`
   });
 }
 

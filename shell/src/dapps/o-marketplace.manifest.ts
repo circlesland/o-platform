@@ -49,7 +49,7 @@ const addToCartTrigger: Trigger<{ id: number, shopId: number }, DappState> = {
     window.o.runProcess(addToCart, <AddToCartContextData>{
       offerId: parseInt(params.id.toString()),
       shopId: parseInt(params.shopId.toString()),
-      successAction: () => push(`#/marketplace/cart`)
+      redirectTo: `#/marketplace/cart`
     });
   },
 };

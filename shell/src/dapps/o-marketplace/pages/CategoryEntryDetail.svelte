@@ -7,7 +7,6 @@ import { push } from "svelte-spa-router";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { _ } from "svelte-i18n";
 import { ApiClient } from "../../../shared/apiConnection";
-import { cartContents } from "../stores/shoppingCartStore";
 import {addToCart, AddToCartContextData} from "../processes/addToCart";
 
 let isLoading: boolean;
@@ -46,15 +45,10 @@ onMount(async () => {
 });
 
 function _addToCart(item: Offer & { shopId: number }) {
-  /*
-  item.shopId = shopId;
-  $cartContents = $cartContents ? [...$cartContents, item] : [item];
-  push(`#/marketplace/cart`);
-   */
   window.o.runProcess(addToCart, <AddToCartContextData>{
     offerId: parseInt(item.id.toString()),
     shopId: parseInt(shopId.toString()),
-    successAction: () => push(`#/marketplace/cart`)
+    redirectTo: `#/marketplace/cart`
   });
 }
 </script>
