@@ -6,6 +6,7 @@ import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 import { cartContents } from "../stores/shoppingCartStore";
 import { truncateString } from "../../../shared/functions/truncateString";
 import { _ } from "svelte-i18n";
+import {addToCart, AddToCartContextData} from "../processes/addToCart";
 
 export let entry: ShopCategoryEntry;
 export let shopId: number;
@@ -15,9 +16,16 @@ function loadDetailPage() {
   push("#/marketplace/detail/" + shopId + "/" + entry.id);
 }
 
-function addToCart(item: Offer & { shopId: number }) {
+function _addToCart(item: Offer & { shopId: number }) {
+  /*
   $cartContents = $cartContents ? [...$cartContents, item] : [item];
   push(`#/marketplace/cart`);
+  */
+  window.o.runProcess(addToCart, <AddToCartContextData>{
+    offerId: parseInt(item.id.toString()),
+    shopId: parseInt(item.shopId.toString()),
+    successAction: () => push(`#/marketplace/cart`)
+  });
 }
 
 let now = new Date();
@@ -82,7 +90,7 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
           <button
             type="submit"
             class="relative btn btn-primary btn-square"
-            on:click="{() => addToCart({ ...entry.product, shopId: shopId })}">
+            on:click="{() => _addToCart({ ...entry.product, shopId: shopId })}">
             <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
           </button>
         </div>

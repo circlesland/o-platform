@@ -7,6 +7,7 @@ import { me } from "../../../shared/stores/me";
 import { cartContents } from "../stores/shoppingCartStore";
 import { truncateString } from "../../../shared/functions/truncateString";
 import { _ } from "svelte-i18n";
+import {addToCart, AddToCartContextData} from "../processes/addToCart";
 
 export let param: Offer = <any>{
   categoryTag: {
@@ -50,10 +51,17 @@ function loadDetailPage() {
 
 export let shopId: Number;
 
-function addToCart(item: Offer, shopId: number) {
+function _addToCart(item: Offer, shopId: number) {
+  /*
   item.shopId = shopId;
   $cartContents = $cartContents ? [...$cartContents, item] : [item];
   push(`#/marketplace/cart`);
+   */
+  window.o.runProcess(addToCart, <AddToCartContextData>{
+    offerId: parseInt(item.id.toString()),
+    shopId: parseInt(shopId.toString()),
+    successAction: () => push(`#/marketplace/cart`)
+  });
 }
 
 let now = new Date();
@@ -123,7 +131,7 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
 
       <div class="flex flex-row space-x-4">
         <div class="">
-          <button type="submit" class="relative btn btn-primary btn-square" on:click="{() => addToCart(offer, shopId)}">
+          <button type="submit" class="relative btn btn-primary btn-square" on:click="{() => _addToCart(offer, shopId)}">
             <Icons icon="cart" />
           </button>
         </div>

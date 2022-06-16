@@ -5,7 +5,6 @@ import {createMachine} from "xstate";
 import {Offer} from "../../../shared/api/data/types";
 import {offers} from "../../../shared/stores/offers";
 import {cartContents} from "../stores/shoppingCartStore";
-import {push} from "svelte-spa-router";
 
 export type AddToCartContextData = {
   offerId: number,

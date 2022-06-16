@@ -8,6 +8,7 @@ import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { _ } from "svelte-i18n";
 import { ApiClient } from "../../../shared/apiConnection";
 import { cartContents } from "../stores/shoppingCartStore";
+import {addToCart, AddToCartContextData} from "../processes/addToCart";
 
 let isLoading: boolean;
 let error: Error;
@@ -44,10 +45,17 @@ onMount(async () => {
   }
 });
 
-function addToCart(item: Offer & { shopId: number }) {
+function _addToCart(item: Offer & { shopId: number }) {
+  /*
   item.shopId = shopId;
   $cartContents = $cartContents ? [...$cartContents, item] : [item];
   push(`#/marketplace/cart`);
+   */
+  window.o.runProcess(addToCart, <AddToCartContextData>{
+    offerId: parseInt(item.id.toString()),
+    shopId: parseInt(shopId.toString()),
+    successAction: () => push(`#/marketplace/cart`)
+  });
 }
 </script>
 
@@ -163,7 +171,7 @@ function addToCart(item: Offer & { shopId: number }) {
           </button>
         </div>
         <div class="flex-grow">
-          <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => addToCart(offer)}">
+          <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => _addToCart(offer)}">
             {$_("dapps.o-marketplace.pages.offerDetail.addToCart")}
             <div class="absolute mr-1 right-2">
               <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />

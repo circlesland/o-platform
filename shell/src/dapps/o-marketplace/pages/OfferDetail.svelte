@@ -10,6 +10,7 @@ import { offers } from "../../../shared/stores/offers";
 import { _ } from "svelte-i18n";
 import { Offer, Shop, ShopCategory, ShopDocument, ShopQueryVariables } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
+import {addToCart, AddToCartContextData} from "../processes/addToCart";
 
 let isLoading: boolean;
 let error: Error;
@@ -37,10 +38,17 @@ async function load() {
 
 export let shopId: Number; // ATTENTION SHOPID IS HARDCODED BELOW AT THE API CALL!!!!!!!
 
-function addToCart(item: Offer, shopId: number) {
+function _addToCart(item: Offer, shopId: number) {
+  /*
   item.shopId = shopId;
   $cartContents = $cartContents ? [...$cartContents, item] : [item];
   push(`#/marketplace/cart`);
+  */
+  window.o.runProcess(addToCart, <AddToCartContextData>{
+    offerId: parseInt(item.id.toString()),
+    shopId: parseInt(shopId.toString()),
+    successAction: () => push(`#/marketplace/cart`)
+  });
 }
 
 onMount(async () => {
@@ -171,7 +179,7 @@ onMount(async () => {
           </div>
           <div class="flex-grow">
             {#if o.pricePerUnit > 0}
-              <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => addToCart(o, shopId)}">
+              <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => _addToCart(o, shopId)}">
                 {$_("dapps.o-marketplace.pages.offerDetail.addToCart")}
                 <div class="absolute mr-1 right-2">
                   <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
