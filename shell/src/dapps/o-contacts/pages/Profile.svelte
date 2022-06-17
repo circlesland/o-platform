@@ -1,14 +1,12 @@
 <script lang="ts">
 import { getCountryName } from "../../../shared/countries";
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { me } from "../../../shared/stores/me";
 import LoadingIndicator from "../../../shared/atoms/LoadingIndicator.svelte";
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import { showToast } from "../../../shared/toast";
 
 import {
-  Capability,
-  CapabilityType,
   CommonTrust,
   CommonTrustDocument,
   CommonTrustQueryVariables,
@@ -17,9 +15,6 @@ import {
   ContactPoint,
   EventType,
   Profile,
-  VerifySafeDocument,
-  RevokeSafeVerificationDocument,
-  AggregateType,
   SessionInfo,
 } from "../../../shared/api/data/types";
 import { contacts } from "../../../shared/stores/contacts";
@@ -30,11 +25,9 @@ import { UserActions, UserActionItem } from "../../../shared/userActions";
 
 import { _ } from "svelte-i18n";
 import { Environment } from "../../../shared/environment";
-import {param} from "../atoms/ChatListCard.svelte";
+import { param } from "../atoms/ChatListCard.svelte";
 
 export let id: string;
-
-export let capabilities: Capability[] | undefined;
 
 let error: string | undefined = undefined;
 let displayName: string;
@@ -64,21 +57,16 @@ async function setProfile(id: string) {
 
   if ($me.circlesAddress !== contact.contactAddress) {
     commonTrusts = (
-      await ApiClient.query<CommonTrust[], CommonTrustQueryVariables>(
-        CommonTrustDocument,
-        {
-          safeAddress1: $me.circlesAddress.toLowerCase(),
-          safeAddress2: contact.contactAddress.toLowerCase(),
-        }
-      )
+      await ApiClient.query<CommonTrust[], CommonTrustQueryVariables>(CommonTrustDocument, {
+        safeAddress1: $me.circlesAddress.toLowerCase(),
+        safeAddress2: contact.contactAddress.toLowerCase(),
+      })
     ).filter((o) => o.profile);
   } else {
     profile = <any>$me;
 
     $contacts.forEach((contact: Contact) => {
-      const trustMetadata: ContactPoint = contact.metadata.find(
-              (p) => p.name === "CrcTrust"
-      );
+      const trustMetadata: ContactPoint = contact.metadata.find((p) => p.name === "CrcTrust");
       let trustIn = 0;
       let trustOut = 0;
       if (trustMetadata) {
@@ -108,9 +96,7 @@ async function setProfile(id: string) {
   profile = contact.contactAddress_Profile;
 
   if (contact.metadata) {
-    const trustMetadata: ContactPoint = contact.metadata.find(
-      (p) => p.name === EventType.CrcTrust
-    );
+    const trustMetadata: ContactPoint = contact.metadata.find((p) => p.name === EventType.CrcTrust);
     let trustIn = 0;
     let trustOut = 0;
 
@@ -140,65 +126,9 @@ async function setProfile(id: string) {
 
   const detailActionsPromise = UserActions.getAvailableActions(profile);
   const sessionInfoPromise = me.getSessionInfo();
-  const promiseResults = await Promise.all([
-    detailActionsPromise,
-    sessionInfoPromise,
-  ]);
+  const promiseResults = await Promise.all([detailActionsPromise, sessionInfoPromise]);
   detailActions = <UserActionItem[]>promiseResults[0];
   const sessionInfo = <SessionInfo>promiseResults[1];
-
-  capabilities = sessionInfo.capabilities;
-  const canVerify =
-    capabilities &&
-    capabilities.find((o) => o.type == CapabilityType.Verify) &&
-    Environment.allowVerify;
-
-  const verifyProfile = {
-    key: "verify",
-    icon: "check",
-    title: `${$_("dapps.o-contacts.pages.profile.verify")}`,
-    action: async () => {
-      const apiClient = await window.o.apiClient.client.subscribeToResult();
-      await apiClient.mutate({
-        mutation: VerifySafeDocument,
-        variables: {
-          safeAddress: id,
-        },
-      });
-      showToast(
-        "success",
-        `${$_("dapps.o-contacts.pages.profile.accountVerified")}`
-      );
-
-      isLoading = true;
-      setProfile(id).then(() => (isLoading = false));
-    },
-  };
-
-  const unverifyProfile = {
-    key: "evoke",
-    icon: "trash",
-    colorClass: "",
-    title: `${$_("dapps.o-contacts.pages.profile.verifiedClickToRevoke")}`,
-    action: async () => {
-      const apiClient = await window.o.apiClient.client.subscribeToResult();
-      await apiClient.mutate({
-        mutation: RevokeSafeVerificationDocument,
-        variables: {
-          safeAddress: id,
-        },
-      });
-
-      showToast(
-        "error",
-        `${$_("dapps.o-contacts.pages.profile.accountVerificationRevoked")}`
-      );
-
-      isLoading = true;
-      setProfile(id).then(() => (isLoading = false));
-    },
-  };
-  console.log("banni", unverifyProfile);
 
   const bannedProfile = {
     key: "banned",
@@ -207,18 +137,6 @@ async function setProfile(id: string) {
     title: `${$_("dapps.o-contacts.pages.profile.revokedUppercase")}`,
     action: () => {},
   };
-
-  if (canVerify) {
-    if (profile.verifications?.length && profile.verifications[0].revokedAt) {
-      detailActions.push(bannedProfile);
-    } else {
-      if (profile.verifications?.length) {
-        detailActions.push(unverifyProfile);
-      } else {
-        detailActions.push(verifyProfile);
-      }
-    }
-  }
 }
 </script>
 
@@ -238,13 +156,8 @@ async function setProfile(id: string) {
           {/if}
         </h1>
       </div>
-      <div
-        class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
-        <UserImage
-          profile="{profile}"
-          size="{36}"
-          gradientRing="{true}"
-          profileLink="{false}" />
+      <div class="flex flex-col items-center self-center w-full m-auto text-center justify-self-center ">
+        <UserImage profile="{profile}" size="{36}" gradientRing="{true}" profileLink="{false}" />
 
         {#if profile && contact.contactAddress}
           <div
@@ -257,9 +170,7 @@ async function setProfile(id: string) {
         {#if profile && profile.city}
           <div class="mt-1 text-sm text-dark-lightest">
             {profile.city ? profile.city.name : ""}
-            {profile.city
-              ? ", " + profile.city.country
-              : ", " + getCountryName(profile)}
+            {profile.city ? ", " + profile.city.country : ", " + getCountryName(profile)}
           </div>
         {/if}
       </div>
@@ -290,10 +201,7 @@ async function setProfile(id: string) {
                     {#each commonTrusts as commonTrust}
                       {#if commonTrust.profile}
                         <div class="mt-2 mr-2">
-                          <UserImage
-                            profile="{commonTrust.profile}"
-                            tooltip="{true}"
-                            gradientRing="{true}" />
+                          <UserImage profile="{commonTrust.profile}" tooltip="{true}" gradientRing="{true}" />
                         </div>
                       {/if}
                     {/each}
@@ -313,10 +221,7 @@ async function setProfile(id: string) {
                     {#each profile.memberships as membership}
                       {#if membership.organisation}
                         <div class="mt-2 mr-2">
-                          <UserImage
-                                  profile="{membership.organisation}"
-                                  tooltip="{true}"
-                                  gradientRing="{true}" />
+                          <UserImage profile="{membership.organisation}" tooltip="{true}" gradientRing="{true}" />
                         </div>
                       {/if}
                     {/each}
@@ -332,51 +237,14 @@ async function setProfile(id: string) {
                   </div>
                   <div class="flex flex-row flex-wrap mt-2 ">
                     {#each profile.members as memberProfile}
-                        <div class="mt-2 mr-2">
-                          <UserImage
-                                  profile="{memberProfile}"
-                                  tooltip="{true}"
-                                  gradientRing="{true}" />
-                        </div>
+                      <div class="mt-2 mr-2">
+                        <UserImage profile="{memberProfile}" tooltip="{true}" gradientRing="{true}" />
+                      </div>
                     {/each}
                   </div>
                 </div>
               </section>
             {/if}
-            {#if profile.verifications && profile.verifications.length}
-              <section class="justify-center mb-2 ">
-                <div class="flex flex-col w-full pt-2 space-y-1">
-                  <div class="text-left text-2xs text-dark-lightest">
-                    {$_("dapps.o-contacts.pages.profile.verifiedBy")}
-                  </div>
-                  <div class="flex flex-row flex-wrap mt-2 ">
-                    {#each profile.verifications as verification}
-                      {#if verification.verifierProfile}
-                        <div class="mt-2 mr-2">
-                          <UserImage
-                            profile="{verification.verifierProfile}"
-                            tooltip="{true}"
-                            gradientRing="{true}" />
-                        </div>
-                      {/if}
-                    {/each}
-                  </div>
-                </div>
-              </section>
-            {/if}
-            <!-- {#if profile && profile.dream}
-              <section class="justify-center mb-2 ">
-                <div class="flex flex-col w-full pt-2 space-y-1">
-                  <div class="text-left text-2xs text-dark-lightest">
-                    {$_("dapps.o-contacts.pages.profile.passion")}
-                  </div>
-
-                  <div class="flex items-center w-full text-lg">
-                    {profile.dream}
-                  </div>
-                </div>
-              </section>
-            {/if} -->
           {/if}
 
           {#if profile && profile.circlesAddress}
