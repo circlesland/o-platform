@@ -3185,7 +3185,7 @@ export type AggregatesQuery = (
       & Pick<Offers, 'lastUpdatedAt'>
       & { offers: Array<(
         { __typename?: 'Offer' }
-        & Pick<Offer, 'id' | 'version' | 'createdByAddress' | 'createdAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'pricePerUnit' | 'timeCirclesPriceShare'>
+        & Pick<Offer, 'id' | 'version' | 'createdByAddress' | 'createdAt' | 'title' | 'minAge' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'pricePerUnit' | 'timeCirclesPriceShare'>
         & { createdByProfile?: Maybe<(
           { __typename?: 'Profile' }
           & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'smallBannerUrl' | 'provenUniqueness'>
@@ -5644,6 +5644,7 @@ export const AggregatesDocument = gql`
           createdByAddress
           createdAt
           title
+          minAge
           pictureUrl
           pictureMimeType
           description

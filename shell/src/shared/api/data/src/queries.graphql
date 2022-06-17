@@ -1636,6 +1636,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
           createdByAddress
           createdAt
           title
+          minAge
           pictureUrl
           pictureMimeType
           description
