@@ -58,8 +58,8 @@ const processDefinition = (processId: string) =>
             cond: (context) => (!context.data.confirmedLegalAge || context.data.confirmedLegalAge < 16) && context.data.offer.minAge >= 16,
             target: "#confirmMinAge16"
           }, {
-            cond: (context) => !context.data.offer.minAge,
-            target: "addToCart"
+            cond: (context) => !context.data.offer.minAge || context.data.confirmedLegalAge >= 18,
+            target: "#addToCart"
           }]
         }
       },
@@ -78,7 +78,9 @@ const processDefinition = (processId: string) =>
             target: "#addToCart",
             class: "btn btn-outline",
             action: (context) => {
-              ApiClient.mutate(ConfirmLegalAgeDocument, {age: 16}).then(o => console.log(`Updated the profile's legal age to 16`));
+              ApiClient.mutate(ConfirmLegalAgeDocument, {age: 16}).then(o => console.log(`Updated the profile's legal age to 16`)).then(() => {
+                me.reload();
+              });
             },
           },
           {
@@ -91,7 +93,7 @@ const processDefinition = (processId: string) =>
           },
         ],
         navigation: {
-          previous: "#loadOffer",
+          // previous: "#loadOffer",
           canGoBack: () => false,
           canSkip: () => false,
           skip: "#addToCart"
@@ -112,7 +114,9 @@ const processDefinition = (processId: string) =>
             target: "#addToCart",
             class: "btn btn-outline",
             action: (context) => {
-              ApiClient.mutate(ConfirmLegalAgeDocument, {age: 18}).then(o => console.log(`Updated the profile's legal age to 18`));
+              ApiClient.mutate(ConfirmLegalAgeDocument, {age: 18}).then(o => console.log(`Updated the profile's legal age to 18`)).then(() => {
+                me.reload();
+              });
             },
           },
           {
@@ -125,7 +129,7 @@ const processDefinition = (processId: string) =>
           },
         ],
         navigation: {
-          previous: "#loadOffer",
+          // previous: "#loadOffer",
           canGoBack: () => false,
           canSkip: () => false,
           skip: "#addToCart"

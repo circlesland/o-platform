@@ -2151,7 +2151,7 @@ export type InitQuery = (
       & Pick<Capability, 'type'>
     )>, profile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'provenUniqueness' | 'circlesTokenAddress'>
+      & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'confirmedLegalAge' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'provenUniqueness' | 'circlesTokenAddress'>
       & { shippingAddresses?: Maybe<Array<(
         { __typename?: 'PostAddress' }
         & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
@@ -4040,6 +4040,7 @@ export const InitDocument = gql`
       id
       circlesAddress
       displayCurrency
+      confirmedLegalAge
       circlesSafeOwner
       invitationLink
       successorOfCirclesAddress
