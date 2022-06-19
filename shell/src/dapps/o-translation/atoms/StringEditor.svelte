@@ -54,39 +54,36 @@ async function writeValueToDb(value: string, lang: string, key: string) {
 }
 </script>
 
-<div class="table">
-  <div class="table-row-group">
-    <div class="table-row">
-      <div class="table-cell break-all w-64 p-1">{dataString}</div>
-      <!--<div class="table-cell p-1">{dataLang}</div>-->
-      <img src={"/country-flags/svg/" + dataLang + ".svg"} alt="blasjgdhla" class="table-cell w-10 h-10">
-      {#if dataVersion > 1}
-        <div class="table-cell p-1 w-20">
-          <select name="" id="" bind:value="{selectedVersion}" on:change="{() => selectChange()}">
-            {#each olderVersionData as data}
-              <option value="{data.version}">{data.version}</option>
-            {/each}
-          </select>
-        </div>
-      {:else}
-        <div class="table-cell p-1 w-20">{dataVersion}</div>
-      {/if}
+<div class="flex justify-between items-center w-full">
+  <div class="w-full text-red-600">{dataString}</div>
+  <!--<div class="table-cell p-1">{dataLang}</div>-->
+  <!--<img src={"/country-flags/svg/" + dataLang + ".svg"} alt="{dataLang}" class="table-cell w-10 h-10">-->
+  {#if dataVersion > 1}
+    <div class="flex items-center w-full mr-16 justify-between">
+      <p class="ml-8">Version: </p>
+      <select name="" id="" bind:value="{selectedVersion}" on:change="{() => selectChange()}">
+        {#each olderVersionData as data}
+          <option value="{data.version}">{data.version}</option>
+        {/each}
+      </select>
+    </div>
+  {:else}
+    <div class="flex items-center w-full mr-16 justify-between"><p class="ml-8">Version:</p><p>{dataVersion}</p></div>
+  {/if}
 
-      <div class="table-cell p-1">
-        <div class="flex">
-          <input bind:value="{inputValue}" class="input" type="text" placeholder="{dataString}" />
-          <button
-            class="bg-blue-100 rounded-lg m-1"
-            on:click="{async () => {
-              let updatedObject = await writeValueToDb(inputValue, dataLang, dataKey);
-              await loadOlderVersions(dataLang, dataKey);
-              dataVersion = updatedObject.version;
-              dataString = updatedObject.value;
-              selectedVersion = updatedObject.version;
-              inputValue = '';
-            }}">Save</button>
-        </div>
-      </div>
+  <div class="table-cell">
+    <div class="flex">
+      <input bind:value="{inputValue}" class="input" type="text" placeholder="{dataString}" />
+      <button
+        class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
+        on:click="{async () => {
+          let updatedObject = await writeValueToDb(inputValue, dataLang, dataKey);
+          await loadOlderVersions(dataLang, dataKey);
+          dataVersion = updatedObject.version;
+          dataString = updatedObject.value;
+          selectedVersion = updatedObject.version;
+          inputValue = '';
+        }}">Save</button>
     </div>
   </div>
 </div>

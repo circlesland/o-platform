@@ -6,6 +6,7 @@ import {
   I18n,
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
+import LangSwitcher from "../../../shared/atoms/LangSwitcher.svelte";
 import { Environment } from "../../../shared/environment";
 import Tree from "../atoms/Tree.svelte";
 import { CTreeNode, StateSnapshot } from "../classes/treenode";
@@ -103,8 +104,8 @@ function isSelected(languageCode: string) {
 
 
 
-<section class="relative mb20 -mt-3">
-  <div class="flex grow">
+<section class="relative mb-20 -mt-3 bg-white shadow rounded md:w-2/3 xl:w-1/2">
+  <div class="flex grow justify-center mt-3">
     <form on:input="{() => refreshView()}" class="justify-start">
       <input bind:value="{keyFilter}" class="input m-1" type="text" placeholder="dapps.o-banking..." />
     </form>
@@ -112,26 +113,30 @@ function isSelected(languageCode: string) {
       <input bind:value="{valueFilter}" class="input m-1" type="text" placeholder="String" />
     </form>
   </div>
-  <div class="flex">
+  <div class="flex justify-center m-3">
+    <LangSwitcher />
+  </div>
+  <!--<div class="flex justify-center">
     {#each allLanguages as languageCode}
       <button
         on:click="{() => {
           toggleLanguage(languageCode);
           refreshView();
         }}"
-        class="p-1 m-1 bg-blue-200 hover:bg-blue-500"
+        class="p-1 m-1 bg-blue-200 hover:bg-blue-500 rounded"
         class:bg-red-200="{isSelected(languageCode)}">
         {languageCode}
       </button>
     {/each}
+  </div>-->
+  <div class="mr-3 ml-3">
+    <Tree
+      rootNode="{displayedTree}"
+      on:expand="{(event) => {
+        let partialSnapshot = event.detail.newSnapshot;
+        for (let property in partialSnapshot) {
+          snapshot[property] = partialSnapshot[property];
+        }
+      }}" />
   </div>
-
-  <Tree 
-    rootNode="{displayedTree}"
-    on:expand="{(event) => {
-      let partialSnapshot = event.detail.newSnapshot;
-      for (let property in partialSnapshot) {
-        snapshot[property] = partialSnapshot[property];
-      }
-    }}" />
 </section>

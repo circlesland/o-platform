@@ -50,6 +50,7 @@ import { Stopped } from "@o-platform/o-process/dist/events/stopped";
 import { ApiClient } from "../apiConnection";
 import { Environment } from "../environment";
 import { addMessages } from "svelte-i18n";
+import { init as i18nInit, getLocaleFromNavigator } from 'svelte-i18n';
 
 export let params: {
   dappId: string;
@@ -988,8 +989,9 @@ function buildI18nDictonary(sourceData) {
   }
 }
 
+
 async function handleUrlChanged() {
-  if (!i18nStrings) {
+  if (!i18nStrings || language != Environment.userLanguage) {
     await ApiClient.query<I18n, QueryGetAllStringsByMaxVersionAndLangArgs>(GetAllStringsByMaxVersionAndLangDocument, {
       lang: language[0] + language[1],
     }).then((i18nResult) => {
@@ -997,6 +999,11 @@ async function handleUrlChanged() {
     });
     buildI18nDictonary(i18nStrings);
     addMessages("dictionary", i18nDictionary);
+
+    i18nInit({
+      fallbackLocale: 'dictionary',
+      initialLocale: getLocaleFromNavigator(),
+    });
   }
   console.log(i18nStrings);
   // log(`handleUrlChanged()`);
