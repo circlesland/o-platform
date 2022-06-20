@@ -3426,7 +3426,7 @@ export type ShopQuery = (
         & Pick<ShopCategoryEntry, 'id' | 'sortOrder' | 'private' | 'productId' | 'productVersion' | 'shopCategoryId' | 'enabled'>
         & { product?: Maybe<(
           { __typename?: 'Offer' }
-          & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit'>
+          & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'minAge'>
           & { createdByProfile?: Maybe<(
             { __typename?: 'Profile' }
             & Pick<Profile, 'id' | 'displayName' | 'avatarUrl' | 'circlesAddress' | 'provenUniqueness'>
@@ -6225,6 +6225,7 @@ export const ShopDocument = gql`
           description
           pictureUrl
           pricePerUnit
+          minAge
           createdByProfile {
             id
             displayName
