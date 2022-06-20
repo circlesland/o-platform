@@ -1,11 +1,12 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
 import { Offer, ShopCategoryEntry } from "../../../shared/api/data/types";
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "../../../shared/atoms/UserImage.svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import Icons from "../../../shared/molecules/Icons.svelte";
 import { truncateString } from "../../../shared/functions/truncateString";
 import { _ } from "svelte-i18n";
-import {addToCart, AddToCartContextData} from "../processes/addToCart";
+import { addToCart, AddToCartContextData } from "../processes/addToCart";
 
 export let entry: ShopCategoryEntry;
 export let shopId: number;
@@ -19,7 +20,7 @@ function _addToCart(item: Offer & { shopId: number }) {
   window.o.runProcess(addToCart, <AddToCartContextData>{
     offerId: parseInt(item.id.toString()),
     shopId: parseInt(item.shopId.toString()),
-    redirectTo: `#/marketplace/cart`
+    redirectTo: `#/marketplace/cart`,
   });
 }
 
@@ -55,6 +56,15 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
               {deliveryMethod.name}
             </div>
           {/each}
+        {/if}
+        {#if entry.product.minAge}
+          <div class="absolute right-0 py-2 pl-4 pr-2 mt-2 text-xs rounded-l-full bottom-4 bg-light-lightest">
+            {#if entry.product.minAge < 18}
+              <Icons icon="under16" customClass="inline" size="{10}" />
+            {:else}
+              <Icons icon="under18" customClass="inline" size="{10}" />
+            {/if}
+          </div>
         {/if}
       </div>
     </header>
