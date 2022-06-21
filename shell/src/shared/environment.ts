@@ -3,104 +3,104 @@
  */
 export class Environment {
   public static get authEndpointUrl(): string {
-    return "__AUTH_ENDPOINT__";
+    return import.meta.env.AUTH_ENDPOINT;
   }
 
   public static get apiEndpointUrl(): string {
-    return "__API_ENDPOINT__";
+    return import.meta.env.API_ENDPOINT;
   }
 
   public static get humanodeAuthUrl(): string {
-    return "__HUMANODE_AUTH_URL__";
+    return import.meta.env.HUMANODE_AUTH_URL;
   }
 
   public static get humanodeTokenUrl(): string {
-    return "__HUMANODE_TOKEN_URL__";
+    return import.meta.env.HUMANODE_TOKEN_URL;
   }
 
   public static get humanodeRedirectUrl(): string {
-    return "__HUMANODE_REDIRECT_URL__";
+    return import.meta.env.HUMANODE_REDIRECT_URL;
   }
 
   public static get humanodeClientId(): string {
-    return "__HUMANODE_CLIENT_ID__";
+    return import.meta.env.HUMANODE_CLIENT_ID;
   }
 
   public static get humanodeScope(): string {
-    return "__HUMANODE_SCOPE__";
+    return import.meta.env.HUMANODE_SCOPE;
   }
 
   public static get appId(): string {
-    return "__APP_ID__";
+    return import.meta.env.APP_ID;
   }
 
   public static get externalUrl(): string {
-    return "__EXTERNAL_URL__";
+    return import.meta.env.EXTERNAL_URL;
   }
 
   public static get filesAppId(): string {
-    return "__FILES_APP_ID__";
+    return import.meta.env.FILES_APP_ID;
   }
 
   public static get circlesGardenApiUrl(): string {
-    return "__CIRCLES_GARDEN_API__";
+    return import.meta.env.CIRCLES_GARDEN_API;
   }
 
   public static get pathfinderEndpointUrl(): string {
-    return "__PATHFINDER_ENDPOINT__";
+    return import.meta.env.PATHFINDER_ENDPOINT;
   }
 
   public static get circlesSubgraphEndpoint(): string {
-    return "__CIRCLES_SUBGRAPH_ENDPOINT__";
+    return import.meta.env.CIRCLES_SUBGRAPH_ENDPOINT;
   }
 
   public static get circlesHubAddress(): string {
-    return "__CIRCLES_HUB_ADDRESS__";
+    return import.meta.env.CIRCLES_HUB_ADDRESS;
   }
 
   public static get circlesHubBlock(): number {
-    return parseInt("__CIRCLES_HUB_BLOCK__");
+    return parseInt(import.meta.env.CIRCLES_HUB_BLOCK);
   }
 
   public static get safeProxyFactoryAddress(): string {
-    return "__SAFE_PROXY_FACTORY_ADDRESS__";
+    return import.meta.env.SAFE_PROXY_FACTORY_ADDRESS;
   }
 
   public static get masterSafeAddress(): string {
-    return "__SAFE_ADDRESS__";
+    return import.meta.env.SAFE_ADDRESS;
   }
 
   public static get xdaiRpcGatewayUrl(): string {
-    return "__RPC_ENDPOINT__";
+    return import.meta.env.RPC_ENDPOINT;
   }
 
   public static get useMockLogin(): boolean {
     // @ts-ignore
-    return "__USE_MOCKS__" == "true";
+    return import.meta.env.USE_MOCKS == "true";
   }
 
   public static get allowVerify(): boolean {
     // @ts-ignore
-    return "__ALLOW_VERIFY__" == "true";
+    return import.meta.env.ALLOW_VERIFY == "true";
   }
 
   public static get allowCreateOrganisation(): boolean {
     // @ts-ignore
-    return "__ALLOW_CREATE_ORGANISATION__" == "true";
+    return import.meta.env.ALLOW_CREATE_ORGANISATION == "true";
   }
 
   public static get fixedGasPrice(): string {
-    return "__FIXED_GAS_PRICE__";
+    return import.meta.env.FIXED_GAS_PRICE;
   }
 
   public static get openLoginClientId(): string {
-    return "__OPENLOGIN_CLIENT_ID__";
+    return import.meta.env.OPENLOGIN_CLIENT_ID;
   }
 
-  public static getShopMetadata(shopId:number) : string {
+  public static getShopMetadata(shopId: number): string {
     return localStorage.getItem("shopMetadata." + shopId);
   }
-  public static setShopMetadata(shopId:number, data:string) {
+  public static setShopMetadata(shopId: number, data: string) {
     return localStorage.setItem("shopMetadata." + shopId, data);
   }
 }

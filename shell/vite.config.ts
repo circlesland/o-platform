@@ -14,7 +14,7 @@ export default defineConfig({
     global: {},
     Buffer: Buffer,
   },
-
+  publicDir: "public",
   resolve: {
     alias: {
       "@shared": path.resolve("./src/shared"),
