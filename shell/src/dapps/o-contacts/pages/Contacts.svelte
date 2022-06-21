@@ -1,33 +1,34 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+import SimpleHeader from "@shared/atoms/SimpleHeader.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import ContactCard from "../atoms/ContactCard.svelte";
 import { contacts } from "../../../shared/stores/contacts";
 
 import { _ } from "svelte-i18n";
-import {onMount} from "svelte";
-import {Contact} from "../../../shared/api/data/types";
-import {trustFromContactMetadata} from "../../../shared/functions/trustFromContactMetadata";
+import { onMount } from "svelte";
+import { Contact } from "../../../shared/api/data/types";
+import { trustFromContactMetadata } from "../../../shared/functions/trustFromContactMetadata";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
-let displayContacts:Contact[];
+let displayContacts: Contact[];
 
 onMount(() => {
-  return contacts.subscribe((c:Contact[]) => {
+  return contacts.subscribe((c: Contact[]) => {
     console.log("Contacts changed.");
     displayContacts = (c ?? [])
-      .map(o => {return {...o}})
+      .map((o) => {
+        return { ...o };
+      })
       .sort(sortAlphabetically)
-      .filter(o => {
-        const {trustIn, trustOut} = trustFromContactMetadata(o);
+      .filter((o) => {
+        const { trustIn, trustOut } = trustFromContactMetadata(o);
         return trustIn > 0 || trustOut > 0;
       });
   });
 });
-
 
 function sortAlphabetically(a, b) {
   if (a.contactAddress_Profile.firstName.startsWith("0x")) {
@@ -36,9 +37,7 @@ function sortAlphabetically(a, b) {
   if (b.contactAddress_Profile.firstName.startsWith("0x")) {
     return -1;
   }
-  return a.contactAddress_Profile.firstName.localeCompare(
-    b.contactAddress_Profile.firstName
-  );
+  return a.contactAddress_Profile.firstName.localeCompare(b.contactAddress_Profile.firstName);
 }
 </script>
 
@@ -55,7 +54,7 @@ function sortAlphabetically(a, b) {
     </section>
   {:else}
     <!-- TODO: Possible actions: trust, transfer money -->
-    {#each displayContacts as contact(contact.contactAddress)}
+    {#each displayContacts as contact (contact.contactAddress)}
       <ContactCard contact="{contact}" />
     {/each}
     {#if displayContacts.length === 0}

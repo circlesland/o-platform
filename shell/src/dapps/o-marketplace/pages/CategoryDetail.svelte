@@ -1,8 +1,6 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-import {
-  Offer
-} from "../../../shared/api/data/types";
+import SimpleHeader from "@shared/atoms/SimpleHeader.svelte";
+import { Offer } from "../../../shared/api/data/types";
 import OfferCard from "../atoms/OfferCard.svelte";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
@@ -52,17 +50,12 @@ async function load() {
 onMount(async () => {
   await load();
 
-  shellEventSubscription = window.o.events.subscribe(
-    async (event: PlatformEvent) => {
-      if (
-        event.type != "shell.refresh" ||
-        (<any>event).dapp != "marketplace:1"
-      ) {
-        return;
-      }
-      await load();
+  shellEventSubscription = window.o.events.subscribe(async (event: PlatformEvent) => {
+    if (event.type != "shell.refresh" || (<any>event).dapp != "marketplace:1") {
+      return;
     }
-  );
+    await load();
+  });
 
   return () => {
     shellEventSubscription.unsubscribe();
@@ -70,10 +63,7 @@ onMount(async () => {
 });
 </script>
 
-<SimpleHeader
-  runtimeDapp="{runtimeDapp}"
-  routable="{routable}"
-  headerString="{categoryName}" />
+<SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" headerString="{categoryName}" />
 
 <div class="px-4 mx-auto -mt-3 lg:w-2/3 xl:w-1/2">
   {#if isLoading}
@@ -95,8 +85,7 @@ onMount(async () => {
       </div>
     </section>
   {:else if offers.length}
-    <div
-      class="grid grid-cols-1 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid svelte-hq9rde">
+    <div class="grid grid-cols-1 gap-x-4 gap-y-8 auto-rows-fr sm:grid-cols-2 marketplace-grid svelte-hq9rde">
       {#each offers as offer}
         <OfferCard offer="{offer}" />
       {/each}

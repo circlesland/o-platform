@@ -1,7 +1,7 @@
 <script lang="ts">
 import { onMount } from "svelte";
 import Time from "svelte-time";
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "@shared/atoms/UserImage.svelte";
 import { me } from "../../../shared/stores/me";
 
 // import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
@@ -41,8 +41,7 @@ function onkeydown(e: KeyboardEvent) {
 </script>
 
 {#if _context.data && profile}
-  <div
-    class="flex flex-col items-center self-center w-full m-auto space-y-4 text-center justify-self-center">
+  <div class="flex flex-col items-center self-center w-full m-auto space-y-4 text-center justify-self-center">
     <div>
       <span class="inline-block text-6xl font-heading {classes}">
         {_context.data.tokens.amount} <span class=" font-primary">€</span>
@@ -61,9 +60,7 @@ function onkeydown(e: KeyboardEvent) {
       </span>
     </div>
     <div class="text-dark-lightest">
-      {_context.data.message && _context.data.message != undefined
-        ? _context.data.message
-        : ""}
+      {_context.data.message && _context.data.message != undefined ? _context.data.message : ""}
     </div>
 
     <!-- {#if _context.data && _context.data.transitivePath}

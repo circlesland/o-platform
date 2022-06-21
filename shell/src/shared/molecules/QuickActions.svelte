@@ -1,12 +1,12 @@
 <script lang="ts">
-import { clickOutside } from "src/shared/functions/clickOutside.ts";
+import { clickOutside } from "../functions/clickOutside";
 import { createEventDispatcher, onMount } from "svelte";
 
-import { dapps } from "src/loader";
+import { dapps } from "../../loader";
 import DetailActionBar from "./DetailActionBar.svelte";
-import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
+import type { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import type { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import type { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import ProfileSwitcherBar from "./ProfileSwitcherBar.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
@@ -39,21 +39,14 @@ onMount(async () => {
     })
   );
 
-  actions = categories
-    .filter((o) => o.items["action"])
-    .flatMap((o) => o.items["action"]);
-  profiles = categories
-    .filter((o) => o.items["profile"])
-    .flatMap((o) => o.items["profile"]);
+  actions = categories.filter((o) => o.items["action"]).flatMap((o) => o.items["action"]);
+  profiles = categories.filter((o) => o.items["profile"]).flatMap((o) => o.items["profile"]);
 });
 
 const eventDispatcher = createEventDispatcher();
 </script>
 
-<div
-  class="z-10 flex flex-col flex-1"
-  use:clickOutside
-  on:click_outside="{() => eventDispatcher('clickedOutside')}">
+<div class="z-10 flex flex-col flex-1" use:clickOutside on:click_outside="{() => eventDispatcher('clickedOutside')}">
   <div class="relative flex-shrink-0 w-full p-6 space-y-2">
     <div class="">
       <ProfileSwitcherBar actions="{profiles}" />

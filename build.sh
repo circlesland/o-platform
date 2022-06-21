@@ -48,7 +48,7 @@ npx --no-install  graphql-codegen
 
 cd ../../../../..
 
-echo "Building 'shell' with dapps .."
-cd shell || exit
-npm run build
-cd .. || exit
+# echo "Building 'shell' with dapps .."
+# cd shell || exit
+# npm run build
+# cd .. || exit

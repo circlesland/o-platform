@@ -8,7 +8,7 @@ import isOutOfViewport from "./utils/isOutOfViewport";
 import debounce from "./utils/debounce";
 import Icons from "../../molecules/Icons.svelte";
 import DefaultClearIcon from "./ClearIcon.svelte";
-import { isMobile } from "src/shared/functions/isMobile";
+import { isMobile } from "@shared/functions/isMobile";
 import { Observable } from "rxjs";
 
 const dispatch = createEventDispatcher();

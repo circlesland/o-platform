@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "rxjs": "^6.6.3"
+    "rxjs": "^7.5.5"
   },
   "author": "Daniel Janz & Samuel Andert (Basic Income Lab GmbH)",
   "license": "LGPL-3.0-or-later",

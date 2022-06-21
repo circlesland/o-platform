@@ -1,5 +1,5 @@
 <script lang="ts">
-import { AvataarGenerator } from "src/shared/avataarGenerator";
+import { AvataarGenerator } from "@shared/avataarGenerator";
 import { push } from "svelte-spa-router";
 import { verify } from "../../dapps/o-verification/processes/verify";
 import { Profile, Organisation } from "../api/data/types";

@@ -1,20 +1,16 @@
 <script lang="ts">
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "@shared/atoms/UserImage.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
 import { Capability, CapabilityType } from "../../../shared/api/data/types";
 
-import {
-  CreatedInvitation,
-  MyInvitationsDocument,
-  MyInvitationsQueryVariables,
-} from "../../../shared/api/data/types";
+import { CreatedInvitation, MyInvitationsDocument, MyInvitationsQueryVariables } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
 import { Environment } from "../../../shared/environment";
 
 import { _ } from "svelte-i18n";
-import {me} from "../../../shared/stores/me";
+import { me } from "../../../shared/stores/me";
 
 export let capabilities: Capability[] | undefined = [];
 
@@ -24,15 +20,12 @@ let canInvite = false;
 async function reload() {
   const sessionInfo = await me.getSessionInfo();
   capabilities = sessionInfo.capabilities;
-  canInvite =
-    capabilities &&
-    capabilities.find((o) => o.type == CapabilityType.Invite) &&
-    Environment.allowVerify;
+  canInvite = capabilities && capabilities.find((o) => o.type == CapabilityType.Invite) && Environment.allowVerify;
 
-  const invitations = await ApiClient.query<
-    CreatedInvitation[],
-    MyInvitationsQueryVariables
-  >(MyInvitationsDocument, {});
+  const invitations = await ApiClient.query<CreatedInvitation[], MyInvitationsQueryVariables>(
+    MyInvitationsDocument,
+    {}
+  );
 
   if (!invitations || !invitations.length) {
     canInvite = false;
@@ -56,18 +49,14 @@ function sortAlphabetically(a, b) {
     <div class="w-full text-center">
       <span class="text-dark-lightest">
         {#if canInvite}
-          {$_("dapps.o-dashboard.pages.invites.canInvite")}<u
-            >{$_("dapps.o-dashboard.pages.invites.onlyOnce")}</u
-          >.
+          {$_("dapps.o-dashboard.pages.invites.canInvite")}<u>{$_("dapps.o-dashboard.pages.invites.onlyOnce")}</u>.
         {:else}
           {$_("dapps.o-dashboard.pages.invites.canNotInvite1")}<br /><br />
           {$_("dapps.o-dashboard.pages.invites.canNotInvite2")}<br /><br />
           {$_("dapps.o-dashboard.pages.invites.canNotInvite3")}<br /><br />
           {$_("dapps.o-dashboard.pages.invites.canNotInvite4")}
-          <a
-            href="https://discord.gg/UgCVqFnx"
-            target="_blank"
-            class="link link-primary">{$_("dapps.o-dashboard.pages.invites.discord")}</a
+          <a href="https://discord.gg/UgCVqFnx" target="_blank" class="link link-primary"
+            >{$_("dapps.o-dashboard.pages.invites.discord")}</a
           >.
         {/if}
       </span>
@@ -90,8 +79,7 @@ function sortAlphabetically(a, b) {
                   class="flex items-center content-center self-center justify-center w-20 h-20 overflow-hidden text-center rounded-l-lg has-tooltip"
                   class:bg-success-lighter="{invitation.claimedBy}"
                   class:bg-primary-lighter="{!invitation.claimedBy}">
-                  <span
-                    class="px-2 ml-12 text-xs bg-white rounded shadow-sm tooltip">
+                  <span class="px-2 ml-12 text-xs bg-white rounded shadow-sm tooltip">
                     {#if !invitation.claimedBy}
                       {$_("dapps.o-dashboard.pages.invites.invitationNotClaimed")}
                     {/if}
@@ -116,11 +104,9 @@ function sortAlphabetically(a, b) {
               </div>
               <div slot="itemCardBody">
                 <div class="flex-col flex-grow">
-                  <div
-                    class="flex flex-row items-center justify-between text-left">
+                  <div class="flex flex-row items-center justify-between text-left">
                     <div class="flex-grow min-w-0">
-                      <h2
-                        class="overflow-hidden text-base whitespace-nowrap overflow-ellipsis">
+                      <h2 class="overflow-hidden text-base whitespace-nowrap overflow-ellipsis">
                         {invitation.claimedBy && invitation.claimedBy.firstName
                           ? `Invitation claimed`
                           : `${invitation.code}`}
@@ -151,15 +137,13 @@ function sortAlphabetically(a, b) {
                       <span></span>
                     </div>
                   </div>
-                  <div
-                    class="flex flex-row items-center justify-between text-left">
+                  <div class="flex flex-row items-center justify-between text-left">
                     <div class="flex-grow leading-none">
                       <span class="inline-block text-xs text-dark-lightest">
                         {invitation.name}
                       </span>
                     </div>
-                    <div
-                      class="text-xs text-right text-dark-lightest whitespace-nowrap leading-non">
+                    <div class="text-xs text-right text-dark-lightest whitespace-nowrap leading-non">
                       <slot name="itemCardEndSmallElement">
                         <span class="inline-block"> </span>
                       </slot>

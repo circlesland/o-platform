@@ -11,7 +11,7 @@ import {
 import { onMount } from "svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { push } from "svelte-spa-router";
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "@shared/atoms/UserImage.svelte";
 
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import { saveBufferAs } from "../../../shared/saveBufferAs";

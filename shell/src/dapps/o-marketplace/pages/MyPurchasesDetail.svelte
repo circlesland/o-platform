@@ -16,7 +16,7 @@ import { push } from "svelte-spa-router";
 import { saveBufferAs } from "../../../shared/saveBufferAs";
 import { ApiClient } from "../../../shared/apiConnection";
 
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "@shared/atoms/UserImage.svelte";
 
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import { _ } from "svelte-i18n";
@@ -116,30 +116,33 @@ onMount(async () => {
       },
     };
 
-    if (purchase.invoices[0].paymentTransactionHash
-      && !purchase.invoices[0].paymentTransactionHash.startsWith("0x0000000000000000")) {
-      actions.push({
-                icon: "cash",
-                title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.transaction"),
-                action: () => push(`#/banking/transactions/${purchase.invoices[0].paymentTransactionHash}`),
-              }
-              // {
-              //   icon: "document",
-              //   title: window.i18n(
-              //     "dapps.o-marketplace.pages.myPurchaseDetail.downloadInvoice"
-              //   ),
-              //   action: async () => {
-              //     for (let invoice of purchase.invoices) {
-              //       const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
-              //         InvoiceDocument,
-              //         {
-              //           invoiceId: invoice.id,
-              //         }
-              //       );
-              //       saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
-              //     }
-              //   },
-              // }
+    if (
+      purchase.invoices[0].paymentTransactionHash &&
+      !purchase.invoices[0].paymentTransactionHash.startsWith("0x0000000000000000")
+    ) {
+      actions.push(
+        {
+          icon: "cash",
+          title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.transaction"),
+          action: () => push(`#/banking/transactions/${purchase.invoices[0].paymentTransactionHash}`),
+        }
+        // {
+        //   icon: "document",
+        //   title: window.i18n(
+        //     "dapps.o-marketplace.pages.myPurchaseDetail.downloadInvoice"
+        //   ),
+        //   action: async () => {
+        //     for (let invoice of purchase.invoices) {
+        //       const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
+        //         InvoiceDocument,
+        //         {
+        //           invoiceId: invoice.id,
+        //         }
+        //       );
+        //       saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
+        //     }
+        //   },
+        // }
       );
     }
   }

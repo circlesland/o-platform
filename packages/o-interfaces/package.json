@@ -9,6 +9,7 @@
   "dependencies": {
     "@o-platform/o-utils": "0.1.0",
     "@o-platform/o-events": "0.1.0",
+    "@o-platform/shell": "0.1.0",
     "@fortawesome/free-solid-svg-icons": "^5.15.1"
   },
   "devDependencies": {

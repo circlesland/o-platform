@@ -4,9 +4,9 @@ import { onMount } from "svelte";
 import { me } from "../../../shared/stores/me";
 import Card from "../../../shared/atoms/Card.svelte";
 
-import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+import { displayCirclesAmount } from "@shared/functions/displayCirclesAmount";
 import { AssetBalance } from "../../../shared/api/data/types";
-import {assetBalances} from "../../../shared/stores/assetsBalances";
+import { assetBalances } from "../../../shared/stores/assetsBalances";
 
 import { _ } from "svelte-i18n";
 
@@ -44,9 +44,7 @@ onMount(async () => {
                     circlesAddress: token.token_owner_address,
                   },
               title: token.token_owner_profile.displayName,
-              subTitle: token.token_owner_profile
-                ? token.token_owner_address
-                : '',
+              subTitle: token.token_owner_profile ? token.token_owner_address : '',
 
               shadowSmall: true,
               noLink: true,
@@ -55,12 +53,8 @@ onMount(async () => {
                 token.token_balance ? token.token_balance : '0',
                 null,
                 true,
-                ($me && $me.displayTimeCircles !== undefined
-                  ? $me.displayTimeCircles
-                  : true) ||
-                  ($me && $me.displayTimeCircles !== undefined
-                    ? $me.displayTimeCircles
-                    : true) === undefined
+                ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) ||
+                  ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
               ),
             }}" />
         </div>

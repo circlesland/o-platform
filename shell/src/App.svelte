@@ -1,25 +1,25 @@
 <script context="module" lang="ts">
-import { IShell } from "./shell";
-import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
-import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
+import type { IShell } from "./shell";
+import type { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
+import type { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { Generate } from "@o-platform/o-utils/dist/generate";
-import LoadingIndicator from "./shared/atoms/LoadingIndicator.svelte";
-import Success from "./shared/atoms/Success.svelte";
-import ErrorIndicator from "./shared/atoms/Error.svelte";
+import LoadingIndicator from "@shared/atoms/LoadingIndicator.svelte";
+import Success from "@shared/atoms/Success.svelte";
+import ErrorIndicator from "@shared/atoms/Error.svelte";
 import { useMachine } from "@xstate/svelte";
 import { Subject, Subscription } from "rxjs";
-import { ProcessEvent } from "@o-platform/o-process/dist/interfaces/processEvent";
-import { AnyEventObject } from "xstate";
-import { Bubble } from "@o-platform/o-process/dist/events/bubble";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { Process } from "@o-platform/o-process/dist/interfaces/process";
-import { Sinker } from "@o-platform/o-process/dist/events/sinker";
-import { shellEvents } from "./shared/shellEvents";
-import { ApiConnection } from "./shared/apiConnection";
+import type { ProcessEvent } from "@o-platform/o-process/dist/interfaces/processEvent";
+import type { AnyEventObject } from "xstate";
+import type { Bubble } from "@o-platform/o-process/dist/events/bubble";
+import type { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
+import type { Process } from "@o-platform/o-process/dist/interfaces/process";
+import type { Sinker } from "@o-platform/o-process/dist/events/sinker";
+import { shellEvents } from "@shared/shellEvents";
+import { ApiConnection } from "@shared/apiConnection";
 import { getProcessContext } from "./main";
 import { Stopped } from "@o-platform/o-process/dist/events/stopped";
-import { me } from "./shared/stores/me";
-import { Environment } from "./shared/environment";
+import { me } from "@shared/stores/me";
+import { Environment } from "@shared/environment";
 
 const runningProcesses: {
   [id: string]: Process;
@@ -76,7 +76,7 @@ const shell: IShell = {
           stopped: true,
         });
 
-        let result:any = undefined;
+        let result: any = undefined;
         if ((<any>service)._state?.event?.data) {
           result = (<any>service)._state.event.data;
           console.log("stopped process (service._state.event.data): ", result);
@@ -182,6 +182,7 @@ declare global {
   interface Window {
     o: IShell;
     runInitMachine: () => void;
+    i18n: (id: string, options?: any) => string;
   }
 }
 
@@ -189,17 +190,17 @@ window.o = shell;
 </script>
 
 <script lang="ts">
-import "./shared/css/tailwind.css";
+import "@shared/css/tailwind.css";
 
 import Router from "svelte-spa-router";
-import { SvelteToast } from "./shared/molecules/Toast";
-import DappFrame from "src/shared/molecules/DappFrame.svelte";
-import NotFound from "src/shared/pages/NotFound.svelte";
+import { SvelteToast } from "@shared/molecules/Toast";
+import DappFrame from "@shared/molecules/DappFrame.svelte";
+import NotFound from "@shared/pages/NotFound.svelte";
 import { interpret } from "xstate";
 import { initMachine } from "./dapps/o-onboarding/processes/init";
-import { ubiMachine } from "./shared/ubiTimer2";
-import { InitContext } from "./dapps/o-onboarding/processes/initContext";
-import { LogoutDocument } from "./shared/api/data/types";
+import { ubiMachine } from "@shared/ubiTimer2";
+import type { InitContext } from "./dapps/o-onboarding/processes/initContext";
+import { LogoutDocument } from "@shared/api/data/types";
 
 let ubiMachineInterpreter: any;
 const v = 1;
@@ -227,21 +228,26 @@ let _routes = {
   "/:dappId?/:1?/:2?/:3?/:4?/:5?/:6?": DappFrame,
   "*": NotFound,
 };
+
+import logo from "./assets/svelte.png";
+import Counter from "./lib/Counter.svelte";
 </script>
 
-<SvelteToast />
+<main>
+  <SvelteToast />
 
-<Router
-  routes="{_routes}"
-  on:routeLoaded={() => {
-    if (!ubiMachineInterpreter && $me && $me.circlesAddress) {
-      ubiMachineInterpreter = interpret(ubiMachine)
-        .onEvent((event) => {
-          console.log('UBI machine event:', event);
-        })
-        .onTransition((state) => {
-          console.log('UBI machine transition:', state.value);
-        })
-        .start();
-    }
-  }} />
+  <Router
+    routes="{_routes}"
+    on:routeLoaded="{() => {
+      if (!ubiMachineInterpreter && $me && $me.circlesAddress) {
+        ubiMachineInterpreter = interpret(ubiMachine)
+          .onEvent((event) => {
+            console.log('UBI machine event:', event);
+          })
+          .onTransition((state) => {
+            console.log('UBI machine transition:', state.value);
+          })
+          .start();
+      }
+    }}" />
+</main>

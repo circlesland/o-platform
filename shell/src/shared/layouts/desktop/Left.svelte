@@ -1,6 +1,6 @@
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
-import { clickOutside } from "src/shared/functions/clickOutside";
+import { clickOutside } from "@shared/functions/clickOutside";
 
 const eventDispatcher = createEventDispatcher();
 </script>

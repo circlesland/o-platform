@@ -16,7 +16,7 @@ import { push } from "svelte-spa-router";
 import { saveBufferAs } from "../../../shared/saveBufferAs";
 import { ApiClient } from "../../../shared/apiConnection";
 
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "@shared/atoms/UserImage.svelte";
 
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 import { _ } from "svelte-i18n";
@@ -92,8 +92,8 @@ onMount(async () => {
       icon: "calendar",
       title: "Date & Location",
       action: () => {
-        console .log(groupedItems);
-        push(`#/marketplace/offer/${groupedItems[0].item.item.offer.id}`)
+        console.log(groupedItems);
+        push(`#/marketplace/offer/${groupedItems[0].item.item.offer.id}`);
       },
     },
   ];
@@ -124,30 +124,33 @@ onMount(async () => {
       },
     };
 
-    if (purchase.invoices[0].paymentTransactionHash
-      && !purchase.invoices[0].paymentTransactionHash.startsWith("0x0000000000000000")) {
-      actions.push({
-                icon: "cash",
-                title: window.i18n("dapps.o-marketplace.pages.myTicketDetail.transaction"),
-                action: () => push(`#/banking/transactions/${purchase.invoices[0].paymentTransactionHash}`),
-              }
-              // {
-              //   icon: "document",
-              //   title: window.i18n(
-              //     "dapps.o-marketplace.pages.myTicketDetail.downloadInvoice"
-              //   ),
-              //   action: async () => {
-              //     for (let invoice of purchase.invoices) {
-              //       const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
-              //         InvoiceDocument,
-              //         {
-              //           invoiceId: invoice.id,
-              //         }
-              //       );
-              //       saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
-              //     }
-              //   },
-              // }
+    if (
+      purchase.invoices[0].paymentTransactionHash &&
+      !purchase.invoices[0].paymentTransactionHash.startsWith("0x0000000000000000")
+    ) {
+      actions.push(
+        {
+          icon: "cash",
+          title: window.i18n("dapps.o-marketplace.pages.myTicketDetail.transaction"),
+          action: () => push(`#/banking/transactions/${purchase.invoices[0].paymentTransactionHash}`),
+        }
+        // {
+        //   icon: "document",
+        //   title: window.i18n(
+        //     "dapps.o-marketplace.pages.myTicketDetail.downloadInvoice"
+        //   ),
+        //   action: async () => {
+        //     for (let invoice of purchase.invoices) {
+        //       const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(
+        //         InvoiceDocument,
+        //         {
+        //           invoiceId: invoice.id,
+        //         }
+        //       );
+        //       saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
+        //     }
+        //   },
+        // }
       );
     }
   }
@@ -210,50 +213,48 @@ onMount(async () => {
       </div>
       {#each groupedItems as groupPurchase, i}
         <div class="flex items-center justify-between w-full pb-6 mb-6 border-b">
-          <a
-                  href="#/marketplace/offer/{groupPurchase.item.item.offer.id}"
-                  alt="{groupPurchase.item.item.offer.title}">
-          <div class="flex items-center w-full">
-            <img
-              src="{groupPurchase.item.item.offer.pictureUrl}"
-              alt="{groupPurchase.item.item.offer.title}"
-              class="w-20 rounded-full mask mask-circle" />
-            <div class="flex flex-col items-start w-full ml-2 space-y-2">
-              <div class="flex flex-row justify-between w-full">
-                <div class="md:text-md">
+          <a href="#/marketplace/offer/{groupPurchase.item.item.offer.id}" alt="{groupPurchase.item.item.offer.title}">
+            <div class="flex items-center w-full">
+              <img
+                src="{groupPurchase.item.item.offer.pictureUrl}"
+                alt="{groupPurchase.item.item.offer.title}"
+                class="w-20 rounded-full mask mask-circle" />
+              <div class="flex flex-col items-start w-full ml-2 space-y-2">
+                <div class="flex flex-row justify-between w-full">
+                  <div class="md:text-md">
                     {groupPurchase.item.item.offer.title}
+                  </div>
                 </div>
-              </div>
-              <div class="flex items-center justify-end w-full">
-                <div class="flex-grow text-sm text-left text-dark-lightest">
-                  1 {groupPurchase.item.item.offer.unitTag ? groupPurchase.item.item.offer.unitTag.value : "item"}
-                </div>
+                <div class="flex items-center justify-end w-full">
+                  <div class="flex-grow text-sm text-left text-dark-lightest">
+                    1 {groupPurchase.item.item.offer.unitTag ? groupPurchase.item.item.offer.unitTag.value : "item"}
+                  </div>
 
-                <div class="flex pr-8">
-                  <input
-                    type="text"
-                    value="{groupPurchase.item.item.amount}"
-                    disabled
-                    class="w-8 h-6 px-2 mx-2 text-sm text-center bg-gray-100 border rounded focus:outline-none" />
-                </div>
-                <div class="items-center">
-                  {#if groupPurchase.item.item.offer.pricePerUnit > 0}
-                    <span class="whitespace-nowrap">
-                      {groupPurchase.item.item.offer.pricePerUnit} €
-                    </span>
-                  {/if}
+                  <div class="flex pr-8">
+                    <input
+                      type="text"
+                      value="{groupPurchase.item.item.amount}"
+                      disabled
+                      class="w-8 h-6 px-2 mx-2 text-sm text-center bg-gray-100 border rounded focus:outline-none" />
+                  </div>
+                  <div class="items-center">
+                    {#if groupPurchase.item.item.offer.pricePerUnit > 0}
+                      <span class="whitespace-nowrap">
+                        {groupPurchase.item.item.offer.pricePerUnit} €
+                      </span>
+                    {/if}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </a>
         </div>
       {/each}
     </div>
     {#each purchase.invoices as invoice}
       <div class="flex flex-col w-full mb-6 space-y-2 text-left ">
-
         <div class="w-full text-center">
-          Please show this code at the entrance:<br/>
+          Please show this code at the entrance:<br />
           {#if !invoice.pickupCode}
             <h1 class="text-3xl uppercase font-heading">
               {$_("dapps.o-marketplace.pages.myTicketDetail.noCode")}

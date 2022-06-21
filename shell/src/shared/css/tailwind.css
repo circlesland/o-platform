@@ -1,8 +1,8 @@
-@tailwind base;
-@tailwind components;
-
 @import "./fonts.css";
 @import "./button.css";
+
+@tailwind base;
+@tailwind components;
 
 .avatar,
 .avatar *,

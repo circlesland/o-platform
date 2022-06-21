@@ -1,6 +1,6 @@
 <script lang="ts">
-import TopNav from "src/shared/atoms/TopNav.svelte";
-import PageHeader from "src/shared/atoms/PageHeader.svelte";
+import TopNav from "@shared/atoms/TopNav.svelte";
+import PageHeader from "@shared/atoms/PageHeader.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { me } from "../../../shared/stores/me";
@@ -16,15 +16,9 @@ export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
 $: {
-  const sum = $assetBalances.crcBalances
-    .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
-    .toString();
-  balanceEuro = Currency.instance()
-    .displayAmount(sum, null, "EURS", null)
-    .toString();
-  balanceTime = Currency.instance()
-    .displayAmount(sum, null, "TIME_CRC", null)
-    .toString();
+  const sum = $assetBalances.crcBalances.reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0")).toString();
+  balanceEuro = Currency.instance().displayAmount(sum, null, "EURS", null).toString();
+  balanceTime = Currency.instance().displayAmount(sum, null, "TIME_CRC", null).toString();
 }
 </script>
 

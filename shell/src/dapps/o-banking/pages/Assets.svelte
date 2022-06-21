@@ -1,13 +1,13 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
-import Card from "src/shared/atoms/Card.svelte";
+import SimpleHeader from "@shared/atoms/SimpleHeader.svelte";
+import Card from "@shared/atoms/Card.svelte";
 import AssetCard from "../atoms/AssetCard.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { me } from "../../../shared/stores/me";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { KeyManager } from "../../o-passport/data/keyManager";
-import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
+import { displayCirclesAmount } from "@shared/functions/displayCirclesAmount";
 import Web3 from "web3";
 import { AssetBalance } from "../../../shared/api/data/types";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
@@ -48,10 +48,7 @@ async function updateXdaiBalance() {
   const eoaBalance = await RpcGateway.get().eth.getBalance(km.torusKeyAddress);
 
   xdai.balance = Number.parseFloat(
-    Web3.utils.fromWei(
-      new BN(safeBalance).add(new BN(eoaBalance)).toString(),
-      "ether"
-    )
+    Web3.utils.fromWei(new BN(safeBalance).add(new BN(eoaBalance)).toString(), "ether")
   ).toFixed(2);
 }
 
@@ -60,16 +57,10 @@ $: {
 
   circles.details = balances.crcBalances;
   circles.balance = displayCirclesAmount(
-    circles.details
-      .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
-      .toString(),
+    circles.details.reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0")).toString(),
     null,
-    ($me && $me.displayTimeCircles !== undefined
-      ? $me.displayTimeCircles
-      : true) ||
-      ($me && $me.displayTimeCircles !== undefined
-        ? $me.displayTimeCircles
-        : true) === undefined
+    ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) ||
+      ($me && $me.displayTimeCircles !== undefined ? $me.displayTimeCircles : true) === undefined
   );
   circles.variety = circles.details.length;
 
@@ -78,24 +69,16 @@ $: {
     if (copy.token_address == "0x9ee40742182707467f78344f6b287be8704f27e2") {
       copy.token_symbol = "EURS";
       copy.token_image = "/logos/eurs.png";
-    } else if (
-      copy.token_address == "0x63e62989d9eb2d37dfdb1f93a22f063635b07d51"
-    ) {
+    } else if (copy.token_address == "0x63e62989d9eb2d37dfdb1f93a22f063635b07d51") {
       copy.token_symbol = "MIVA";
       copy.token_image = "/logos/miva.png";
-    } else if (
-      copy.token_address == "0x62f5caa239a97b21aa61502963cf8c33f8182e79"
-    ) {
+    } else if (copy.token_address == "0x62f5caa239a97b21aa61502963cf8c33f8182e79") {
       copy.token_symbol = "ARTIS";
       copy.token_image = "/logos/artis.png";
-    } else if (
-      copy.token_address == "0x5227e8810281482f25454a8f00ea871589fc040e"
-    ) {
+    } else if (copy.token_address == "0x5227e8810281482f25454a8f00ea871589fc040e") {
       copy.token_symbol = "HUMAN";
       copy.token_image = "/logos/hmn.png";
-    } else if (
-      copy.token_address == "0x04e7c72a70975b3d2f35ec7f6b474451f43d4ea0"
-    ) {
+    } else if (copy.token_address == "0x04e7c72a70975b3d2f35ec7f6b474451f43d4ea0") {
       copy.token_symbol = "HUMAN (Test token)";
       copy.token_image = "/logos/hmn.png";
     }
@@ -105,22 +88,16 @@ $: {
   erc20DisplayBalances = erc20DisplayBalances
     .sort((a, b) => {
       const bnA =
-        a.token_symbol == "EURS"
-          ? new BN(a.token_balance).mul(new BN("1000000000000000000"))
-          : new BN(a.token_balance);
+        a.token_symbol == "EURS" ? new BN(a.token_balance).mul(new BN("1000000000000000000")) : new BN(a.token_balance);
       const bnB =
-        b.token_symbol == "EURS"
-          ? new BN(b.token_balance).mul(new BN("1000000000000000000"))
-          : new BN(b.token_balance);
+        b.token_symbol == "EURS" ? new BN(b.token_balance).mul(new BN("1000000000000000000")) : new BN(b.token_balance);
       return bnA.gt(bnB) ? -1 : bnA.lt(bnB) ? 1 : 0;
     })
     .map((o) => {
       if (o.token_symbol == "EURS") {
         return {
           ...o,
-          token_balance: (o.token_balance = (
-            parseFloat(o.token_balance) / 100
-          ).toFixed(2)),
+          token_balance: (o.token_balance = (parseFloat(o.token_balance) / 100).toFixed(2)),
         };
       } else {
         return {

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
 import { Offer } from "../../../shared/api/data/types";
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "@shared/atoms/UserImage.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { me } from "../../../shared/stores/me";
 import { cartContents } from "../stores/shoppingCartStore";

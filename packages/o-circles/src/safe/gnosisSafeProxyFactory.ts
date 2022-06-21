@@ -8,16 +8,8 @@ import { Web3Contract } from "../web3Contract";
 export class GnosisSafeProxyFactory extends Web3Contract {
   readonly masterSafeAddress: string;
 
-  constructor(
-    web3: Web3,
-    proxyFactoryAddress: string,
-    masterSafeAddress: string
-  ) {
-    super(
-      web3,
-      proxyFactoryAddress,
-      new web3.eth.Contract(<AbiItem[]>PROXY_FACTORY_ABI, proxyFactoryAddress)
-    );
+  constructor(web3: Web3, proxyFactoryAddress: string, masterSafeAddress: string) {
+    super(web3, proxyFactoryAddress, new web3.eth.Contract(<AbiItem[]>PROXY_FACTORY_ABI, proxyFactoryAddress));
     this.masterSafeAddress = masterSafeAddress;
   }
 
@@ -31,12 +23,8 @@ export class GnosisSafeProxyFactory extends Web3Contract {
    * @param gasPrice The gas price in wei
    */
   async deployNewSafeProxy(privateKey: string): Promise<GnosisSafeProxy> {
-    const ownerAddress =
-      this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
-    const gnosisSafe = new this.web3.eth.Contract(
-      <AbiItem[]>GNOSIS_SAFE_ABI,
-      this.masterSafeAddress
-    );
+    const ownerAddress = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
+    const gnosisSafe = new this.web3.eth.Contract(<AbiItem[]>GNOSIS_SAFE_ABI, this.masterSafeAddress);
 
     const proxySetupData = gnosisSafe.methods
       .setup(
@@ -52,14 +40,10 @@ export class GnosisSafeProxyFactory extends Web3Contract {
       .encodeABI();
 
     const estimatedGas = new BN(
-      await this.contract.methods
-        .createProxy(this.masterSafeAddress, proxySetupData)
-        .estimateGas()
+      await this.contract.methods.createProxy(this.masterSafeAddress, proxySetupData).estimateGas()
     );
 
-    const createProxyData = this.contract.methods
-      .createProxy(this.masterSafeAddress, proxySetupData)
-      .encodeABI();
+    const createProxyData = this.contract.methods.createProxy(this.masterSafeAddress, proxySetupData).encodeABI();
 
     const signedRawTransaction = await Web3Contract.signRawTransaction(
       ownerAddress,
@@ -70,11 +54,9 @@ export class GnosisSafeProxyFactory extends Web3Contract {
       new BN("0")
     );
 
-    const receipt = await Web3Contract.sendSignedRawTransaction(
-      signedRawTransaction
-    );
+    const receipt = await Web3Contract.sendSignedRawTransaction(signedRawTransaction);
 
-    let proxyAddress = undefined;
+    let proxyAddress: any = undefined;
     for (let logEntry of receipt.logs) {
       if (logEntry.address?.toLowerCase() != this.address?.toLowerCase()) {
         continue;

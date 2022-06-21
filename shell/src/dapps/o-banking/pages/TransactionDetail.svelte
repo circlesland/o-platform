@@ -3,7 +3,7 @@ import Time from "svelte-time";
 import { push } from "svelte-spa-router";
 // import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
 import { onMount } from "svelte";
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "@shared/atoms/UserImage.svelte";
 import { me } from "../../../shared/stores/me";
 import { Currency } from "../../../shared/currency";
 
@@ -33,15 +33,9 @@ let error: string;
 let displayableName: string = "";
 
 onMount(async () => {
-  transfer = await myTransactions.findByPrimaryKey(
-    EventType.CrcHubTransfer,
-    transactionHash
-  );
+  transfer = await myTransactions.findByPrimaryKey(EventType.CrcHubTransfer, transactionHash);
   if (!transfer) {
-    transfer = await myTransactions.findByPrimaryKey(
-      EventType.CrcMinting,
-      transactionHash
-    );
+    transfer = await myTransactions.findByPrimaryKey(EventType.CrcMinting, transactionHash);
   }
   if (!transfer) {
     transfer = await myTransactions.findSingleItemFallback(
@@ -101,9 +95,7 @@ onMount(async () => {
       if (transfer.payload?.__typename == "CrcMinting") {
         message = window.i18n("dapps.o-banking.pages.transactionDetail.ubi");
       } else {
-        message = transfer.payload.tags?.find(
-          (o) => o.typeId === "o-banking:transfer:message:1"
-        )?.value;
+        message = transfer.payload.tags?.find((o) => o.typeId === "o-banking:transfer:message:1")?.value;
       }
     }
 
@@ -122,8 +114,7 @@ function openDetail(transfer: ProfileEvent) {
     {JSON.stringify(transfer, null, 2)}
   </pre>-->
   {#if transfer}
-    <div
-      class="flex flex-col items-center self-center w-full m-auto space-y-4 text-center justify-self-center">
+    <div class="flex flex-col items-center self-center w-full m-auto space-y-4 text-center justify-self-center">
       <div class="w-full text-center">
         <h1 class="text-3xl uppercase font-heading">
           {transfer.direction === "in" ? "received" : "sent"}
@@ -133,42 +124,26 @@ function openDetail(transfer: ProfileEvent) {
         <span class="inline-block text-6xl font-enso {classes}">
           {#if transfer.direction === "in"}
             +{Currency.instance().displayAmount(
-              transfer
-                ? (transfer.payload.value
-                    ? transfer.payload.value
-                    : transfer.payload.flow
-                  ).toString()
-                : "0",
+              transfer ? (transfer.payload.value ? transfer.payload.value : transfer.payload.flow).toString() : "0",
               transfer.timestamp,
               $me.displayCurrency,
               transfer.payload.__typename === "Erc20Transfer" ? "erc20" : ""
             )}
           {:else}
             -{Currency.instance().displayAmount(
-              transfer
-                ? (transfer.payload.value
-                    ? transfer.payload.value
-                    : transfer.payload.flow
-                  ).toString()
-                : "0",
+              transfer ? (transfer.payload.value ? transfer.payload.value : transfer.payload.flow).toString() : "0",
               transfer.timestamp,
               $me.displayCurrency,
               transfer.payload.__typename === "Erc20Transfer" ? "erc20" : ""
             )}
           {/if}
         </span>
-        <span class="text-6xl font-enso {classes}"
-          >{Currency.currencySymbol["EURS"]}</span>
+        <span class="text-6xl font-enso {classes}">{Currency.currencySymbol["EURS"]}</span>
       </div>
       {#if $me.displayCurrency && $me.displayCurrency != "TIME_CRC"}
         <div class="self-end m-auto -mt-4 space-y-2 text-center max-w-max">
           {Currency.instance().displayAmount(
-            transfer
-              ? (transfer.payload.value
-                  ? transfer.payload.value
-                  : transfer.payload.flow
-                ).toString()
-              : "0",
+            transfer ? (transfer.payload.value ? transfer.payload.value : transfer.payload.flow).toString() : "0",
             transfer.timestamp,
             "TIME_CRC",
             transfer.payload.__typename === "Erc20Transfer" ? "erc20" : ""
@@ -220,9 +195,7 @@ function openDetail(transfer: ProfileEvent) {
         </div>
         <div class="flex items-center w-full">
           <div class="text-left ">
-            <Time
-              timestamp="{new Date(transfer.timestamp)}"
-              format="D. MMMM YYYY HH:mm" />
+            <Time timestamp="{new Date(transfer.timestamp)}" format="D. MMMM YYYY HH:mm" />
           </div>
         </div>
       </div>
@@ -233,12 +206,7 @@ function openDetail(transfer: ProfileEvent) {
         <div class="flex items-center w-full">
           <div class="text-left ">
             {Currency.instance().displayAmount(
-              transfer
-                ? (transfer.payload.value
-                    ? transfer.payload.value
-                    : transfer.payload.flow
-                  ).toString()
-                : "0",
+              transfer ? (transfer.payload.value ? transfer.payload.value : transfer.payload.flow).toString() : "0",
               transfer.timestamp,
               "CRC",
               null,

@@ -1,12 +1,12 @@
 <script lang="ts">
-import {CommonTrust, CommonTrustDocument, CommonTrustQueryVariables, Profile} from "src/shared/api/data/types";
-import UserImage from "src/shared/atoms/UserImage.svelte";
-import {ApiClient} from "../../apiConnection";
+import { CommonTrust, CommonTrustDocument, CommonTrustQueryVariables, Profile } from "@shared/api/data/types";
+import UserImage from "@shared/atoms/UserImage.svelte";
+import { ApiClient } from "../../apiConnection";
 import { _ } from "svelte-i18n";
 export const profile: Profile = undefined;
 export const eventData: any = undefined;
 
-async function getMutualFriends() : Promise<CommonTrust[]> {
+async function getMutualFriends(): Promise<CommonTrust[]> {
   if (eventData && eventData.profile) {
     const mutualFriends = await ApiClient.query<CommonTrust[], CommonTrustQueryVariables>(CommonTrustDocument, {
       safeAddress1: eventData.safeAddress.toLowerCase(),
@@ -26,22 +26,22 @@ let promise = getMutualFriends();
 {:then mutualFriends}
   {#if mutualFriends.data && mutualFriends.data.commonTrust}
     <div>
-      <div class="text-left text-2xs text-dark-lightest">{$_("shared.molecules.notificationViewer.molecules.notificationViewMutualFriends.mutualFriends")}</div>
+      <div class="text-left text-2xs text-dark-lightest">
+        {$_("shared.molecules.notificationViewer.molecules.notificationViewMutualFriends.mutualFriends")}
+      </div>
 
       <div class="flex flex-row flex-wrap mt-2 ">
         {#if mutualFriends.data.commonTrust.length > 0}
           {#each mutualFriends.data.commonTrust as friend, i}
             {#if friend.profile}
               <div class="mt-2 mr-2">
-                <UserImage
-                  profile="{friend.profile}"
-                  tooltip="{true}"
-                  gradientRing="{true}" />
+                <UserImage profile="{friend.profile}" tooltip="{true}" gradientRing="{true}" />
               </div>
             {/if}
           {/each}
         {:else}
-          <span>{$_("shared.molecules.notificationViewer.molecules.notificationViewMutualFriends.noMutualFriends")}</span>
+          <span
+            >{$_("shared.molecules.notificationViewer.molecules.notificationViewMutualFriends.noMutualFriends")}</span>
         {/if}
       </div>
     </div>

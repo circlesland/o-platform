@@ -1,5 +1,5 @@
 <script lang="ts">
-import TopNav from "src/shared/atoms/TopNav.svelte";
+import TopNav from "@shared/atoms/TopNav.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { _ } from "svelte-i18n";
@@ -12,18 +12,14 @@ export let routable: Routable;
   <main class="h-screen overflow-hidden">
     <TopNav runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-    <div
-      class="flex items-center justify-center w-full min-h-screen bg-gray-100">
-      <div
-        class="flex flex-col text-gray-700 lg:flex-row lg:space-x-16 lg:space-x-reverse">
+    <div class="flex items-center justify-center w-full min-h-screen bg-gray-100">
+      <div class="flex flex-col text-gray-700 lg:flex-row lg:space-x-16 lg:space-x-reverse">
         <div class="order-1 max-w-md px-2 text-sm md:text-base lg:px-0">
           <header class="mb-6">
-            <h2
-              class="text-4xl font-bold leading-none text-gray-400 select-none lg:text-6xl">
+            <h2 class="text-4xl font-bold leading-none text-gray-400 select-none lg:text-6xl">
               {$_("shared.pages.notFound.notfound")}
             </h2>
-            <h3
-              class="text-xl font-light leading-normal lg:text-3xl md:text-3xl">
+            <h3 class="text-xl font-light leading-normal lg:text-3xl md:text-3xl">
               {$_("shared.pages.notFound.sorryCouldNotFindPage")}
             </h3>
           </header>
@@ -40,11 +36,7 @@ export let routable: Routable;
         </div>
 
         <div class="max-w-lg">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 2395 1800"
-            class="w-full max-w-sm"
-            width="400">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2395 1800" class="w-full max-w-sm" width="400">
             <defs>
               <style>
               .cls-10,
@@ -181,8 +173,7 @@ export let routable: Routable;
               class="cls-8"
               d="M1408.5 1420.5c-1.77-1.54-8.83-8-9-17.67-.11-7.92 4.52-13.56 6-15.33 12.18-14.84 33.82-8.35 59-15 11.91-3.15 28.36-10.22 46-28"
             ></path>
-            <ellipse class="cls-7" cx="1452.5" cy="998.5" rx="153" ry="117"
-            ></ellipse>
+            <ellipse class="cls-7" cx="1452.5" cy="998.5" rx="153" ry="117"></ellipse>
             <circle class="cls-9" cx="1355" cy="991" r="31.5"></circle>
             <path
               class="cls-10"
@@ -206,14 +197,11 @@ export let routable: Routable;
               class="cls-10"
               d="M1445.26 997.13l10.24 1.37 9.39-1.34a2.14 2.14 0 012.11 3.27l-9.09 14.28a3 3 0 01-4.94.08l-9.77-14.33a2.15 2.15 0 012.06-3.33z"
             ></path>
-            <path
-              class="cls-13"
-              d="M1454.74 1016.08s2.76 17.42-17.24 15.42M1455.63 1017.08s-2.76 17.42 17.24 15.42"
+            <path class="cls-13" d="M1454.74 1016.08s2.76 17.42-17.24 15.42M1455.63 1017.08s-2.76 17.42 17.24 15.42"
             ></path>
             <path
               class="cls-14"
-              d="M1664.5 1001.5L1735 980M1667 1017l66.5 10.5M1244 1017l-60.5 13.5M1246.5 1000.5L1180 990"
-            ></path>
+              d="M1664.5 1001.5L1735 980M1667 1017l66.5 10.5M1244 1017l-60.5 13.5M1246.5 1000.5L1180 990"></path>
             <path
               class="cls-15"
               d="M497.79 404c44.57 20.37 95.3 66.11 155.71 124.48 92.79 89.66 150.8 234.43 169 289-5.77 2.68-30.23-42.68-36-40-19.27-52.74-57.27-138.85-139-223-66.8-68.78-125-119.67-172-142zM745.55 850.16c-74.68-63-179.26-139.49-214.14-152.89-89.78-34.5-169.48-49.55-221.09-50.06q8.32-8.54 16.67-17.06c49-.22 119.61 13.39 199 41 31.84 11.09 153.72 90.48 241 170.65z"

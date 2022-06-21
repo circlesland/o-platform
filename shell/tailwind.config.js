@@ -1,27 +1,22 @@
-const colors = require("tailwindcss/colors");
+// const colors = require("tailwindcss/colors");
 const production = !process.env.NODE_ENV;
-
-module.exports = {
+import daisyui from "daisyui";
+import typography from "@tailwindcss/typography";
+export default {
   // future: {
   //   purgeLayersByDefault: true,
   //   removeDeprecatedGapUtilities: true,
   // },
-  darkMode: false,
-  mode: "jit",
-  purge: [
-    "./src/**/*.svelte",
-    "../packages/o-editors/src/**/*.svelte",
-    "./public/**/*.html",
-    "./../packages/**/*.svelte",
-    "./src/**/*.{js,jsx,ts,tsx,vue}",
-  ],
-
-  daisyui: {
-    styled: true,
-    themes: false,
-    logs: false,
-  },
-
+  darkMode: "media",
+  // mode: "jit",
+  // purge: [
+  //   "./src/**/*.svelte",
+  //   "../packages/o-editors/src/**/*.svelte",
+  //   "./public/**/*.html",
+  //   "./../packages/**/*.svelte",
+  //   "./src/**/*.{js,jsx,ts,tsx,vue}",
+  // ],
+  content: ["./index.html", "./src/**/*.{svelte,js,ts}"], // for unused CSS
   theme: {
     extend: {
       fontSize: {
@@ -142,5 +137,5 @@ module.exports = {
   variants: {
     backgroundClip: ["responsive"],
   },
-  plugins: [require("daisyui"), require("@tailwindcss/typography")],
+  plugins: [daisyui, typography],
 };

@@ -1,8 +1,8 @@
 <script lang="ts">
 import { fly } from "svelte/transition";
-import Icons from "src/shared/molecules/Icons.svelte";
+import Icons from "@shared/molecules/Icons.svelte";
 import { createEventDispatcher } from "svelte";
-import { clickOutside } from "src/shared/functions/clickOutside";
+import { clickOutside } from "@shared/functions/clickOutside";
 
 const eventDispatcher = createEventDispatcher();
 let x = 500;
@@ -54,7 +54,6 @@ let x = 500;
 
 .sideBarRight .sidebar {
   --tw-shadow: 0 25px 50px 82px rgba(0, 0, 0, 0.45);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 </style>

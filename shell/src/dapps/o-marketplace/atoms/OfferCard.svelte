@@ -1,7 +1,7 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
 import { Offer, ShopCategoryEntry } from "../../../shared/api/data/types";
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "@shared/atoms/UserImage.svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 import { cartContents } from "../stores/shoppingCartStore";
 import { truncateString } from "../../../shared/functions/truncateString";
@@ -36,7 +36,8 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
           "
           class="rounded-t-xl" />
         {#if entry.product.pricePerUnit}
-          <div class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
+          <div
+            class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
             <span class="inline-block">{entry.product.pricePerUnit}</span>
             <span class="inline-block">€</span>
           </div>

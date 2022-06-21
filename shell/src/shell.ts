@@ -3,7 +3,7 @@ import { Subject } from "rxjs";
 import { Process } from "@o-platform/o-process/dist/interfaces/process";
 import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
-import { ApiConnection } from "./shared/apiConnection";
+import { ApiConnection } from "@shared/apiConnection";
 
 import { en } from "./i18n/lang/en";
 import { _, dictionary, format, init, locale } from "svelte-i18n";
@@ -32,9 +32,7 @@ export interface IShell {
   lastError?: any;
   events?: Subject<PlatformEvent>;
   publishEvent?: (event: PlatformEvent) => void;
-  requestEvent?: <TResult extends PlatformEvent>(
-    event: PlatformEvent
-  ) => Promise<TResult>;
+  requestEvent?: <TResult extends PlatformEvent>(event: PlatformEvent) => Promise<TResult>;
   runProcess?: (
     processDefinition: ProcessDefinition<any, any>,
     contextData: { [x: string]: any },
@@ -45,9 +43,7 @@ export interface IShell {
     findById(processId: string): Process;
     run<TContext>(
       definition: ProcessDefinition<any, any>,
-      contextModifier?: (
-        processContext: ProcessContext<any>
-      ) => Promise<TContext>
+      contextModifier?: (processContext: ProcessContext<any>) => Promise<TContext>
     ): Promise<Process>;
   };
 }

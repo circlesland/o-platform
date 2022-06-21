@@ -1,5 +1,5 @@
 <script lang="ts">
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "@shared/atoms/UserImage.svelte";
 import { isMobile } from "../functions/isMobile";
 
 export let params = {
@@ -39,20 +39,14 @@ function cardAction() {
 }
 </script>
 
-<section
-  on:click="{() => cardAction()}"
-  class:mb-3="{!params.inline}"
-  class="{params.class ? params.class : ''}">
+<section on:click="{() => cardAction()}" class:mb-3="{!params.inline}" class="{params.class ? params.class : ''}">
   <div
     class="flex items-center w-full space-x-2 bg-white rounded-lg shadow-md cardborder"
     class:p-3="{!params.edgeless}">
     <slot name="itemCardStart">
       <div class="">
         {#if params.imageProfile}
-          <UserImage
-            profile="{params.imageProfile}"
-            size="{12}"
-            profileLink="{params.profileLink}" />
+          <UserImage profile="{params.imageProfile}" size="{12}" profileLink="{params.profileLink}" />
         {:else if params.imageUrl}
           <div class="m-auto rounded-full w-11 h-11 sm:w-12 sm:h-12">
             <span
@@ -70,12 +64,9 @@ function cardAction() {
     </slot>
     <slot name="itemCardBody">
       <div class="flex-col flex-grow">
-        <div
-          class="flex flex-row items-center justify-between text-left"
-          class:px-3="{params.imageUrl}">
+        <div class="flex flex-row items-center justify-between text-left" class:px-3="{params.imageUrl}">
           <div class="flex-grow min-w-0">
-            <h2
-              class="overflow-hidden text-base whitespace-nowrap overflow-ellipsis">
+            <h2 class="overflow-hidden text-base whitespace-nowrap overflow-ellipsis">
               {params.title
                 ? params.title.length >= textCutoff
                   ? params.title.substr(0, textCutoff) + "..."
@@ -89,9 +80,7 @@ function cardAction() {
             <span>{params.endTextBig ? params.endTextBig : ""}</span>
           </div>
         </div>
-        <div
-          class="flex flex-row items-center justify-between text-left"
-          class:px-3="{params.imageUrl}">
+        <div class="flex flex-row items-center justify-between text-left" class:px-3="{params.imageUrl}">
           <div class="flex-grow leading-none">
             <span class="inline-block text-xs text-dark-lightest">
               {params.subTitle
@@ -101,8 +90,7 @@ function cardAction() {
                 : ""}
             </span>
           </div>
-          <div
-            class="text-xs text-right text-dark-lightest whitespace-nowrap leading-non">
+          <div class="text-xs text-right text-dark-lightest whitespace-nowrap leading-non">
             <slot name="itemCardEndSmallElement">
               <span class="inline-block">
                 {params.endTextSmall ? params.endTextSmall : ""}

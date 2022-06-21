@@ -1,17 +1,17 @@
 {
-	"include": ["src/**/*","libs/**/*"],
-	"exclude": ["node_modules/*", "public/*"],
-	"compilerOptions": {
-		"moduleResolution": "node",
-		"target": "ES6",
-		"module": "ESNext",
-		"importsNotUsedAsValues": "remove",
-		"isolatedModules": true,
-		"esModuleInterop": true,
-		// "sourceMap": true,
-		"baseUrl": "./",
-		"paths": {
-			"src": ["src"]
-		}
-	}
+  "include": ["src/**/*", "libs/**/*"],
+  "exclude": ["node_modules/*", "public/*"],
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "target": "ES2020",
+    "module": "ES2020",
+    "importsNotUsedAsValues": "remove",
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    // "sourceMap": true,
+    "baseUrl": "./",
+    "paths": {
+      "src": ["src"]
+    }
+  }
 }

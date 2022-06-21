@@ -1,14 +1,14 @@
 <script lang="ts">
-  import TopNav from "src/shared/atoms/TopNav.svelte";
-  import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import { Routable } from "@o-platform/o-interfaces/dist/routable";
-  export let header: string = null;
+import TopNav from "@shared/atoms/TopNav.svelte";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+export let header: string = null;
 
-  export let runtimeDapp: RuntimeDapp<any>;
-  export let routable: Routable;
+export let runtimeDapp: RuntimeDapp<any>;
+export let routable: Routable;
 </script>
 
-<TopNav {runtimeDapp} {routable} />
+<TopNav runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <div
   class="flex flex-col items-stretch w-full text-white bg-cover h-60 justify-items-stretch bg-primary-dark"
@@ -28,7 +28,7 @@
       </div>
     </div>
     <div class="">
-      <h2 class="text-2xl">{header ? header : 'Marketplace'}</h2>
+      <h2 class="text-2xl">{header ? header : "Marketplace"}</h2>
     </div>
   </div>
 </div>

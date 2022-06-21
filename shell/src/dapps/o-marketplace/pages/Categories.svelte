@@ -1,5 +1,5 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+import SimpleHeader from "@shared/atoms/SimpleHeader.svelte";
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
@@ -7,8 +7,8 @@ import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import {QueryTagsInput, Tag, TagsDocument} from "../../../shared/api/data/types";
-import {ApiClient} from "../../../shared/apiConnection";
+import { QueryTagsInput, Tag, TagsDocument } from "../../../shared/api/data/types";
+import { ApiClient } from "../../../shared/apiConnection";
 import { _ } from "svelte-i18n";
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -23,26 +23,21 @@ async function load() {
 
   isLoading = true;
   const categoryResult = await ApiClient.query<Tag[], QueryTagsInput>(TagsDocument, {
-    typeId_in: ["o-marketplace:offer:category:1"]
+    typeId_in: ["o-marketplace:offer:category:1"],
   });
-  categories = categoryResult.map(o => o.value);
+  categories = categoryResult.map((o) => o.value);
   isLoading = false;
 }
 
 onMount(async () => {
   await load();
 
-  shellEventSubscription = window.o.events.subscribe(
-    async (event: PlatformEvent) => {
-      if (
-        event.type != "shell.refresh" ||
-        (<any>event).dapp != "marketplace:1"
-      ) {
-        return;
-      }
-      await load();
+  shellEventSubscription = window.o.events.subscribe(async (event: PlatformEvent) => {
+    if (event.type != "shell.refresh" || (<any>event).dapp != "marketplace:1") {
+      return;
     }
-  );
+    await load();
+  });
 
   return () => {
     shellEventSubscription.unsubscribe();
@@ -84,9 +79,7 @@ function loadCategoryPage(category: any) {
             imageUrl: `/images/market/circles-no-image.jpg`,
             title: category.value,
           }}">
-          <div
-            slot="itemCardText"
-            class="relative flex-grow h-8 px-3 py-1 text-left title">
+          <div slot="itemCardText" class="relative flex-grow h-8 px-3 py-1 text-left title">
             <div class="absolute w-full h-4">
               <h2 class="text-base">{category.value}</h2>
             </div>

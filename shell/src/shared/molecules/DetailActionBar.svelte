@@ -2,7 +2,7 @@
 /*
  * Edge Case: if the very first items are both super long, it will break into a new line even before clicking on 'more'
  */
-import ActionListItem from "src/shared/atoms/ActionListItem.svelte";
+import ActionListItem from "@shared/atoms/ActionListItem.svelte";
 export let actions: {
   icon: string;
   title: string;
@@ -28,8 +28,7 @@ $: {
 </script>
 
 {#if actions}
-  <div
-    class="flex flex-row flex-wrap items-stretch justify-around mt-2 -mr-2 text-dark">
+  <div class="flex flex-row flex-wrap items-stretch justify-around mt-2 -mr-2 text-dark">
     <!-- <ul class="inline-block space-x-8 align-top list-none"> -->
     {#each actions as action}
       <ActionListItem

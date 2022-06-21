@@ -3,11 +3,11 @@ import { push } from "svelte-spa-router";
 
 import { Offer } from "../../../shared/api/data/types";
 import Icons from "../../../shared/molecules/Icons.svelte";
-import ItemCard from "src/shared/atoms/ItemCard.svelte";
+import ItemCard from "@shared/atoms/ItemCard.svelte";
 
 import { truncateString } from "../../../shared/functions/truncateString";
 
-import  { _ } from "svelte-i18n";
+import { _ } from "svelte-i18n";
 
 export let offer: Offer;
 
@@ -27,12 +27,9 @@ function loadDetailPage() {
 <div on:click="{() => loadDetailPage()}">
   <ItemCard params="{params}">
     <div slot="itemCardStart">
-      <div
-        class="relative w-16 h-16 overflow-hidden rounded-l-lg image-wrapper">
+      <div class="relative w-16 h-16 overflow-hidden rounded-l-lg image-wrapper">
         <img
-          src="{offer.pictureUrl
-            ? offer.pictureUrl
-            : '/images/market/circles-no-image.jpg'}"
+          src="{offer.pictureUrl ? offer.pictureUrl : '/images/market/circles-no-image.jpg'}"
           alt="{offer.title}"
           class="absolute object-cover w-20 h-16 rounded-l-lg" />
       </div>

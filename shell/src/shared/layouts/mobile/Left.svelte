@@ -1,7 +1,7 @@
 <script lang="ts">
 import { fly } from "svelte/transition";
 import { createEventDispatcher } from "svelte";
-import { clickOutside } from "src/shared/functions/clickOutside";
+import { clickOutside } from "@shared/functions/clickOutside";
 
 const eventDispatcher = createEventDispatcher();
 let x = -500;
@@ -48,7 +48,6 @@ let x = -500;
 .mobileSideBarLeft .mobileSidebarInner {
   top: 48px;
   --tw-shadow: 0 25px 50px 82px rgba(13, 43, 102, 0.45);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #95b7ca),
-    var(--tw-ring-shadow, 0 0 #95b7ca), var(--tw-shadow);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #95b7ca), var(--tw-ring-shadow, 0 0 #95b7ca), var(--tw-shadow);
 }
 </style>

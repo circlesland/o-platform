@@ -1,5 +1,5 @@
 <script lang="ts">
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "@shared/atoms/UserImage.svelte";
 import { Profile, Organisation } from "../../api/data/types";
 import { isMobile } from "../../functions/isMobile";
 import { _ } from "svelte-i18n";

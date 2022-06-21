@@ -1,5 +1,5 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+import SimpleHeader from "@shared/atoms/SimpleHeader.svelte";
 import ListViewCard from "../atoms/ListViewCard.svelte";
 import { onMount } from "svelte";
 import { Subscription } from "rxjs";
