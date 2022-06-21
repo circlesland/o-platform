@@ -39,11 +39,38 @@ export type SetTrustContextData = {
  */
 export type SetTrustContext = ProcessContext<SetTrustContextData>;
 
+/** START
+ *
+ * QUICK FIX: FIND SOLUTION FOR THIS
+ */
+import { en } from "../../../i18n/lang/en";
+import { _, dictionary, format, init, locale } from "svelte-i18n";
+import { get } from "svelte/store";
+
+const i18n = (id: string, options?: any) => {
+  dictionary.set(en);
+  locale.set("en");
+
+  init({
+    fallbackLocale: "en",
+    initialLocale: "en",
+  });
+
+  return get(format)(id, options);
+};
+(<any>window).i18n = i18n;
+
+/** END
+ *
+ * QUICK FIX: FIND SOLUTION FOR THIS
+ */
+
 /**
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 
 console.log("WINDOW", window);
+
 const editorContent: { [x: string]: EditorViewContext } = {
   recipient: {
     title: window.i18n("dapps.o-banking.processes.setTrust.editorContent.recipient.title"),
