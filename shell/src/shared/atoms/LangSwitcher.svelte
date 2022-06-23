@@ -24,6 +24,7 @@ onMount(async () => {
   });
 });
 
+
 function changeHandler() {
   Environment.userLanguage = selectedValue;
   location.reload();

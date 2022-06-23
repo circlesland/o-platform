@@ -1,4 +1,5 @@
 <script lang="ts">
+
 import { createEventDispatcher } from "svelte";
 
 import { CTreeNode, StateSnapshot } from "../classes/treenode";
@@ -10,6 +11,7 @@ export let rootNode: CTreeNode;
 let dispatch = createEventDispatcher();
 let snapshot: StateSnapshot = {};
 let expand: boolean;
+
 </script>
 
 <div class="ml-4 mb-4">
@@ -35,10 +37,11 @@ let expand: boolean;
   </span>
 </div>
 
+
 {#if rootNode.expandState}
   {#if rootNode}
     {#each rootNode.children as childNode}
-      <ul class="ml-4 mb-4 justify-end">
+      <ul class="ml-4 mb-4">
         {#if childNode.isLeaf}
           {#each childNode.values as item}
             <StringEditor
@@ -48,9 +51,11 @@ let expand: boolean;
               dataVersion="{item.version}" />
           {/each}
         {:else}
+
           <svelte:self rootNode="{childNode}" on:expand />
         {/if}
       </ul>
     {/each}
   {/if}
 {/if}
+

@@ -15,6 +15,9 @@ export let dataLang: string;
 export let dataString: string;
 export let dataVersion: number;
 
+let editMode: boolean = false;
+let editBorder: string = "";
+
 let keyArray = [];
 
 let selectedVersion: number = dataVersion;
@@ -54,36 +57,63 @@ async function writeValueToDb(value: string, lang: string, key: string) {
 }
 </script>
 
-<div class="flex justify-between items-center w-full">
-  <div class="w-full text-red-600">{dataString}</div>
-  <!--<div class="table-cell p-1">{dataLang}</div>-->
-  <!--<img src={"/country-flags/svg/" + dataLang + ".svg"} alt="{dataLang}" class="table-cell w-10 h-10">-->
-  {#if dataVersion > 1}
-    <div class="flex items-center w-full mr-16 justify-between">
-      <p class="ml-8">Version: </p>
-      <select name="" id="" bind:value="{selectedVersion}" on:change="{() => selectChange()}">
-        {#each olderVersionData as data}
-          <option value="{data.version}">{data.version}</option>
-        {/each}
-      </select>
-    </div>
-  {:else}
-    <div class="flex items-center w-full mr-16 justify-between"><p class="ml-8">Version:</p><p>{dataVersion}</p></div>
-  {/if}
-
-  <div class="table-cell">
+<div class="flex-row w-full {editBorder} rounded-box p-5 hover:border-2 hover:border-dark-dark hover:border-dotted">
+  <div class="flex justify-between w-full">
+    <p class="text-gray-400 w-40">{dataKey}</p>
     <div class="flex">
-      <input bind:value="{inputValue}" class="input" type="text" placeholder="{dataString}" />
-      <button
-        class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
-        on:click="{async () => {
-          let updatedObject = await writeValueToDb(inputValue, dataLang, dataKey);
-          await loadOlderVersions(dataLang, dataKey);
-          dataVersion = updatedObject.version;
-          dataString = updatedObject.value;
-          selectedVersion = updatedObject.version;
-          inputValue = '';
-        }}">Save</button>
+      {#if dataVersion > 1}
+        <p>Version:</p>
+
+        <div class="items-center w-full">
+          <select name="" id="" bind:value="{selectedVersion}" on:change="{() => selectChange()}">
+            {#each olderVersionData as data}
+              <option value="{data.version}">{data.version}</option>
+            {/each}
+          </select>
+        </div>
+      {:else}
+        <p>Version:</p>
+        <p class="items-center w-full">{dataVersion}</p>
+      {/if}
     </div>
   </div>
+  <div class="flex justify-between items-center w-full">
+    <p class="w-40 text-red-600 ml-6">{dataString}</p>
+
+    <div class="flex">
+      {#if editMode}
+        <button
+          class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
+          on:click="{async () => {
+            let updatedObject = await writeValueToDb(inputValue, dataLang, dataKey);
+            await loadOlderVersions(dataLang, dataKey);
+            dataVersion = updatedObject.version;
+            dataString = updatedObject.value;
+            selectedVersion = updatedObject.version;
+            inputValue = '';
+            editMode = false;
+            editBorder = "";
+          }}">Save</button>
+        <button
+          class="bg-red-200 rounded-lg m-1 p-1 hover:bg-red-500"
+          on:click="{() => {
+            editMode = false;
+            editBorder = '';
+          }}"><p class="ml-2 mr-2">X</p></button>
+      {:else}
+        <button
+          class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
+          on:click="{() => {
+            editMode = true;
+            editBorder = 'border-2 border-dark-dark border-dotted';
+          }}">Edit</button>
+      {/if}
+    </div>
+  </div>
+  {#if editMode}
+    <div class="flex justify-center w-full">
+      <!-- svelte-ignore a11y-autofocus -->
+      <textarea autofocus bind:value="{inputValue}" class="border-black border-2 rounded p-5" cols="30" rows="2"></textarea>
+    </div>
+  {/if}
 </div>

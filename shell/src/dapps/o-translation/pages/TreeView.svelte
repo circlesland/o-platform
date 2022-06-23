@@ -102,20 +102,18 @@ function isSelected(languageCode: string) {
 }
 </script>
 
-
-
 <section class="relative mb-20 -mt-3 bg-white shadow rounded md:w-2/3 xl:w-1/2">
-  <div class="flex grow justify-center mt-3">
-    <form on:input="{() => refreshView()}" class="justify-start">
-      <input bind:value="{keyFilter}" class="input m-1" type="text" placeholder="dapps.o-banking..." />
-    </form>
-    <form on:input="{() => refreshView()}" class="justify-end">
-      <input bind:value="{valueFilter}" class="input m-1" type="text" placeholder="String" />
-    </form>
-  </div>
-  <div class="flex justify-center m-3">
-    <LangSwitcher />
-  </div>
+    <div class="flex grow justify-center mt-3">
+      <form on:input="{() => refreshView()}" class="justify-start">
+        <input bind:value="{keyFilter}" class="input m-1" type="text" placeholder="dapps.o-banking..." />
+      </form>
+      <form on:input="{() => refreshView()}" class="justify-end">
+        <input bind:value="{valueFilter}" class="input m-1" type="text" placeholder="String" />
+      </form>
+    </div>
+    <div class="flex justify-center m-3">
+      <LangSwitcher />
+    </div>
   <!--<div class="flex justify-center">
     {#each allLanguages as languageCode}
       <button
@@ -129,6 +127,7 @@ function isSelected(languageCode: string) {
       </button>
     {/each}
   </div>-->
+  
   <div class="mr-3 ml-3">
     <Tree
       rootNode="{displayedTree}"
