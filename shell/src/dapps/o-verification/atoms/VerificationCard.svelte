@@ -18,8 +18,10 @@ function loadDetailPage(path) {
       edgeless: false,
       imageProfile: param.verifiedProfile,
       title: param.verifiedProfile.displayName,
-      subTitle: window.i18n("dapps.o-verification.atoms.verificationCard.subtitle", { values: { name: param.verifierProfile.name, date: dayjs(param.createdAt).format('DD.MM.YYYY')}}),
-      truncateMain: true,
+      subTitle: window.i18n('dapps.o-verification.atoms.verificationCard.subtitle', {
+        values: { name: param.verifierProfile.name, date: dayjs(param.createdAt).format('DD.MM.YYYY') },
+      }),
+      mobileTextCutoff: 20,
     }}">
     <div slot="itemCardEnd">
       <div class="self-end text-lg sm:text-3xl"></div>
