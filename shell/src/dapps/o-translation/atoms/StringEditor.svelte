@@ -15,6 +15,7 @@ export let dataLang: string;
 export let dataString: string;
 export let dataVersion: number;
 
+
 let editMode: boolean = false;
 let editBorder: string = "";
 
@@ -23,6 +24,8 @@ let keyArray = [];
 let selectedVersion: number = dataVersion;
 let inputValue: string;
 let olderVersionData = [];
+
+let negativeMargin:string = "";
 
 keyArray.concat(keyArray.push(dataKey.split(".")));
 
@@ -55,6 +58,20 @@ async function writeValueToDb(value: string, lang: string, key: string) {
     value: value,
   });
 }
+
+
+function calculateNegativeMargin() {
+  keyArray = keyArray.concat(keyArray.push(dataKey.split(".")));
+  let y = 4 * (keyArray[0].length);
+  negativeMargin = `-ml-${y}`;
+  console.log("y", y)
+  console.log(keyArray[0].length)
+  console.log("negativMargin", negativeMargin)
+}
+calculateNegativeMargin();
+
+
+
 </script>
 
 <div class="flex-row w-full {editBorder} rounded-box p-5 hover:border-2 hover:border-dark-dark hover:border-dotted">
@@ -78,7 +95,7 @@ async function writeValueToDb(value: string, lang: string, key: string) {
     </div>
   </div>
   <div class="flex justify-between items-center w-full">
-    <p class="w-40 text-red-600 ml-6">{dataString}</p>
+    <p class="w-56 text-red-600 ml-6 text-xl">{dataString}</p>
 
     <div class="flex">
       {#if editMode}

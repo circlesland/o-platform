@@ -102,7 +102,7 @@ function isSelected(languageCode: string) {
 }
 </script>
 
-<section class="relative mb-20 -mt-3 bg-white shadow rounded md:w-2/3 xl:w-1/2">
+<section class="relative mb-20 bg-white shadow rounded md:w-2/3 xl:w-1/2">
     <div class="flex grow justify-center mt-3">
       <form on:input="{() => refreshView()}" class="justify-start">
         <input bind:value="{keyFilter}" class="input m-1" type="text" placeholder="dapps.o-banking..." />

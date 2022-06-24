@@ -12,6 +12,7 @@ let dispatch = createEventDispatcher();
 let snapshot: StateSnapshot = {};
 let expand: boolean;
 
+
 </script>
 
 <div class="ml-4 mb-4">
@@ -51,7 +52,6 @@ let expand: boolean;
               dataVersion="{item.version}" />
           {/each}
         {:else}
-
           <svelte:self rootNode="{childNode}" on:expand />
         {/if}
       </ul>
