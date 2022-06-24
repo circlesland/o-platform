@@ -288,7 +288,7 @@ function addProduct(categoryId) {
 <div class="w-5/6 px-4 mx-auto -mt-3">
   <div class="items-center w-full p-4 ">
     {#if shop}
-      {#if categories.length > 0}
+      {#if categories && categories.length > 0}
         {#each categories as category, catindex (category.name)}
           <div class="p-2 w-min whitespace-nowrap rounded-t-md" class:bg-gray-300="{catindex % 2 == 1}">
             <h1 class="inline pr-4 h1">{category.name}</h1>
@@ -427,6 +427,13 @@ function addProduct(categoryId) {
             {/if}
           </Center>
         {/if}
+      {:else}
+        <div class="text-center">
+          You don't have any Categories set up yet. <a
+            href="/#/marketplace/my-categories"
+            class="link"
+            alt="set up categories">Create a Category</a>
+        </div>
       {/if}
     {:else}
       <h2>sorry, you don't have any stores. are you logged in as the right Organization?</h2>
