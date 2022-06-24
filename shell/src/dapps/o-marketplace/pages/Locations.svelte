@@ -43,7 +43,7 @@ async function load() {
           largeBannerUrl: o.largeBannerUrl,
           smallBannerUrl: o.smallBannerUrl,
         },
-        enabled: isMyShop(o.id) || trustIn > 0,
+        enabled: o.enabled,
         productListingType: o.productListingStyle == "LIST" ? "list" : "market",
       };
     })
@@ -53,17 +53,7 @@ async function load() {
 onMount(async () => await load());
 
 async function locationClicked(orga) {
-  const alreadyVerified = (await me.getSessionInfo()).capabilities.find(
-    (o) => o.type == CapabilityType.VerifiedByHumanode
-  );
-
-  if (orga.enabled) {
-    loadLocationPage(`${orga.productListingType}/${orga.shopId}`);
-  } else if (!alreadyVerified) {
-    await window.o.runProcess(getTrustedByShop, {}, {});
-  } else {
-    await window.o.runProcess(getTrusted, {}, {});
-  }
+  loadLocationPage(`${orga.productListingType}/${orga.shopId}`);
 }
 
 function isMyShop(shopId) {
@@ -84,7 +74,7 @@ function isMyShop(shopId) {
     </section>
 
     {#each orgas as orga}
-      {#if !orga.shop.private || isMyShop(orga.shop.id)}
+      {#if (orga.shop.enabled && !orga.shop.private) || isMyShop(orga.shop.id)}
         <section
           class="flex items-start m-4 rounded-xl"
           class:cursor-pointer="{orga.shop.enabled}"
@@ -96,15 +86,6 @@ function isMyShop(shopId) {
                 <div
                   class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-3xl rounded-l-full font-heading top-2 bg-light-lightest">
                   <span class="inline-block">{orga.shop.name}</span>
-                </div>
-                <div
-                  class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full cursor-pointer bottom-4 bg-alert-lightest has-tooltip"
-                  class:hidden="{orga.shop.enabled}">
-                  <span class="px-2 mt-12 text-sm bg-white rounded shadow-sm right-20 tooltip bottom-10">
-                    <!--Find one of our friendly circlesland people to trust you for
-                  this shop.-->
-                  </span>
-                  You need to get trusted by this shop.
                 </div>
               </div>
             </header>

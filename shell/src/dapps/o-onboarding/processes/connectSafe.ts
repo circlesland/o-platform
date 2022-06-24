@@ -8,13 +8,7 @@ import { ConnectSafeContext } from "../../o-passport/processes/identify/connectS
 import * as bip39 from "bip39";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { Account } from "web3-core";
-import {
-  FindSafesByOwnerDocument,
-  FindSafesByOwnerQueryVariables,
-  ImportOrganisationsDocument,
-  SafeInfo,
-  UpsertProfileDocument,
-} from "../../../shared/api/data/types";
+import {FindSafesByOwnerDocument,FindSafesByOwnerQueryVariables,ImportOrganisationsDocument,SafeInfo,UpsertProfileDocument,} from "../../../shared/api/data/types";
 import { GnosisSafeProxy } from "@o-platform/o-circles/dist/safe/gnosisSafeProxy";
 import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte";
 import { KeyManager } from "../../o-passport/data/keyManager";

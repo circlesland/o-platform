@@ -76,6 +76,7 @@ async function updateShop(newShop: Boolean = false) {
     // editShopId = null;
     if (newShop) {
       shops = [...shops, <Shop>currentShop];
+    } else {
     }
     return ok(result);
   } catch {
@@ -99,7 +100,6 @@ function toggleEditShop(shopId, index) {
   }
 }
 async function submit() {
-  console.log("SUBMIT");
   updateShop();
 }
 
@@ -187,8 +187,8 @@ async function createNewShop() {
     productListingStyle: ProductListingType.List,
     ownerId: $me.id,
   };
-
-  await updateShop(true);
+  shops = [...shops, <Shop>currentShop];
+  // await updateShop(true);
 
   const updatedProfile = await ApiClient.query<(Profile | Organisation)[], OrganisationsByAddressQueryVariables>(
     OrganisationsByAddressDocument,
@@ -211,7 +211,6 @@ async function createNewShop() {
   <!-- <div class="flex flex-wrap items-stretch space-x-4 space-y-8"> -->
   {#if shops}
     {#each shops as shop, index (shop.id)}
-      {console.log("SHOP", shop)}
       <section
         class="flex items-start px-4 mx-auto mb-20 md:w-2/3 xl:w-1/2 rounded-xl"
         class:active="{editShopId == shop.id}">
@@ -314,52 +313,28 @@ async function createNewShop() {
               <h1 class="w-full mt-2 text-left label">Description</h1>
 
               <div class="w-full">
-                <Editor scriptSrc="tinymce/tinymce.min.js" bind:value="{shop.description}" />
+                <Editor scriptSrc="tinymce/tinymce.min.js" id="myshopDescription" bind:value="{shop.description}" />
                 <div class="flex flex-row justify-end w-full mt-2 space-x-2">
                   <button class="inline btn btn-primary" on:click="{() => submit()}"> Save Description </button>
                 </div>
-                <!-- <input
-                  type="text"
-                  class="flex-grow font-primary input"
-                  placeholder="Description"
-                  bind:value="{shop.description}" /> -->
               </div>
-              <!-- <h1 class="w-full mt-2 text-left label">Pick-up Address</h1>
-
-              <div class="w-full">
-                <Editor scriptSrc="tinymce/tinymce.min.js" bind:value="{shop.pickupAddress}" />
-                <div class="flex flex-row justify-end w-full mt-2 space-x-2">
-                  <button class="inline btn btn-primary" on:click="{() => submit()}"> Save Address </button>
-                </div>
-
-              </div> -->
 
               <h1 class="w-full mt-2 text-left label">Opening Hours</h1>
 
               <div class="w-full">
-                <Editor scriptSrc="tinymce/tinymce.min.js" bind:value="{shop.openingHours}" />
+                <Editor scriptSrc="tinymce/tinymce.min.js" id="myshopOpeningHours" bind:value="{shop.openingHours}" />
                 <div class="flex flex-row justify-end w-full mt-2 space-x-2">
                   <button class="inline btn btn-primary" on:click="{() => submit()}"> Save Opening Hours </button>
                 </div>
-                <!-- <input
-                  type="text"
-                  class="flex-grow font-primary input"
-                  placeholder="Description"
-                  bind:value="{shop.description}" /> -->
               </div>
 
               <h1 class="w-full mt-2 text-left label">Legal Text</h1>
 
               <div class="w-full">
-                <Editor scriptSrc="tinymce/tinymce.min.js" bind:value="{shop.legalText}" />
+                <Editor scriptSrc="tinymce/tinymce.min.js" id="myshopLegalText" bind:value="{shop.legalText}" />
                 <div class="flex flex-row justify-end w-full mt-2 space-x-2">
                   <button class="inline btn btn-primary" on:click="{() => submit()}"> Save legal Text </button>
                 </div>
-                <!-- <input
-                  type="text"
-                  class="flex-grow font-primary input"
-                  placeholder="Description"
-                  bind:value="{shop.description}" /> -->
               </div>
               <div class="w-full mt-2 text-left label">Terms of Service Link</div>
               <div class="flex flex-row w-full space-x-2">

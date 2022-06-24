@@ -10,14 +10,14 @@ export type GetTrustedByShopContextData = {
   successAction?: (data: GetTrustedByShopContextData) => void;
 };
 
-export type PerformOauthContext = ProcessContext<GetTrustedByShopContextData>;
+export type GetTrustedContext = ProcessContext<GetTrustedByShopContextData>;
 
 const processDefinition = (processId: string) =>
-  createMachine<PerformOauthContext, any>({
+  createMachine<GetTrustedContext, any>({
     id: `${processId}:getTrusted`,
     initial: "getTrusted",
     states: {
-      ...fatalError<PerformOauthContext, any>("error"),
+      ...fatalError<GetTrustedContext, any>("error"),
       getTrusted: prompt({
         id: "getTrusted",
         field: {
@@ -61,7 +61,7 @@ const processDefinition = (processId: string) =>
 
 export const getTrusted: ProcessDefinition<
   void,
-  PerformOauthContext
+  GetTrustedContext
   > = {
   name: "getTrusted",
   stateMachine: <any>processDefinition,

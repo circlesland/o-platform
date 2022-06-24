@@ -4,9 +4,9 @@ import { Offer } from "../../../shared/api/data/types";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { me } from "../../../shared/stores/me";
-import { cartContents } from "../stores/shoppingCartStore";
 import { truncateString } from "../../../shared/functions/truncateString";
 import { _ } from "svelte-i18n";
+import {addToCart, AddToCartContextData} from "../processes/addToCart";
 
 export let param: Offer = <any>{
   categoryTag: {
@@ -39,33 +39,22 @@ $: {
   isEditable = allowEdit && $me && offer && $me.id == offer.createdByProfileId;
 }
 
-function edit(dirtyFlags: { [field: string]: boolean }) {
-  // console.log("edit: dirtyFlags:", dirtyFlags);
-  // window.o.runProcess(upsertOffer, offer, dirtyFlags, true);
-}
-
 function loadDetailPage() {
   push("#/marketplace/detail/" + shopId + "/" + offer.id);
 }
 
 export let shopId: Number;
 
-function addToCart(item: Offer, shopId: number) {
-  item.shopId = shopId;
-  $cartContents = $cartContents ? [...$cartContents, item] : [item];
-  push(`#/marketplace/cart`);
-}
-
-let now = new Date();
-let sevendaysago = now.setDate(now.getDate() - 7);
-
-function dateOlderThanSevenDays(unixTime: number) {
-  return sevendaysago > unixTime * 1000;
+function _addToCart(item: Offer, shopId: number) {
+  window.o.runProcess(addToCart, <AddToCartContextData>{
+    offerId: parseInt(item.id.toString()),
+    shopId: parseInt(shopId.toString()),
+    redirectTo: `#/marketplace/cart`
+  });
 }
 
 let displayName = `${offer.createdByProfile.displayName}`;
-
-displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
+displayName = displayName.length >= 22 ? displayName.substring(0, 22) + "..." : displayName;
 </script>
 
 <section class="flex items-start pb-2 bg-white shadow-md rounded-xl">
@@ -97,18 +86,6 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
       </div>
     </div>
     <div class="flex flex-col w-full px-4 pb-2 mt-2 space-y-4 ">
-      <!--<<div class="flex flex-row flex-grow space-x-2">
-        div
-          class="p-2 font-bold text-white uppercase rounded-full cursor-pointer bg-dark-lightest text-2xs">
-         <a
-            href="#/marketplace/categories/{offer.categoryTagId}/{offer
-              .categoryTag.value}"
-            alt="{offer.categoryTag.value}">
-            {offer.categoryTag.value}
-          </a>
-        </div>
-      </div>-->
-
       <div class="h-32">
         <div class="text-4xl leading-tight text-left uppercase break-word font-heading">
           {offer.title}
@@ -123,7 +100,7 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
 
       <div class="flex flex-row space-x-4">
         <div class="">
-          <button type="submit" class="relative btn btn-primary btn-square" on:click="{() => addToCart(offer, shopId)}">
+          <button type="submit" class="relative btn btn-primary btn-square" on:click="{() => _addToCart(offer, shopId)}">
             <Icons icon="cart" />
           </button>
         </div>
@@ -149,7 +126,7 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
 .image-wrapper {
   position: relative;
   /* padding-bottom: 56.2%;b 16:9 */
-  padding-bottom: 75%; /* 4:3 */
+  padding-bottom: 100%; /* 4:3 */
 }
 
 .image-wrapper img {

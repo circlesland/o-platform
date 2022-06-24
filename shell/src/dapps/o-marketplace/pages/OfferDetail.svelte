@@ -3,13 +3,13 @@ import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
-import { cartContents } from "../stores/shoppingCartStore";
 import { push } from "svelte-spa-router";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { offers } from "../../../shared/stores/offers";
 import { _ } from "svelte-i18n";
-import { Offer, Shop, ShopCategory, ShopDocument, ShopQueryVariables } from "../../../shared/api/data/types";
+import { Offer, Shop, ShopDocument, ShopQueryVariables } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
+import {addToCart, AddToCartContextData} from "../processes/addToCart";
 
 let isLoading: boolean;
 let error: Error;
@@ -37,10 +37,12 @@ async function load() {
 
 export let shopId: Number; // ATTENTION SHOPID IS HARDCODED BELOW AT THE API CALL!!!!!!!
 
-function addToCart(item: Offer, shopId: number) {
-  item.shopId = shopId;
-  $cartContents = $cartContents ? [...$cartContents, item] : [item];
-  push(`#/marketplace/cart`);
+function _addToCart(item: Offer, shopId: number) {
+  window.o.runProcess(addToCart, <AddToCartContextData>{
+    offerId: parseInt(item.id.toString()),
+    shopId: parseInt(shopId.toString()),
+    redirectTo: `#/marketplace/cart`
+  });
 }
 
 onMount(async () => {
@@ -92,7 +94,8 @@ onMount(async () => {
                 "
                 class="w-full rounded-t-xl" />
               {#if o.pricePerUnit > 0}
-                <div class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
+                <div
+                  class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
                   <span class="inline-block">{o.pricePerUnit}</span>
                   <span class="inline-block">€</span>
                 </div>
@@ -170,7 +173,7 @@ onMount(async () => {
           </div>
           <div class="flex-grow">
             {#if o.pricePerUnit > 0}
-              <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => addToCart(o, shopId)}">
+              <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => _addToCart(o, shopId)}">
                 {$_("dapps.o-marketplace.pages.offerDetail.addToCart")}
                 <div class="absolute mr-1 right-2">
                   <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
@@ -201,7 +204,7 @@ onMount(async () => {
 .image-wrapper {
   position: relative;
   /* padding-bottom: 56.2%;b 16:9 */
-  padding-bottom: 75%; /* 4:3 */
+  padding-bottom: 100%; /* 4:3 */
 }
 
 .image-wrapper img {

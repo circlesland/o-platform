@@ -12,6 +12,7 @@ query init {
       id
       circlesAddress
       displayCurrency
+      confirmedLegalAge
       circlesSafeOwner
       invitationLink
       successorOfCirclesAddress
@@ -289,6 +290,16 @@ query myProfile {
       longitude
       population
     }
+    shippingAddresses {
+      id
+      name
+      street
+      house
+      zip
+      city
+      state
+      country
+    }
     memberships {
       isAdmin
       organisation {
@@ -349,6 +360,16 @@ query profiles($id: [Int!]!) {
     city {
       geonameid
       name
+      country
+    }
+    shippingAddresses {
+      id
+      name
+      street
+      house
+      zip
+      city
+      state
       country
     }
     memberships {
@@ -437,6 +458,16 @@ query profilesByName($searchString: String!) {
       name
       country
     }
+    shippingAddresses {
+      id
+      name
+      street
+      house
+      zip
+      city
+      state
+      country
+    }
     verifications {
       createdAt
       revokedAt
@@ -516,6 +547,16 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
       name
       country
     }
+    shippingAddresses {
+      id
+      name
+      street
+      house
+      zip
+      city
+      state
+      country
+    }
     memberships {
       isAdmin
       organisation {
@@ -573,6 +614,16 @@ query profilesByIds($id: [Int!]!) {
     city {
       geonameid
       name
+      country
+    }
+    shippingAddresses {
+      id
+      name
+      street
+      house
+      zip
+      city
+      state
       country
     }
     verifications {
@@ -661,6 +712,16 @@ query profileById($id: Int!) {
       country
       name
     }
+    shippingAddresses {
+      id
+      name
+      street
+      house
+      zip
+      city
+      state
+      country
+    }
     provenUniqueness
     verifications {
       createdAt
@@ -686,21 +747,55 @@ query profileById($id: Int!) {
 query profileBySafeAddress($safeAddress: String!) {
   profilesBySafeAddress(safeAddresses: [$safeAddress]) {
     id
-    successorOfCirclesAddress
-    circlesSafeOwner
     circlesAddress
     displayCurrency
-    avatarUrl
+    circlesSafeOwner
+    invitationLink
+    successorOfCirclesAddress
     displayName
     firstName
     lastName
+    emailAddress
+    askedForEmailAddress
     dream
+    country
+    avatarUrl
+    avatarCid
+    avatarMimeType
+    newsletter
+    displayTimeCircles
+    displayCurrency
+    cityGeonameid
+    provenUniqueness
+    shippingAddresses {
+      id
+      name
+      street
+      house
+      zip
+      city
+      state
+      country
+    }
+    shops {
+      id
+    }
     city {
       geonameid
-      country
       name
+      country
     }
-    provenUniqueness
+    shippingAddresses {
+      id
+      name
+      street
+      house
+      city
+      cityGeonameid
+      zip
+      state
+      country
+    }
     memberships {
       isAdmin
       organisation {
@@ -731,7 +826,6 @@ query profileBySafeAddress($safeAddress: String!) {
         displayCurrency
         avatarUrl
         name
-        displayName
         city {
           geonameid
           name
@@ -739,6 +833,17 @@ query profileBySafeAddress($safeAddress: String!) {
         }
       }
     }
+    # init.invitation
+    claimedInvitation {
+      claimedAt
+    }
+    # init.eoaInvitationTransaction
+    invitationTransaction {
+      timestamp
+      transaction_hash
+    }
+    # init.ubi
+    circlesTokenAddress
   }
 }
 
@@ -868,6 +973,16 @@ query organisationsByAddress($addresses: [String!]!) {
           geonameid
           country
           name
+        }
+        shippingAddresses {
+          id
+          name
+          street
+          house
+          zip
+          city
+          state
+          country
         }
         verifications {
           createdAt
@@ -1250,6 +1365,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
             name
           }
           deliveryAddress {
+            name
             id
             street
             house
@@ -1331,6 +1447,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
             name
           }
           deliveryAddress {
+            name
             id
             street
             house
@@ -1362,6 +1479,15 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
               healthInfosLink
               adultOnly
               ownerId
+              pickupAddress {
+                name
+                street
+                house
+                zip
+                city
+                state
+                country
+              }
               owner {
                 id
                 name
@@ -1511,6 +1637,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
           createdByAddress
           createdAt
           title
+          minAge
           pictureUrl
           pictureMimeType
           description
@@ -1909,6 +2036,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
               name
             }
             deliveryAddress {
+              name
               id
               street
               house
@@ -2161,6 +2289,7 @@ query shop($id: Int!) {
           description
           pictureUrl
           pricePerUnit
+          minAge
           createdByProfile {
             id
             displayName

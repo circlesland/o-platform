@@ -27,12 +27,13 @@ onMount(async () => {
   categories = await Promise.all(
     manifestsWithJumplist.map(async (o) => {
       const jumplistItems = await o.jumplist.items({}, runtimeDapp);
-      return <
-        {
+      return <{
           manifest: DappManifest<any>;
-          items: { ["action"]: JumplistItem[]; ["profile"]: JumplistItem[] };
-        }
-      >{
+          items: {
+            ["action"]: JumplistItem[];
+            ["profile"]: JumplistItem[]
+          };
+      }> {
         manifest: o,
         items: jumplistItems.groupBy((c) => c.type ?? "action"),
       };

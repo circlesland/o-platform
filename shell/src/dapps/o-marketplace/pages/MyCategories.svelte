@@ -29,6 +29,7 @@ import { ApiClient } from "../../../shared/apiConnection";
 import Center from "../../../shared/layouts/Center.svelte";
 import { Environment } from "../../../shared/environment";
 import { Readable } from "svelte/store";
+import Editor from "@tinymce/tinymce-svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -43,7 +44,10 @@ let currentImage: string = null;
 let newCategory: ShopCategory;
 let categories: ShopCategory[] = [];
 let categoryInput: ShopCategoryInput[];
+let currentCategory: ShopCategoryInput;
 let currentCategoryId: any;
+let editCategoryId: Number;
+let categoryOrder: Number;
 
 $: categories = categories;
 
@@ -84,33 +88,20 @@ onMount(async () => {
   }
 });
 
-let hovering = false;
-
-const dragstart = (event, i) => {
-  event.dataTransfer.effectAllowed = "move";
-  event.dataTransfer.dropEffect = "move";
-  const start = i;
-  event.dataTransfer.setData("text/plain", start);
-};
-
-const drop = (event, target) => {
-  event.dataTransfer.dropEffect = "move";
-  const start = parseInt(event.dataTransfer.getData("text/plain"));
+const drop = (target, thisCategory) => {
   const newTracklist = categories;
 
-  if (start < target) {
-    newTracklist.splice(target + 1, 0, newTracklist[start]);
-    newTracklist.splice(start, 1);
-  } else {
-    newTracklist.splice(target, 0, newTracklist[start]);
-    newTracklist.splice(start + 1, 1);
-  }
-  categories = newTracklist;
-  hovering = null;
+  const removedItem = newTracklist[thisCategory];
+
+  newTracklist.splice(thisCategory, 1);
+  newTracklist.splice(target + 1, 0, removedItem);
 
   categories.forEach((element, index) => {
     element.sortOrder = index;
   });
+
+  submit();
+  categoryOrder = null;
 };
 
 $: if (categories.length) {
@@ -128,6 +119,7 @@ async function submit() {
   try {
     await updateCategory();
     showToast("success", "Categories successfully updated");
+    editCategoryId = null;
   } catch {
     showToast("error", "Categories not updated");
   }
@@ -144,18 +136,13 @@ function imageEditor(id, type, edit) {
   if (type == "largeBannerUrl") {
     currentImage = categories[currentCategoryId].largeBannerUrl;
   }
-  if (type == "smallBannerUrl") {
-    currentImage = categories[currentCategoryId].smallBannerUrl;
-  }
 }
 
 function removeImage() {
   if (editType == "largeBannerUrl") {
     categories[currentCategoryId].largeBannerUrl = "";
   }
-  if (editType == "smallBannerUrl") {
-    categories[currentCategoryId].smallBannerUrl = "";
-  }
+
   showModal = false;
 }
 function handleImageUpload(event) {
@@ -178,14 +165,43 @@ function handleImageUpload(event) {
 }
 $: {
   if (_state) {
-    if (editType == "largeBannerUrl") {
-      categories[currentCategoryId].largeBannerUrl = $_state.context.data.url;
-    }
-    if (editType == "smallBannerUrl") {
-      categories[currentCategoryId].smallBannerUrl = $_state.context.data.url;
+    if ($_state.value == "success") {
+      if (editType == "largeBannerUrl") {
+        categories[currentCategoryId].largeBannerUrl = $_state.context.data.url;
+      }
+      submit();
+      _state = null;
     }
   }
 }
+
+// $: {
+//   if (_state) {
+//     if (editType == "largeBannerUrl") {
+//       categories[currentCategoryId].largeBannerUrl = $_state.context.data.url;
+//       submit();
+//       editType = null;
+//     }
+//   }
+// }
+
+// async function updateCategory(newCategory: Boolean = false) {
+//   try {
+//     const result = await ApiClient.mutate<UpsertShopCategoriesResult, UpsertShopCategoriesMutationVariables>(
+//       UpsertShopCategoriesDocument,
+//       { shopCategories: currentCategor }
+//     );
+//     showToast("success", "Shop successfully updated");
+//     // editShopId = null;
+//     if (newCategory) {
+//       categories = [...categories, <ShopCategory>currentCategory];
+//     } else {
+//     }
+//     return ok(result);
+//   } catch {
+//     showToast("error", "Shop not updated");
+//   }
+// }
 
 async function updateCategory() {
   const result = await ApiClient.mutate<UpsertShopCategoriesResult, UpsertShopCategoriesMutationVariables>(
@@ -220,160 +236,178 @@ function removeLast() {
   categories.pop();
   categories = categories;
 }
+
+function toggleEditCategory(categoryId, index) {
+  if (editCategoryId == categoryId) {
+    editCategoryId = null;
+  } else {
+    // delete shops[index].purchaseMetaDataKeys;
+    // delete shops[index].owner;
+    // delete shops[index].categories;
+    // delete shops[index].createdAt;
+    // delete shops[index].pickupAddress;
+    // delete shops[index].__typename;
+    // delete shops[index].deliveryMethods;
+    // currentShop = <ShopInput>shops[index];
+    editCategoryId = categoryId;
+  }
+}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="w-5/6 px-4 mx-auto -mt-3">
-  <div class="items-center w-full p-4 ">
-    {#if shop}
+<div class="mb-20 -mt-3 ">
+  {#if shop}
+    <div class="flex flex-col mb-20 space-y-4 sm:grid-cols-2 ">
       {#if categories.length > 0}
-        <div class="table">
-          <div class="table-header-group">
-            <div class="table-cell">Order</div>
-
-            <div class="table-cell">Title</div>
-            <div class="table-cell">Description</div>
-            <div class="table-cell">Large Banner</div>
-
-            <div class="table-cell">Small Banner</div>
-
-            <div class="table-cell">Listing Style</div>
-            <div class="table-cell">Private</div>
-            <div class="table-cell">Enabled</div>
-          </div>
+        <div class="flex flex-col space-y-4">
           {#each categories as category, index (category.id)}
-            <div
-              class="table-row-group"
-              animate:flip
-              draggable="{true}"
-              on:dragstart="{(event) => dragstart(event, index)}"
-              on:drop|preventDefault="{(event) => drop(event, index)}"
-              ondragover="return false"
-              on:dragenter="{() => (hovering = index)}"
-              class:is-active="{hovering === index}">
-              <div class="table-cell w-10 p-1 cursor-move">
-                <Icon name="menu" class="inline w-10 h-10 heroicon" />
-              </div>
-
-              <div class="table-cell w-64 p-1 break-all">
-                <input type="text" class="input" placeholder="{category.name}" bind:value="{category.name}" />
-              </div>
-
-              <div class="table-cell p-1 break-all">
-                <input
-                  type="text"
-                  class="input"
-                  placeholder="{category.description}"
-                  bind:value="{category.description}" />
-              </div>
-
-              <div class="relative table-cell w-12 p-1 overflow-hidden">
-                <div class="absolute w-12 h-12 bottom-2">
+            <div class="table-row-group pb-6" animate:flip="{{ duration: 500 }}">
+              <div class="pb-2 mx-auto space-y-4 border-b border-gray-400 xl:w-1/2 md:w-2/3">
+                <div class="relative mx-4 overflow-hidden bg-white rounded-xl image-wrapper">
+                  {#if editCategoryId == category.id}
+                    <div
+                      class="absolute z-10 text-center align-top list-none cursor-pointer top-1 left-2 inline-table "
+                      on:click="{() => imageEditor(index, 'largeBannerUrl', false)}">
+                      <span>
+                        <span
+                          class="table-cell w-10 h-10 align-middle bg-black rounded-full text-primary bg-opacity-60">
+                          <Icon name="camera" class="inline w-6 h-6 heroicon smallicon" />
+                        </span>
+                      </span>
+                    </div>
+                  {/if}
                   {#if category.largeBannerUrl}
                     <img
-                      class="w-12 h-12"
                       src="{category.largeBannerUrl}"
-                      alt="large Banner Url"
-                      on:click="{() => imageEditor(index, 'largeBannerUrl', false)}" />
+                      alt="{category.name}"
+                      class="w-full rounded-xl opacity-60 object-position: center center;  " />
                   {:else}
-                    <div on:click="{() => imageEditor(index, 'largeBannerUrl', true)}" class="link link-primary">
-                      Upload image
-                    </div>
+                    <div class="w-full h-48 rounded-xl bg-black opacity-60 object-position: center center;  "></div>
                   {/if}
-                </div>
-              </div>
+                  <div
+                    class="absolute left-0 pt-1 pb-1 pl-2 pr-4 mt-2 text-xl rounded-r-full sm:pb-2 sm:pt-3 sm:text-3xl font-heading bottom-4 bg-light-lightest">
+                    {#if editCategoryId == category.id}
+                      <input
+                        type="text"
+                        class="font-primary input"
+                        size="30"
+                        placeholder="{category.name}"
+                        bind:value="{category.name}" />
+                      <button class="inline btn btn-square btn-primary" on:click="{() => submit()}">
+                        <Icon name="check" class="inline w-6 h-6 heroicon smallicon" />
+                      </button>
+                    {:else}
+                      <span class="inline-block">{category.name}</span>
+                    {/if}
+                  </div>
 
-              <div class="relative table-cell w-12 p-1 overflow-hidden">
-                <div class="absolute w-12 h-12 bottom-2">
-                  {#if category.smallBannerUrl}
-                    <img
-                      class="w-12 h-12"
-                      src="{category.smallBannerUrl}"
-                      alt="small Banner Url"
-                      on:click="{() => imageEditor(index, 'smallBannerUrl', false)}" />
-                  {:else}
-                    <div on:click="{() => imageEditor(index, 'smallBannerUrl', true)}" class="link link-primary">
-                      Upload image
+                  <div
+                    class="absolute text-center align-top list-none cursor-pointer bottom-1 right-2 inline-table"
+                    on:click="{() => toggleEditCategory(category.id, index)}">
+                    <span>
+                      <span
+                        class="table-cell w-10 h-10 align-middle rounded-full bg-opacity-60"
+                        class:bg-white="{editCategoryId == category.id}"
+                        class:text-base="{editCategoryId == category.id}"
+                        class:bg-black="{editCategoryId != category.id}"
+                        class:text-primary="{editCategoryId != category.id}">
+                        <Icon name="pencil" class="inline w-6 h-6 heroicon smallicon" />
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <div class="px-4">
+                  <h1 class="w-full mt-2 text-left label">Description</h1>
+                  {#if editCategoryId == category.id}
+                    <div class="w-full">
+                      <Editor
+                        scriptSrc="tinymce/tinymce.min.js"
+                        id="myshopLegalText"
+                        bind:value="{category.description}" />
+                      <div class="flex flex-row justify-end w-full mt-2 space-x-2">
+                        <button class="inline btn btn-primary" on:click="{() => submit()}">Save</button>
+                      </div>
                     </div>
                   {/if}
+                  <div class="w-full px-1 text-sm">{@html category.description}</div>
+
+                  <div class="flex flex-row mt-4 space-x-4 ">
+                    <div class="p-2 font-primary ">
+                      <input
+                        type="checkbox"
+                        class="inline-block toggle toggle-primary"
+                        value="{category.private}"
+                        bind:checked="{category.private}" />
+                      <div class="inline-block align-top">Private?</div>
+                    </div>
+
+                    <div class="p-2 font-primary ">
+                      <input
+                        type="checkbox"
+                        class="inline-block toggle toggle-primary"
+                        value="{category.enabled}"
+                        bind:checked="{category.enabled}" />
+                      <div class="inline-block align-top">Enabled?</div>
+                    </div>
+                    <div class="p-2 -mt-2">
+                      <select
+                        class="w-full max-w-xs select"
+                        bind:value="{categoryOrder}"
+                        on:change="{(event) => drop(categoryOrder, index)}">
+                        <option disabled selected>Select where to order this category</option>
+                        {#each categories as orderCategory, oi}
+                          {#if orderCategory.id != category.id}
+                            <option value="{oi}">below {orderCategory.name}</option>
+                          {/if}
+                        {/each}
+                      </select>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="table-cell p-1 ">
-                <select class="select" bind:value="{category.productListingStyle}">
-                  <option value="LIST">List</option>
-                  <option value="TILES">Tiles</option>
-                </select>
-              </div>
-              <div class="table-cell p-1 ">
-                <input
-                  type="checkbox"
-                  class="inline-block toggle toggle-primary"
-                  value="{category.private}"
-                  bind:checked="{category.private}" />
-              </div>
-              <div class="table-cell p-1 ">
-                <input
-                  type="checkbox"
-                  class="inline-block toggle toggle-primary"
-                  value="{category.enabled}"
-                  bind:checked="{category.enabled}" />
-              </div>
-              <div class="table-cell p-1 ">
-                {#if !category.id}
-                  <button class="btn btn-primary btn-sm" on:click="{() => removeLast()}">Remove</button>
-                {/if}
+
+                <div class="flex flex-col px-4 space-y-4">
+                  <!-- {#each category.entries as entry}
+                    <ListViewCard entry="{entry}" shopId="{shopId}" deliveryMethods="{shop.deliveryMethods}" />
+                  {/each} -->
+                </div>
               </div>
             </div>
           {/each}
         </div>
-        <div class="flex justify-start w-full pt-2 space-x-4">
-          <button class="btn btn-success" on:click="{() => addCategory()}">Create new Category</button>
-          <button class="btn btn-primary" on:click="{submit}">Save Categories</button>
-        </div>
-        {#if showModal}
-          <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
-            {#if editImage}
-              <div class="p4">
-                <center>
-                  <button class="self-center m-4 btn btn-primary btn-sm" on:click="{removeImage}">No Image</button>
-                </center>
-              </div>
-              <ImageUpload on:submit="{handleImageUpload}" aspect="{7 / 2}" maxWidth="{700}" />
-            {:else}
-              <div class="flex flex-col w-full h-full p-4">
-                <button
-                  class="self-center mb-4 btn btn-primary btn-sm"
-                  on:click="{() => {
-                    editImage = true;
-                  }}">Remove Image</button>
-                <div class="text-center">
-                  <div class="inline-flex">
-                    <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
+        <div class="pb-2 mx-auto space-y-4 xl:w-1/2 md:w-2/3">
+          <div class="flex justify-end w-full pt-2 space-x-4">
+            <button class="btn btn-success" on:click="{() => addCategory()}">Create new Category</button>
+          </div>
+          {#if showModal}
+            <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
+              {#if editImage}
+                <div class="p4">
+                  <center>
+                    <button class="self-center m-4 btn btn-primary btn-sm" on:click="{removeImage}">No Image</button>
+                  </center>
+                </div>
+                <ImageUpload on:submit="{handleImageUpload}" aspect="{7 / 2}" maxWidth="{700}" />
+              {:else}
+                <div class="flex flex-col w-full h-full p-4">
+                  <button
+                    class="self-center mb-4 btn btn-primary btn-sm"
+                    on:click="{() => {
+                      editImage = true;
+                    }}">Remove Image</button>
+                  <div class="text-center">
+                    <div class="inline-flex">
+                      <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            {/if}
-          </Center>
-        {/if}
+              {/if}
+            </Center>
+          {/if}
+        </div>
       {/if}
-    {:else}
-      <h2>sorry, you don't have any stores. are you logged in as the right Organization?</h2>
-    {/if}
-  </div>
+    </div>
+  {:else}
+    <h2>sorry, you don't have any stores. are you logged in as the right Organization?</h2>
+  {/if}
 </div>
-
-<style>
-/* .list-item {
-  display: block;
-  padding: 0.5em 1em;
-}
-
-.list-item:not(:last-child) {
-  border-bottom: 1px solid #dbdbdb;
-} */
-
-.table-row-group.is-active {
-  @apply bg-primary;
-}
-</style>

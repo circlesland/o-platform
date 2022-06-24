@@ -7,7 +7,8 @@ import { push } from "svelte-spa-router";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { _ } from "svelte-i18n";
 import { ApiClient } from "../../../shared/apiConnection";
-import { cartContents } from "../stores/shoppingCartStore";
+import Icons from "../../../shared/molecules/Icons.svelte";
+import { addToCart, AddToCartContextData } from "../processes/addToCart";
 
 let isLoading: boolean;
 let error: Error;
@@ -44,10 +45,12 @@ onMount(async () => {
   }
 });
 
-function addToCart(item: Offer & { shopId: number }) {
-  item.shopId = shopId;
-  $cartContents = $cartContents ? [...$cartContents, item] : [item];
-  push(`#/marketplace/cart`);
+function _addToCart(item: Offer & { shopId: number }) {
+  window.o.runProcess(addToCart, <AddToCartContextData>{
+    offerId: parseInt(item.id.toString()),
+    shopId: parseInt(shopId.toString()),
+    redirectTo: `#/marketplace/cart`,
+  });
 }
 </script>
 
@@ -90,16 +93,25 @@ function addToCart(item: Offer & { shopId: number }) {
               {#each shop.deliveryMethods as deliveryMethod, i}
                 <div
                   class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full bg-alert-lightest"
-                  class:top-16="{i == 0}"
-                  class:top-28="{i > 0}">
+                  class:top-20="{i == 0}"
+                  class:top-32="{i > 0}">
                   {deliveryMethod.name}
                 </div>
               {/each}
             {/if}
+            {#if offer.minAge}
+              <div class="absolute right-0 py-2 pl-4 pr-2 mt-2 text-xs rounded-l-full bottom-4 bg-light-lightest">
+                {#if offer.minAge < 18}
+                  <Icons icon="under16" customClass="inline" size="{10}" />
+                {:else}
+                  <Icons icon="under18" customClass="inline" size="{10}" />
+                {/if}
+              </div>
+            {/if}
           </div>
         </header>
         <div
-          class="flex flex-row items-center content-start p-4 space-x-4 text-base font-medium text-left bg-light-lighter">
+          class="flex flex-row items-center content-start p-2 space-x-4 text-base font-medium text-left bg-light-lighter">
           <div class="inline-flex">
             <UserImage profile="{offer.createdByProfile}" size="{10}" gradientRing="{false}" />
           </div>
@@ -163,10 +175,18 @@ function addToCart(item: Offer & { shopId: number }) {
           </button>
         </div>
         <div class="flex-grow">
-          <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => addToCart(offer)}">
+          <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => _addToCart(offer)}">
             {$_("dapps.o-marketplace.pages.offerDetail.addToCart")}
             <div class="absolute mr-1 right-2">
-              <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
+              {#if offer.minAge}
+                {#if offer.minAge < 18}
+                  <Icons icon="under16" customClass="inline" size="{6}" />
+                {:else}
+                  <Icons icon="under18" customClass="inline" size="{6}" />
+                {/if}
+              {:else}
+                <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
+              {/if}
             </div>
           </button>
         </div>
@@ -192,7 +212,7 @@ function addToCart(item: Offer & { shopId: number }) {
 .image-wrapper {
   position: relative;
   /* padding-bottom: 56.2%;b 16:9 */
-  padding-bottom: 75%; /* 4:3 */
+  padding-bottom: 100%; /* 4:3 */
 }
 
 .image-wrapper img {

@@ -69,8 +69,8 @@ function onkeydown(e: KeyboardEvent) {
         </div>
       </div>
     {/each}
-    {#if context.data.deliveryMethod == 2}
-      This order is being delivered to you.
+    {#if context.data.checkoutDelivery.deliveryMethodId == 2}
+      This order will be delivered to you.
     {:else}
       <div class="flex flex-col w-full mb-6 space-y-4 text-left ">
         <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
@@ -120,7 +120,7 @@ function onkeydown(e: KeyboardEvent) {
           {#if context.data.shop.openingHours}
             <div class="pt-2">Our Opening Hours are:</div>
 
-            <div>{context.data.shop.openingHours}</div>
+            <div>{@html context.data.shop.openingHours}</div>
           {/if}
         </div>
 

@@ -460,7 +460,6 @@ async function init() {
     //window.o.runProcess(identify, {}, {});
     identityChecked = true;
   }
-
   const session = await me.getSessionInfo();
   if (!$me || !session.isLoggedOn || !sessionStorage.getItem("circlesKey")) {
     // TODO: Stash the current URL away and redirect the user to it after authentication

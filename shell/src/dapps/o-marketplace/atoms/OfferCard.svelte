@@ -1,11 +1,12 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
 import { Offer, ShopCategoryEntry } from "../../../shared/api/data/types";
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "../../../shared/atoms/UserImage.svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
-import { cartContents } from "../stores/shoppingCartStore";
+import Icons from "../../../shared/molecules/Icons.svelte";
 import { truncateString } from "../../../shared/functions/truncateString";
 import { _ } from "svelte-i18n";
+import { addToCart, AddToCartContextData } from "../processes/addToCart";
 
 export let entry: ShopCategoryEntry;
 export let shopId: number;
@@ -15,9 +16,12 @@ function loadDetailPage() {
   push("#/marketplace/detail/" + shopId + "/" + entry.id);
 }
 
-function addToCart(item: Offer & { shopId: number }) {
-  $cartContents = $cartContents ? [...$cartContents, item] : [item];
-  push(`#/marketplace/cart`);
+function _addToCart(item: Offer & { shopId: number }) {
+  window.o.runProcess(addToCart, <AddToCartContextData>{
+    offerId: parseInt(item.id.toString()),
+    shopId: parseInt(item.shopId.toString()),
+    redirectTo: `#/marketplace/cart`,
+  });
 }
 
 let now = new Date();
@@ -36,7 +40,8 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
           "
           class="rounded-t-xl" />
         {#if entry.product.pricePerUnit}
-          <div class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
+          <div
+            class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-lg rounded-l-full font-enso top-2 bg-light-lightest">
             <span class="inline-block">{entry.product.pricePerUnit}</span>
             <span class="inline-block">€</span>
           </div>
@@ -51,6 +56,15 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
               {deliveryMethod.name}
             </div>
           {/each}
+        {/if}
+        {#if entry.product.minAge}
+          <div class="absolute right-0 py-2 pl-4 pr-2 mt-2 text-xs rounded-l-full bottom-4 bg-light-lightest">
+            {#if entry.product.minAge < 18}
+              <Icons icon="under16" customClass="inline" size="{10}" />
+            {:else}
+              <Icons icon="under18" customClass="inline" size="{10}" />
+            {/if}
+          </div>
         {/if}
       </div>
     </header>
@@ -81,7 +95,7 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
           <button
             type="submit"
             class="relative btn btn-primary btn-square"
-            on:click="{() => addToCart({ ...entry.product, shopId: shopId })}">
+            on:click="{() => _addToCart({ ...entry.product, shopId: shopId })}">
             <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
           </button>
         </div>
@@ -107,7 +121,7 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
 .image-wrapper {
   position: relative;
   /* padding-bottom: 56.2%;b 16:9 */
-  padding-bottom: 75%; /* 4:3 */
+  padding-bottom: 100%; /* 4:3 */
 }
 
 .image-wrapper img {
