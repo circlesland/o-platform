@@ -9,7 +9,7 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import {QueryTagsInput, Tag, TagsDocument} from "../../../shared/api/data/types";
 import {ApiClient} from "../../../shared/apiConnection";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
@@ -61,7 +61,7 @@ function loadCategoryPage(category: any) {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.categories.loadingOffers")}</div>
+          <div><Label key="dapps.o-marketplace.pages.categories.loadingOffers" /></div>
         </div>
       </div>
     </section>
@@ -70,7 +70,7 @@ function loadCategoryPage(category: any) {
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
-            <b>{$_("dapps.o-marketplace.pages.categories.error")}</b>
+            <b><Label key="dapps.o-marketplace.pages.categories.error" /></b>
           </div>
         </div>
       </div>
@@ -99,7 +99,7 @@ function loadCategoryPage(category: any) {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.categories.noOffers")}</div>
+          <div><Label key="dapps.o-marketplace.pages.categories.noOffers" /></div>
         </div>
       </div>
     </section>

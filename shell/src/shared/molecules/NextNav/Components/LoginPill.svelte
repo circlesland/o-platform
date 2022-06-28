@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { _ } from "svelte-i18n";
+  import Label from "../../../atoms/Label.svelte";
   import {onMount} from "svelte";
 
   export let props;
@@ -27,6 +27,6 @@
       <svelte:component this="{props.component}" {...props.props} />
     </div>
 
-    <div class="-ml-4 text-xl justify-self-start font-heading">{$_("shared.molecules.nextNav.components.loginPill.signInNow")}</div>
+    <div class="-ml-4 text-xl justify-self-start font-heading"><Label key="shared.molecules.nextNav.components.loginPill.signInNow" /></div>
   </div>
 </div>

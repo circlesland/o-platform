@@ -3,7 +3,7 @@ import NotificationProfile from "./NotificationProfile.svelte";
 
 import { InvitationRedeemed, ProfileEvent } from "../../api/data/types";
 
-import { _ } from "svelte-i18n";
+import Label from "../../atoms/Label.svelte";
 
 export let event: ProfileEvent;
 
@@ -15,7 +15,7 @@ let payload: InvitationRedeemed = <InvitationRedeemed>event.payload;
     <NotificationProfile profile="{payload.redeemedBy_profile}" />
   </div>
   <div class="self-center pb-2 text-2xl text-center font-heading">
-    {$_("shared.molecules.notificationViewer.molecules.notificationViewInvitationRedeemed.acceptedYourInvitation")}
+    <Label key="shared.molecules.notificationViewer.molecules.notificationViewInvitationRedeemed.acceptedYourInvitation" />
   </div>
 </div>
 

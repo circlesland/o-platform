@@ -3,6 +3,7 @@
   import UAParser from "ua-parser-js";
   import Icons from "src/shared/molecules/Icons.svelte";
   import { _ } from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte"
 
   let parser = new UAParser();
   let player: any;
@@ -73,16 +74,16 @@
     class="absolute z-30 flex flex-col items-stretch content-center w-full h-full min-h-full pb-40 text-center video-overlay"
     on:click="{() => playVideo()}">
     <h1 class="px-5 text-4xl text-white font-heading md:text-6xl mt-11">
-      {$_("dapps.o-homepage.components.videoHeader.beFree")}
+      <Label key="dapps.o-homepage.components.videoHeader.beFree" />
     </h1>
     <h2 class="flex-grow px-5 pt-4 text-xl font-thin text-white sm:text-3xl ">
-      {$_("dapps.o-homepage.components.videoHeader.togetherWeBuild")}
+      <Label key="dapps.o-homepage.components.videoHeader.togetherWeBuild" />
     </h2>
     <button class="flex-grow" on:click="{() => playVideo()}">
       <div class="inline-flex mt-2">
         <Icons icon="playbutton" />
       </div>
-      <div class="pt-0 text-lg text-center text-white sm:pt-2">{$_("dapps.o-homepage.components.videoHeader.playVideo")}</div>
+      <div class="pt-0 text-lg text-center text-white sm:pt-2"><Label key="dapps.o-homepage.components.videoHeader.playVideo" /></div>
     </button>
   </div>
 </div>

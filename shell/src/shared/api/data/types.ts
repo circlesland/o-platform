@@ -562,6 +562,8 @@ export type Mutation = {
   verifySafe: VerifySafeResult;
   revokeSafeVerification: VerifySafeResult;
   proofUniqueness: ProofUniquenessResult;
+  updateValue?: Maybe<I18n>;
+  addNewLang?: Maybe<Scalars['Int']>;
 };
 
 
@@ -724,6 +726,20 @@ export type MutationRevokeSafeVerificationArgs = {
 
 export type MutationProofUniquenessArgs = {
   humanodeToken: Scalars['String'];
+};
+
+
+export type MutationUpdateValueArgs = {
+  createdBy?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationAddNewLangArgs = {
+  langToCreate?: Maybe<Scalars['String']>;
+  langToCopyFrom?: Maybe<Scalars['String']>;
 };
 
 export type MyInviteRank = {
@@ -1082,6 +1098,14 @@ export type Query = {
   invoice?: Maybe<Scalars['String']>;
   findInvitationCreator?: Maybe<Profile>;
   clientAssertionJwt: Scalars['String'];
+  getAllStrings?: Maybe<Array<Maybe<I18n>>>;
+  getAllStringsByLanguage?: Maybe<Array<Maybe<I18n>>>;
+  getAllStringsByMaxVersion?: Maybe<Array<Maybe<I18n>>>;
+  getAllStringsByMaxVersionAndLang?: Maybe<Array<Maybe<I18n>>>;
+  getAvailableLanguages?: Maybe<Array<Maybe<I18n>>>;
+  getOlderVersionsByKeyAndLang?: Maybe<Array<Maybe<I18n>>>;
+  getStringByLanguage?: Maybe<Array<I18n>>;
+  getStringByMaxVersion?: Maybe<I18n>;
 };
 
 
@@ -1217,6 +1241,33 @@ export type QueryInvoiceArgs = {
 
 export type QueryFindInvitationCreatorArgs = {
   code: Scalars['String'];
+};
+
+
+export type QueryGetAllStringsByLanguageArgs = {
+  lang?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetAllStringsByMaxVersionAndLangArgs = {
+  lang?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetOlderVersionsByKeyAndLangArgs = {
+  key?: Maybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetStringByLanguageArgs = {
+  lang?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetStringByMaxVersionArgs = {
+  key?: Maybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
 };
 
 export type QueryCitiesByGeonameIdInput = {
@@ -1651,6 +1702,15 @@ export type WelcomeMessage = IEventPayload & {
   invitedBy_profile?: Maybe<Profile>;
 };
 
+export type I18n = {
+  __typename?: 'i18n';
+  createdBy?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+  version?: Maybe<Scalars['Int']>;
+};
+
 export type UpsertShippingAddressMutationVariables = Exact<{
   data: PostAddressInput;
 }>;
@@ -1718,6 +1778,33 @@ export type VerifySessionChallengeMutation = (
   & { verifySessionChallenge?: Maybe<(
     { __typename?: 'ExchangeTokenResponse' }
     & Pick<ExchangeTokenResponse, 'success' | 'errorMessage'>
+  )> }
+);
+
+export type AddNewLangMutationVariables = Exact<{
+  langToCreate?: Maybe<Scalars['String']>;
+  langToCopyFrom?: Maybe<Scalars['String']>;
+}>;
+
+
+export type AddNewLangMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addNewLang'>
+);
+
+export type UpdateValueMutationVariables = Exact<{
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+}>;
+
+
+export type UpdateValueMutation = (
+  { __typename?: 'Mutation' }
+  & { updateValue?: Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'value' | 'version'>
   )> }
 );
 
@@ -3333,6 +3420,106 @@ export type AggregatesQuery = (
   )> }
 );
 
+export type GetAllStringsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllStringsQuery = (
+  { __typename?: 'Query' }
+  & { getAllStrings?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'version' | 'value'>
+  )>>> }
+);
+
+export type GetAllStringsByLanguageQueryVariables = Exact<{
+  lang?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetAllStringsByLanguageQuery = (
+  { __typename?: 'Query' }
+  & { getAllStringsByLanguage?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )>>> }
+);
+
+export type GetAllStringsByMaxVersionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllStringsByMaxVersionQuery = (
+  { __typename?: 'Query' }
+  & { getAllStringsByMaxVersion?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )>>> }
+);
+
+export type GetAllStringsByMaxVersionAndLangQueryVariables = Exact<{
+  lang?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetAllStringsByMaxVersionAndLangQuery = (
+  { __typename?: 'Query' }
+  & { getAllStringsByMaxVersionAndLang?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )>>> }
+);
+
+export type GetStringByMaxVersionQueryVariables = Exact<{
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetStringByMaxVersionQuery = (
+  { __typename?: 'Query' }
+  & { getStringByMaxVersion?: Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )> }
+);
+
+export type GetOlderVersionsByKeyAndLangQueryVariables = Exact<{
+  key?: Maybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetOlderVersionsByKeyAndLangQuery = (
+  { __typename?: 'Query' }
+  & { getOlderVersionsByKeyAndLang?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )>>> }
+);
+
+export type GetStringByLanguageQueryVariables = Exact<{
+  lang?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetStringByLanguageQuery = (
+  { __typename?: 'Query' }
+  & { getStringByLanguage?: Maybe<Array<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )>> }
+);
+
+export type GetAvailableLanguagesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAvailableLanguagesQuery = (
+  { __typename?: 'Query' }
+  & { getAvailableLanguages?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang'>
+  )>>> }
+);
+
 export type DirectPathQueryVariables = Exact<{
   from: Scalars['String'];
   to: Scalars['String'];
@@ -3593,6 +3780,22 @@ export const VerifySessionChallengeDocument = gql`
   verifySessionChallenge(challenge: $challenge, signature: $signature) {
     success
     errorMessage
+  }
+}
+    `;
+export const AddNewLangDocument = gql`
+    mutation addNewLang($langToCreate: String, $langToCopyFrom: String) {
+  addNewLang(langToCreate: $langToCreate, langToCopyFrom: $langToCopyFrom)
+}
+    `;
+export const UpdateValueDocument = gql`
+    mutation updateValue($lang: String, $key: String, $createdBy: String, $value: String) {
+  updateValue(lang: $lang, key: $key, createdBy: $createdBy, value: $value) {
+    lang
+    key
+    createdBy
+    value
+    version
   }
 }
     `;
@@ -6097,6 +6300,89 @@ export const AggregatesDocument = gql`
   }
 }
     `;
+export const GetAllStringsDocument = gql`
+    query getAllStrings {
+  getAllStrings {
+    lang
+    key
+    version
+    value
+  }
+}
+    `;
+export const GetAllStringsByLanguageDocument = gql`
+    query getAllStringsByLanguage($lang: String) {
+  getAllStringsByLanguage(lang: $lang) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+    `;
+export const GetAllStringsByMaxVersionDocument = gql`
+    query getAllStringsByMaxVersion {
+  getAllStringsByMaxVersion {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+    `;
+export const GetAllStringsByMaxVersionAndLangDocument = gql`
+    query getAllStringsByMaxVersionAndLang($lang: String) {
+  getAllStringsByMaxVersionAndLang(lang: $lang) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+    `;
+export const GetStringByMaxVersionDocument = gql`
+    query getStringByMaxVersion($lang: String, $key: String) {
+  getStringByMaxVersion(lang: $lang, key: $key) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+    `;
+export const GetOlderVersionsByKeyAndLangDocument = gql`
+    query getOlderVersionsByKeyAndLang($key: String, $lang: String) {
+  getOlderVersionsByKeyAndLang(lang: $lang, key: $key) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+    `;
+export const GetStringByLanguageDocument = gql`
+    query getStringByLanguage($lang: String) {
+  getStringByLanguage(lang: $lang) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+    `;
+export const GetAvailableLanguagesDocument = gql`
+    query getAvailableLanguages {
+  getAvailableLanguages {
+    lang
+  }
+}
+    `;
 export const DirectPathDocument = gql`
     query directPath($from: String!, $to: String!, $amount: String!) {
   directPath(from: $from, to: $to, amount: $amount) {
@@ -6375,6 +6661,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     verifySessionChallenge(variables: VerifySessionChallengeMutationVariables): Promise<VerifySessionChallengeMutation> {
       return withWrapper(() => client.request<VerifySessionChallengeMutation>(print(VerifySessionChallengeDocument), variables));
     },
+    addNewLang(variables?: AddNewLangMutationVariables): Promise<AddNewLangMutation> {
+      return withWrapper(() => client.request<AddNewLangMutation>(print(AddNewLangDocument), variables));
+    },
+    updateValue(variables?: UpdateValueMutationVariables): Promise<UpdateValueMutation> {
+      return withWrapper(() => client.request<UpdateValueMutation>(print(UpdateValueDocument), variables));
+    },
     claimInvitation(variables: ClaimInvitationMutationVariables): Promise<ClaimInvitationMutation> {
       return withWrapper(() => client.request<ClaimInvitationMutation>(print(ClaimInvitationDocument), variables));
     },
@@ -6530,6 +6822,30 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     aggregates(variables: AggregatesQueryVariables): Promise<AggregatesQuery> {
       return withWrapper(() => client.request<AggregatesQuery>(print(AggregatesDocument), variables));
+    },
+    getAllStrings(variables?: GetAllStringsQueryVariables): Promise<GetAllStringsQuery> {
+      return withWrapper(() => client.request<GetAllStringsQuery>(print(GetAllStringsDocument), variables));
+    },
+    getAllStringsByLanguage(variables?: GetAllStringsByLanguageQueryVariables): Promise<GetAllStringsByLanguageQuery> {
+      return withWrapper(() => client.request<GetAllStringsByLanguageQuery>(print(GetAllStringsByLanguageDocument), variables));
+    },
+    getAllStringsByMaxVersion(variables?: GetAllStringsByMaxVersionQueryVariables): Promise<GetAllStringsByMaxVersionQuery> {
+      return withWrapper(() => client.request<GetAllStringsByMaxVersionQuery>(print(GetAllStringsByMaxVersionDocument), variables));
+    },
+    getAllStringsByMaxVersionAndLang(variables?: GetAllStringsByMaxVersionAndLangQueryVariables): Promise<GetAllStringsByMaxVersionAndLangQuery> {
+      return withWrapper(() => client.request<GetAllStringsByMaxVersionAndLangQuery>(print(GetAllStringsByMaxVersionAndLangDocument), variables));
+    },
+    getStringByMaxVersion(variables?: GetStringByMaxVersionQueryVariables): Promise<GetStringByMaxVersionQuery> {
+      return withWrapper(() => client.request<GetStringByMaxVersionQuery>(print(GetStringByMaxVersionDocument), variables));
+    },
+    getOlderVersionsByKeyAndLang(variables?: GetOlderVersionsByKeyAndLangQueryVariables): Promise<GetOlderVersionsByKeyAndLangQuery> {
+      return withWrapper(() => client.request<GetOlderVersionsByKeyAndLangQuery>(print(GetOlderVersionsByKeyAndLangDocument), variables));
+    },
+    getStringByLanguage(variables?: GetStringByLanguageQueryVariables): Promise<GetStringByLanguageQuery> {
+      return withWrapper(() => client.request<GetStringByLanguageQuery>(print(GetStringByLanguageDocument), variables));
+    },
+    getAvailableLanguages(variables?: GetAvailableLanguagesQueryVariables): Promise<GetAvailableLanguagesQuery> {
+      return withWrapper(() => client.request<GetAvailableLanguagesQuery>(print(GetAvailableLanguagesDocument), variables));
     },
     directPath(variables: DirectPathQueryVariables): Promise<DirectPathQuery> {
       return withWrapper(() => client.request<DirectPathQuery>(print(DirectPathDocument), variables));

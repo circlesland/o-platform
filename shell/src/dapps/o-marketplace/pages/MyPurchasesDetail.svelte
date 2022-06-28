@@ -24,6 +24,7 @@ import { _ } from "svelte-i18n";
 import { myPurchases } from "../../../shared/stores/myPurchases";
 import relativeTimeString from "../../../shared/functions/relativeTimeString";
 import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let id: string;
 
@@ -177,7 +178,7 @@ onMount(async () => {
   <header class="grid overflow-hidden bg-white ">
     <div class="w-full text-center">
       <h1 class="text-3xl uppercase font-heading">
-        {$_("dapps.o-marketplace.pages.myPurchaseDetail.purchaseDetails")}
+        <Label key="dapps.o-marketplace.pages.myPurchaseDetail.purchaseDetails" />
       </h1>
     </div>
     <div class="w-full text-center">
@@ -193,7 +194,7 @@ onMount(async () => {
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
-            {$_("dapps.o-marketplace.pages.myPurchaseDetail.loadingPurchases")}
+            <Label key="dapps.o-marketplace.pages.myPurchaseDetail.loadingPurchases" />
           </div>
         </div>
       </div>

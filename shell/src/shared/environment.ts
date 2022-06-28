@@ -103,4 +103,14 @@ export class Environment {
   public static setShopMetadata(shopId:number, data:string) {
     return localStorage.setItem("shopMetadata." + shopId, data);
   }
+  public static get userLanguage(): string {
+    if (localStorage.getItem("userLanguage")) {
+      return localStorage.getItem("userLanguage");
+    } else {
+      return navigator.language.toLowerCase();
+    }
+  }
+  public static set userLanguage(value:string) {
+    localStorage.setItem("userLanguage", value);
+  }
 }

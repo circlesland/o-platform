@@ -22,7 +22,7 @@
   });
 </script>
 <template lang="pug">
-  
+
 SimpleHeader(runtimeDapp="{runtimeDapp}" routable="{routable}")
 
 div.px-4.mx-auto.-mt-3.mb-20(class='md:w-2/3 xl:w-1/2')

@@ -479,7 +479,7 @@ function handleEdit(event) {
                       scriptSrc="tinymce/tinymce.min.js"
                       bind:value="{entry.product.description}"
                       on:input="{() => changeEntry(entry.id, entry)}" />
-                  
+
                   </div>
 
                   <div class="table-cell w-20 p-1 break-all">

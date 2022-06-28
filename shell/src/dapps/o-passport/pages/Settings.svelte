@@ -18,6 +18,7 @@ import {
 import { upsertIdentity } from "../processes/upsertIdentity";
 import { ApiClient } from "../../../shared/apiConnection";
 import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -77,7 +78,7 @@ function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
       class="flex flex-col w-full px-3 py-2 space-x-2 bg-white rounded-lg shadow-md ">
       <div class="flex flex-col space-y-2">
         <div class="text-left">
-          {$_("dapps.o-passport.pages.settings.notifications")}
+          <Label key="dapps.o-passport.pages.settings.notifications" />
         </div>
         <div class="space-x-2 sm:space-x-6">
           <div class="w-full form-control">
@@ -85,7 +86,7 @@ function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
               <div
                 class="flex flex-row items-stretch w-full space-x-2 cursor-pointer justify-items-stretch">
                 <div class="self-center justify-self-center">
-                  {$_("common.no")}
+                  <Label key="common.no" />
                 </div>
                 <div class="self-center justify-self-center">
                   <input
@@ -103,7 +104,7 @@ function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
                   <span class="toggle-mark"></span>
                 </div>
                 <div class="self-center justify-self-center">
-                  {$_("common.yes")}
+                  <Label key="common.yes" />
                 </div>
               </div>
             </label>
@@ -117,7 +118,7 @@ function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
       class="flex flex-col w-full px-3 py-2 space-x-2 bg-white rounded-lg shadow-md ">
       <div class="flex flex-col space-y-2">
         <div class="text-left">
-          {$_("dapps.o-passport.pages.settings.emailAddress")}
+          <Label key="dapps.o-passport.pages.settings.emailAddress" />
         </div>
         <div class="">
           <div class="w-full form-control">
@@ -147,7 +148,7 @@ function editProfileField(onlyThesePages: string[], dirtyFlags: any = {}) {
   <!-- <section class="mx-4 mb-2">
     <Card>
       <div class="text-xs font-bold text-left text-primary whitespace-nowrap">
-        {$_("dapps.o-passport.pages.settings.currencyDisplay")}
+        <Label key="dapps.o-passport.pages.settings.currencyDisplay" />
       </div>
       <div class="w-full space-x-2 bg-white sm:space-x-6">
         <div class="w-full form-control">

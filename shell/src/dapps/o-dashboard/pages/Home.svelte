@@ -10,6 +10,8 @@ import { Environment } from "../../../shared/environment";
 import { _ } from "svelte-i18n";
 import DashboardInvitesWidget from "../molecules/DashboardInvitesWidget.svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import Label from "../../../shared/atoms/Label.svelte";
+import LangSwitcher from "../../../shared/atoms/LangSwitcher.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -65,6 +67,7 @@ async function fetchStats() {
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 <div class="mx-auto md:w-2/3 xl:w-1/2">
   <div class="m-4 mb-40 ">
+    <LangSwitcher />
     <DashboardInvitesWidget stats="{statsResult}" />
     <!-- <section class="flex items-start bg-white rounded-lg shadow-md cursor-pointer">
       <div class="flex flex-col w-full" on:click={() => loadLink("/marketplace/locations")}>

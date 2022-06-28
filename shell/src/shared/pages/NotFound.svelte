@@ -2,7 +2,7 @@
 import TopNav from "src/shared/atoms/TopNav.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import { _ } from "svelte-i18n";
+import Label from "../atoms/Label.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -20,22 +20,22 @@ export let routable: Routable;
           <header class="mb-6">
             <h2
               class="text-4xl font-bold leading-none text-gray-400 select-none lg:text-6xl">
-              {$_("shared.pages.notFound.notfound")}
+              <Label key="shared.pages.notFound.notfound" />
             </h2>
             <h3
               class="text-xl font-light leading-normal lg:text-3xl md:text-3xl">
-              {$_("shared.pages.notFound.sorryCouldNotFindPage")}
+              <Label key="shared.pages.notFound.sorryCouldNotFindPage" />
             </h3>
           </header>
 
           <p class="max-w-sm mb-5 leading-5 md:leading-7">
-            {$_("shared.pages.notFound.doNotWorry")}
+            <Label key="shared.pages.notFound.doNotWorry" />
           </p>
 
           <a
             href="#/home"
             class="inline px-4 py-2 text-sm font-medium leading-5 text-white uppercase transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg shadow focus:outline-none focus:shadow-outline-blue active:bg-blue-600 hover:bg-blue-700">
-            {$_("shared.pages.notFound.backToHome")}
+            <Label key="shared.pages.notFound.backToHome" />
           </a>
         </div>
 
