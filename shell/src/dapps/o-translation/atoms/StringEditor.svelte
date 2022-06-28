@@ -14,7 +14,6 @@ export let dataLang: string;
 export let dataString: string;
 export let dataVersion: number;
 
-let createdBy: string;
 
 let keyArray = [];
 
@@ -35,9 +34,6 @@ $: {
   negativeMargin;
 }
 
-async function getCreatedBy() {
-  createdBy = ApiClient.query
-}
 
 function calculateNegativeMargin(key) {
   keyArray = keyArray.concat(keyArray.push(key.split(".")));
