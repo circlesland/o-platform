@@ -7,6 +7,7 @@ import { me } from "../stores/me";
 import { Profile } from "../api/data/types";
 import { push } from "svelte-spa-router";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import LangSwitcher from "./LangSwitcher.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 
@@ -40,8 +41,9 @@ $: {
       {/if} -->
       <span class="text-md text-primary text-secondary">Beta</span>
     </div>
+    <div class="clro-start-3 text-black justify-self-center"><LangSwitcher /></div>
 
-    <div class="col-start-3 pr-1 place-self-center justify-self-end">
+    <div class="col-start-4 pr-1 place-self-center justify-self-end">
       {#if runtimeDapp && runtimeDapp.dappId !== "homepage:1" && !runtimeDapp.anonymous}
         <div class="relative mr-4 cursor-pointer justify-self-center" on:click="{() => push(`#/marketplace/cart`)}">
           {#if $cartContents && $cartContents.length > 0}

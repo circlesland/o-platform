@@ -32,7 +32,7 @@ function changeHandler() {
 </script>
 
 <div class="flex items-center">
-  <img src="{'/country-flags/svg/' + selectedValue + '.svg'}" alt="{selectedValue}" class="table-cell w-10 h-10 mr-3" />
+  <!--<img src="{'/country-flags/svg/' + selectedValue + '.svg'}" alt="{selectedValue}" class="table-cell w-10 h-10 mr-3" />-->
   <select bind:value="{selectedValue}" on:change="{changeHandler}" class="">
     {#each availableLanguages as { lang }}
       <option class="" value="{lang}">{lang}</option>
