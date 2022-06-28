@@ -6,6 +6,7 @@ import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import Editor from "@tinymce/tinymce-svelte";
+import ListViewCard from "../atoms/ListViewCard.svelte";
 
 import {
   Shop,
@@ -48,6 +49,7 @@ let _state: Readable<any>;
 let showModal: Boolean = false;
 let editImage: Boolean = false;
 let editType: string = "";
+let editOfferId: Number = null;
 let currentImage: string = null;
 let newOffer: OfferInput = null;
 let categories: ShopCategory[] = [];
@@ -281,22 +283,134 @@ function addProduct(categoryId) {
 
   categories = [...categories];
 }
+
+function handleEdit(event) {
+  if (editOfferId == event.detail) {
+    editOfferId = null;
+  } else {
+    editOfferId = event.detail;
+  }
+  console.log("EER", editOfferId);
+}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <div class="w-5/6 px-4 mx-auto -mt-3">
   <div class="items-center w-full p-4 ">
-    {#if shop}
-      {#if categories && categories.length > 0}
-        {#each categories as category, catindex (category.name)}
-          <div class="p-2 w-min whitespace-nowrap rounded-t-md" class:bg-gray-300="{catindex % 2 == 1}">
-            <h1 class="inline pr-4 h1">{category.name}</h1>
-            <button class="inline btn btn-primary btn-square btn-sm" on:click="{() => addProduct(category.id)}"
-              >+</button>
-          </div>
+    <div class="pb-2 mx-auto space-y-4 border-b border-gray-400 xl:w-1/2 md:w-2/3">
+      {#if shop}
+        {#if categories && categories.length > 0}
+          {#each categories as category, catindex (category.name)}
+            <div class="p-2 w-min whitespace-nowrap rounded-t-md" class:bg-gray-300="{catindex % 2 == 1}">
+              <h1 class="inline pr-4 h1">{category.name}</h1>
+              <button class="inline btn btn-primary btn-square btn-sm" on:click="{() => addProduct(category.id)}"
+                >+</button>
+            </div>
 
-          <div class="table p-2 mb-10 rounded-tr-md rounded-b-md" class:bg-gray-300="{catindex % 2 == 1}">
+            {#if category.entries}
+              {#each category.entries as entry, index (entry.id)}
+                <div class="relative">
+                  {#if editOfferId == entry.id}
+                    <div
+                      class="absolute z-10 text-center align-top list-none cursor-pointer top-1 left-2 inline-table "
+                      on:click="{() => imageEditor(category.id, entry.id, false)}">
+                      <span>
+                        <span
+                          class="table-cell w-10 h-10 align-middle bg-black rounded-full text-primary bg-opacity-60">
+                          <Icon name="camera" class="inline w-6 h-6 heroicon smallicon" />
+                        </span>
+                      </span>
+                    </div>
+                  {/if}
+                  <ListViewCard
+                    entry="{entry}"
+                    shopId="{shopId}"
+                    deliveryMethods="{shop.deliveryMethods}"
+                    editable="{true}"
+                    id="{entry.id}"
+                    on:edit="{handleEdit}" />
+                </div>
+                {#if editOfferId == entry.id}
+                  <div class="flex flex-col space-y-4 ">
+                    <div class="">
+                      <h1 class="w-full mt-2 text-left label">Title</h1>
+                      <input
+                        type="text"
+                        class="w-full input"
+                        placeholder="{entry.product.title}"
+                        bind:value="{entry.product.title}"
+                        on:input="{() => changeEntry(entry.id, entry)}" />
+                    </div>
+
+                    <div class="break-all ">
+                      <h1 class="w-full mt-2 text-left label">Description</h1>
+                      <Editor
+                        scriptSrc="tinymce/tinymce.min.js"
+                        bind:value="{entry.product.description}"
+                        on:input="{() => changeEntry(entry.id, entry)}" />
+                      <!-- <input
+                      type="text"
+                      size="30"
+                      class="input"
+                      placeholder="{entry.product.description}"
+                      bind:value="{entry.product.description}"
+                      on:input="{() => changeEntry(entry.id, entry)}" /> -->
+                    </div>
+
+                    <div class="break-all ">
+                      <h1 class="w-full mt-2 text-left label">Price per Unit</h1>
+                      <input
+                        type="text"
+                        class="w-20 input"
+                        placeholder="{entry.product.pricePerUnit}"
+                        bind:value="{entry.product.pricePerUnit}"
+                        on:input="{() => changeEntry(entry.id, entry)}" />
+                    </div>
+                    <div class="">
+                      <h1 class="w-full mt-2 text-left label">Change Category</h1>
+                      <select
+                        class="select"
+                        value="{category.id}"
+                        on:change="{(event) => changeCategory(event, entry.id, index, catindex, category.id)}">
+                        {#each categories as listcategory}
+                          <option value="{listcategory.id}">{listcategory.name}</option>
+                        {/each}
+                      </select>
+                    </div>
+                    <div class="">
+                      <h1 class="w-full mt-2 text-left label">Display</h1>
+                      <input
+                        type="checkbox"
+                        class="inline-block toggle toggle-primary"
+                        value="{entry.enabled}"
+                        bind:checked="{entry.enabled}"
+                        on:change="{() => updateCategoryEntries(category.entries)}" />
+                      <div class="inline-block align-top">Enabled?</div>
+                    </div>
+
+                    <div class="">
+                      <h1 class="w-full mt-2 text-left label">Minimum Age Restriction</h1>
+                      <input
+                        type="text"
+                        class="w-full input"
+                        placeholder="{entry.product.minAge}"
+                        bind:value="{entry.product.minAge}"
+                        on:input="{() => changeEntry(entry.id, entry)}" />
+                    </div>
+                    <div class="">
+                      <h1 class="w-full mt-2 text-left label">Product Version</h1>
+                      {entry.productVersion}
+                    </div>
+                    <div class="flex justify-end w-full pt-2 space-x-4">
+                      <button class="btn btn-primary" on:click="{updateOffer(entry)}">Save Offer</button>
+                    </div>
+                  </div>
+                {/if}
+              {/each}
+            {/if}
+
+            <!-- <div class="table p-2 mb-10 rounded-tr-md rounded-b-md" class:bg-gray-300="{catindex % 2 == 1}">
             <div class="table-header-group p-4 mb-10">
               <div class="table-row ">
                 <div class="table-cell pl-2 ">
@@ -359,13 +473,7 @@ function addProduct(categoryId) {
                       scriptSrc="tinymce/tinymce.min.js"
                       bind:value="{entry.product.description}"
                       on:input="{() => changeEntry(entry.id, entry)}" />
-                    <!-- <input
-                      type="text"
-                      size="30"
-                      class="input"
-                      placeholder="{entry.product.description}"
-                      bind:value="{entry.product.description}"
-                      on:input="{() => changeEntry(entry.id, entry)}" /> -->
+                  
                   </div>
 
                   <div class="table-cell w-20 p-1 break-all">
@@ -405,39 +513,40 @@ function addProduct(categoryId) {
                 </div>
               {/each}
             {/if}
-          </div>
-        {/each}
-        {#if showModal}
-          <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
-            {#if editImage}
-              <ImageUpload on:submit="{handleImageUpload}" cropShape="square" aspect="{1 / 1}" maxWidth="{800}" />
-            {:else}
-              <div class="flex flex-col w-full h-full p-4">
-                <button
-                  class="self-center mb-4 btn btn-primary btn-sm"
-                  on:click="{() => {
-                    editImage = true;
-                  }}">Remove Image</button>
-                <div class="text-center">
-                  <div class="inline-flex">
-                    <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
+          </div> -->
+          {/each}
+          {#if showModal}
+            <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
+              {#if editImage}
+                <ImageUpload on:submit="{handleImageUpload}" cropShape="square" aspect="{1 / 1}" maxWidth="{800}" />
+              {:else}
+                <div class="flex flex-col w-full h-full p-4">
+                  <button
+                    class="self-center mb-4 btn btn-primary btn-sm"
+                    on:click="{() => {
+                      editImage = true;
+                    }}">Remove Image</button>
+                  <div class="text-center">
+                    <div class="inline-flex">
+                      <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            {/if}
-          </Center>
+              {/if}
+            </Center>
+          {/if}
+        {:else}
+          <div class="text-center">
+            You don't have any Categories set up yet. <a
+              href="/#/marketplace/my-categories"
+              class="link"
+              alt="set up categories">Create a Category</a>
+          </div>
         {/if}
       {:else}
-        <div class="text-center">
-          You don't have any Categories set up yet. <a
-            href="/#/marketplace/my-categories"
-            class="link"
-            alt="set up categories">Create a Category</a>
-        </div>
+        <h2>sorry, you don't have any stores. are you logged in as the right Organization?</h2>
       {/if}
-    {:else}
-      <h2>sorry, you don't have any stores. are you logged in as the right Organization?</h2>
-    {/if}
+    </div>
   </div>
 </div>
 

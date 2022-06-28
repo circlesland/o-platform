@@ -126,6 +126,18 @@ onMount(async () => {
           icon: "cash",
           title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.transaction"),
           action: () => push(`#/banking/transactions/${purchase.invoices[0].paymentTransactionHash}`),
+        },
+        {
+          icon: "document",
+          title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.downloadInvoice"),
+          action: async () => {
+            for (let invoice of purchase.invoices) {
+              const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(InvoiceDocument, {
+                invoiceId: invoice.id,
+              });
+              saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
+            }
+          },
         }
         // {
         //   icon: "document",

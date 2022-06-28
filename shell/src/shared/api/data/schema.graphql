@@ -417,6 +417,7 @@ input OfferInput {
   allergens: String
   pricePerUnit: String!
   timeCirclesPriceShare: Int!
+  minAge: String
 }
 
 type SalesLine {

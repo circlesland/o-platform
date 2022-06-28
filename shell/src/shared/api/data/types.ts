@@ -780,6 +780,7 @@ export type OfferInput = {
   allergens?: Maybe<Scalars['String']>;
   pricePerUnit: Scalars['String'];
   timeCirclesPriceShare: Scalars['Int'];
+  minAge?: Maybe<Scalars['String']>;
 };
 
 export type Offers = IAggregatePayload & {

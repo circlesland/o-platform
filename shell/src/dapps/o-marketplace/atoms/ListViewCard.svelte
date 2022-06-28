@@ -3,21 +3,31 @@ import { push } from "svelte-spa-router";
 import { Offer, ShopCategoryEntry } from "../../../shared/api/data/types";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { truncateString } from "../../../shared/functions/truncateString";
-import {addToCart, AddToCartContextData} from "../processes/addToCart";
+import { addToCart, AddToCartContextData } from "../processes/addToCart";
+import { createEventDispatcher } from "svelte";
+import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+const dispatch = createEventDispatcher();
 
 export let entry: ShopCategoryEntry;
 export let shopId: number;
 export let deliveryMethods: any;
+export let editable: Boolean = false;
+export let id: Number;
 
 function loadDetailPage() {
-  push("#/marketplace/detail/" + shopId + "/" + entry.id);
+  if (editable) {
+    dispatch("edit", id);
+    return;
+  } else {
+    push("#/marketplace/detail/" + shopId + "/" + entry.id);
+  }
 }
 
 function _addToCart(item: Offer & { shopId: number }) {
   window.o.runProcess(addToCart, <AddToCartContextData>{
     offerId: parseInt(item.id.toString()),
     shopId: parseInt(item.shopId.toString()),
-    redirectTo: `#/marketplace/cart`
+    redirectTo: `#/marketplace/cart`,
   });
 }
 
@@ -53,11 +63,23 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
             </div>
           </div>
         </div>
-        <div
-          class="flex flex-col self-start justify-end cursor-pointer text-primary"
-          on:click="{() => _addToCart({ ...entry.product, shopId: shopId })}">
-          <Icons icon="cart" />
-        </div>
+        {#if editable}
+          <div
+            class="text-center align-top list-none cursor-pointer top-1 left-2 inline-table "
+            on:click="{() => dispatch('edit', id)}">
+            <span>
+              <span class="table-cell w-10 h-10 align-middle bg-black rounded-full text-primary bg-opacity-60">
+                <Icon name="pencil" class="inline w-6 h-6 heroicon smallicon" />
+              </span>
+            </span>
+          </div>
+        {:else}
+          <div
+            class="flex flex-col self-start justify-end cursor-pointer text-primary"
+            on:click="{() => _addToCart({ ...entry.product, shopId: shopId })}">
+            <Icons icon="cart" />
+          </div>
+        {/if}
       </div>
       <div class="absolute right-2 bottom-2">
         {#if deliveryMethods}
