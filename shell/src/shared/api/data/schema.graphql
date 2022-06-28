@@ -1229,6 +1229,7 @@ type Mutation {
   verifySafe(safeAddress: String!): VerifySafeResult!
   revokeSafeVerification(safeAddress: String!): VerifySafeResult!
   proofUniqueness(humanodeToken: String!): ProofUniquenessResult!
+  
 }
 
 type Query {

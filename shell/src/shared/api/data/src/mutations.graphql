@@ -66,10 +66,6 @@ mutation verifySessionChallenge($challenge: String!, $signature: String!) {
   }
 }
 
-mutation addNewLang($langToCreate: String, $langToCopyFrom: String) {
-  addNewLang(langToCreate: $langToCreate, langToCopyFrom: $langToCopyFrom )
-}
-
 mutation updateValue($lang: String, $key: String, $createdBy: String, $value: String) {
   updateValue(lang: $lang, key: $key, createdBy: $createdBy, value: $value) {
     lang

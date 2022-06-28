@@ -565,10 +565,7 @@ export type Mutation = {
 };
 
 
-export type MutationAddNewLangArgs = {
-  langToCopyFrom?: Maybe<Scalars['String']>;
-  langToCreate?: Maybe<Scalars['String']>;
-};
+
 
 
 export type MutationAnnouncePaymentArgs = {
@@ -1735,16 +1732,6 @@ export type VerifySessionChallengeMutation = (
   )> }
 );
 
-export type AddNewLangMutationVariables = Exact<{
-  langToCreate?: Maybe<Scalars['String']>;
-  langToCopyFrom?: Maybe<Scalars['String']>;
-}>;
-
-
-export type AddNewLangMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'addNewLang'>
-);
 
 export type UpdateValueMutationVariables = Exact<{
   lang?: Maybe<Scalars['String']>;
@@ -3735,11 +3722,6 @@ export const VerifySessionChallengeDocument = gql`
     success
     errorMessage
   }
-}
-    `;
-export const AddNewLangDocument = gql`
-    mutation addNewLang($langToCreate: String, $langToCopyFrom: String) {
-  addNewLang(langToCreate: $langToCreate, langToCopyFrom: $langToCopyFrom)
 }
     `;
 export const UpdateValueDocument = gql`
@@ -6614,9 +6596,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     verifySessionChallenge(variables: VerifySessionChallengeMutationVariables): Promise<VerifySessionChallengeMutation> {
       return withWrapper(() => client.request<VerifySessionChallengeMutation>(print(VerifySessionChallengeDocument), variables));
-    },
-    addNewLang(variables?: AddNewLangMutationVariables): Promise<AddNewLangMutation> {
-      return withWrapper(() => client.request<AddNewLangMutation>(print(AddNewLangDocument), variables));
     },
     updateValue(variables?: UpdateValueMutationVariables): Promise<UpdateValueMutation> {
       return withWrapper(() => client.request<UpdateValueMutation>(print(UpdateValueDocument), variables));

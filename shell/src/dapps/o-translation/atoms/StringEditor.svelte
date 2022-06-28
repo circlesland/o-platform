@@ -4,7 +4,6 @@ import { onMount } from "svelte";
 import {
   GetOlderVersionsByKeyAndLangDocument,
   I18n,
-  MutationUpdateValueArgs,
   QueryGetOlderVersionsByKeyAndLangArgs,
   UpdateValueDocument,
 } from "../../../shared/api/data/types";
@@ -15,19 +14,40 @@ export let dataLang: string;
 export let dataString: string;
 export let dataVersion: number;
 
+let createdBy: string;
+
+let keyArray = [];
+
+keyArray.concat(keyArray.push(dataKey.split(".")));
 
 let editMode: boolean = false;
 let editBorder: string = "";
 
-let keyArray = [];
+let inputState: boolean = false;
 
 let selectedVersion: number = dataVersion;
 let inputValue: string;
 let olderVersionData = [];
 
-let negativeMargin:string = "";
+let negativeMargin: string = "";
 
-keyArray.concat(keyArray.push(dataKey.split(".")));
+$: {
+  negativeMargin;
+}
+
+async function getCreatedBy() {
+  createdBy = ApiClient.query
+}
+
+function calculateNegativeMargin(key) {
+  keyArray = keyArray.concat(keyArray.push(key.split(".")));
+  let y = 4 * keyArray[0].length;
+  negativeMargin = `-left-${y}`;
+  console.log("y", y);
+  console.log(keyArray[0].length);
+  console.log("negativMargin", negativeMargin);
+  return negativeMargin;
+}
 
 onMount(() => {
   if (dataVersion > 1) {
@@ -58,28 +78,17 @@ async function writeValueToDb(value: string, lang: string, key: string) {
     value: value,
   });
 }
-
-
-function calculateNegativeMargin() {
-  keyArray = keyArray.concat(keyArray.push(dataKey.split(".")));
-  let y = 4 * (keyArray[0].length);
-  negativeMargin = `-ml-${y}`;
-  console.log("y", y)
-  console.log(keyArray[0].length)
-  console.log("negativMargin", negativeMargin)
-}
-calculateNegativeMargin();
-
-
-
 </script>
 
-<div class="flex-row w-full {editBorder} rounded-box p-5 hover:border-2 hover:border-dark-dark hover:border-dotted">
+<div
+  class="flex-row w-full relative {calculateNegativeMargin(
+    dataKey
+  )} {editBorder} rounded-box p-5 hover:border-2 hover:border-dark-dark hover:border-dotted">
   <div class="flex justify-between w-full">
     <p class="text-gray-400 w-40">{dataKey}</p>
     <div class="flex">
       {#if dataVersion > 1}
-        <p>Version:</p>
+        <p class="mr-2">Version:</p>
 
         <div class="items-center w-full">
           <select name="" id="" bind:value="{selectedVersion}" on:change="{() => selectChange()}">
@@ -89,28 +98,30 @@ calculateNegativeMargin();
           </select>
         </div>
       {:else}
-        <p>Version:</p>
+        <p class="mr-2">Version:</p>
         <p class="items-center w-full">{dataVersion}</p>
       {/if}
     </div>
   </div>
   <div class="flex justify-between items-center w-full">
-    <p class="w-56 text-red-600 ml-6 text-xl">{dataString}</p>
+    <p class="w-56 text-red-600 ml-20 text-xl">"{dataString}"</p>
 
     <div class="flex">
       {#if editMode}
-        <button
-          class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
-          on:click="{async () => {
-            let updatedObject = await writeValueToDb(inputValue, dataLang, dataKey);
-            await loadOlderVersions(dataLang, dataKey);
-            dataVersion = updatedObject.version;
-            dataString = updatedObject.value;
-            selectedVersion = updatedObject.version;
-            inputValue = '';
-            editMode = false;
-            editBorder = "";
-          }}">Save</button>
+        {#if inputState}
+          <button
+            class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
+            on:click="{async () => {
+              let updatedObject = await writeValueToDb(inputValue, dataLang, dataKey);
+              await loadOlderVersions(dataLang, dataKey);
+              dataVersion = updatedObject.version;
+              dataString = updatedObject.value;
+              selectedVersion = updatedObject.version;
+              inputValue = '';
+              editMode = false;
+              editBorder = '';
+            }}">Save</button>
+        {/if}
         <button
           class="bg-red-200 rounded-lg m-1 p-1 hover:bg-red-500"
           on:click="{() => {
@@ -130,7 +141,18 @@ calculateNegativeMargin();
   {#if editMode}
     <div class="flex justify-center w-full">
       <!-- svelte-ignore a11y-autofocus -->
-      <textarea autofocus bind:value="{inputValue}" class="border-black border-2 rounded p-5" cols="30" rows="2"></textarea>
+      <textarea
+        autofocus
+        bind:value="{inputValue}"
+        on:input="{() => {
+          inputState = true;
+          if (!inputValue) {
+            inputState = false;
+          }
+        }}"
+        class="border-black border-2 rounded p-5"
+        cols="30"
+        rows="2"></textarea>
     </div>
   {/if}
 </div>
