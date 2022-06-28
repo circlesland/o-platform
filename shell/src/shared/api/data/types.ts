@@ -562,10 +562,9 @@ export type Mutation = {
   verifySafe: VerifySafeResult;
   revokeSafeVerification: VerifySafeResult;
   proofUniqueness: ProofUniquenessResult;
+  updateValue?: Maybe<I18n>;
+  addNewLang?: Maybe<Scalars['Int']>;
 };
-
-
-
 
 
 export type MutationAnnouncePaymentArgs = {
@@ -729,6 +728,20 @@ export type MutationProofUniquenessArgs = {
   humanodeToken: Scalars['String'];
 };
 
+
+export type MutationUpdateValueArgs = {
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationAddNewLangArgs = {
+  langToCreate?: Maybe<Scalars['String']>;
+  langToCopyFrom?: Maybe<Scalars['String']>;
+};
+
 export type MyInviteRank = {
   __typename?: 'MyInviteRank';
   rank: Scalars['Int'];
@@ -783,6 +796,7 @@ export type OfferInput = {
   allergens?: Maybe<Scalars['String']>;
   pricePerUnit: Scalars['String'];
   timeCirclesPriceShare: Scalars['Int'];
+  minAge?: Maybe<Scalars['String']>;
 };
 
 export type Offers = IAggregatePayload & {
@@ -1084,6 +1098,14 @@ export type Query = {
   invoice?: Maybe<Scalars['String']>;
   findInvitationCreator?: Maybe<Profile>;
   clientAssertionJwt: Scalars['String'];
+  getAllStrings?: Maybe<Array<Maybe<I18n>>>;
+  getAllStringsByLanguage?: Maybe<Array<Maybe<I18n>>>;
+  getStringByLanguage?: Maybe<Array<I18n>>;
+  getStringByMaxVersion?: Maybe<I18n>;
+  getAvailableLanguages?: Maybe<Array<Maybe<I18n>>>;
+  getAllStringsByMaxVersion?: Maybe<Array<Maybe<I18n>>>;
+  getAllStringsByMaxVersionAndLang?: Maybe<Array<Maybe<I18n>>>;
+  getOlderVersionsByKeyAndLang?: Maybe<Array<Maybe<I18n>>>;
 };
 
 
@@ -1219,6 +1241,33 @@ export type QueryInvoiceArgs = {
 
 export type QueryFindInvitationCreatorArgs = {
   code: Scalars['String'];
+};
+
+
+export type QueryGetAllStringsByLanguageArgs = {
+  lang?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetStringByLanguageArgs = {
+  lang?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetStringByMaxVersionArgs = {
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetAllStringsByMaxVersionAndLangArgs = {
+  lang?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetOlderVersionsByKeyAndLangArgs = {
+  key?: Maybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
 };
 
 export type QueryCitiesByGeonameIdInput = {
@@ -1655,11 +1704,11 @@ export type WelcomeMessage = IEventPayload & {
 
 export type I18n = {
   __typename?: 'i18n';
-  createdBy?: Maybe<Scalars['String']>;
-  key?: Maybe<Scalars['String']>;
   lang?: Maybe<Scalars['String']>;
-  value?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['String']>;
   version?: Maybe<Scalars['Int']>;
+  value?: Maybe<Scalars['String']>;
 };
 
 export type UpsertShippingAddressMutationVariables = Exact<{
@@ -1731,7 +1780,6 @@ export type VerifySessionChallengeMutation = (
     & Pick<ExchangeTokenResponse, 'success' | 'errorMessage'>
   )> }
 );
-
 
 export type UpdateValueMutationVariables = Exact<{
   lang?: Maybe<Scalars['String']>;

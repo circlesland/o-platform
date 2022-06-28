@@ -417,6 +417,7 @@ input OfferInput {
   allergens: String
   pricePerUnit: String!
   timeCirclesPriceShare: Int!
+  minAge: String
 }
 
 type SalesLine {
@@ -957,6 +958,14 @@ type VerifySafeResult {
   success: Boolean!
 }
 
+type i18n {
+  lang: String
+  key: String
+  createdBy: String
+  version: Int
+  value: String
+}
+
 enum SortOrder {
   ASC
   DESC
@@ -1229,7 +1238,8 @@ type Mutation {
   verifySafe(safeAddress: String!): VerifySafeResult!
   revokeSafeVerification(safeAddress: String!): VerifySafeResult!
   proofUniqueness(humanodeToken: String!): ProofUniquenessResult!
-  
+  updateValue(lang: String, key: String, createdBy: String, value: String): i18n
+  addNewLang(langToCreate: String, langToCopyFrom: String): Int
 }
 
 type Query {
@@ -1273,6 +1283,15 @@ type Query {
   invoice(invoiceId: Int!): String
   findInvitationCreator(code: String!): Profile
   clientAssertionJwt: String!
+
+  getAllStrings: [i18n]
+  getAllStringsByLanguage(lang: String): [i18n]
+  getStringByLanguage(lang: String): [i18n!]
+  getStringByMaxVersion(lang: String, key: String): i18n
+  getAvailableLanguages: [i18n]
+  getAllStringsByMaxVersion: [i18n]
+  getAllStringsByMaxVersionAndLang(lang: String): [i18n]
+  getOlderVersionsByKeyAndLang(key: String, lang: String): [i18n]
 }
 
 type Subscription {
