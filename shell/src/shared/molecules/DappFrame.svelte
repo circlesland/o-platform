@@ -24,7 +24,15 @@
   import {Process} from "@o-platform/o-process/dist/interfaces/process";
   import {media} from "../stores/media";
   import {me} from "../stores/me";
-  import {Capability, EventsDocument, EventType, NotificationEvent, Purchased, SessionInfo,} from "../api/data/types";
+  import {
+    Capability,
+    EventsDocument,
+    EventType, GetAllStringsByMaxVersionAndLangDocument, I18n,
+    NotificationEvent,
+    Purchased,
+    QueryGetAllStringsByMaxVersionAndLangArgs,
+    SessionInfo,
+  } from "../api/data/types";
   import {contacts} from "../stores/contacts";
   import {performOauth} from "../../dapps/o-humanode/processes/performOauth";
   import {clearScrollPosition, popScrollPosition, pushScrollPosition,} from "../layouts/Center.svelte";
