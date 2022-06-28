@@ -296,7 +296,7 @@ function handleEdit(event) {
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="w-5/6 px-4 mx-auto -mt-3">
+<div class="w-full px-4 mx-auto -mt-3 xs:w-5/6">
   <div class="items-center w-full p-4 ">
     <div class="pb-2 mx-auto space-y-4 border-b border-gray-400 xl:w-1/2 md:w-2/3">
       {#if shop}
@@ -358,52 +358,58 @@ function handleEdit(event) {
                       on:input="{() => changeEntry(entry.id, entry)}" /> -->
                     </div>
 
-                    <div class="break-all ">
-                      <h1 class="w-full mt-2 text-left label">Price per Unit</h1>
-                      <input
-                        type="text"
-                        class="w-20 input"
-                        placeholder="{entry.product.pricePerUnit}"
-                        bind:value="{entry.product.pricePerUnit}"
-                        on:input="{() => changeEntry(entry.id, entry)}" />
-                    </div>
-                    <div class="">
-                      <h1 class="w-full mt-2 text-left label">Change Category</h1>
-                      <select
-                        class="select"
-                        value="{category.id}"
-                        on:change="{(event) => changeCategory(event, entry.id, index, catindex, category.id)}">
-                        {#each categories as listcategory}
-                          <option value="{listcategory.id}">{listcategory.name}</option>
-                        {/each}
-                      </select>
-                    </div>
-                    <div class="">
-                      <h1 class="w-full mt-2 text-left label">Display</h1>
-                      <input
-                        type="checkbox"
-                        class="inline-block toggle toggle-primary"
-                        value="{entry.enabled}"
-                        bind:checked="{entry.enabled}"
-                        on:change="{() => updateCategoryEntries(category.entries)}" />
-                      <div class="inline-block align-top">Enabled?</div>
+                    <div class="grid grid-cols-1 gap-4 auto-rows-auto xs:grid-cols-3">
+                      <div class="break-all xs:justify-self-start">
+                        <h4 class="w-full mt-2 text-left label">Price per Unit</h4>
+                        <input
+                          type="text"
+                          class="w-20 input"
+                          placeholder="{entry.product.pricePerUnit}"
+                          bind:value="{entry.product.pricePerUnit}"
+                          on:input="{() => changeEntry(entry.id, entry)}" />
+                      </div>
+                      <div class="xs:justify-self-center">
+                        <h4 class="w-full mt-2 text-left label">Change Category</h4>
+                        <select
+                          class="select"
+                          value="{category.id}"
+                          on:change="{(event) => changeCategory(event, entry.id, index, catindex, category.id)}">
+                          {#each categories as listcategory}
+                            <option value="{listcategory.id}">{listcategory.name}</option>
+                          {/each}
+                        </select>
+                      </div>
+                      <div class="xs:justify-self-end">
+                        <h4 class="w-full mt-2 text-left label">Display</h4>
+                        <input
+                          type="checkbox"
+                          class="inline-block toggle toggle-primary"
+                          value="{entry.enabled}"
+                          bind:checked="{entry.enabled}"
+                          on:change="{() => updateCategoryEntries(category.entries)}" />
+                        <div class="inline-block align-top">Enabled?</div>
+                      </div>
+
+                      <div class="xs:justify-self-start">
+                        <h4 class="w-full mt-2 text-left label">Minimum Age Restriction</h4>
+                        <input
+                          type="text"
+                          class="w-20 input"
+                          placeholder="{entry.product.minAge}"
+                          bind:value="{entry.product.minAge}"
+                          on:input="{() => changeEntry(entry.id, entry)}" />
+                      </div>
+                      <div class="xs:justify-self-center">
+                        <h4 class="w-full mt-2 text-left label">Product Version</h4>
+                        {entry.productVersion}
+                      </div>
                     </div>
 
-                    <div class="">
-                      <h1 class="w-full mt-2 text-left label">Minimum Age Restriction</h1>
-                      <input
-                        type="text"
-                        class="w-full input"
-                        placeholder="{entry.product.minAge}"
-                        bind:value="{entry.product.minAge}"
-                        on:input="{() => changeEntry(entry.id, entry)}" />
-                    </div>
-                    <div class="">
-                      <h1 class="w-full mt-2 text-left label">Product Version</h1>
-                      {entry.productVersion}
-                    </div>
-                    <div class="flex justify-end w-full pt-2 space-x-4">
-                      <button class="btn btn-primary" on:click="{updateOffer(entry)}">Save Offer</button>
+                    <div class="relative flex items-center py-5">
+                      <div class="flex-grow border-t border-gray-400"></div>
+                      <span class="flex-shrink mx-4 text-gray-400"
+                        ><button class="btn btn-primary" on:click="{updateOffer(entry)}">Save Offer</button></span>
+                      <div class="flex-grow border-t border-gray-400"></div>
                     </div>
                   </div>
                 {/if}

@@ -263,7 +263,7 @@ function toggleEditCategory(categoryId, index) {
         <div class="flex flex-col space-y-4">
           {#each categories as category, index (category.id)}
             <div class="table-row-group pb-6" animate:flip="{{ duration: 500 }}">
-              <div class="pb-2 mx-auto space-y-4 border-b border-gray-400 xl:w-1/2 md:w-2/3">
+              <div class="pb-2 mx-auto space-y-4 xl:w-1/2 md:w-2/3">
                 <div class="relative mx-4 overflow-hidden bg-white rounded-xl image-wrapper">
                   {#if editCategoryId == category.id}
                     <div
@@ -325,9 +325,6 @@ function toggleEditCategory(categoryId, index) {
                         scriptSrc="tinymce/tinymce.min.js"
                         id="myshopLegalText"
                         bind:value="{category.description}" />
-                      <div class="flex flex-row justify-end w-full mt-2 space-x-2">
-                        <button class="inline btn btn-primary" on:click="{() => submit()}">Save</button>
-                      </div>
                     </div>
                   {/if}
                   <div class="w-full px-1 text-sm">{@html category.description}</div>
@@ -364,12 +361,15 @@ function toggleEditCategory(categoryId, index) {
                       </select>
                     </div>
                   </div>
-                </div>
-
-                <div class="flex flex-col px-4 space-y-4">
-                  <!-- {#each category.entries as entry}
-                    <ListViewCard entry="{entry}" shopId="{shopId}" deliveryMethods="{shop.deliveryMethods}" />
-                  {/each} -->
+                  {#if editCategoryId == category.id}
+                    <div class="relative flex items-center py-5">
+                      <div class="flex-grow border-t border-gray-400"></div>
+                      <span class="flex-shrink mx-4 text-gray-400"
+                        ><button class="inline btn btn-primary" on:click="{() => submit()}">Save {category.name}</button
+                        ></span>
+                      <div class="flex-grow border-t border-gray-400"></div>
+                    </div>
+                  {/if}
                 </div>
               </div>
             </div>
