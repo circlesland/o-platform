@@ -68,7 +68,7 @@ function calculateNegativeMargin() {
   console.log(keyArray[0].length)
   console.log("negativMargin", negativeMargin)
 }
-calculateNegativeMargin();
+//calculateNegativeMargin();
 
 
 
