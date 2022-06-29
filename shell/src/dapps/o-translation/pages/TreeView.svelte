@@ -111,9 +111,9 @@ function isSelected(languageCode: string) {
         <input bind:value="{valueFilter}" class="input m-1" type="text" placeholder="String" />
       </form>
     </div>
-    <div class="flex justify-center m-3">
+    <!--<div class="flex justify-center m-3">
       <LangSwitcher />
-    </div>
+    </div>-->
   <!--<div class="flex justify-center">
     {#each allLanguages as languageCode}
       <button
