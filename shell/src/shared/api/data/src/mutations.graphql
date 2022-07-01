@@ -80,6 +80,16 @@ mutation updateValue($lang: String, $key: String, $createdBy: String, $value: St
   }
 }
 
+mutation createNewStringAndKey($lang: String, $key: String, $createdBy: String, $version: Int, $value: String){
+  createNewStringAndKey(lang: $lang, key: $key, createdBy: $createdBy, version: $version, value: $value) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+
 mutation claimInvitation($code: String!) {
   claimInvitation(code: $code) {
     success

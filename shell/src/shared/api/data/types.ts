@@ -564,6 +564,7 @@ export type Mutation = {
   proofUniqueness: ProofUniquenessResult;
   updateValue?: Maybe<I18n>;
   addNewLang?: Maybe<Scalars['Int']>;
+  createNewStringAndKey?: Maybe<I18n>;
 };
 
 
@@ -740,6 +741,15 @@ export type MutationUpdateValueArgs = {
 export type MutationAddNewLangArgs = {
   langToCreate?: Maybe<Scalars['String']>;
   langToCopyFrom?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationCreateNewStringAndKeyArgs = {
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['String']>;
+  version?: Maybe<Scalars['Int']>;
+  value?: Maybe<Scalars['String']>;
 };
 
 export type MyInviteRank = {
@@ -1807,6 +1817,23 @@ export type UpdateValueMutation = (
   & { updateValue?: Maybe<(
     { __typename?: 'i18n' }
     & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'value' | 'version'>
+  )> }
+);
+
+export type CreateNewStringAndKeyMutationVariables = Exact<{
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['String']>;
+  version?: Maybe<Scalars['Int']>;
+  value?: Maybe<Scalars['String']>;
+}>;
+
+
+export type CreateNewStringAndKeyMutation = (
+  { __typename?: 'Mutation' }
+  & { createNewStringAndKey?: Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
   )> }
 );
 
@@ -3809,6 +3836,23 @@ export const UpdateValueDocument = gql`
     createdBy
     value
     version
+  }
+}
+    `;
+export const CreateNewStringAndKeyDocument = gql`
+    mutation createNewStringAndKey($lang: String, $key: String, $createdBy: String, $version: Int, $value: String) {
+  createNewStringAndKey(
+    lang: $lang
+    key: $key
+    createdBy: $createdBy
+    version: $version
+    value: $value
+  ) {
+    lang
+    key
+    createdBy
+    version
+    value
   }
 }
     `;
@@ -6692,6 +6736,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     updateValue(variables?: UpdateValueMutationVariables): Promise<UpdateValueMutation> {
       return withWrapper(() => client.request<UpdateValueMutation>(print(UpdateValueDocument), variables));
+    },
+    createNewStringAndKey(variables?: CreateNewStringAndKeyMutationVariables): Promise<CreateNewStringAndKeyMutation> {
+      return withWrapper(() => client.request<CreateNewStringAndKeyMutation>(print(CreateNewStringAndKeyDocument), variables));
     },
     claimInvitation(variables: ClaimInvitationMutationVariables): Promise<ClaimInvitationMutation> {
       return withWrapper(() => client.request<ClaimInvitationMutation>(print(ClaimInvitationDocument), variables));

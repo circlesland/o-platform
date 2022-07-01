@@ -1241,6 +1241,7 @@ type Mutation {
   proofUniqueness(humanodeToken: String!): ProofUniquenessResult!
   updateValue(lang: String, key: String, createdBy: String, value: String): i18n
   addNewLang(langToCreate: String, langToCopyFrom: String): Int
+  createNewStringAndKey(lang: String, key: String, createdBy: String, version: Int, value: String): i18n
 }
 
 type Query {
