@@ -730,9 +730,9 @@ export type MutationProofUniquenessArgs = {
 
 
 export type MutationUpdateValueArgs = {
-  createdBy?: Maybe<Scalars['String']>;
-  key?: Maybe<Scalars['String']>;
   lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['String']>;
   value?: Maybe<Scalars['String']>;
 };
 
@@ -794,9 +794,9 @@ export type OfferInput = {
   pictureMimeType: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   allergens?: Maybe<Scalars['String']>;
+  minAge?: Maybe<Scalars['Int']>;
   pricePerUnit: Scalars['String'];
   timeCirclesPriceShare: Scalars['Int'];
-  minAge?: Maybe<Scalars['String']>;
 };
 
 export type Offers = IAggregatePayload & {
@@ -1090,6 +1090,7 @@ export type Query = {
   findSafesByOwner: Array<SafeInfo>;
   search: Array<Profile>;
   stats: Stats;
+  deliveryMethods?: Maybe<Array<Maybe<DeliveryMethod>>>;
   cities: Array<City>;
   tags: Array<Tag>;
   tagById?: Maybe<Tag>;
@@ -1100,12 +1101,12 @@ export type Query = {
   clientAssertionJwt: Scalars['String'];
   getAllStrings?: Maybe<Array<Maybe<I18n>>>;
   getAllStringsByLanguage?: Maybe<Array<Maybe<I18n>>>;
-  getAllStringsByMaxVersion?: Maybe<Array<Maybe<I18n>>>;
-  getAllStringsByMaxVersionAndLang?: Maybe<Array<Maybe<I18n>>>;
-  getAvailableLanguages?: Maybe<Array<Maybe<I18n>>>;
-  getOlderVersionsByKeyAndLang?: Maybe<Array<Maybe<I18n>>>;
   getStringByLanguage?: Maybe<Array<I18n>>;
   getStringByMaxVersion?: Maybe<I18n>;
+  getAvailableLanguages?: Maybe<Array<Maybe<I18n>>>;
+  getAllStringsByMaxVersion?: Maybe<Array<Maybe<I18n>>>;
+  getAllStringsByMaxVersionAndLang?: Maybe<Array<Maybe<I18n>>>;
+  getOlderVersionsByKeyAndLang?: Maybe<Array<Maybe<I18n>>>;
 };
 
 
@@ -1249,23 +1250,23 @@ export type QueryGetAllStringsByLanguageArgs = {
 };
 
 
-export type QueryGetAllStringsByMaxVersionAndLangArgs = {
-  lang?: Maybe<Scalars['String']>;
-};
-
-
-export type QueryGetOlderVersionsByKeyAndLangArgs = {
-  key?: Maybe<Scalars['String']>;
-  lang?: Maybe<Scalars['String']>;
-};
-
-
 export type QueryGetStringByLanguageArgs = {
   lang?: Maybe<Scalars['String']>;
 };
 
 
 export type QueryGetStringByMaxVersionArgs = {
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetAllStringsByMaxVersionAndLangArgs = {
+  lang?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetOlderVersionsByKeyAndLangArgs = {
   key?: Maybe<Scalars['String']>;
   lang?: Maybe<Scalars['String']>;
 };
@@ -1704,11 +1705,11 @@ export type WelcomeMessage = IEventPayload & {
 
 export type I18n = {
   __typename?: 'i18n';
-  createdBy?: Maybe<Scalars['String']>;
-  key?: Maybe<Scalars['String']>;
   lang?: Maybe<Scalars['String']>;
-  value?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['String']>;
   version?: Maybe<Scalars['Int']>;
+  value?: Maybe<Scalars['String']>;
 };
 
 export type UpsertShippingAddressMutationVariables = Exact<{
@@ -2205,7 +2206,7 @@ export type UpsertOfferMutation = (
   { __typename?: 'Mutation' }
   & { upsertOffer: (
     { __typename?: 'Offer' }
-    & Pick<Offer, 'id' | 'version' | 'createdAt' | 'createdByAddress' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'timeCirclesPriceShare'>
+    & Pick<Offer, 'id' | 'version' | 'createdAt' | 'createdByAddress' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'minAge' | 'timeCirclesPriceShare'>
     & { tags?: Maybe<Array<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'typeId' | 'value'>
@@ -2280,6 +2281,17 @@ export type InitQuery = (
       )> }
     )> }
   ) }
+);
+
+export type DeliveryMethodsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DeliveryMethodsQuery = (
+  { __typename?: 'Query' }
+  & { deliveryMethods?: Maybe<Array<Maybe<(
+    { __typename?: 'DeliveryMethod' }
+    & Pick<DeliveryMethod, 'id' | 'name'>
+  )>>> }
 );
 
 export type LastAcknowledgedAtQueryVariables = Exact<{
@@ -3085,7 +3097,7 @@ export type StreamQuery = (
             )>> }
           )>, offer?: Maybe<(
             { __typename?: 'Offer' }
-            & Pick<Offer, 'id' | 'title' | 'pictureUrl' | 'pricePerUnit'>
+            & Pick<Offer, 'id' | 'title' | 'pictureUrl' | 'pricePerUnit' | 'minAge'>
             & { tags?: Maybe<Array<(
               { __typename?: 'Tag' }
               & Pick<Tag, 'typeId' | 'value'>
@@ -3125,7 +3137,7 @@ export type StreamQuery = (
             )>> }
           )>, offer?: Maybe<(
             { __typename?: 'Offer' }
-            & Pick<Offer, 'id' | 'pictureUrl' | 'title' | 'description' | 'pricePerUnit'>
+            & Pick<Offer, 'id' | 'pictureUrl' | 'title' | 'description' | 'pricePerUnit' | 'minAge'>
             & { tags?: Maybe<Array<(
               { __typename?: 'Tag' }
               & Pick<Tag, 'typeId' | 'value'>
@@ -3321,7 +3333,7 @@ export type AggregatesQuery = (
             )>> }
           )>, offer: (
             { __typename?: 'Offer' }
-            & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'timeCirclesPriceShare'>
+            & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'minAge' | 'timeCirclesPriceShare'>
             & { createdByProfile?: Maybe<(
               { __typename?: 'Profile' }
               & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
@@ -3384,7 +3396,7 @@ export type AggregatesQuery = (
             )>> }
           )>, offer?: Maybe<(
             { __typename?: 'Offer' }
-            & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'timeCirclesPriceShare'>
+            & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'minAge' | 'timeCirclesPriceShare'>
             & { createdByProfile?: Maybe<(
               { __typename?: 'Profile' }
               & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
@@ -4215,6 +4227,7 @@ export const UpsertOfferDocument = gql`
     description
     pictureUrl
     pricePerUnit
+    minAge
     timeCirclesPriceShare
     tags {
       typeId
@@ -4339,6 +4352,14 @@ export const InitDocument = gql`
       }
       circlesTokenAddress
     }
+  }
+}
+    `;
+export const DeliveryMethodsDocument = gql`
+    query deliveryMethods {
+  deliveryMethods {
+    id
+    name
   }
 }
     `;
@@ -5629,6 +5650,7 @@ export const StreamDocument = gql`
               title
               pictureUrl
               pricePerUnit
+              minAge
               tags {
                 typeId
                 value
@@ -5716,6 +5738,7 @@ export const StreamDocument = gql`
               title
               description
               pricePerUnit
+              minAge
               tags {
                 typeId
                 value
@@ -6090,6 +6113,7 @@ export const AggregatesDocument = gql`
               description
               pictureUrl
               pricePerUnit
+              minAge
               timeCirclesPriceShare
               createdByProfile {
                 id
@@ -6220,6 +6244,7 @@ export const AggregatesDocument = gql`
               description
               pictureUrl
               pricePerUnit
+              minAge
               timeCirclesPriceShare
               createdByProfile {
                 id
@@ -6738,6 +6763,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     init(variables?: InitQueryVariables): Promise<InitQuery> {
       return withWrapper(() => client.request<InitQuery>(print(InitDocument), variables));
+    },
+    deliveryMethods(variables?: DeliveryMethodsQueryVariables): Promise<DeliveryMethodsQuery> {
+      return withWrapper(() => client.request<DeliveryMethodsQuery>(print(DeliveryMethodsDocument), variables));
     },
     lastAcknowledgedAt(variables: LastAcknowledgedAtQueryVariables): Promise<LastAcknowledgedAtQuery> {
       return withWrapper(() => client.request<LastAcknowledgedAtQuery>(print(LastAcknowledgedAtDocument), variables));

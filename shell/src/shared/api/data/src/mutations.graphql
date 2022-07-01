@@ -67,7 +67,7 @@ mutation verifySessionChallenge($challenge: String!, $signature: String!) {
 }
 
 mutation addNewLang($langToCreate: String, $langToCopyFrom: String) {
-  addNewLang(langToCreate: $langToCreate, langToCopyFrom: $langToCopyFrom )
+  addNewLang(langToCreate: $langToCreate, langToCopyFrom: $langToCopyFrom)
 }
 
 mutation updateValue($lang: String, $key: String, $createdBy: String, $value: String) {
@@ -507,6 +507,7 @@ mutation upsertOffer($offer: OfferInput!) {
     description
     pictureUrl
     pricePerUnit
+    minAge
     timeCirclesPriceShare
     tags {
       typeId

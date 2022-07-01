@@ -112,6 +112,12 @@ query init {
   }
 }
 
+query deliveryMethods {
+  deliveryMethods {
+    id
+    name
+  }
+}
 query lastAcknowledgedAt($safeAddress: String!) {
   lastAcknowledgedAt(safeAddress: $safeAddress)
 }
@@ -1418,6 +1424,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
               title
               pictureUrl
               pricePerUnit
+              minAge
               tags {
                 typeId
                 value
@@ -1505,6 +1512,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
               title
               description
               pricePerUnit
+              minAge
               tags {
                 typeId
                 value
@@ -1878,6 +1886,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
               description
               pictureUrl
               pricePerUnit
+              minAge
               timeCirclesPriceShare
               createdByProfile {
                 id
@@ -2008,6 +2017,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
               description
               pictureUrl
               pricePerUnit
+              minAge
               timeCirclesPriceShare
               createdByProfile {
                 id
@@ -2088,7 +2098,6 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
   }
 }
 
-
 query getAllStrings {
   getAllStrings {
     lang
@@ -2163,7 +2172,6 @@ query getAvailableLanguages {
     lang
   }
 }
-
 
 query directPath($from: String!, $to: String!, $amount: String!) {
   directPath(from: $from, to: $to, amount: $amount) {

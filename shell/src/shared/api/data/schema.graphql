@@ -415,9 +415,9 @@ input OfferInput {
   pictureMimeType: String!
   description: String
   allergens: String
+  minAge: Int
   pricePerUnit: String!
   timeCirclesPriceShare: Int!
-  minAge: String
 }
 
 type SalesLine {
@@ -702,7 +702,7 @@ type Sales implements IAggregatePayload {
 }
 
 union EventPayload =
-  CrcSignup
+    CrcSignup
   | CrcTrust
   | CrcTokenTransfer
   | CrcHubTransfer
@@ -791,7 +791,7 @@ type ContactPoint {
 }
 
 union AggregatePayload =
-  CrcBalances
+    CrcBalances
   | Erc20Balances
   | Contacts
   | Memberships
@@ -956,6 +956,14 @@ type AnnouncePaymentResult {
 
 type VerifySafeResult {
   success: Boolean!
+}
+
+type i18n {
+  lang: String
+  key: String
+  createdBy: String
+  version: Int
+  value: String
 }
 
 enum SortOrder {
@@ -1195,14 +1203,6 @@ input OfferByIdAndVersionInput {
   offerVersion: Int
 }
 
-type i18n {
-  createdBy: String
-  key: String
-  lang: String
-  value: String
-  version: Int
-}
-
 type Mutation {
   announcePayment(invoiceId: Int!, transactionHash: String!): AnnouncePaymentResult!
   purchase(lines: [PurchaseLineInput!]!, deliveryMethodId: Int!, deliveryAddressId: Int): [Invoice!]!
@@ -1238,7 +1238,7 @@ type Mutation {
   verifySafe(safeAddress: String!): VerifySafeResult!
   revokeSafeVerification(safeAddress: String!): VerifySafeResult!
   proofUniqueness(humanodeToken: String!): ProofUniquenessResult!
-  updateValue(createdBy: String, key: String, lang: String, value: String): i18n
+  updateValue(lang: String, key: String, createdBy: String, value: String): i18n
   addNewLang(langToCreate: String, langToCopyFrom: String): Int
 }
 
@@ -1275,6 +1275,7 @@ type Query {
   findSafesByOwner(owner: String!): [SafeInfo!]!
   search(query: SearchInput!): [Profile!]!
   stats: Stats!
+  deliveryMethods: [DeliveryMethod]
   cities(query: QueryCitiesInput!): [City!]!
   tags(query: QueryTagsInput!): [Tag!]!
   tagById(id: Int!): Tag
@@ -1285,12 +1286,12 @@ type Query {
   clientAssertionJwt: String!
   getAllStrings: [i18n]
   getAllStringsByLanguage(lang: String): [i18n]
+  getStringByLanguage(lang: String): [i18n!]
+  getStringByMaxVersion(lang: String, key: String): i18n
+  getAvailableLanguages: [i18n]
   getAllStringsByMaxVersion: [i18n]
   getAllStringsByMaxVersionAndLang(lang: String): [i18n]
-  getAvailableLanguages: [i18n]
   getOlderVersionsByKeyAndLang(key: String, lang: String): [i18n]
-  getStringByLanguage(lang: String): [i18n!]
-  getStringByMaxVersion(key: String, lang: String): i18n
 }
 
 type Subscription {

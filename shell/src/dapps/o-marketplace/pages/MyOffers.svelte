@@ -87,6 +87,7 @@ async function updateOffer(entry) {
     delete entry.product.tags;
 
     offerInput = entry.product;
+    console.log("offerInput", offerInput);
     offerInput.createdByProfileId = $me.id;
     offerInput.pictureMimeType = "image/jpeg";
     offerInput.timeCirclesPriceShare = 100;
@@ -94,6 +95,7 @@ async function updateOffer(entry) {
     const result = await ApiClient.mutate<Offer, UpsertOfferMutationVariables>(UpsertOfferDocument, {
       offer: offerInput,
     });
+    console.log("result", result);
     showToast("success", "Product was updated");
 
     if (entry.id) {
@@ -117,6 +119,7 @@ async function updateOffer(entry) {
     let entryresult = await updateCategoryEntries([entry]);
     categories = categories;
     changeList = changeList;
+    editOfferId = null;
     return ok(result);
   } catch (error) {
     console.log("ERROR", error);
@@ -298,7 +301,7 @@ function handleEdit(event) {
 
 <div class="w-full px-4 mx-auto -mt-3 xs:w-5/6">
   <div class="items-center w-full p-4 ">
-    <div class="pb-2 mx-auto space-y-4 border-b border-gray-400 xl:w-1/2 md:w-2/3">
+    <div class="pb-2 mx-auto space-y-4 xl:w-1/2 md:w-2/3">
       {#if shop}
         {#if categories && categories.length > 0}
           {#each categories as category, catindex (category.name)}
@@ -326,7 +329,6 @@ function handleEdit(event) {
                   <ListViewCard
                     entry="{entry}"
                     shopId="{shopId}"
-                    deliveryMethods="{shop.deliveryMethods}"
                     editable="{true}"
                     id="{entry.id}"
                     on:edit="{handleEdit}" />
@@ -393,11 +395,10 @@ function handleEdit(event) {
                       <div class="xs:justify-self-start">
                         <h4 class="w-full mt-2 text-left label">Minimum Age Restriction</h4>
                         <input
-                          type="text"
+                          type="number"
                           class="w-20 input"
                           placeholder="{entry.product.minAge}"
-                          bind:value="{entry.product.minAge}"
-                          on:input="{() => changeEntry(entry.id, entry)}" />
+                          bind:value="{entry.product.minAge}" />
                       </div>
                       <div class="xs:justify-self-center">
                         <h4 class="w-full mt-2 text-left label">Product Version</h4>

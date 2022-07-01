@@ -18,6 +18,9 @@ import {
   OrganisationsByAddressDocument,
   Profile,
   ShopsQueryVariables,
+  DeliveryMethod,
+  DeliveryMethodsDocument,
+  DeliveryMethodsQueryVariables,
   PostAddress,
   PostAddressInput,
 } from "../../../shared/api/data/types";
@@ -51,6 +54,7 @@ let editImage: Boolean = false;
 let editType: string = "";
 let editShopId: Number;
 let shops: Shop[] | null = [];
+let deliveryMethods: DeliveryMethod[] | null = [];
 let currentShopIndex: any;
 let currentShop: ShopInput;
 let currentImage: string = null;
@@ -60,6 +64,8 @@ onMount(async () => {
   shops = await ApiClient.query<Shop[], ShopsQueryVariables>(ShopsDocument, {
     ownerId: $me.id,
   });
+
+  deliveryMethods = await ApiClient.query<DeliveryMethod[], DeliveryMethodsQueryVariables>(DeliveryMethodsDocument, {});
 });
 
 const tinymceloaded = () => {
@@ -210,6 +216,7 @@ async function createNewShop() {
 <div class="mb-20 -mt-3 ">
   <!-- <div class="flex flex-wrap items-stretch space-x-4 space-y-8"> -->
   {#if shops}
+    {console.log("deliveryMethods: ", deliveryMethods)}
     {#each shops as shop, index (shop.id)}
       <section
         class="flex items-start px-4 mx-auto mb-20 md:w-2/3 xl:w-1/2 rounded-xl"
