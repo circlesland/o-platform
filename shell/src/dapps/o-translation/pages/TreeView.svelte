@@ -4,6 +4,8 @@ import {
 CreateNewStringAndKeyDocument,
   GetAllStringsByMaxVersionDocument,
   GetAllStringsByMaxVersionQuery,
+  GetAvailableLanguagesDocument,
+  GetAvailableLanguagesQuery,
   I18n,
 MutationCreateNewStringAndKeyArgs,
 } from "../../../shared/api/data/types";
@@ -22,6 +24,7 @@ let languageList: string[] = [];
 let createNewStringMode: boolean = false;
 let keyToCreate: string;
 let stringToCreate: string;
+let availableLanguages = [];
 
 async function createTree(rootData: I18n[]): Promise<CTreeNode> {
   let cTreenode = new CTreeNode("root");
@@ -34,6 +37,17 @@ async function createTree(rootData: I18n[]): Promise<CTreeNode> {
 onMount(async () => {
   languageList.push(Environment.userLanguage);
   await refreshView();
+  const i18nResult = await ApiClient.query<I18n[], GetAvailableLanguagesQuery>(GetAvailableLanguagesDocument, {});
+  availableLanguages = i18nResult;
+  availableLanguages.sort((a, b) => {
+    if (a.lang < b.lang) {
+      return -1;
+    }
+    if (a.lang > b.lang) {
+      return 1;
+    }
+    return 0;
+  });
 });
 
 async function filterItems(keyFilter: string, valueFilter: string, i18nData: I18n[]) {
@@ -145,7 +159,11 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
       <button
         class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
         on:click="{async () => {
-          await writeNewKeyToDb(Environment.userLanguage, keyToCreate, 1, stringToCreate);
+          console.log(availableLanguages)
+          for (let i = 0; i < availableLanguages.length; i++) {
+            console.log(availableLanguages)
+            await writeNewKeyToDb(availableLanguages[i].lang, keyToCreate, 1, stringToCreate);
+          }
           refreshView();
         }}">create</button>
       <button
