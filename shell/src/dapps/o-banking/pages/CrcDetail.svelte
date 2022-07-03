@@ -10,6 +10,9 @@ import Label from "../../../shared/atoms/Label.svelte";
 import Card from "../../../shared/atoms/Card.svelte";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
  
+import Card from "../../../shared/atoms/Card.svelte";
+import ItemCard from "../../../shared/atoms/ItemCard.svelte";
+
 let loading = true;
 let balances: AssetBalance[] = [];
 
