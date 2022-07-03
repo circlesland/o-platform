@@ -5,11 +5,11 @@ import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount"
 import { AssetBalance } from "../../../shared/api/data/types";
 import { assetBalances } from "../../../shared/stores/assetsBalances";
 
+import { _ } from "svelte-i18n";
+ 
 import Card from "../../../shared/atoms/Card.svelte";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 
-import { _ } from "svelte-i18n";
- 
 let loading = true;
 let balances: AssetBalance[] = [];
 
