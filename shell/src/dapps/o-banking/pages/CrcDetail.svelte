@@ -1,15 +1,15 @@
 <script lang="ts">
-import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import { onMount } from "svelte";
 import { me } from "../../../shared/stores/me";
-import Card from "../../../shared/atoms/Card.svelte";
-
 import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount";
 import { AssetBalance } from "../../../shared/api/data/types";
-import {assetBalances} from "../../../shared/stores/assetsBalances";
+import { assetBalances } from "../../../shared/stores/assetsBalances";
 
 import { _ } from "svelte-i18n";
  
+import Card from "../../../shared/atoms/Card.svelte";
+import ItemCard from "../../../shared/atoms/ItemCard.svelte";
+
 let loading = true;
 let balances: AssetBalance[] = [];
 
