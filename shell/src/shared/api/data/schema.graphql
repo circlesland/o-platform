@@ -1120,6 +1120,7 @@ input ShopInput {
   tosLink: String
   healthInfosLink: String
   adultOnly: Boolean
+  deliveryMethodIds: [Int]
 }
 
 type ShopCategory {

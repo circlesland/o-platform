@@ -72,7 +72,6 @@ onMount(async () => {
 
   categories = shop.categories;
   categoryInput = categories;
-  console.log("CATE: ", shop);
 });
 
 async function updateOffer(entry) {

@@ -1530,6 +1530,7 @@ export type ShopInput = {
   tosLink?: Maybe<Scalars['String']>;
   healthInfosLink?: Maybe<Scalars['String']>;
   adultOnly?: Maybe<Scalars['Boolean']>;
+  deliveryMethodIds?: Maybe<Array<Maybe<Scalars['Int']>>>;
 };
 
 export enum ShopListingStyle {
