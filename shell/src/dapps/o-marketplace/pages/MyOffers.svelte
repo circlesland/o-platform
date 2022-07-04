@@ -304,7 +304,7 @@ function handleEdit(event) {
       {#if shop}
         {#if categories && categories.length > 0}
           {#each categories as category, catindex (category.name)}
-            <div class="p-2 w-min whitespace-nowrap rounded-t-md" class:bg-gray-300="{catindex % 2 == 1}">
+            <div class="w-full p-2 whitespace-nowrap rounded-t-md">
               <h1 class="inline pr-4 h1">{category.name}</h1>
               <button class="inline btn btn-primary btn-square btn-sm" on:click="{() => addProduct(category.id)}"
                 >+</button>
@@ -415,111 +415,6 @@ function handleEdit(event) {
                 {/if}
               {/each}
             {/if}
-
-            <!-- <div class="table p-2 mb-10 rounded-tr-md rounded-b-md" class:bg-gray-300="{catindex % 2 == 1}">
-            <div class="table-header-group p-4 mb-10">
-              <div class="table-row ">
-                <div class="table-cell pl-2 ">
-                  <Icon name="switch-vertical" class="inline w-6 h-6 heroicon smallicon" />
-                </div>
-                <div class="table-cell pl-2">Image</div>
-                <div class="table-cell pl-2">Title</div>
-                <div class="table-cell pl-2">Description</div>
-
-                <div class="table-cell pl-2">Price</div>
-                <div class="table-cell pl-2">Category</div>
-                <div class="table-cell pl-2">Enabled</div>
-                <div class="table-cell pl-2 pr-2">Version</div>
-              </div>
-            </div>
-            {#if category.entries}
-              {#each category.entries as entry, index (entry.id)}
-                <div
-                  class="table-row-group"
-                  animate:flip
-                  draggable="{true}"
-                  on:dragstart="{(event) => dragstart(event, index)}"
-                  on:drop|preventDefault="{(event) => drop(event, index, catindex)}"
-                  ondragover="return false"
-                  on:dragenter="{() => (hovering = entry.id)}"
-                  class:is-active="{hovering === entry.id}">
-                  <div class="table-cell w-10 p-1 text-gray-400 cursor-move">
-                    <Icon name="menu" class="inline w-10 h-10 heroicon" />
-                  </div>
-                  <div class="relative table-cell w-12 p-1 overflow-hidden">
-                    <div class="absolute w-12 h-12 bottom-2">
-                      {#if entry.product.pictureUrl}
-                        <img
-                          class="w-12 h-12"
-                          src="{entry.product.pictureUrl}"
-                          alt="large Banner Url"
-                          on:click="{() => imageEditor(category.id, entry.id, false)}"
-                          on:change="{() => changeEntry(entry.id, entry)}" />
-                      {:else}
-                        <div
-                          on:click="{() => imageEditor(category.id, entry.id, true)}"
-                          class="link link-primary"
-                          on:change="{() => changeEntry(entry.id, entry)}">
-                          Upload image
-                        </div>
-                      {/if}
-                    </div>
-                  </div>
-                  <div class="table-cell p-1 break-all">
-                    <input
-                      type="text"
-                      class="input"
-                      placeholder="{entry.product.title}"
-                      bind:value="{entry.product.title}"
-                      on:input="{() => changeEntry(entry.id, entry)}" />
-                  </div>
-
-                  <div class="table-cell p-1 break-all">
-                    <Editor
-                      scriptSrc="tinymce/tinymce.min.js"
-                      bind:value="{entry.product.description}"
-                      on:input="{() => changeEntry(entry.id, entry)}" />
-
-                  </div>
-
-                  <div class="table-cell w-20 p-1 break-all">
-                    <input
-                      type="text"
-                      class="w-20 input"
-                      placeholder="{entry.product.pricePerUnit}"
-                      bind:value="{entry.product.pricePerUnit}"
-                      on:input="{() => changeEntry(entry.id, entry)}" />
-                  </div>
-                  <div class="table-cell p-1 ">
-                    <select
-                      class="select"
-                      value="{category.id}"
-                      on:change="{(event) => changeCategory(event, entry.id, index, catindex, category.id)}">
-                      {#each categories as listcategory}
-                        <option value="{listcategory.id}">{listcategory.name}</option>
-                      {/each}
-                    </select>
-                  </div>
-                  <div class="table-cell p-1 ">
-                    <input
-                      type="checkbox"
-                      class="inline-block toggle toggle-primary"
-                      value="{entry.enabled}"
-                      bind:checked="{entry.enabled}"
-                      on:change="{() => updateCategoryEntries(category.entries)}" />
-                  </div>
-                  <div class="table-cell w-16 p-1 text-center break-all">
-                    {entry.productVersion}
-                  </div>
-                  <div class="table-cell w-10 p-1 whitespace-nowrap">
-                    {#if changeList.length && changeList.find(({ id }) => id === entry.id)}
-                      <button class="btn btn-primary" on:click="{updateOffer(entry)}">Save</button>
-                    {/if}
-                  </div>
-                </div>
-              {/each}
-            {/if}
-          </div> -->
           {/each}
           {#if showModal}
             <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
