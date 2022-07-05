@@ -3,7 +3,7 @@ import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelt
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { Currency } from "../../../shared/currency";
 import ShopMetadata from "../../../shared/molecules/ShopMetadata.svelte";
-import {onMount} from "svelte";
+import { onMount } from "svelte";
 import Label from "../../../shared/atoms/Label.svelte";
 
 export let context: any;
@@ -11,7 +11,6 @@ let metadataError: Boolean = false;
 let placeholder: Boolean = true;
 let metadata: any;
 let isLoading: Boolean = true;
-
 
 function submit() {
   if (context.data.shop.purchaseMetaDataKeys && metadataError) {
@@ -101,7 +100,7 @@ function onkeydown(e: KeyboardEvent) {
           <Label key="dapps.o-marketplace.molecules.checkoutSummary.tax" />
         </span>
         <span class="w-20 text-lg text-right font-primary text-dark-lightest">
-          {((19 / 100) * context.data.total).toFixed(2)} €
+          {((context.data.total.toFixed(2) / 1.19) * (19 / 100)).toFixed(2)} €
         </span>
       </div>
       <div class="flex items-center justify-end w-full -mt-2">
