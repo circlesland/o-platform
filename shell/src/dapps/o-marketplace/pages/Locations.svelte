@@ -1,18 +1,15 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { contacts } from "../../../shared/stores/contacts";
 import { ApiClient } from "../../../shared/apiConnection";
-import { CapabilityType, Organisation, Shop, ShopsDocument, ShopsQueryVariables } from "../../../shared/api/data/types";
+import { Organisation, Shop, ShopsDocument, ShopsQueryVariables } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { trustFromContactMetadata } from "../../../shared/functions/trustFromContactMetadata";
 import { inbox } from "../../../shared/stores/inbox";
-import { getTrustedByShop } from "../processes/getTrustedByShop";
 import { me } from "../../../shared/stores/me";
-import { getTrusted } from "../processes/getTrusted";
-import ShopMetadata from "../../../shared/molecules/ShopMetadata.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -84,7 +81,7 @@ function isMyShop(shopId) {
               <div class="relative rounded-xl image-wrapper">
                 <img src="{orga.shop.largeBannerUrl}" alt="" class="w-full rounded-xl" />
                 <div
-                  class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-3xl rounded-l-full font-heading top-2 bg-light-lightest">
+                  class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-3xl bg-white rounded-l-full font-heading top-2">
                   <span class="inline-block">{orga.shop.name}</span>
                 </div>
               </div>
