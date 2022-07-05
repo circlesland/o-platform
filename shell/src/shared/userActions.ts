@@ -77,6 +77,7 @@ export class UserActions {
             key: "chat",
             icon: "chat",
             title: window.i18n("shared.userActions.chat"),
+            displayHint: "discouraged",
             action: async () => {
               push("#/contacts/chat/" + recipientProfile.contactAddress);
             },
@@ -145,15 +146,13 @@ export class UserActions {
         );
       }
       /* ORGA */
-    } else if (
-      recipientProfile.contactAddress_Profile.type == ProfileType.Person.toString()
-    ) {
+    } else if (recipientProfile.contactAddress_Profile.type == ProfileType.Person.toString()) {
       // Trust should be always allowed (except for orga targets)
       actions.push({
         key: "setTrust",
         icon: "shield-check",
         title: window.i18n("shared.userActions.trust"),
-        displayHint: "encouraged",
+        displayHint: "discouraged",
         action: async () => {
           window.o.runProcess(setTrust, {
             trustLimit: 100,
