@@ -42,6 +42,7 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import Editor from "@tinymce/tinymce-svelte";
 
 import formatShippingAddress from "../../../shared/functions/formatPostAddress";
+import List from "../../../shared/molecules/Select/List.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -377,6 +378,14 @@ async function createNewShop() {
                     {delivery.name}
                   </label>
                 {/each}
+              </div>
+              <div class="w-full mt-2 text-left label">Shop Offers Style</div>
+              <div class="flex flex-row w-full space-x-2">
+                <select class="w-full max-w-xs select" bind:value="{shop.productListingStyle}">
+                  <option disabled selected>Select Display Style</option>
+                  <option value="LIST">List</option>
+                  <option value="TILES">Tiles</option>
+                </select>
               </div>
               <div class="relative flex items-center py-5">
                 <div class="flex-grow border-t border-gray-400"></div>

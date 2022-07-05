@@ -176,11 +176,6 @@ async function drop(event, target, catIndex) {
 }
 // Drag & Drop stuff END
 
-async function submit() {
-  // await updateCategory();
-  // showToast("success", "Categories successfully updated");
-}
-
 function imageEditor(categoryId, entryId, edit) {
   let sourceCategory: ShopCategory = categories.find((o) => o.id === categoryId);
   let entry: ShopCategoryEntry = sourceCategory.entries.find((o) => o.id === entryId);
