@@ -88,9 +88,12 @@ async function updateShop(newShop: Boolean = false) {
     showToast("success", "Shop successfully updated");
     // editShopId = null;
     if (newShop) {
+      currentShop.id = result.id;
       shops = [...shops, <Shop>currentShop];
+      editShopId = result.id;
     } else {
     }
+    editShopId = null;
     return ok(result);
   } catch {
     showToast("error", "Shop not updated");
@@ -108,7 +111,7 @@ function toggleEditShop(shopId, index) {
     delete shops[index].pickupAddress;
 
     delete shops[index].__typename;
-    selectedDeliveryMethodIds = shops[index].deliveryMethods.map((a) => a.id);
+    selectedDeliveryMethodIds = shops[index].deliveryMethods ? shops[index].deliveryMethods.map((a) => a.id) : [];
 
     delete shops[index].deliveryMethods;
     currentShop = <ShopInput>shops[index];
@@ -179,10 +182,6 @@ $: {
   }
 }
 
-function editShopName(shopId) {
-  editName = true;
-}
-
 function handleClickOutside(event) {
   showModal = false;
 }
@@ -204,8 +203,8 @@ async function createNewShop() {
     productListingStyle: ProductListingType.List,
     ownerId: $me.id,
   };
-  shops = [...shops, <Shop>currentShop];
-  // await updateShop(true);
+  // shops = [...shops, <Shop>currentShop];
+  await updateShop(true);
 
   const updatedProfile = await ApiClient.query<(Profile | Organisation)[], OrganisationsByAddressQueryVariables>(
     OrganisationsByAddressDocument,
