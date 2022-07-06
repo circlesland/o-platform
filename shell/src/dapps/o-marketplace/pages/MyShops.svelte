@@ -86,7 +86,7 @@ async function updateShop(newShop: Boolean = false) {
 
     const result = await ApiClient.mutate<Shop, UpsertShopMutationVariables>(UpsertShopDocument, { shop: currentShop });
     showToast("success", "Shop successfully updated");
-    // editShopId = null;
+  
     if (newShop) {
       currentShop.id = result.id;
       shops = [...shops, <Shop>currentShop];
