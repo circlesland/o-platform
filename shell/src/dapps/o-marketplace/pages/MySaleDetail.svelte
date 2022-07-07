@@ -95,20 +95,20 @@ async function load() {
         icon: "cash",
         title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.transaction"),
         action: () => push(`#/banking/transactions/${invoice.paymentTransactionHash}`),
-      }
-      // {
-      //   icon: "document-text",
-      //   title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.downloadInvoice"),
-      //   action: async () => {
-      //     //for (let invoice of invoice) {
-      //     const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(InvoiceDocument, {
-      //       invoiceId: invoice.id,
-      //     });
+      },
+      {
+        icon: "document-text",
+        title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.downloadInvoice"),
+        action: async () => {
+          //for (let invoice of invoice) {
+          const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(InvoiceDocument, {
+            invoiceId: invoice.id,
+          });
 
-      //     saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
-      //     //}
-      //   },
-      // }
+          saveBufferAs(Buffer.from(invoiceData, "base64"), `invoice.pdf`);
+          //}
+        },
+      }
     );
   }
   groupedItems = invoice ? orderItems(invoice.lines) : {};
