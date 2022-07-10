@@ -74,7 +74,12 @@ const processDefinition = (processId: string) =>
         field: "emailAddress",
         component: EmailAddressEditor,
         params: {
-          view: editorContent.emailAddress,
+          view: editorContent.emailAddress = {
+            title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.title"),
+            description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.description"),
+            placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.placeholder"),
+            submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.submitButtonText"),
+          },
         },
         navigation: {
           canSkip: () => true,
@@ -95,7 +100,12 @@ const processDefinition = (processId: string) =>
       newsletter: promptChoice<UpsertRegistrationContext, any>({
         id: "newsletter",
         component: ChoiceSelector,
-        params: { view: editorContent.newsletter },
+        params: { view: editorContent.newsletter = {
+          title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.title"),
+          description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.description"),
+          placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.placeholder"),
+          submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.submitButtonText"),
+        }},
         options: [
           {
             key: "dontSubscribe",
@@ -128,7 +138,12 @@ const processDefinition = (processId: string) =>
         field: "firstName",
         component: TextEditor,
         params: {
-          view: editorContent.firstName,
+          view: editorContent.firstName = {
+            title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.title"),
+            description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.description"),
+            placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.placeholder"),
+            submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.submitButtonText"),
+          },
         },
         dataSchema: yup.string().required(window.i18n("dapps.o-passport.processes.upsertIdentity.requiredName")),
         navigation: {

@@ -208,8 +208,15 @@ const processDefinition = (processId: string) =>
         field: "__",
         component: HtmlViewer,
         params: {
-          view: editorContent.accountIsDeadInfo,
-          html: () => editorContent.accountIsDeadInfo.description,
+          view: editorContent.accountIsDeadInfo = {
+            title: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.title"),
+            description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.description"),
+            placeholder: "",
+            submitButtonText: window.i18n(
+              "dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.submitButtonText"
+            ),
+          },
+          html: () => editorContent.accountIsDeadInfo.description = window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.description"),
           hideNav: false,
         },
         navigation: {
@@ -222,7 +229,14 @@ const processDefinition = (processId: string) =>
         field: "__",
         component: HtmlViewer,
         params: {
-          view: editorContent.addOwnerInfo,
+          view: editorContent.addOwnerInfo = {
+            title: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.title"),
+            description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.description"),
+            placeholder: "",
+            submitButtonText: window.i18n(
+              "dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.submitButtonText"
+            ),
+          },
           html: () => "", //window.i18n("dapps.o-onboarding.processes.connectSafe.addNewOwnerInfo"),
           hideNav: false,
         },

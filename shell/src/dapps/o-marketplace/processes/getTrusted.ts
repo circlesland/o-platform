@@ -32,9 +32,9 @@ const processDefinition = (processId: string) =>
         component: QrCodeViewer,
         params: {
           view: {
-            title: "Get trusted by the owner",
-            description: `Let the owner of the location scan the barcode below to get trusted`,
-            submitButtonText: "Verify me",
+            title: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.title"),
+            description: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.description"),
+            submitButtonText: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.submitButtonText"),
           },
           html: () => "",
           hideNav: true,

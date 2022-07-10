@@ -168,8 +168,13 @@ const processDefinition = (processId: string) =>
         field: "recipientAddress",
         onlyWhenDirty: false,
         params: {
-          view: editorContent.recipient,
-          placeholder: editorContent.recipient.placeholder,
+          view: editorContent.recipient = {
+            title: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.title"),
+            description: "",
+            placeholder: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.placeholder"),
+            submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.submitButtonText"),
+          },
+          placeholder: editorContent.recipient.placeholder = window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.placeholder"),
           submitButtonText: window.i18n("dapps.o-banking.processes.transfer.recipientAddress.submitButtonText"),
         },
         navigation: {
@@ -263,16 +268,20 @@ const processDefinition = (processId: string) =>
         field: "tokens",
         component: CurrencyTransfer,
         params: {
-          view: editorContent.currency,
+          view: editorContent.currency = {
+            title: window.i18n("dapps.o-banking.processes.transfer.editorContent.currency.title"),
+            description: "",
+            submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.currency.submitButtonText"),
+          },
           currencies: [
             {
               value: "crc",
-              label: strings.currencyCircles,
+              label: strings.currencyCircles = window.i18n("dapps.o-banking.processes.transfer.strings.currencyCircles"),
               __typename: "Currency",
             },
             {
               value: "xdai",
-              label: strings.currencyXdai,
+              label: strings.currencyXdai = window.i18n("dapps.o-banking.processes.transfer.strings.currencyXdai"),
               __typename: "Currency",
             },
           ],
@@ -397,7 +406,11 @@ const processDefinition = (processId: string) =>
         field: "message",
         component: TextareaEditor,
         params: {
-          view: editorContent.message,
+          view: editorContent.message = {
+            title: window.i18n("dapps.o-banking.processes.transfer.editorContent.message.title"),
+            description: "",
+            submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.message.submitButtonText"),
+          },
           maxLength: "100",
         },
         navigation: {
@@ -410,8 +423,12 @@ const processDefinition = (processId: string) =>
         field: "acceptSummary",
         component: TransferConfirmation,
         params: {
-          view: editorContent.confirm,
-          submitButtonText: editorContent.confirm.submitButtonText,
+          view: editorContent.confirm = {
+            title: window.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.title"),
+            description: "",
+            submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.submitButtonText"),
+          },
+          submitButtonText: editorContent.confirm.submitButtonText = window.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.submitButtonText"),
           html: () => "",
         },
         navigation: {

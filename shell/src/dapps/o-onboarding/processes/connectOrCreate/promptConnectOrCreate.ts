@@ -66,7 +66,18 @@ const processDefinition = (processId: string) =>
       connectOrCreate: promptChoice<UpsertRegistrationContext, any>({
         id: "connectOrCreate",
         component: ButtonStackSelector,
-        params: { view: editorContent.connectOrCreate },
+        params: {
+          view: (editorContent.connectOrCreate = {
+            title: window.i18n(
+              "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.title"
+            ),
+            description: window.i18n(
+              "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.description"
+            ),
+            placeholder: "",
+            submitButtonText: "",
+          }),
+        },
         options: [
           {
             key: "newSafe",

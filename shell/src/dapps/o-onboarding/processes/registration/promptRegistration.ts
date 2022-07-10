@@ -43,7 +43,18 @@ const processDefinition = (processId: string) =>
       newsletter: promptChoice<UpsertRegistrationContext, any>({
         id: "newsletter",
         component: ChoiceSelector,
-        params: { view: editorContent.newsletter },
+        params: {
+          view: (editorContent.newsletter = {
+            title: window.i18n(
+              "dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.title"
+            ),
+            description: window.i18n(
+              "dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.description"
+            ),
+            placeholder: "",
+            submitButtonText: "",
+          }),
+        },
         options: [
           {
             key: "dontSubscribe",

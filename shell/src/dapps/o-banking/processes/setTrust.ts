@@ -138,7 +138,18 @@ const processDefinition = (processId: string) =>
         field: "trustReceiver",
         onlyWhenDirty: false,
         params: {
-          view: editorContent.recipient,
+          view: editorContent.recipient = {
+            title: window.i18n(
+              "dapps.o-banking.processes.setTrust.editorContent.recipient.title"
+            ),
+            description: "",
+            placeholder: window.i18n(
+              "dapps.o-banking.processes.setTrust.editorContent.recipient.placeholder"
+            ),
+            submitButtonText: window.i18n(
+              "dapps.o-banking.processes.setTrust.editorContent.recipient.submitButtonText"
+            ),
+          },
           placeholder: editorContent.recipient.placeholder,
           submitButtonText: editorContent.recipient.submitButtonText,
         },
@@ -155,7 +166,7 @@ const processDefinition = (processId: string) =>
               context.data.safeAddress.toLowerCase(),
             actions: (context) => {
               context.messages["trustReceiver"] = window.i18n(
-                "dapps.o-banking.processes.setTrust.checkTrustLimit.contectMessage"
+                "dapps.o-banking.processes.setTrust.checkTrustLimit.contextMessage"
               );
             },
             target: "#trustReceiver",
@@ -217,7 +228,15 @@ const processDefinition = (processId: string) =>
         component: TrustChangeConfirmation,
         params: (context) => {
           return {
-            view: editorContent.success,
+            view: editorContent.success = {
+              title: window.i18n(
+                "dapps.o-banking.processes.setTrust.editorContent.success.title"
+              ),
+              description: "",
+              submitButtonText: window.i18n(
+                "dapps.o-banking.processes.setTrust.editorContent.success.submitButtonText"
+              ),
+            },
             profile: context.data.profile,
             trustLimit: context.data.trustLimit,
             submitButtonText: editorContent.success.submitButtonText,
@@ -234,7 +253,14 @@ const processDefinition = (processId: string) =>
         field: "__",
         component: HtmlViewer,
         params: {
-          view: editorContent.message,
+          view: editorContent.message = {
+            title: window.i18n(
+              "dapps.o-banking.processes.setTrust.editorContent.message.title"
+            ),
+            description: "",
+            submitButtonText: window.i18n(
+              "dapps.o-banking.processes.setTrust.editorContent.message.submitButtonText"
+            )},
           html: () =>
             "Oopsie, Something went wrong, please close this window and try again. ",
           hideNav: false,

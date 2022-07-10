@@ -111,9 +111,22 @@ const processDefinition = (processId: string) =>
         field: "checkSeedPhrase",
         component: TextareaEditor,
         params: {
-          view: editorContent.seedphraseCheck,
+          view: (editorContent.seedphraseCheck = {
+            title: window.i18n(
+              "dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.title"
+            ),
+            titleClass: "text-alert",
+            description: window.i18n(
+              "dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.description"
+            ),
+            submitButtonText: window.i18n(
+              "dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.submitButtonText"
+            ),
+          }),
           hideCharacterCount: true,
-          submitButtonText: editorContent.seedphraseCheck.submitButtonText,
+          submitButtonText: (editorContent.seedphraseCheck.submitButtonText = window.i18n(
+            "dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.submitButtonText"
+          )),
         },
         dataSchema: yup
           .string()

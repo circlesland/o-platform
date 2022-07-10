@@ -94,7 +94,13 @@ const processDefinition = (processId: string) =>
         field: "__",
         component: HtmlViewer,
         params: {
-          view: editorContent.info,
+          view: editorContent.info = {
+            title: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.title"),
+            description: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.description"),
+            submitButtonText: window.i18n(
+              "dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.submitButtonText"
+            ),
+          },
           html: () => "",
           hideNav: false,
         },
@@ -106,7 +112,15 @@ const processDefinition = (processId: string) =>
         field: "inviteCode",
         component: TextareaEditor,
         params: {
-          view: editorContent.checkInviteCode,
+          view: editorContent.checkInviteCode = {
+            title: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.title"),
+            description: window.i18n(
+              "dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.description"
+            ),
+            submitButtonText: window.i18n(
+              "dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.submitButtonText"
+            ),
+          },
         },
         dataSchema: yup
           .string()

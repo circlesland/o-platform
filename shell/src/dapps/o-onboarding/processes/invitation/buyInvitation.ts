@@ -65,7 +65,11 @@ const processDefinition = (processId: string) =>
         field: "__",
         component: HtmlViewer,
         params: {
-          view: editorContent.info,
+          view: (editorContent.info = {
+            title: "Get invited",
+            description: "Find somebody who can give you an invite code to join.",
+            submitButtonText: "I have a code",
+          }),
           html: () => "",
           hideNav: false,
         },
@@ -77,9 +81,17 @@ const processDefinition = (processId: string) =>
         field: "inviteCode",
         component: TextareaEditor,
         params: {
-          view: editorContent.checkInviteCode,
+          view: (editorContent.checkInviteCode = {
+            title: "Enter invitation code",
+            description: "Please enter your invitation code below to get started.",
+            submitButtonText: "Verify",
+          }),
         },
-        dataSchema: yup.string().required(window.i18n("dapps.o-onboarding.processes.invitation.buyInvitation.editorContent.dataSchemaRequired")),
+        dataSchema: yup
+          .string()
+          .required(
+            window.i18n("dapps.o-onboarding.processes.invitation.buyInvitation.editorContent.dataSchemaRequired")
+          ),
         navigation: {
           next: "#redeemCode",
         },

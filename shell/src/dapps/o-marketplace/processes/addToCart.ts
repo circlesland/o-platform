@@ -10,6 +10,7 @@ import {UpsertRegistrationContext} from "../../o-onboarding/processes/registrati
 import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
 import { me } from "../../../shared/stores/me";
 import {ApiClient} from "../../../shared/apiConnection";
+import { setWindowLastError } from "../../../shared/processes/actions/setWindowLastError";
 
 export type AddToCartContextData = {
   offerId: number,
@@ -68,13 +69,13 @@ const processDefinition = (processId: string) =>
         component: ChoiceSelector,
         params: {
           view: {
-            title: "Confirm you age",
-            description: "You must be 16 years or older to purchase this product."
+            title: window.i18n("dapps.o-marketplace.processes.addToCart.confirmMinAge16.params.title"),
+            description: window.i18n("dapps.o-marketplace.processes.addToCart.confirmMinAge16.params.description")
           }
         },
         options: [{
             key: "yesIm16",
-            label: "I'm 16 or older",
+            label: window.i18n("dapps.o-marketplace.processes.addToCart.confirmMinAge16.options.label"),
             target: "#addToCart",
             class: "btn btn-outline",
             action: (context) => {
@@ -85,7 +86,7 @@ const processDefinition = (processId: string) =>
           },
           {
             key: "noImNot16",
-            label: "I'm under 16",
+            label: window.i18n("dapps.o-marketplace.processes.addToCart.confirmMinAge16.options.labelToYoung"),
             target: "#success",
             class: "btn btn-outline",
             action: (context) => {
@@ -104,13 +105,13 @@ const processDefinition = (processId: string) =>
         component: ChoiceSelector,
         params: {
           view: {
-            title: "Confirm you age",
-            description: "You must be 18 years or older to purchase this product."
+            title: window.i18n("dapps.o-marketplace.processes.addToCart.confirmMinAge18.params.title"),
+            description: window.i18n("dapps.o-marketplace.processes.addToCart.confirmMinAge18.params.description")
           }
         },
         options: [{
             key: "yesIm18",
-            label: "I'm 18 or older",
+            label: window.i18n("dapps.o-marketplace.processes.addToCart.confirmMinAge18.options.labelOldEnough"),
             target: "#addToCart",
             class: "btn btn-outline",
             action: (context) => {
@@ -121,7 +122,7 @@ const processDefinition = (processId: string) =>
           },
           {
             key: "noImNot18",
-            label: "I'm under 18",
+            label: window.i18n("dapps.o-marketplace.processes.addToCart.confirmMinAge18.options.labelNotOldEnough"),
             target: "#success",
             class: "btn btn-outline",
             action: (context) => {

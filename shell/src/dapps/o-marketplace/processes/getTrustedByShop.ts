@@ -27,16 +27,16 @@ const processDefinition = (processId: string) =>
         options:[{
           key: "getTrusted",
           target: "#getTrusted",
-          label: "Get trusted by the owner"
+          label: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.options.getTrusted.label")
         }, {
           key: "proofUniqueness",
           target: "#proofUniqueness",
-          label: "Proof you're unique"
+          label: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.options.proofUniqueness.label")
         }],
         params: {
           view: {
-            title: "This location doesn't accept your circles.",
-            description: "<b>What can I do?</b>"
+            title: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.params.title"),
+            description: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.params.description")
           }
         },
         component: ChoiceSelector,
@@ -60,9 +60,9 @@ const processDefinition = (processId: string) =>
         component: QrCodeViewer,
         params: {
           view: {
-            title: "Get trusted by the owner",
-            description: `Let the owner of the location scan the barcode below to get trusted`,
-            submitButtonText: "Verify me",
+            title: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.title"),
+            description: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.description"),
+            submitButtonText: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.submitButtonText"),
           },
           html: () => "",
           hideNav: true,
@@ -79,10 +79,9 @@ const processDefinition = (processId: string) =>
         component: HtmlViewer,
         params: {
           view: {
-            title: "Proof you're unique",
-            description: `For Circles to work it's important that everybody uses only one account.
-                          <p class="mt-1"><b>Upload a short selfie video to immediately proof the uniqueness of your account.</b></p>`,
-            submitButtonText: "Use biometrics",
+            title: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.proofUniqueness.params.title"),
+            description: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.proofUniqueness.params.description"),
+            submitButtonText: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.proofUniqueness.params.submitButtonText"),
           },
           html: () => "",
           hideNav: false,
