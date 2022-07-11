@@ -702,7 +702,7 @@ type Sales implements IAggregatePayload {
 }
 
 union EventPayload =
-  CrcSignup
+    CrcSignup
   | CrcTrust
   | CrcTokenTransfer
   | CrcHubTransfer
@@ -791,7 +791,7 @@ type ContactPoint {
 }
 
 union AggregatePayload =
-  CrcBalances
+    CrcBalances
   | Erc20Balances
   | Contacts
   | Memberships
@@ -1240,6 +1240,7 @@ type Mutation {
   proofUniqueness(humanodeToken: String!): ProofUniquenessResult!
   updateValue(createdBy: String, key: String, lang: String, value: String): i18n
   addNewLang(langToCreate: String, langToCopyFrom: String): Int
+  createNewStringAndKey(lang: String, key: String, createdBy: String, version: Int, value: String): i18n
 }
 
 type Query {

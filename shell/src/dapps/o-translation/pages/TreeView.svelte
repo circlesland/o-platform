@@ -1,9 +1,13 @@
 <script lang="ts">
 import { onMount } from "svelte";
 import {
+CreateNewStringAndKeyDocument,
   GetAllStringsByMaxVersionDocument,
   GetAllStringsByMaxVersionQuery,
+  GetAvailableLanguagesDocument,
+  GetAvailableLanguagesQuery,
   I18n,
+MutationCreateNewStringAndKeyArgs,
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
 import LangSwitcher from "../../../shared/atoms/LangSwitcher.svelte";
@@ -17,6 +21,10 @@ let valueFilter: string = "";
 let snapshot: StateSnapshot;
 let allLanguages: string[] = [];
 let languageList: string[] = [];
+let createNewStringMode: boolean = false;
+let keyToCreate: string;
+let stringToCreate: string;
+let availableLanguages = [];
 
 async function createTree(rootData: I18n[]): Promise<CTreeNode> {
   let cTreenode = new CTreeNode("root");
@@ -29,7 +37,19 @@ async function createTree(rootData: I18n[]): Promise<CTreeNode> {
 onMount(async () => {
   languageList.push(Environment.userLanguage);
   await refreshView();
+  const i18nResult = await ApiClient.query<I18n[], GetAvailableLanguagesQuery>(GetAvailableLanguagesDocument, {});
+  availableLanguages = i18nResult;
+  availableLanguages.sort((a, b) => {
+    if (a.lang < b.lang) {
+      return -1;
+    }
+    if (a.lang > b.lang) {
+      return 1;
+    }
+    return 0;
+  });
 });
+
 
 async function filterItems(keyFilter: string, valueFilter: string, i18nData: I18n[]) {
   const filteredByKey = i18nData.filter((item) => item.key.includes(keyFilter));
@@ -100,20 +120,71 @@ function sortByKey(dataToSort: I18n[]) {
 function isSelected(languageCode: string) {
   return languageList.indexOf(languageCode) > -1;
 }
+
+
+
+async function writeNewKeyToDb(lang: string, key: string, version: number, value: string) {
+  return await ApiClient.query<I18n, MutationCreateNewStringAndKeyArgs>(CreateNewStringAndKeyDocument, {
+    lang: lang,
+    key: key,
+    version: version,
+    value: value
+  })
+}
+
 </script>
 
+
 <section class="relative mb-20 bg-white shadow rounded md:w-2/3 xl:w-1/2">
-    <div class="flex grow justify-center mt-3">
-      <form on:input="{() => refreshView()}" class="justify-start">
-        <input bind:value="{keyFilter}" class="input m-1" type="text" placeholder="dapps.o-banking..." />
+  {#if !createNewStringMode}
+  <div class="flex grow justify-center mt-3">
+    <form on:input="{() => refreshView()}" class="justify-start">
+      <input bind:value="{keyFilter}" class="input m-1" type="text" placeholder="dapps.o-banking..." />
+    </form>
+    <form on:input="{() => refreshView()}" class="justify-end">
+      <input bind:value="{valueFilter}" class="input m-1" type="text" placeholder="String" />
+    </form>
+    <button
+      class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
+      on:click="{() => {
+        createNewStringMode = true;
+      }}">
+      create new string
+    </button>
+  </div>
+  {/if}
+
+  {#if createNewStringMode}
+    <div class="flex grow justify-center">
+      <form class="justify-start">
+        <input bind:value="{keyToCreate}" class="input m-1" type="text" placeholder="key goes here" />
       </form>
-      <form on:input="{() => refreshView()}" class="justify-end">
-        <input bind:value="{valueFilter}" class="input m-1" type="text" placeholder="String" />
+      <form class="justify-start">
+        <input bind:value="{stringToCreate}" class="input m-1" type="text" placeholder="string goes here" />
       </form>
+      <button
+        class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
+        on:click="{async () => {
+          console.log(availableLanguages)
+          for (let i = 0; i < availableLanguages.length; i++) {
+            console.log(availableLanguages)
+            await writeNewKeyToDb(availableLanguages[i].lang, keyToCreate, 1, stringToCreate);
+          }
+          createNewStringMode = false;
+          refreshView();
+        }}">create</button>
+      <button
+        class="bg-red-200 rounded-lg m-1 p-1 hover:bg-red-500"
+        on:click="{() => {
+          createNewStringMode = false;
+        }}">
+        cancel
+      </button>
     </div>
-    <div class="flex justify-center m-3">
+  {/if}
+  <!--<div class="flex justify-center m-3">
       <LangSwitcher />
-    </div>
+    </div>-->
   <!--<div class="flex justify-center">
     {#each allLanguages as languageCode}
       <button
@@ -127,7 +198,7 @@ function isSelected(languageCode: string) {
       </button>
     {/each}
   </div>-->
-  
+
   <div class="mr-3 ml-3">
     <Tree
       rootNode="{displayedTree}"
