@@ -531,13 +531,3 @@ mutation proofUniqueness($humanodeToken: String!) {
     existingSafe
   }
 }
-
-mutation createNewStringAndKey($lang: String, $key: String, $version: Int, $value: String) {
-  createNewStringAndKey(lang: $lang, key: $key, version: $version, value: $value) {
-    lang,
-    key,
-    version,
-    createdBy,
-    value
-  }
-}

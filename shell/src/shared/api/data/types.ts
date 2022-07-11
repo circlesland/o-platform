@@ -2255,22 +2255,6 @@ export type ProofUniquenessMutation = (
   ) }
 );
 
-export type CreateNewStringAndKeyMutationVariables = Exact<{
-  lang?: Maybe<Scalars['String']>;
-  key?: Maybe<Scalars['String']>;
-  version?: Maybe<Scalars['Int']>;
-  value?: Maybe<Scalars['String']>;
-}>;
-
-
-export type CreateNewStringAndKeyMutation = (
-  { __typename?: 'Mutation' }
-  & { createNewStringAndKey?: Maybe<(
-    { __typename?: 'i18n' }
-    & Pick<I18n, 'lang' | 'key' | 'version' | 'createdBy' | 'value'>
-  )> }
-);
-
 export type InitQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -4301,17 +4285,6 @@ export const ProofUniquenessDocument = gql`
     mutation proofUniqueness($humanodeToken: String!) {
   proofUniqueness(humanodeToken: $humanodeToken) {
     existingSafe
-  }
-}
-    `;
-export const CreateNewStringAndKeyDocument = gql`
-    mutation createNewStringAndKey($lang: String, $key: String, $version: Int, $value: String) {
-  createNewStringAndKey(lang: $lang, key: $key, version: $version, value: $value) {
-    lang
-    key
-    version
-    createdBy
-    value
   }
 }
     `;
@@ -6835,9 +6808,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     proofUniqueness(variables: ProofUniquenessMutationVariables): Promise<ProofUniquenessMutation> {
       return withWrapper(() => client.request<ProofUniquenessMutation>(print(ProofUniquenessDocument), variables));
-    },
-    createNewStringAndKey(variables?: CreateNewStringAndKeyMutationVariables): Promise<CreateNewStringAndKeyMutation> {
-      return withWrapper(() => client.request<CreateNewStringAndKeyMutation>(print(CreateNewStringAndKeyDocument), variables));
     },
     init(variables?: InitQueryVariables): Promise<InitQuery> {
       return withWrapper(() => client.request<InitQuery>(print(InitDocument), variables));
