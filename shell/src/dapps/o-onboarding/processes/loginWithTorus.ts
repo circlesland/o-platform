@@ -41,7 +41,7 @@ export type LoginWithTorusContextData = {
 
 export type LoginWithTorusContext = ProcessContext<LoginWithTorusContextData>;
 
-const loginOptions = [
+let loginOptions = [
   {
     key: "google",
     label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.google.label"),
@@ -170,7 +170,35 @@ const processDefinition = (processId: string) =>
               submitButtonText: "",
             },
           },
-          options: loginOptions,
+          options: loginOptions = [
+            {
+              key: "google",
+              label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.google.label"),
+              target: "#google",
+              class: "btn btn-outline",
+              icon: "google",
+            },
+            {
+              key: "apple",
+              label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.apple.label"),
+              target: "#apple",
+              class: "btn btn-outline",
+              icon: "apple",
+            },
+            {
+              key: "github",
+              label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.github.label"),
+              target: "#github",
+              class: "btn btn-outline",
+              icon: "github",
+            } /*
+                    {
+                      key: "email",
+                      label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.email.label"),
+                      target: "#email",
+                      class: "btn-info",
+                    }*/,
+          ],
         }),
 
         google: {

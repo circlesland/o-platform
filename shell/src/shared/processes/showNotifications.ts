@@ -7,7 +7,7 @@ import NotificationViewer from "./../NotificationViewer.svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { inbox } from "../stores/inbox";
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
-import {EventType, ProfileEvent} from "../api/data/types";
+import { EventType, ProfileEvent } from "../api/data/types";
 import { push } from "svelte-spa-router";
 
 export type ShowNotificationsContextData = {
@@ -16,18 +16,8 @@ export type ShowNotificationsContextData = {
   currentEvent: ProfileEvent;
 };
 
-const strings = {
-  CrcHubTransfer: window.i18n("shared.processes.showNotifications.strings.crcHubTransfer"),
-  CrcTrust: window.i18n("shared.processes.showNotifications.strings.crcTrust"),
-  CrcUntrust: window.i18n("shared.processes.showNotifications.strings.crc_untrust"),
-  ChatMessage: window.i18n("shared.processes.showNotifications.strings.chatMessage"),
-  CrcMinting: window.i18n("shared.processes.showNotifications.strings.crcMinting"),
-  MembershipOffer: window.i18n("shared.processes.showNotifications.strings.membershipOffer"),
-  InvitationCreated: "",
-  MembershipAccepted: window.i18n("shared.processes.showNotifications.strings.membershipAccepted"),
-};
-export type ShowNotificationsContext =
-  ProcessContext<ShowNotificationsContextData>;
+let strings = {};
+export type ShowNotificationsContext = ProcessContext<ShowNotificationsContextData>;
 
 const editorContent: { [x: string]: EditorViewContext } = {
   showNotifications: {
@@ -50,6 +40,16 @@ const processDefinition = (processId: string) =>
         entry: (context) => {
           context.data.currentEventIndex = -1;
           context.data.currentEvent = undefined;
+          strings = {
+            CrcHubTransfer: window.i18n("shared.processes.showNotifications.strings.crcHubTransfer"),
+            CrcTrust: window.i18n("shared.processes.showNotifications.strings.crcTrust"),
+            CrcUntrust: window.i18n("shared.processes.showNotifications.strings.crc_untrust"),
+            ChatMessage: window.i18n("shared.processes.showNotifications.strings.chatMessage"),
+            CrcMinting: window.i18n("shared.processes.showNotifications.strings.crcMinting"),
+            MembershipOffer: window.i18n("shared.processes.showNotifications.strings.membershipOffer"),
+            InvitationCreated: "",
+            MembershipAccepted: window.i18n("shared.processes.showNotifications.strings.membershipAccepted"),
+          };
         },
         always: "#fetchNext",
       },
@@ -61,8 +61,7 @@ const processDefinition = (processId: string) =>
               return;
             }
             context.data.currentEventIndex--;
-            context.data.currentEvent =
-              context.data.events[context.data.currentEventIndex];
+            context.data.currentEvent = context.data.events[context.data.currentEventIndex];
           },
           onDone: "#show",
         },
@@ -75,8 +74,7 @@ const processDefinition = (processId: string) =>
               return;
             }
             context.data.currentEventIndex++;
-            context.data.currentEvent =
-              context.data.events[context.data.currentEventIndex];
+            context.data.currentEvent = context.data.events[context.data.currentEventIndex];
           },
           onDone: [
             {
@@ -97,8 +95,7 @@ const processDefinition = (processId: string) =>
         field: "currentEvent",
         params: (context: any) => {
           let title =
-            context.data.currentEvent.type == EventType.CrcTrust &&
-            context.data.currentEvent.payload.limit == 0
+            context.data.currentEvent.type == EventType.CrcTrust && context.data.currentEvent.payload.limit == 0
               ? "CrcUntrust"
               : context.data.currentEvent.type;
           return {
@@ -115,9 +112,11 @@ const processDefinition = (processId: string) =>
         navigation: {
           canGoBack: (context: any) => context.data.currentEventIndex > 0,
           canSkip: () => false,
-          next: [{
-            target: "#acknowledge"
-          }],
+          next: [
+            {
+              target: "#acknowledge",
+            },
+          ],
           previous: "#fetchPrevious",
         },
       }),
@@ -129,15 +128,15 @@ const processDefinition = (processId: string) =>
             await inbox.acknowledge(context.data.currentEvent);
           },
           onDone: {
-            actions: context => {
+            actions: (context) => {
               context.dirtyFlags = {
                 ...context.dirtyFlags,
                 events: false,
                 currentEvent: false,
-                currentEventIndex: false
+                currentEventIndex: false,
               };
             },
-            target: "#fetchNext"
+            target: "#fetchNext",
           },
           onError: "#error",
         },
@@ -157,10 +156,7 @@ const processDefinition = (processId: string) =>
     },
   });
 
-export const showNotifications: ProcessDefinition<
-  void,
-  ShowNotificationsContext
-> = {
+export const showNotifications: ProcessDefinition<void, ShowNotificationsContext> = {
   name: "showNotifications",
   stateMachine: <any>processDefinition,
 };
