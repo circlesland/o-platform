@@ -1,6 +1,7 @@
 import type { PostAddress } from "../api/data/types";
 
-export default function formatShippingAddress(address: PostAddress, multiline: Boolean = false) {
+export default function formatShippingAddress(address?: PostAddress, multiline: Boolean = false) {
+  if (!address) return "";
   let str = "";
   if (address.name) {
     str += address.name + (multiline ? "<br/>" : ", ");

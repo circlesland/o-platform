@@ -15,8 +15,8 @@ export let dataLang: string;
 export let dataString: string;
 export let dataVersion: number;
 
-
 let editMode: boolean = false;
+let inputMode: boolean = false;
 let editBorder: string = "";
 
 let keyArray = [];
@@ -25,7 +25,7 @@ let selectedVersion: number = dataVersion;
 let inputValue: string;
 let olderVersionData = [];
 
-let negativeMargin:string = "";
+let negativeMargin: string = "";
 
 keyArray.concat(keyArray.push(dataKey.split(".")));
 
@@ -59,19 +59,15 @@ async function writeValueToDb(value: string, lang: string, key: string) {
   });
 }
 
-
 function calculateNegativeMargin() {
   keyArray = keyArray.concat(keyArray.push(dataKey.split(".")));
-  let y = 4 * (keyArray[0].length);
+  let y = 4 * keyArray[0].length;
   negativeMargin = `-ml-${y}`;
-  console.log("y", y)
-  console.log(keyArray[0].length)
-  console.log("negativMargin", negativeMargin)
+  console.log("y", y);
+  console.log(keyArray[0].length);
+  console.log("negativMargin", negativeMargin);
 }
-calculateNegativeMargin();
-
-
-
+//calculateNegativeMargin();
 </script>
 
 <div class="flex-row w-full {editBorder} rounded-box p-5 hover:border-2 hover:border-dark-dark hover:border-dotted">
@@ -99,18 +95,20 @@ calculateNegativeMargin();
 
     <div class="flex">
       {#if editMode}
-        <button
-          class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
-          on:click="{async () => {
-            let updatedObject = await writeValueToDb(inputValue, dataLang, dataKey);
-            await loadOlderVersions(dataLang, dataKey);
-            dataVersion = updatedObject.version;
-            dataString = updatedObject.value;
-            selectedVersion = updatedObject.version;
-            inputValue = '';
-            editMode = false;
-            editBorder = "";
-          }}">Save</button>
+        {#if inputMode}
+          <button
+            class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
+            on:click="{async () => {
+              let updatedObject = await writeValueToDb(inputValue, dataLang, dataKey);
+              await loadOlderVersions(dataLang, dataKey);
+              dataVersion = updatedObject.version;
+              dataString = updatedObject.value;
+              selectedVersion = updatedObject.version;
+              inputValue = '';
+              editMode = false;
+              editBorder = '';
+            }}">Save</button>
+        {/if}
         <button
           class="bg-red-200 rounded-lg m-1 p-1 hover:bg-red-500"
           on:click="{() => {
@@ -130,7 +128,15 @@ calculateNegativeMargin();
   {#if editMode}
     <div class="flex justify-center w-full">
       <!-- svelte-ignore a11y-autofocus -->
-      <textarea autofocus bind:value="{inputValue}" class="border-black border-2 rounded p-5" cols="30" rows="2"></textarea>
+      <textarea
+        autofocus
+        bind:value="{inputValue}"
+        on:input="{() => {
+          inputMode = true;
+        }}"
+        class="border-black border-2 rounded p-5"
+        cols="30"
+        rows="2"></textarea>
     </div>
   {/if}
 </div>

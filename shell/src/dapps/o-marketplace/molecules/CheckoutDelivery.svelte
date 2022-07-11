@@ -41,7 +41,7 @@ function submit() {
 
   console.log(selectedCountry);
   console.log(shippingAddressId);
-  if (selectedCountry && selectedCountry != "Germany") {
+  if (deliveryType == 2 && selectedCountry && selectedCountry != "Germany") {
     error = "This shop only delivers to Germany. Please select or enter a German Postal Address.";
   } else {
     const answer = new Continue();

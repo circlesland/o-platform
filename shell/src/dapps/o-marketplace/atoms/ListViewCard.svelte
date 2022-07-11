@@ -30,14 +30,9 @@ function _addToCart(item: Offer & { shopId: number }) {
     redirectTo: `#/marketplace/cart`,
   });
 }
-
-let now = new Date();
-
-let displayName = `${entry.product.createdByProfile.displayName}`;
-displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
 </script>
 
-<section class="flex items-start bg-white shadow-md rounded-xl">
+<section class="flex items-start bg-white shadow-md cursor-pointer rounded-xl">
   <div class="flex flex-col w-full ">
     <div class="relative flex flex-col items-stretch w-full px-4 py-4 space-y-4 ">
       <div class="flex flex-row space-x-2">

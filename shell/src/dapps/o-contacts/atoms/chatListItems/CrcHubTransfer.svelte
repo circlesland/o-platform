@@ -43,9 +43,7 @@ function getValues(): {
   icon: string;
   actions: JumplistItem[];
 } {
-  let icon = `${$_(
-    "dapps.o-contacts.atoms.chatListItems.crcHubTransfer.getValues.icon"
-  )}`;
+  let icon = "sendmoney";
   let title = "";
   let titleClass = "";
   let text = "";

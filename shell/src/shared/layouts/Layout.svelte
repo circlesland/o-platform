@@ -62,10 +62,8 @@ function onkeydown(e: KeyboardEvent) {
   <div class="absolute flex flex-row w-full overflow-auto">
     <main id="main" class="relative w-full overflow-auto overflow-hidden">
       <div
-        class="flex flex-row w-full bg-gray-100 mainContent"
-        class:mb-16="{layout.dialogs.center &&
-          !layout.dialogs.center.isOpen &&
-          dapp === 'homepage:1'}"
+        class="flex flex-row w-full bg-pagebackground mainContent"
+        class:mb-16="{layout.dialogs.center && !layout.dialogs.center.isOpen && dapp === 'homepage:1'}"
         class:blur="{layout.dialogs.center && layout.dialogs.center.isOpen}">
         <div class="z-50">
           {#if layout.dialogs.left && layout.dialogs.left.isOpen}
@@ -73,9 +71,7 @@ function onkeydown(e: KeyboardEvent) {
               <LeftMobile>
                 <svelte:component
                   this="{layout.dialogs.left.component}"
-                  {...layout.dialogs.left.params
-                    ? layout.dialogs.left.params
-                    : {}}
+                  {...layout.dialogs.left.params ? layout.dialogs.left.params : {}}
                   on:clickedOutside="{() =>
                     eventDispatcher('clickedOutside', {
                       position: 'left',
@@ -93,9 +89,7 @@ function onkeydown(e: KeyboardEvent) {
               <LeftDesktop>
                 <svelte:component
                   this="{layout.dialogs.left.component}"
-                  {...layout.dialogs.left.params
-                    ? layout.dialogs.left.params
-                    : {}}
+                  {...layout.dialogs.left.params ? layout.dialogs.left.params : {}}
                   on:clickedOutside="{() =>
                     eventDispatcher('clickedOutside', {
                       position: 'left',
@@ -114,9 +108,7 @@ function onkeydown(e: KeyboardEvent) {
         </div>
         <div class="flex-grow">
           {#if layout.main}
-            <svelte:component
-              this="{layout.main.component}"
-              {...layout.main.params ? layout.main.params : {}} />
+            <svelte:component this="{layout.main.component}" {...layout.main.params ? layout.main.params : {}} />
           {/if}
         </div>
         <div>
@@ -124,9 +116,7 @@ function onkeydown(e: KeyboardEvent) {
             <RightDesktop>
               <svelte:component
                 this="{layout.dialogs.right.component}"
-                {...layout.dialogs.right.params
-                  ? layout.dialogs.right.params
-                  : {}}
+                {...layout.dialogs.right.params ? layout.dialogs.right.params : {}}
                 on:clickedOutside="{() =>
                   eventDispatcher('clickedOutside', {
                     position: 'right',
@@ -152,9 +142,7 @@ function onkeydown(e: KeyboardEvent) {
           class="fixed z-10 flex flex-col items-center justify-end w-32 h-12 -ml-16 left-1/2 bottom-20"
           class:hidden="{menuOpen}">
           <section class="mb-4">
-            <button
-              class="w-32 rounded-full btn btn-primary"
-              on:click="{action.action}">
+            <button class="w-32 rounded-full btn btn-primary" on:click="{action.action}">
               {action.text}
             </button>
           </section>
@@ -177,9 +165,7 @@ function onkeydown(e: KeyboardEvent) {
 
 <style>
 /* Background Blurring for firefox and other non supportive browsers */
-@supports not (
-  (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))
-) {
+@supports not ((backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))) {
   .blur {
     filter: blur(4px);
     -webkit-transition: all 0.35s ease-in-out;

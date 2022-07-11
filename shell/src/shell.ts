@@ -8,16 +8,17 @@ import { ApiConnection } from "./shared/apiConnection";
 import { en } from "./i18n/lang/en";
 import { _, dictionary, format, init, locale } from "svelte-i18n";
 import { get } from "svelte/store";
+import {Environment} from "./shared/environment";
 
 const i18n = (id: string, options?: any) => {
-  dictionary.set(en);
-  locale.set("en");
+  locale.set(Environment.userLanguage);
+  /*dictionary.set(en);
 
   init({
     fallbackLocale: "en",
     initialLocale: "en",
   });
-
+*/
   return get(format)(id, options);
 };
 (<any>window).i18n = i18n;

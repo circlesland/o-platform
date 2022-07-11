@@ -18,6 +18,9 @@ import {
   OrganisationsByAddressDocument,
   Profile,
   ShopsQueryVariables,
+  DeliveryMethod,
+  DeliveryMethodsDocument,
+  DeliveryMethodsQueryVariables,
   PostAddress,
   PostAddressInput,
 } from "../../../shared/api/data/types";
@@ -39,6 +42,7 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import Editor from "@tinymce/tinymce-svelte";
 
 import formatShippingAddress from "../../../shared/functions/formatPostAddress";
+import List from "../../../shared/molecules/Select/List.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -51,6 +55,8 @@ let editImage: Boolean = false;
 let editType: string = "";
 let editShopId: Number;
 let shops: Shop[] | null = [];
+let deliveryMethods: DeliveryMethod[] | null = [];
+let selectedDeliveryMethodIds: number[] = [];
 let currentShopIndex: any;
 let currentShop: ShopInput;
 let currentImage: string = null;
@@ -60,6 +66,11 @@ onMount(async () => {
   shops = await ApiClient.query<Shop[], ShopsQueryVariables>(ShopsDocument, {
     ownerId: $me.id,
   });
+
+  deliveryMethods = await ApiClient.query<DeliveryMethod[], DeliveryMethodsQueryVariables>(DeliveryMethodsDocument, {});
+
+  console.log("METHODS: ", deliveryMethods);
+  console.log("SHOPPES", shops);
 });
 
 const tinymceloaded = () => {
@@ -71,13 +82,18 @@ const tinymceloaded = () => {
 
 async function updateShop(newShop: Boolean = false) {
   try {
+    currentShop.deliveryMethodIds = selectedDeliveryMethodIds;
+
     const result = await ApiClient.mutate<Shop, UpsertShopMutationVariables>(UpsertShopDocument, { shop: currentShop });
     showToast("success", "Shop successfully updated");
-    // editShopId = null;
+  
     if (newShop) {
+      currentShop.id = result.id;
       shops = [...shops, <Shop>currentShop];
+      editShopId = result.id;
     } else {
     }
+    editShopId = null;
     return ok(result);
   } catch {
     showToast("error", "Shop not updated");
@@ -93,9 +109,13 @@ function toggleEditShop(shopId, index) {
     delete shops[index].categories;
     delete shops[index].createdAt;
     delete shops[index].pickupAddress;
+
     delete shops[index].__typename;
+    selectedDeliveryMethodIds = shops[index].deliveryMethods ? shops[index].deliveryMethods.map((a) => a.id) : [];
+
     delete shops[index].deliveryMethods;
     currentShop = <ShopInput>shops[index];
+
     editShopId = shopId;
   }
 }
@@ -162,10 +182,6 @@ $: {
   }
 }
 
-function editShopName(shopId) {
-  editName = true;
-}
-
 function handleClickOutside(event) {
   showModal = false;
 }
@@ -187,8 +203,8 @@ async function createNewShop() {
     productListingStyle: ProductListingType.List,
     ownerId: $me.id,
   };
-  shops = [...shops, <Shop>currentShop];
-  // await updateShop(true);
+  // shops = [...shops, <Shop>currentShop];
+  await updateShop(true);
 
   const updatedProfile = await ApiClient.query<(Profile | Organisation)[], OrganisationsByAddressQueryVariables>(
     OrganisationsByAddressDocument,
@@ -286,9 +302,6 @@ async function createNewShop() {
                     size="30"
                     placeholder="{shop.name}"
                     bind:value="{shop.name}" />
-                  <button class="inline btn btn-square btn-primary" on:click="{() => submit()}">
-                    <Icon name="check" class="inline w-6 h-6 heroicon smallicon" />
-                  </button>
                 {:else}
                   <span class="inline-block">{shop.name}</span>
                 {/if}
@@ -314,27 +327,18 @@ async function createNewShop() {
 
               <div class="w-full">
                 <Editor scriptSrc="tinymce/tinymce.min.js" id="myshopDescription" bind:value="{shop.description}" />
-                <div class="flex flex-row justify-end w-full mt-2 space-x-2">
-                  <button class="inline btn btn-primary" on:click="{() => submit()}"> Save Description </button>
-                </div>
               </div>
 
               <h1 class="w-full mt-2 text-left label">Opening Hours</h1>
 
               <div class="w-full">
                 <Editor scriptSrc="tinymce/tinymce.min.js" id="myshopOpeningHours" bind:value="{shop.openingHours}" />
-                <div class="flex flex-row justify-end w-full mt-2 space-x-2">
-                  <button class="inline btn btn-primary" on:click="{() => submit()}"> Save Opening Hours </button>
-                </div>
               </div>
 
               <h1 class="w-full mt-2 text-left label">Legal Text</h1>
 
               <div class="w-full">
                 <Editor scriptSrc="tinymce/tinymce.min.js" id="myshopLegalText" bind:value="{shop.legalText}" />
-                <div class="flex flex-row justify-end w-full mt-2 space-x-2">
-                  <button class="inline btn btn-primary" on:click="{() => submit()}"> Save legal Text </button>
-                </div>
               </div>
               <div class="w-full mt-2 text-left label">Terms of Service Link</div>
               <div class="flex flex-row w-full space-x-2">
@@ -343,9 +347,6 @@ async function createNewShop() {
                   class="flex-grow font-primary input"
                   placeholder="Terms of Service Link (start with https://)"
                   bind:value="{shop.tosLink}" />
-                <button class="inline btn btn-square btn-primary" on:click="{() => submit()}">
-                  <Icon name="check" class="inline w-6 h-6 heroicon smallicon" />
-                </button>
               </div>
               <div class="w-full mt-2 text-left label">Privacy Policy Link</div>
               <div class="flex flex-row w-full space-x-2">
@@ -354,9 +355,6 @@ async function createNewShop() {
                   class="flex-grow font-primary input"
                   placeholder="Privacy Policy Link (start with https://)"
                   bind:value="{shop.privacyPolicyLink}" />
-                <button class="inline btn btn-square btn-primary" on:click="{() => submit()}">
-                  <Icon name="check" class="inline w-6 h-6 heroicon smallicon" />
-                </button>
               </div>
               <div class="w-full mt-2 text-left label">Link to Health information</div>
               <div class="flex flex-row w-full space-x-2">
@@ -365,33 +363,34 @@ async function createNewShop() {
                   class="flex-grow font-primary input"
                   placeholder="Link to Health information (start with https://)"
                   bind:value="{shop.healthInfosLink}" />
-                <button class="inline btn btn-square btn-primary" on:click="{() => submit()}">
-                  <Icon name="check" class="inline w-6 h-6 heroicon smallicon" />
-                </button>
               </div>
               <div class="w-full mt-2 text-left label">Methods of Delivery</div>
               <div class="flex flex-row w-full space-x-2">
-                <!--
-              <label>
-                <input
-                  type="checkbox"
-                  class="checkbox checkbox-primary"
-                  bind:group="{shop.deliveryMethods}"
-                  name="shop.deliveryMethods"
-                  value="{1}" />
-                Delivery
-              </label>
-
-              <label>
-                <input
-                  type="checkbox"
-                  class="checkbox checkbox-primary"
-                  bind:group="{shop.deliveryMethods}"
-                  name="shop.deliveryMethods"
-                  value="{2}" />
-                Store Pick-Up
-              </label>
-              -->
+                {#each deliveryMethods as delivery}
+                  <label>
+                    <input
+                      type="checkbox"
+                      class="checkbox checkbox-primary"
+                      bind:group="{selectedDeliveryMethodIds}"
+                      name="deliveryMethods"
+                      value="{delivery.id}" />
+                    {delivery.name}
+                  </label>
+                {/each}
+              </div>
+              <div class="w-full mt-2 text-left label">Shop Offers Style</div>
+              <div class="flex flex-row w-full space-x-2">
+                <select class="w-full max-w-xs select" bind:value="{shop.productListingStyle}">
+                  <option disabled selected>Select Display Style</option>
+                  <option value="LIST">List</option>
+                  <option value="TILES">Tiles</option>
+                </select>
+              </div>
+              <div class="relative flex items-center py-5">
+                <div class="flex-grow border-t border-gray-400"></div>
+                <span class="flex-shrink mx-4 text-gray-400"
+                  ><button class="btn btn-primary" on:click="{() => submit()}">Save Shop</button></span>
+                <div class="flex-grow border-t border-gray-400"></div>
               </div>
             {:else}
               <h1 class="mt-4">Description</h1>

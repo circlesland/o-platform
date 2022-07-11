@@ -319,12 +319,12 @@ onMount(async () => {
         </div>
 
         <div class="flex flex-col mt-8 space-y-2 text-center">
-          {#if purchase.lines[0].shop.pickupAddress}
+          {#if purchase.lines[0].shop && purchase.lines[0].shop.pickupAddress}
             <div>Please pick your order up at:</div>
 
             <div class="font-bold">{@html formatShippingAddress(purchase.lines[0].shop.pickupAddress, true)}</div>
           {/if}
-          {#if purchase.lines[0].shop.openingHours}
+          {#if purchase.lines[0].shop && purchase.lines[0].shop.openingHours}
             <div class="pt-2">Our Opening Hours are:</div>
 
             <div>{@html purchase.lines[0].shop.openingHours}</div>

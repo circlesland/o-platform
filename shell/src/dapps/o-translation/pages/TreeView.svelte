@@ -122,7 +122,6 @@ function isSelected(languageCode: string) {
 }
 
 
-
 async function writeNewKeyToDb(lang: string, key: string, version: number, value: string) {
   return await ApiClient.query<I18n, MutationCreateNewStringAndKeyArgs>(CreateNewStringAndKeyDocument, {
     lang: lang,
@@ -131,7 +130,6 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
     value: value
   })
 }
-
 </script>
 
 
