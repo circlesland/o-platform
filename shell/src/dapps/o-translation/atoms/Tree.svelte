@@ -1,6 +1,7 @@
 <script lang="ts">
 
 import { createEventDispatcher } from "svelte";
+import Account from "../../o-passport/pages/Account.svelte";
 
 import { CTreeNode, StateSnapshot } from "../classes/treenode";
 
@@ -45,11 +46,14 @@ let expand: boolean;
       <ul class="ml-4 mb-4">
         {#if childNode.isLeaf}
           {#each childNode.values as item}
-            <StringEditor
+
+
+          <p>{item.key}</p>
+            <!--<StringEditor
               dataString="{item.value}"
               dataKey="{item.key}"
               dataLang="{item.lang}"
-              dataVersion="{item.version}" />
+              dataVersion="{item.version}" />-->
           {/each}
         {:else}
           <svelte:self rootNode="{childNode}" on:expand />

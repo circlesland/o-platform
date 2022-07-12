@@ -133,8 +133,8 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
 </script>
 
 
-<section class="relative mb-20 bg-white shadow rounded md:w-2/3 xl:w-1/2">
-  {#if !createNewStringMode}
+<section class="bg-white shadow rounded">
+  <!--{#if !createNewStringMode}
   <div class="flex grow justify-center mt-3">
     <form on:input="{() => refreshView()}" class="justify-start">
       <input bind:value="{keyFilter}" class="input m-1" type="text" placeholder="dapps.o-banking..." />
@@ -150,9 +150,9 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
       create new string
     </button>
   </div>
-  {/if}
+  {/if}-->
 
-  {#if createNewStringMode}
+  <!--{#if createNewStringMode}
     <div class="flex grow justify-center">
       <form class="justify-start">
         <input bind:value="{keyToCreate}" class="input m-1" type="text" placeholder="key goes here" />
@@ -179,7 +179,7 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
         cancel
       </button>
     </div>
-  {/if}
+  {/if}-->
   <!--<div class="flex justify-center m-3">
       <LangSwitcher />
     </div>-->
