@@ -24,7 +24,7 @@ import Erc721Detail from "./o-banking/pages/Erc721Detail.svelte";
 const transactions: Page<any, BankingDappState> = {
   routeParts: ["=transactions"],
   component: Transactions,
-  title: "Transactions",
+  title: "common.transactions",
   icon: "transactions",
   type: "page",
   navigation: {
