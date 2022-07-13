@@ -12,21 +12,21 @@ const index: Page<any, DappState> = {
   isSystem: false,
   routeParts: [],
   component: Home,
-  title: "Home",
+  title: "common.home",
   type: "page",
 };
 const monitor: Page<any, DappState> = {
   isSystem: true,
   routeParts: ["=monitor"],
   component: Monitor,
-  title: "Monitoring",
+  title: "common.monitoring",
   type: "page",
 };
 const invites: Page<any, DappState> = {
   routeParts: ["=invites"],
   component: RedeemedInvitations,
   isSystem: false,
-  title: "You invited",
+  title: "common.youInvited",
   position: "main",
   type: "page",
 };
@@ -44,13 +44,13 @@ const inviteLeaderboard: Page<any, DappState> = {
   routeParts: ["=leaderboard"],
   component: InviteLeaderboard,
   isSystem: false,
-  title: "Invite Leaderboard",
+  title: "common.inviteLeaderboard",
   type: "page",
 };
 
 const externalChat: Link<any, DappState> = {
   type: "link",
-  title: "Support",
+  title: "common.support",
   icon: "chat",
   routeParts: [],
   openInNewTab: true,
@@ -58,7 +58,7 @@ const externalChat: Link<any, DappState> = {
 };
 const externalForum: Link<any, DappState> = {
   type: "link",
-  title: "Forum",
+  title: "common.forum",
   icon: "forum",
   routeParts: [],
   openInNewTab: true,
@@ -74,7 +74,7 @@ const login: Page<any, DappState> = {
 
 const externalBlog: Link<any, DappState> = {
   type: "link",
-  title: "Blog",
+  title: "common.blog",
   icon: "blog",
   routeParts: [],
   openInNewTab: true,
@@ -83,7 +83,7 @@ const externalBlog: Link<any, DappState> = {
 
 const externalWhitepaper: Link<any, DappState> = {
   type: "link",
-  title: "Whitepaper",
+  title: "common.whitepaper",
   icon: "whitepaper",
   routeParts: [],
   openInNewTab: true,

@@ -6,7 +6,7 @@ import { Link } from "@o-platform/o-interfaces/dist/routables/link";
 
 const externalChat: Link<any, DappState> = {
   type: "link",
-  title: "Support",
+  title: "common.support",
   icon: "chat",
   routeParts: ["=chat"],
   openInNewTab: true,
@@ -14,7 +14,7 @@ const externalChat: Link<any, DappState> = {
 };
 const externalForum: Link<any, DappState> = {
   type: "link",
-  title: "Forum",
+  title: "common.forum",
   icon: "forum",
   routeParts: ["=forum"],
   openInNewTab: true,

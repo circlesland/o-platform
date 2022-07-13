@@ -13,21 +13,21 @@ import {me} from "../shared/stores/me";
 const verifications: Page<any, ContactsDappState> = {
   routeParts: ["=verifications"],
   component: Verifications,
-  title: "Verifications",
+  title: "common.verifications",
   type: "page",
 };
 
 const recentProfiles: Page<any, ContactsDappState> = {
   routeParts: ["=recentProfiles"],
   component: RecentProfiles,
-  title: "Recent Profiles",
+  title: "common.recentProfiles",
   type: "page",
 };
 
 const trustToDo: Page<any, ContactsDappState> = {
   routeParts: ["=trustToDo"],
   component: TrustToDo,
-  title: "Trust Todo",
+  title: "common.trustToDo",
   type: "page",
 };
 

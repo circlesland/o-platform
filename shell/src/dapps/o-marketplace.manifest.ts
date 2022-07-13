@@ -73,7 +73,7 @@ const list: Page<any, DappState> = {
 const locations: Page<any, DappState> = {
   routeParts: ["=locations"],
   component: Locations,
-  title: "Locations",
+  title: "common.locations",
   type: "page",
 };
 
@@ -155,19 +155,19 @@ const myOffersDetail: Page<any, DappState> = {
   position: "modal",
   routeParts: ["=my-offers", ":id"],
   component: OfferDetail,
-  title: "Offer detail",
+  title: "common.offerDetail",
   type: "page",
 };
 const myPurchases: Page<any, DappState> = {
   routeParts: ["=my-purchases"],
   component: MyPurchases,
-  title: "My purchases",
+  title: "common.myPurchases",
   type: "page",
 };
 const myTickets: Page<any, DappState> = {
   routeParts: ["=my-tickets"],
   component: MyTickets,
-  title: "My tickets",
+  title: "common.myTickets",
   type: "page",
 };
 const scanPurchase: Page<any, DappState> = {

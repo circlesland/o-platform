@@ -23,7 +23,7 @@ export interface DappState {
 const index: Page<any, DappState> = {
   routeParts: [],
   component: ContactsView,
-  title: "Contacts",
+  title: "common.contacts",
   icon: "friends",
   type: "page",
 };
@@ -46,7 +46,7 @@ async function chatAction(circlesAddress: string): Promise<JumplistItem> {
     category: "Chat",
     key: "chat",
     icon: "chat",
-    title: "Chat",
+    title: "common.chat",
     action: async () => {
       push("#/contacts/chat/" + circlesAddress);
     },

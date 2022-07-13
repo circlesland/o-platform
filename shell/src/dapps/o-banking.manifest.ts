@@ -110,7 +110,7 @@ const transactionDetail: Page<{ transactionHash: string }, BankingDappState> = {
 const assets: Page<any, BankingDappState> = {
   routeParts: ["=assets"],
   component: Assets,
-  title: "Assets",
+  title: "common.assets",
   icon: "assets",
   type: "page",
 };
@@ -137,7 +137,7 @@ const transferTrigger: Trigger<any, BankingDappState> = {
       }
     });
   },
-  title: "Send money",
+  title: "common.sendMoney",
   icon: "cash",
   type: "trigger",
 };
@@ -160,7 +160,7 @@ const transferTriggerRedirect: Trigger<any, BankingDappState> = {
       }
     });
   },
-  title: "Send money",
+  title: "common.sendMoney",
   icon: "cash",
   type: "trigger",
 };
@@ -192,7 +192,7 @@ const crcDetail: Page<{ symbol: string }, BankingDappState> = {
   routeParts: ["=assets", "=time"],
   basePage: ["assets"],
   component: CrcDetail,
-  title: "Asset",
+  title: "common.asset",
   type: "page",
 };
 const xdaiDetail: Page<{ symbol: string }, BankingDappState> = {
@@ -201,7 +201,7 @@ const xdaiDetail: Page<{ symbol: string }, BankingDappState> = {
   routeParts: ["=assets", "=xdai"],
   basePage: ["assets"],
   component: XDaiDetail,
-  title: "Asset",
+  title: "common.asset",
   type: "page",
 };
 

@@ -16,7 +16,7 @@ import { Profile } from "../shared/api/data/types";
 const index: Page<any, DappState> = {
   routeParts: ["=profile"],
   component: Home,
-  title: "Profile",
+  title: "common.profile",
   type: "page",
 };
 
@@ -39,14 +39,14 @@ const profile: Page<any, DappState> = {
 const account: Page<any, DappState> = {
   routeParts: ["=accounts"],
   component: Account,
-  title: "Accounts",
+  title: "common.accounts",
   type: "page",
 };
 
 const settings: Page<any, DappState> = {
   routeParts: ["=settings"],
   component: Settings,
-  title: "Settings",
+  title: "common.settings",
   type: "page",
 };
 

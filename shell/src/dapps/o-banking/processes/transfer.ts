@@ -211,7 +211,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n("dapps.o-banking.processes.transfer.findTransferPath.entry.message"),
+            message: window.i18n("dapps.o-banking.processes.transfer.findMaxFlow.entry.message"),
           });
         },
         invoke: {
@@ -531,7 +531,11 @@ const processDefinition = (processId: string) =>
         },
         component: TransferSummary,
         params: {
-          view: editorContent.success,
+          view: editorContent.success = {
+            title: window.i18n("dapps.o-banking.processes.transfer.editorContent.success.title"),
+            description: "",
+            submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.success.submitButtonText"),
+          },
           html: () => "",
           hideNav: false,
         },

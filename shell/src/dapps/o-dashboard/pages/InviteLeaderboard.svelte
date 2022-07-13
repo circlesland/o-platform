@@ -7,6 +7,7 @@ import PageHeader from "../../../shared/atoms/PageHeader.svelte";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { stats } from "../../../shared/stores/stats";
 import { _ } from "svelte-i18n";
+import { Environment } from "../../../shared/environment";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -26,6 +27,8 @@ function loadLink(link, external = false) {
     push(link);
   }
 }
+
+console.log(Environment.userLanguage)
 </script>
 
 <TopNav runtimeDapp="{runtimeDapp}" routable="{routable}" headerString="Leaderboard" />
@@ -50,9 +53,12 @@ function loadLink(link, external = false) {
 
     <div class="mt-1 text-sm text-center cursor-pointer">
       {$_("dapps.o-dashboard.pages.inviteLeadeboard.citizensInvited", {
-        values: { firstCount: first.inviteCount, firstCountBigger1: first.inviteCount > 1 ? "s" : "" },
+        values: {
+          firstCount: first.inviteCount,
+          firstCountBigger1: first.inviteCount > 1 ? (Environment.userLanguage.startsWith("de") ? "" : "s") : "",
+        },
       })}
-      
+
       <!--{first.inviteCount} Citizen{first.inviteCount > 1 ? "s" : ""} invited-->
     </div>
   </PageHeader>
@@ -84,9 +90,11 @@ function loadLink(link, external = false) {
                       <div class="flex-grow leading-none">
                         <span class="inline-block text-sm">
                           {$_("dapps.o-dashboard.pages.inviteLeadeboard.citizensInvitedHigherRanks", {
-                            values: { entryCount: entry.inviteCount, entryCountBigger1: entry.inviteCount > 1 ? "s" : "" },
+                            values: {
+                              entryCount: entry.inviteCount,
+                              entryCountBigger1: entry.inviteCount > 1 ? (Environment.userLanguage.startsWith("de") ? "" : "s") : "",
+                            },
                           })}
-                          
                         </span>
                       </div>
                     </div>
