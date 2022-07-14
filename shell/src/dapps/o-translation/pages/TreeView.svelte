@@ -133,7 +133,7 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
 </script>
 
 
-<section class="bg-white shadow rounded">
+<section class="text-white">
   <!--{#if !createNewStringMode}
   <div class="flex grow justify-center mt-3">
     <form on:input="{() => refreshView()}" class="justify-start">

@@ -13,7 +13,7 @@ export let routable: Routable;
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <section class="p-6 inline-grid grid-cols-4 w-full">
-  <div class="h-full bg-blue-700 col-span-1">
+  <div class="h-full bg-blue-900 col-span-1">
     <TreeView />
   </div>
   <div class="col-span-3">

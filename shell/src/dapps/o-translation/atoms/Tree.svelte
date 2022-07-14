@@ -48,7 +48,7 @@ let expand: boolean;
           {#each childNode.values as item}
 
 
-          <p>{item.key}</p>
+          <p class="ml-4 mb-4 flex-wrap">{item.key}</p>
             <!--<StringEditor
               dataString="{item.value}"
               dataKey="{item.key}"
