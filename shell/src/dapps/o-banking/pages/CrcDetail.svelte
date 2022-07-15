@@ -8,8 +8,9 @@ import { assetBalances } from "../../../shared/stores/assetsBalances";
  
 import Card from "../../../shared/atoms/Card.svelte";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-import Label from "../../../shared/atoms/Label.svelte";
 
+import Label from "../../../shared/atoms/Label.svelte";
+ 
 let loading = true;
 let balances: AssetBalance[] = [];
 
