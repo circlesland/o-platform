@@ -26,6 +26,8 @@ import { UserActions, UserActionItem } from "../../../shared/userActions";
 import Label from "../../../shared/atoms/Label.svelte";
 import { Environment } from "../../../shared/environment";
 import { param } from "../atoms/ChatListCard.svelte";
+import { _ } from "svelte-i18n";
+
 
 export let id: string;
 
@@ -111,13 +113,13 @@ async function setProfile(id: string) {
     }
 
     if (trustIn > 0 && trustOut > 0) {
-      trustMessage = `$<Label key="dapps.o-contacts.pages.profile.mutualTrust" />`;
+      trustMessage = `${$_("dapps.o-contacts.pages.profile.mutualTrust")}`;
     } else if (!trustIn && trustOut > 0) {
-      trustMessage = `$<Label key="dapps.o-contacts.pages.profile.trustedByYou" />`;
+      trustMessage = `${$_("dapps.o-contacts.pages.profile.trustedByYou")}`;
     } else if (trustIn > 0 && !trustOut) {
-      trustMessage = `$<Label key="dapps.o-contacts.pages.profile.isTrustingYou" />`;
+      trustMessage = `${$_("dapps.o-contacts.pages.profile.isTrustingYou")}`;
     } else {
-      trustMessage = `$<Label key="dapps.o-contacts.pages.profile.notTrusted" />`;
+      trustMessage = `${$_("dapps.o-contacts.pages.profile.notTrusted")}`;
     }
   }
 
@@ -134,7 +136,7 @@ async function setProfile(id: string) {
     key: "banned",
     icon: "trash",
     colorClass: "text-alert-dark",
-    title: `$<Label key="dapps.o-contacts.pages.profile.revokedUppercase" />`,
+    title: `${$_("dapps.o-contacts.pages.profile.revokedUppercase")}`,
     action: () => {},
   };
 }
@@ -206,7 +208,7 @@ async function setProfile(id: string) {
                       {/if}
                     {/each}
                   {:else}
-                    <Label key="dapps.o-contacts.pages.profile.noMutualFriends" />
+                  <Label key="dapps.o-contacts.pages.profile.noMutualFriends" />
                   {/if}
                 </div>
               </div>
