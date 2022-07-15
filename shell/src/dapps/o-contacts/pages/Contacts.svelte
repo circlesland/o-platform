@@ -8,7 +8,7 @@ import { contacts } from "../../../shared/stores/contacts";
 import {onMount} from "svelte";
 import {Contact} from "../../../shared/api/data/types";
 import {trustFromContactMetadata} from "../../../shared/functions/trustFromContactMetadata";
-import Label from "../../../shared/atoms/Label.svelte";
+import { _ } from "svelte-i18n";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -49,7 +49,7 @@ function sortAlphabetically(a, b) {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div><Label key="dapps.o-contacts.pages.contacts.loadingContacts" /></div>
+          <div>{$_("dapps.o-contacts.pages.contacts.loadingContacts" )}</div>
         </div>
       </div>
     </section>

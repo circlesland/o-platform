@@ -2,7 +2,7 @@
 import { slide } from "svelte/transition";
 import * as bip39 from "bip39";
 import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
-import Label from "../../../shared/atoms/Label.svelte";
+import { _ } from "svelte-i18n";
 
 export let key;
 let isOpen = false;
@@ -77,7 +77,7 @@ let seedphrase =
         {#if isOpen}
           <div class="flex flex-col w-full mt-4 space-y-1" transition:slide="{{ duration: 300 }}">
             <div class="mb-1 text-left text-2xs text-dark-lightest">
-              <Label key="dapps.o-passport.atoms.accountCard.secretRecoveryCode" />
+              {$_("dapps.o-passport.atoms.accountCard.secretRecoveryCode" )}
             </div>
             <div class="flex items-center w-full">
               <div class="text-sm text-left break-all">

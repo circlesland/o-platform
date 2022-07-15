@@ -17,7 +17,6 @@
   import EventList from "../../../shared/molecules/Lists/EventList.svelte";
   import {myChats} from "../../../shared/stores/myChat";
   import {Generate} from "@o-platform/o-utils/dist/generate";
-  import Label from "../../../shared/atoms/Label.svelte";
   // import * as ECIES from "bitcore-ecies";
 
   export let id: string;
@@ -144,13 +143,13 @@
 
         <div class="pb-2 text-xs">
           {#if contactProfile.youTrust > 0 && contactProfile.trustsYou > 0}
-            <Label key="dapps.o-contacts.pages.chatDetail.mutualTrust" />
+            {$_("dapps.o-contacts.pages.chatDetail.mutualTrust" )}
           {:else if contactProfile.youTrust > 0 && !contactProfile.trustsYou}
-            <Label key="dapps.o-contacts.pages.chatDetail.youTrust" />
+            {$_("dapps.o-contacts.pages.chatDetail.youTrust" )}
             {contactProfile.contactAddressProfile.firstName}
           {:else if contactProfile.trustsYou > 0}
             {contactProfile.contactAddressProfile.firstName}
-            <Label key="dapps.o-contacts.pages.chatDetail.trustsYou" />
+            {$_("dapps.o-contacts.pages.chatDetail.trustsYou" )}
           {/if}
         </div>
       {/if}
