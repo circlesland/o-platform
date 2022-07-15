@@ -9,8 +9,7 @@ import { _ } from "svelte-i18n";
  
 import Card from "../../../shared/atoms/Card.svelte";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
-
-
+ 
 let loading = true;
 let balances: AssetBalance[] = [];
 
