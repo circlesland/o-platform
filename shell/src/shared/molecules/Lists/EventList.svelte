@@ -18,8 +18,8 @@ import { inview } from "svelte-inview/dist/index";
 import GenericEventCard from "../../NotificationViewer/molecules/GenericEventCard.svelte";
 import {poppedScrollPosition, scrollToTop, scrollToBottom, scrollToPosition, popScrollPosition, scrollPositionStackPopulated} from "../../layouts/Center.svelte";
 import {Readable} from "svelte/store";
-import Label from "../../atoms/Label.svelte";
 import {SvelteComponentDev} from "svelte/internal";
+import {_} from "svelte-i18n";
 
 export let views: EventListViewMap = {};
 export let reverse: boolean = false;
@@ -137,7 +137,7 @@ const handleChange = async (e) => {
     <div
             class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow">
       <div class="flex flex-col items-start text-center">
-        <div><Label key="shared.molecules.lists.eventList.loading" /></div>
+        <div>{$_("shared.molecules.lists.eventList.loading" )}</div>
       </div>
     </div>
   </section>

@@ -10,7 +10,6 @@ import { _ } from "svelte-i18n";
 import { Offer, Shop, ShopDocument, ShopQueryVariables } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
 import {addToCart, AddToCartContextData} from "../processes/addToCart";
-import Label from "../../../shared/atoms/Label.svelte";
 
 let isLoading: boolean;
 let error: Error;
@@ -69,7 +68,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div><Label key="dapps.o-marketplace.pages.offerDetail.loadingOffers" /></div>
+          <div>{$_("dapps.o-marketplace.pages.offerDetail.loadingOffers" )}</div>
         </div>
       </div>
     </section>
@@ -78,7 +77,7 @@ onMount(async () => {
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
-            <b><Label key="dapps.o-marketplace.pages.offerDetail.error" /></b>
+            <b>{$_("dapps.o-marketplace.pages.offerDetail.error" )}</b>
           </div>
         </div>
       </div>
@@ -189,7 +188,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div><Label key="dapps.o-marketplace.pages.offerDetail.notFound" /></div>
+          <div>{$_("dapps.o-marketplace.pages.offerDetail.notFound" )}</div>
         </div>
       </div>
     </section>

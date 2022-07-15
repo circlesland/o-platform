@@ -8,8 +8,8 @@ import { displayCirclesAmount } from "src/shared/functions/displayCirclesAmount"
 import { AssetBalance } from "../../../shared/api/data/types";
 import {assetBalances} from "../../../shared/stores/assetsBalances";
 
-  import Label from "../../../shared/atoms/Label.svelte";
-
+import { _ } from "svelte-i18n";
+ 
 let loading = true;
 let balances: AssetBalance[] = [];
 
@@ -27,7 +27,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <Card>
         <div class="flex flex-col items-start">
-          <div><Label key="dapps.o-banking.pages.crcDetail.loadingTokens" /></div>
+          <div>{$_("dapps.o-banking.pages.crcDetail.loadingTokens" )}</div>
         </div>
       </Card>
     </section>

@@ -6,7 +6,7 @@ import { PromptField } from "@o-platform/o-process/dist/states/prompt";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import NavSteps from "./NavSteps.svelte";
-import Label from "../atoms/Label.svelte";
+import {_} from "svelte-i18n";
 
 export let process: Process;
 export let prompt: Prompt<ProcessContext<any>>;
@@ -96,6 +96,6 @@ const onBlur = () => window.o.publishEvent({ type: "shell.inputBlurred" });
   </slot> -->
   </section>
 {:else}
-  <Label key="shared.molecules.prompt.nothingToDisplay" />
+  {$_("shared.molecules.prompt.nothingToDisplay" )}
   <br />
 {/if}

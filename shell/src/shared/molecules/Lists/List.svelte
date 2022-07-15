@@ -1,7 +1,7 @@
 <script lang="ts">
 import { onMount } from "svelte";
 import { inview } from "svelte-inview/dist/index";
-import Label from "../../atoms/Label.svelte";
+import {_} from "svelte-i18n";
 
 export let listItemComponent;
 export let selector = "timestamp";
@@ -81,7 +81,7 @@ const initBar = (bar) => {
     <div
       class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow">
       <div class="flex flex-col items-start text-center">
-        <div><Label key="shared.molecules.lists.list.loading" /></div>
+        <div>{$_("shared.molecules.lists.list.loading" )}</div>
       </div>
     </div>
   </section>

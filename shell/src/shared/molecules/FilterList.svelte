@@ -1,6 +1,6 @@
 <script lang="ts">
 import { isMobile } from "src/shared/functions/isMobile";
-import Label from "../atoms/Label.svelte";
+import {_} from "svelte-i18n";
 </script>
 
 {#if isMobile()}
@@ -23,7 +23,7 @@ import Label from "../atoms/Label.svelte";
                     2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0
                     011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
         </svg>
-        <span><Label key="shared.molecules.filterList.home" /></span>
+        <span>{$_("shared.molecules.filterList.home" )}</span>
       </a>
       <button class="flex items-center space-x-2">
         <svg
@@ -40,7 +40,7 @@ import Label from "../atoms/Label.svelte";
             d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0
                     01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
         </svg>
-        <span><Label key="shared.molecules.filterList.logout" /></span>
+        <span>{$_("shared.molecules.filterList.logout" )}</span>
       </button>
     </div>
   </div>
@@ -62,7 +62,7 @@ import Label from "../atoms/Label.svelte";
             0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0
             001 1m-6 0h6"></path>
       </svg>
-      <span><Label key="shared.molecules.filterList.home" /></span>
+      <span>{$_("shared.molecules.filterList.home" )}</span>
     </a>
 
     <button class="flex items-center space-x-2">
@@ -80,7 +80,7 @@ import Label from "../atoms/Label.svelte";
           d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3
             0 013-3h4a3 3 0 013 3v1"></path>
       </svg>
-      <span><Label key="shared.molecules.filterList.logout" /></span>
+      <span>{$_("shared.molecules.filterList.logout" )}</span>
     </button>
   </div>
 {/if}
