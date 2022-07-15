@@ -23,6 +23,7 @@ import { getSessionInfo } from "../../o-passport/processes/identify/services/get
 import { isMobile } from "../../../shared/functions/isMobile";
 import { UserActions, UserActionItem } from "../../../shared/userActions";
 
+import { _ } from "svelte-i18n";
 import Label from "../../../shared/atoms/Label.svelte";
 import { Environment } from "../../../shared/environment";
 import { param } from "../atoms/ChatListCard.svelte";

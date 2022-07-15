@@ -17,7 +17,7 @@
   import EventList from "../../../shared/molecules/Lists/EventList.svelte";
   import {myChats} from "../../../shared/stores/myChat";
   import {Generate} from "@o-platform/o-utils/dist/generate";
-import Label from "../../../shared/atoms/Label.svelte";
+  import Label from "../../../shared/atoms/Label.svelte";
   // import * as ECIES from "bitcore-ecies";
 
   export let id: string;

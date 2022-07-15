@@ -19,7 +19,6 @@ import GenericEventCard from "../../NotificationViewer/molecules/GenericEventCar
 import {poppedScrollPosition, scrollToTop, scrollToBottom, scrollToPosition, popScrollPosition, scrollPositionStackPopulated} from "../../layouts/Center.svelte";
 import {Readable} from "svelte/store";
 import {SvelteComponentDev} from "svelte/internal";
-import {_} from "svelte-i18n";
 import Label from "../../atoms/Label.svelte";
 
 export let views: EventListViewMap = {};
