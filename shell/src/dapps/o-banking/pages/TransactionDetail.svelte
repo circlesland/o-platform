@@ -16,9 +16,9 @@
     ProfileEvent,
   } from "../../../shared/api/data/types";
 
-  import Label from "../../../shared/atoms/Label.svelte";
-  import {myTransactions} from "../../../shared/stores/myTransactions";
-  import Icons from "../../../shared/molecules/Icons.svelte";
+import { myTransactions } from "../../../shared/stores/myTransactions";
+import Icons from "../../../shared/molecules/Icons.svelte";
+import Label from "../../../shared/atoms/Label.svelte";
 
   export let transactionHash: string;
 

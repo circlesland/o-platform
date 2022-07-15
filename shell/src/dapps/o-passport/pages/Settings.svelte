@@ -17,6 +17,7 @@ import {
 } from "../../../shared/api/data/types";
 import { upsertIdentity } from "../processes/upsertIdentity";
 import { ApiClient } from "../../../shared/apiConnection";
+import { _ } from "svelte-i18n";
 import Label from "../../../shared/atoms/Label.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
@@ -51,7 +52,7 @@ const delayedTrigger = new DelayedTrigger(200, async () => {
 
   showToast(
     "success",
-    `$<Label key="dapps.o-passport.pages.settings.settingsSaved" />`
+    `${$_("dapps.o-passport.pages.settings.settingsSaved")}`
   );
 });
 
