@@ -2,6 +2,7 @@
 import CitizensProgressBar from "../atoms/CitizensProgressBar.svelte";
 import { push } from "svelte-spa-router";
 import {stats} from "../../../shared/stores/stats";
+import { _ } from "svelte-i18n";
 import Label from "../../../shared/atoms/Label.svelte";
 
 </script>

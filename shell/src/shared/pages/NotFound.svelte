@@ -2,6 +2,7 @@
 import TopNav from "src/shared/atoms/TopNav.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import {_} from "svelte-i18n";
 import Label from "../atoms/Label.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;

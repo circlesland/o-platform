@@ -53,7 +53,7 @@ const delayedTrigger = new DelayedTrigger(200, async () => {
 
   showToast(
     "success",
-    `$<Label key="dapps.o-passport.pages.settings.settingsSaved" />`
+    `${$_("dapps.o-passport.pages.settings.settingsSaved")}`
   );
 });
 
