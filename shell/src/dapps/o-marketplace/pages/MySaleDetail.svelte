@@ -163,7 +163,7 @@ onMount(async () => {
     <div class="w-full text-center">
       {#if invoice}
         <span class="text-dark-lightest"
-          >{$_("dapps.o-marketplace.pages.mySaleDetail.saleDate")}
+        ><Label key="dapps.o-marketplace.pages.mySaleDetail.saleDate"></Label>
           {relativeTimeString(invoice.createdAt, 1, true)}</span>
       {/if}
     </div>
@@ -174,12 +174,12 @@ onMount(async () => {
           class:text-alert-dark="{!invoice.paymentTransactionHash}"
           class:text-success="{invoice.paymentTransactionHash}">
           {#if invoice.paymentTransactionHash}
-            <span>{$_("dapps.o-marketplace.pages.mySales.paid")}</span>
+            <Label key="dapps.o-marketplace.pages.mySales.paid"></Label>
             <Icons icon="check" size="{4}" customClass="inline" />
           {:else if invoice.cancelledAt}
-            <span>{$_("dapps.o-marketplace.pages.mySales.cancelled")}</span>
+            <Label key="dapps.o-marketplace.pages.mySales.cancelled"></Label>
           {:else}
-            <span>{$_("dapps.o-marketplace.pages.mySales.paymentPending")}</span>
+            <Label key="dapps.o-marketplace.pages.mySales.paymentPending"></Label>
           {/if}
         </div>
 
@@ -193,7 +193,7 @@ onMount(async () => {
               <Icons icon="check" size="{4}" customClass="inline" />
             {/if}
           {:else}
-            <span>{$_("dapps.o-marketplace.pages.mySales.pickupCode")}</span>
+            <Label key="dapps.o-marketplace.pages.mySales.pickupCode"></Label>
             {#if invoice.pickupCode}
               <Icons icon="check" size="{4}" customClass="inline" />
             {/if}
@@ -211,7 +211,7 @@ onMount(async () => {
               <Icons icon="closex" size="{2}" customClass="inline" />
             {/if}
           {:else}
-            <span>{$_("dapps.o-marketplace.pages.mySales.pickedUp")}</span>
+            <Label key="dapps.o-marketplace.pages.mySales.pickedUp"></Label>
             {#if invoice.sellerSignature}
               <Icons icon="check" size="{4}" customClass="inline" />
             {:else}

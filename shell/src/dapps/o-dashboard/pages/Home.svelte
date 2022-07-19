@@ -109,7 +109,7 @@ async function fetchStats() {
             <Icon name="identification" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            {$_("dapps.o-dashboard.pages.home.passport")}
+            <Label key="dapps.o-dashboard.pages.home.passport"></Label>
           </div>
         </div>
       </section>
@@ -121,7 +121,7 @@ async function fetchStats() {
             <Icon name="users" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            {$_("dapps.o-dashboard.pages.home.contacts")}
+            <Label key="dapps.o-dashboard.pages.home.contacts"></Label>
           </div>
         </div>
       </section>
@@ -133,7 +133,7 @@ async function fetchStats() {
             <Icon name="chat" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            {$_("dapps.o-dashboard.pages.home.chat")}
+            <Label key="dapps.o-dashboard.pages.home.chat"></Label>
           </div>
         </div>
       </section>
@@ -145,7 +145,7 @@ async function fetchStats() {
             <Icon name="cash" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            {$_("dapps.o-dashboard.pages.home.banking")}
+            <Label key="dapps.o-dashboard.pages.home.banking"></Label>
           </div>
         </div>
       </section>
@@ -157,7 +157,7 @@ async function fetchStats() {
             <Icon name="shopping-cart" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            {$_("dapps.o-dashboard.pages.home.market")}
+            <Label key="dapps.o-dashboard.pages.home.market"></Label>
           </div>
         </div>
       </section>
@@ -171,7 +171,7 @@ async function fetchStats() {
               <Icon name="badge-check" class="w-20 h-20 heroicon" />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
-              {$_("dapps.o-dashboard.pages.home.verified")}
+              <Label key="dapps.o-dashboard.pages.home.verified"></Label>
             </div>
           </div>
         </section>
@@ -185,7 +185,7 @@ async function fetchStats() {
               <Icon name="ticket" class="w-20 h-20 heroicon" />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
-              {$_("dapps.o-dashboard.pages.home.tickets")}
+              <Label key="dapps.o-dashboard.pages.home.tickets"></Label>
             </div>
           </div>
         </section>
@@ -199,7 +199,7 @@ async function fetchStats() {
               <Icon name="photograph" class="w-20 h-20 heroicon" />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
-              {$_("dapps.o-dashboard.pages.home.gallery")}
+              <Label key="dapps.o-dashboard.pages.home.gallery"></Label>
             </div>
           </div>
         </section>

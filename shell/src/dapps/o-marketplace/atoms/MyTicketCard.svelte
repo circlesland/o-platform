@@ -6,6 +6,7 @@ import { _ } from "svelte-i18n";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import relativeTimeString from "../../../shared/functions/relativeTimeString";
+import Label from "../../../shared/atoms/Label.svelte";
 dayjs.extend(relativeTime);
 
 export let event: ProfileEvent;
@@ -83,19 +84,19 @@ function getTableNoFromMetadata(metadataJson:string|undefined) {
             class:text-info="{!purchased.purchase.invoices[0].paymentTransactionHash &&
               !purchased.purchase.invoices[0].cancelledAt}">
             {#if purchased.purchase.invoices[0].paymentTransactionHash}
-              <span>{$_("dapps.o-marketplace.pages.myPurchases.paid")}</span>
+              <Label key="dapps.o-marketplace.pages.myPurchases.paid"></Label>
               <Icons icon="check" size="{4}" customClass="inline" />
             {:else if purchased.purchase.invoices[0].cancelledAt}
-              <span>{$_("dapps.o-marketplace.pages.myPurchases.cancelled")}</span>
+              <Label key="dapps.o-marketplace.pages.myPurchases.cancelled"></Label>
             {:else}
-              <span>{$_("dapps.o-marketplace.pages.myPurchases.paymentPending")}</span>
+              <Label key="dapps.o-marketplace.pages.myPurchases.paymentPending"></Label>
             {/if}
           </div>
           <div
             class="inline-block text-xs "
             class:text-inactive="{!purchased.purchase.invoices[0].pickupCode}"
             class:text-success="{purchased.purchase.invoices[0].pickupCode}">
-            <span>{$_("dapps.o-marketplace.pages.myPurchases.entranceCode")}</span>
+            <Label key="dapps.o-marketplace.pages.myPurchases.entranceCode"></Label>
             {#if purchased.purchase.invoices[0].pickupCode}
               <Icons icon="check" size="{4}" customClass="inline" />
             {/if}

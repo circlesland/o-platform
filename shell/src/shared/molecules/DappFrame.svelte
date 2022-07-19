@@ -408,11 +408,15 @@ function initSession(session: SessionInfo) {
             chatStore.refresh(true);
             await contacts.findBySafeAddress(event.from, true);
             playBlblblbl = true;
-          } else if (event.type == EventType.CrcHubTransfer || event.type == EventType.CrcMinting) {
+          } else if (event.type == EventType.CrcHubTransfer
+              || event.type == EventType.CrcMinting
+              || event.type == EventType.Erc20Transfer) {
+
             const transaction = await myTransactions.findSingleItemFallback(
               myTransactions.eventTypes,
               event.transaction_hash
             );
+
             myTransactions.refresh(true);
             assetBalances.update();
 
@@ -1074,7 +1078,7 @@ async function handleUrlChanged() {
       initialLocale: getLocaleFromNavigator(),
     });
   }
-  console.log(i18nStrings);
+
   // log(`handleUrlChanged()`);
   const navArgs = <GenerateNavManifestArgs>{};
   dapp = findDappById(params.dappId);

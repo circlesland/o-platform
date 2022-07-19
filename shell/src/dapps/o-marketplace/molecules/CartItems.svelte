@@ -11,6 +11,7 @@
   import {BN} from "ethereumjs-util";
   import {cartContents, cartContentsByShop} from "../stores/shoppingCartStore";
   import {ShoppingCartItem} from "../types/ShoppingCartItem";
+  import Label from "../../../shared/atoms/Label.svelte";
 
   type ItemsOfShop = {
     total: number,
@@ -207,7 +208,7 @@
             {#if editable}
                 <div class="flex items-center justify-end">
                     <span class="mr-2 text-sm font-medium text-gray-400">
-                        {$_("dapps.o-marketplace.pages.shoppingCart.total")}
+                        <Label key="dapps.o-marketplace.pages.shoppingCart.total"></Label>
                     </span>
                     <span class="text-lg font-bold">
                         {displayShop.total.toFixed(2)}
@@ -217,11 +218,11 @@
 
                 {#if isLoading}
                     <button class="h-auto btn-block btn btn-disabled">
-                        {$_("dapps.o-marketplace.pages.shoppingCart.checkOut")}
+                        <Label key="dapps.o-marketplace.pages.shoppingCart.checkOut"></Label>
                     </button>
                 {:else if payableStatusBySeller[displayShop.shop.owner.circlesAddress].payable}
                     <button class="h-auto btn-block btn btn-primary" on:click="{() => checkout(shopIndex)}">
-                        {$_("dapps.o-marketplace.pages.shoppingCart.checkOut")}
+                        <Label key="dapps.o-marketplace.pages.shoppingCart.checkOut"></Label>
                     </button>
                 {:else if payableStatusBySeller[displayShop.shop.owner.circlesAddress].payable === false}
                     <div class="w-full text-center text-alert">
@@ -233,10 +234,10 @@
     {/each}
 {:else}
     <p class="mt-6 text-center">
-        {$_("dapps.o-marketplace.pages.shoppingCart.yourCartIsEmpty")}
+        <Label key="dapps.o-marketplace.pages.shoppingCart.yourCartIsEmpty"></Label>
     </p>
     <div class="w-full mt-6">
         <button class="h-auto btn-block btn btn-light" on:click="{(event) => handleClickOutside(event)}"
-        >{$_("dapps.o-marketplace.pages.shoppingCart.continueShopping")}</button>
+        ><Label key="dapps.o-marketplace.pages.shoppingCart.continueShopping"></Label></button>
     </div>
 {/if}

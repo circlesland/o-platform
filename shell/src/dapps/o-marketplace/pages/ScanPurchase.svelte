@@ -134,9 +134,7 @@ onMount(() => {
         <option value="environment" selected
           >{$_("dapps.o-marketplace.pages.scanPurchase.cameraDefault" )}</option>
         <option value="user"
-          >{$_(
-            "dapps.o-marketplace.pages.scanPurchase.cameraUserFacing"
-          )}</option>
+          ><Label key="dapps.o-marketplace.pages.scanPurchase.cameraUserFacing"></Label></option>
       </select>
     </div>
 
