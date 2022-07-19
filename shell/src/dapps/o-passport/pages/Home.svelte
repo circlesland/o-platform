@@ -52,7 +52,7 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
       <section class="justify-center">
         <div class="flex flex-col w-full space-y-2">
           <div class="text-left text-2xs text-dark-lightest">
-            <Label key="dapps.o-passport.pages.home.qrcode" />
+            <Label key="dapps.o-passport.pages.home.qrcode"></Label>
           </div>
           <div class="container">
             <center>
@@ -86,7 +86,7 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
         <section class="justify-center">
           <div class="flex flex-col w-full space-y-1">
             <div class="text-left text-2xs text-dark-lightest">
-              <Label key="dapps.o-passport.pages.home.address" />
+              <Label key="dapps.o-passport.pages.home.address"></Label>
             </div>
 
             <div class="flex items-center w-full space-x-2 sm:space-x-4">
@@ -123,7 +123,7 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
       <section class="justify-center">
         <div class="flex flex-col w-full space-y-1">
           <div class="text-left text-2xs text-dark-lightest">
-            <Label key="dapps.o-passport.pages.home.postAddress" />
+            <Label key="dapps.o-passport.pages.home.postAddress"></Label>
           </div>
           {#if profile.shippingAddresses && profile.shippingAddresses.length}
             {#each profile.shippingAddresses as shippingAddress, index}

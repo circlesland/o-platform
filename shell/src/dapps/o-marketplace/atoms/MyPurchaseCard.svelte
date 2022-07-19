@@ -108,7 +108,7 @@ function getTableNoFromMetadata(metadataJson: string | undefined) {
               class="inline-block text-xs "
               class:text-inactive="{!purchased.purchase.invoices[0].pickupCode}"
               class:text-success="{purchased.purchase.invoices[0].pickupCode}">
-              <span><Label key="dapps.o-marketplace.pages.myPurchases.pickupCode" /></span>
+              <span><Label key="dapps.o-marketplace.pages.myPurchases.pickupCode"></Label></span>
               {#if purchased.purchase.invoices[0].pickupCode}
                 <Icons icon="check" size="{4}" customClass="inline" />
               {/if}
@@ -117,7 +117,7 @@ function getTableNoFromMetadata(metadataJson: string | undefined) {
               class="inline-block text-xs"
               class:text-inactive="{!purchased.purchase.invoices[0].sellerSignature}"
               class:text-success="{purchased.purchase.invoices[0].sellerSignature}">
-              <span><Label key="dapps.o-marketplace.pages.myPurchases.pickedUp" /></span>
+              <span><Label key="dapps.o-marketplace.pages.myPurchases.pickedUp"></Label></span>
               {#if purchased.purchase.invoices[0].sellerSignature}
                 <Icons icon="check" size="{4}" customClass="inline" />
               {:else}

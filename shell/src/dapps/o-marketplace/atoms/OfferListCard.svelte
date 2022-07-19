@@ -72,7 +72,7 @@ displayName = displayName.length >= 22 ? displayName.substring(0, 22) + "..." : 
         </div>
 
         <div class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full top-16 bg-alert-lightest">
-          <Label key="dapps.o-marketplace.atoms.offerCard.pickUpOnly" />
+          <Label key="dapps.o-marketplace.atoms.offerCard.pickUpOnly"></Label>
         </div>
       </div>
     </header>
@@ -106,7 +106,7 @@ displayName = displayName.length >= 22 ? displayName.substring(0, 22) + "..." : 
         </div>
         <div class="flex-grow">
           <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => loadDetailPage()}">
-            <Label key="dapps.o-marketplace.atoms.offerCard.details" />
+            <Label key="dapps.o-marketplace.atoms.offerCard.details"></Label>
             <div class="absolute mr-1 right-2">
               <Icons icon="eye" />
             </div>

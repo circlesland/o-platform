@@ -1,6 +1,6 @@
 <script lang="ts">
+import { _ } from "svelte-i18n";
 import Label from "./Label.svelte";
-import {Environment} from "../environment";
 export let data: {
   error: Error;
 };
@@ -38,12 +38,12 @@ $: {
     </div>
   </div>
   <div class="mt-4">
-    <a href="{Environment.supportUrl}">
-      <Label key="shared.atoms.error.pleaseTryToReload" /><a
-        href="{Environment.supportUrl}"
+    <a href="https://discord.gg/SACzRXa35v">
+      <Label key="shared.atoms.error.pleaseTryToReload"></Label><a
+        href="https://discord.gg/4DBbRCMnFZ"
         target="_blank"
-        class="btn-link">{Environment.supportUrl}</a
-      ><Label key="shared.atoms.error.ifTheProblemPersists" />
+        class="btn-link">https://discord.gg/4DBbRCMnFZ</a
+      ><Label key="shared.atoms.error.ifTheProblemPersists"></Label>
     </a>
   </div>
   <div class="mt-4">

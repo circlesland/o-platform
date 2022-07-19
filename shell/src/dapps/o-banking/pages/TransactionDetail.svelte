@@ -7,20 +7,20 @@
   import {me} from "../../../shared/stores/me";
   import {Currency} from "../../../shared/currency";
 
-    import {
-      CrcHubTransfer,
-      CrcMinting,
-      Erc20Transfer,
-      EventType,
-      Profile,
-      ProfileEvent,
-    } from "../../../shared/api/data/types";
+  import {
+    CrcHubTransfer,
+    CrcMinting,
+    Erc20Transfer,
+    EventType,
+    Profile,
+    ProfileEvent,
+  } from "../../../shared/api/data/types";
 
 import { myTransactions } from "../../../shared/stores/myTransactions";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import Label from "../../../shared/atoms/Label.svelte";
 
-    export let transactionHash: string;
+  export let transactionHash: string;
 
 let transfer: ProfileEvent;
 let classes: string;
@@ -50,14 +50,8 @@ onMount(async () => {
     )
   }
   if (!transfer) {
-    transfer = await myTransactions.findByPrimaryKey(
-      EventType.Erc20Transfer,
-      transactionHash
-    )
-  }
-  if (!transfer) {
     transfer = await myTransactions.findSingleItemFallback(
-      [EventType.CrcHubTransfer, EventType.CrcMinting, EventType.Erc20Transfer, EventType.Erc20Transfer],
+      [EventType.CrcHubTransfer, EventType.CrcMinting, EventType.Erc20Transfer],
       transactionHash
     );
   }

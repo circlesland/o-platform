@@ -19,14 +19,14 @@ let payload: CrcTrust = <CrcTrust>event.payload;
       {event.contact_address_profile
         ? event.contact_address_profile.firstName
         : event.contact_address_profile.circlesAddress}
-      <Label key="shared.molecules.notificationViewer.molecules.notificationViewTrust.hasRemovedTheirTrustToYou" />
+      <Label key="shared.molecules.notificationViewer.molecules.notificationViewTrust.hasRemovedTheirTrustToYou"></Label>
     </div>
   {:else}
     <div class="text-center text-dark-lightest">
       {event.contact_address_profile
         ? event.contact_address_profile.firstName
         : event.contact_address_profile.circlesAddress}
-      <Label key="shared.molecules.notificationViewer.molecules.notificationViewTrust.isTrustingYouNow" />
+      <Label key="shared.molecules.notificationViewer.molecules.notificationViewTrust.isTrustingYouNow"></Label>
     </div>
   {/if}
 </div>

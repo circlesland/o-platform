@@ -101,7 +101,7 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
         </div>
         <div class="flex-grow">
           <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => loadDetailPage(shopId)}">
-            <Label key="dapps.o-marketplace.atoms.offerCard.details" />
+            <Label key="dapps.o-marketplace.atoms.offerCard.details"></Label>
             <div class="absolute mr-1 right-2">
               <Icon name="eye" class="w-6 h-6 heroicon smallicon" />
             </div>

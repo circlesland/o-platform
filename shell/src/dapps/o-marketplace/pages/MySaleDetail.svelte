@@ -163,7 +163,7 @@ onMount(async () => {
     <div class="w-full text-center">
       {#if invoice}
         <span class="text-dark-lightest"
-          ><Label key="dapps.o-marketplace.pages.mySaleDetail.saleDate" />
+        ><Label key="dapps.o-marketplace.pages.mySaleDetail.saleDate"></Label>
           {relativeTimeString(invoice.createdAt, 1, true)}</span>
       {/if}
     </div>
@@ -174,12 +174,12 @@ onMount(async () => {
           class:text-alert-dark="{!invoice.paymentTransactionHash}"
           class:text-success="{invoice.paymentTransactionHash}">
           {#if invoice.paymentTransactionHash}
-            <Label key="dapps.o-marketplace.pages.mySales.paid" />
+            <Label key="dapps.o-marketplace.pages.mySales.paid"></Label>
             <Icons icon="check" size="{4}" customClass="inline" />
           {:else if invoice.cancelledAt}
-            <Label key="dapps.o-marketplace.pages.mySales.cancelled" />
+            <Label key="dapps.o-marketplace.pages.mySales.cancelled"></Label>
           {:else}
-            <Label key="dapps.o-marketplace.pages.mySales.paymentPending" />
+            <Label key="dapps.o-marketplace.pages.mySales.paymentPending"></Label>
           {/if}
         </div>
 
@@ -193,7 +193,7 @@ onMount(async () => {
               <Icons icon="check" size="{4}" customClass="inline" />
             {/if}
           {:else}
-            <Label key="dapps.o-marketplace.pages.mySales.pickupCode" />
+            <Label key="dapps.o-marketplace.pages.mySales.pickupCode"></Label>
             {#if invoice.pickupCode}
               <Icons icon="check" size="{4}" customClass="inline" />
             {/if}
@@ -211,7 +211,7 @@ onMount(async () => {
               <Icons icon="closex" size="{2}" customClass="inline" />
             {/if}
           {:else}
-            <Label key="dapps.o-marketplace.pages.mySales.pickedUp" />
+            <Label key="dapps.o-marketplace.pages.mySales.pickedUp"></Label>
             {#if invoice.sellerSignature}
               <Icons icon="check" size="{4}" customClass="inline" />
             {:else}
