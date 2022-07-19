@@ -1,8 +1,8 @@
 <script lang="ts">
 import NotificationProfile from "./NotificationProfile.svelte";
 import { CrcTrust, ProfileEvent } from "../../api/data/types";
-import Label from "../../../shared/atoms/Label.svelte";
 import Label from "../../atoms/Label.svelte";
+
 
 export let event: ProfileEvent;
 

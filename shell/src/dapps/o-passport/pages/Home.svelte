@@ -6,7 +6,6 @@ import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { Profile } from "../../../shared/api/data/types";
 import { upsertIdentity } from "../processes/upsertIdentity";
-import Label from "../../../shared/atoms/Label.svelte";
 
 import { Environment } from "../../../shared/environment";
 
@@ -15,6 +14,7 @@ import { onMount } from "svelte";
 import { upsertOrganisation } from "../../o-coop/processes/upsertOrganisation";
 import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";
 import { upsertShippingAddress } from "../processes/upsertShippingAddress";
+import Label from "../../../shared/atoms/Label.svelte";
 
 let name;
 let profile: Profile;
