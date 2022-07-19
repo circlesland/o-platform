@@ -1,26 +1,26 @@
 <script lang="ts">
-import Time from "svelte-time";
-import { push } from "svelte-spa-router";
-// import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
-import { onMount } from "svelte";
-import UserImage from "src/shared/atoms/UserImage.svelte";
-import { me } from "../../../shared/stores/me";
-import { Currency } from "../../../shared/currency";
+  import Time from "svelte-time";
+  import {push} from "svelte-spa-router";
+  // import CirclesTransferGraph from "../../../shared/pathfinder/CirclesTransferGraph.svelte";
+  import {onMount} from "svelte";
+  import UserImage from "src/shared/atoms/UserImage.svelte";
+  import {me} from "../../../shared/stores/me";
+  import {Currency} from "../../../shared/currency";
 
-import {
-  CrcHubTransfer,
-  CrcMinting,
-  Erc20Transfer,
-  EventType,
-  Profile,
-  ProfileEvent,
-} from "../../../shared/api/data/types";
+  import {
+    CrcHubTransfer,
+    CrcMinting,
+    Erc20Transfer,
+    EventType,
+    Profile,
+    ProfileEvent,
+  } from "../../../shared/api/data/types";
 
-import Label from "../../../shared/atoms/Label.svelte";
-import { myTransactions } from "../../../shared/stores/myTransactions";
-import Icons from "../../../shared/molecules/Icons.svelte";
+  import Label from "../../../shared/atoms/Label.svelte";
+  import {myTransactions} from "../../../shared/stores/myTransactions";
+  import Icons from "../../../shared/molecules/Icons.svelte";
 
-export let transactionHash: string;
+  export let transactionHash: string;
 
 let transfer: ProfileEvent;
 let classes: string;
@@ -44,8 +44,14 @@ onMount(async () => {
     );
   }
   if (!transfer) {
+    transfer = await myTransactions.findByPrimaryKey(
+      EventType.Erc20Transfer,
+      transactionHash
+    )
+  }
+  if (!transfer) {
     transfer = await myTransactions.findSingleItemFallback(
-      [EventType.CrcHubTransfer, EventType.CrcMinting],
+      [EventType.CrcHubTransfer, EventType.CrcMinting, EventType.Erc20Transfer],
       transactionHash
     );
   }

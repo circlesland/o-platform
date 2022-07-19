@@ -7,6 +7,7 @@ import Icons from "../../../shared/molecules/Icons.svelte";
 import { truncateString } from "../../../shared/functions/truncateString";
 import { _ } from "svelte-i18n";
 import { addToCart, AddToCartContextData } from "../processes/addToCart";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let entry: ShopCategoryEntry;
 export let shopId: number;
@@ -101,7 +102,7 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
         </div>
         <div class="flex-grow">
           <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => loadDetailPage(shopId)}">
-            {$_("dapps.o-marketplace.atoms.offerCard.details")}
+            <Label key="dapps.o-marketplace.atoms.offerCard.details"></Label>
             <div class="absolute mr-1 right-2">
               <Icon name="eye" class="w-6 h-6 heroicon smallicon" />
             </div>

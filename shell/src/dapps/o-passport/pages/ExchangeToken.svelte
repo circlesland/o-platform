@@ -3,6 +3,7 @@ import { onMount } from "svelte";
 import { push } from "svelte-spa-router";
 import { ExchangeTokenDocument } from "../../../shared/api/data/types";
 import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let params: {
   jwt?: string;
@@ -33,7 +34,7 @@ onMount(async () => {
         src="/images/common/circles.png"
         alt="circles.land" />
       <div class="card shadow bg-white z-0">
-        {$_("dapps.o-passport.pages.exchangeToken.pleaseWait")}
+        <Label key="dapps.o-passport.pages.exchangeToken.pleaseWait"></Label>
       </div>
     </div>
   </div>

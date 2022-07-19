@@ -9,6 +9,7 @@ import { _ } from "svelte-i18n";
 import { ApiClient } from "../../../shared/apiConnection";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { addToCart, AddToCartContextData } from "../processes/addToCart";
+import Label from "../../../shared/atoms/Label.svelte";
 
 let isLoading: boolean;
 let error: Error;
@@ -59,7 +60,7 @@ function _addToCart(item: Offer & { shopId: number }) {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.offerDetail.loadingOffers")}</div>
+          <div><Label key="dapps.o-marketplace.pages.offerDetail.loadingOffers"></Label></div>
         </div>
       </div>
     </section>
@@ -68,7 +69,7 @@ function _addToCart(item: Offer & { shopId: number }) {
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
-            <b>{$_("dapps.o-marketplace.pages.offerDetail.error")}</b>
+            <Label key="dapps.o-marketplace.pages.offerDetail.error"></Label>
           </div>
         </div>
       </div>
@@ -176,7 +177,7 @@ function _addToCart(item: Offer & { shopId: number }) {
         </div>
         <div class="flex-grow">
           <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => _addToCart(offer)}">
-            {$_("dapps.o-marketplace.pages.offerDetail.addToCart")}
+            <Label key="dapps.o-marketplace.pages.offerDetail.addToCart"></Label>
             <div class="absolute mr-1 right-2">
               {#if offer.minAge}
                 {#if offer.minAge < 18}
@@ -196,7 +197,7 @@ function _addToCart(item: Offer & { shopId: number }) {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.offerDetail.notFound")}</div>
+          <div><Label key="dapps.o-marketplace.pages.offerDetail.notFound"></Label></div>
         </div>
       </div>
     </section>

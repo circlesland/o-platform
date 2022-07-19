@@ -1,5 +1,6 @@
 <script lang="ts">
 import { _ } from "svelte-i18n";
+import Label from "./Label.svelte";
 export let data: {
   error: Error;
 };
@@ -29,7 +30,7 @@ $: {
           d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
       </svg>
       <label class="pt-3 break-all"
-        ><h4><strong>{$_("shared.atoms.error.processEncounteredAnError")}</strong></h4>
+        ><h4><strong><Label key="shared.atoms.error.processEncounteredAnError"></Label></strong></h4>
         <br />
         <span>{error.message}</span>
       </label>
@@ -38,11 +39,11 @@ $: {
   </div>
   <div class="mt-4">
     <a href="https://discord.gg/SACzRXa35v">
-      {$_("shared.atoms.error.pleaseTryToReload")}<a
+      <Label key="shared.atoms.error.pleaseTryToReload"></Label><a
         href="https://discord.gg/4DBbRCMnFZ"
         target="_blank"
         class="btn-link">https://discord.gg/4DBbRCMnFZ</a
-      >{$_("shared.atoms.error.ifTheProblemPersists")}
+      ><Label key="shared.atoms.error.ifTheProblemPersists"></Label>
     </a>
   </div>
   <div class="mt-4">

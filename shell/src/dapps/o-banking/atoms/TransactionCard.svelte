@@ -84,10 +84,12 @@ $: {
       RpcGateway.get().utils.fromWei(ercTransfer.value, "ether")
     ).toFixed(2);
     message = "ERC-20 Transfer";
-
+    amountTime = amount;
+/*
     amountTime = Currency.instance()
       .displayAmount(amount ? amount : "0", event.timestamp, "TIME_CRC", null)
       .toString();
+ */
   }
 
   if (event && event.payload?.__typename == "CrcHubTransfer") {

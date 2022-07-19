@@ -4,6 +4,7 @@ import { purchase } from "../processes/purchase";
 import { _ } from "svelte-i18n";
 
 import { onMount } from "svelte";
+import Label from "../../../shared/atoms/Label.svelte";
 
 let shippingAddressId: number;
 
@@ -14,7 +15,7 @@ let deliveryType: number = 2;
   <header>
     <div class="w-full text-center">
       <h1 class="text-3xl uppercase font-heading">
-        {$_("dapps.o-marketplace.pages.shoppingCart.cart")}
+        <Label key="dapps.o-marketplace.pages.shoppingCart.cart"></Label>
       </h1>
     </div>
   </header>
