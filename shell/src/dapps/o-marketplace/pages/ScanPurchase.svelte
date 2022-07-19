@@ -134,7 +134,7 @@ onMount(() => {
         <option value="environment" selected
           ><Label key="dapps.o-marketplace.pages.scanPurchase.cameraDefault"  /></option>
         <option value="user"
-          ><Label key="dapps.o-marketplace.pages.scanPurchase.cameraUserFacing" /></option>
+          ><Label key="dapps.o-marketplace.pages.scanPurchase.cameraUserFacing"></Label></option>
       </select>
     </div>
 

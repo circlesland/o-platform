@@ -174,7 +174,7 @@ onMount(async () => {
           <div class="flex-grow">
             {#if o.pricePerUnit > 0}
               <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => _addToCart(o, shopId)}">
-                <Label key="dapps.o-marketplace.pages.offerDetail.addToCart" />
+                <Label key="dapps.o-marketplace.pages.offerDetail.addToCart"></Label>
                 <div class="absolute mr-1 right-2">
                   <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
                 </div>

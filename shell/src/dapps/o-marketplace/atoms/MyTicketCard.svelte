@@ -83,19 +83,19 @@ function getTableNoFromMetadata(metadataJson:string|undefined) {
             class:text-info="{!purchased.purchase.invoices[0].paymentTransactionHash &&
               !purchased.purchase.invoices[0].cancelledAt}">
             {#if purchased.purchase.invoices[0].paymentTransactionHash}
-              <Label key="dapps.o-marketplace.pages.myPurchases.paid" />
+              <Label key="dapps.o-marketplace.pages.myPurchases.paid"></Label>
               <Icons icon="check" size="{4}" customClass="inline" />
             {:else if purchased.purchase.invoices[0].cancelledAt}
-              <Label key="dapps.o-marketplace.pages.myPurchases.cancelled" />
+              <Label key="dapps.o-marketplace.pages.myPurchases.cancelled"></Label>
             {:else}
-              <Label key="dapps.o-marketplace.pages.myPurchases.paymentPending" />
+              <Label key="dapps.o-marketplace.pages.myPurchases.paymentPending"></Label>
             {/if}
           </div>
           <div
             class="inline-block text-xs "
             class:text-inactive="{!purchased.purchase.invoices[0].pickupCode}"
             class:text-success="{purchased.purchase.invoices[0].pickupCode}">
-            <Label key="dapps.o-marketplace.pages.myPurchases.entranceCode" />
+            <Label key="dapps.o-marketplace.pages.myPurchases.entranceCode"></Label>
             {#if purchased.purchase.invoices[0].pickupCode}
               <Icons icon="check" size="{4}" customClass="inline" />
             {/if}

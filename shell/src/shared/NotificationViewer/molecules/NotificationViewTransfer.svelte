@@ -4,7 +4,7 @@ import { Currency } from "../../../shared/currency";
 import { CrcHubTransfer, ProfileEvent } from "../../api/data/types";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { me } from "../../stores/me";
-import Label from "../../../shared/atoms/Label.svelte";
+import Label from "../../atoms/Label.svelte";
 
 export let event: ProfileEvent;
 
@@ -46,7 +46,7 @@ let amountTime = Currency.instance()
     </div>
   {/if}
   <div class="self-center pb-2 mt-4 text-2xl text-center font-heading">
-    <Label key="shared.molecules.notificationViewer.molecules.notificationViewTransfer.from" />
+    <Label key="shared.molecules.notificationViewer.molecules.notificationViewTransfer.from"></Label>
   </div>
   <div class="pb-4">
     <NotificationProfile profile="{payload.from_profile}" />

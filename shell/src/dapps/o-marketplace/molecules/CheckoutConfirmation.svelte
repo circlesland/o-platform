@@ -76,14 +76,14 @@ function onkeydown(e: KeyboardEvent) {
         <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
           <h1 class="p-2 text-white uppercase bg-dark-dark">
             <div class="text-sm">
-              <Label key="dapps.o-marketplace.molecules.checkoutConfirm.yourPickupCode" />: &nbsp;{context.params
+              <Label key="dapps.o-marketplace.molecules.checkoutConfirm.yourPickupCode"></Label>: &nbsp;{context.params
                 .simplePickupCode}
             </div>
           </h1>
         </div>
 
         <div class="text-center">
-          <Label key="dapps.o-marketplace.molecules.checkoutConfirm.howToPickup1" />
+          <Label key="dapps.o-marketplace.molecules.checkoutConfirm.howToPickup1"></Label>
         </div>
 
         <div class="w-full mt-6 text-center">
@@ -94,9 +94,9 @@ function onkeydown(e: KeyboardEvent) {
           </div>
         </div>
         <div class="text-sm text-center">
-          <Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode1" /><span class="text-primary-dark"
-            ><Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode2" /></span
-          ><Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode3" />
+          <Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode1"></Label><span class="text-primary-dark"
+            ><Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode2"></Label></span
+          ><Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode3"></Label>
           <a
             title="My Purchases"
             href="/#"
@@ -106,9 +106,9 @@ function onkeydown(e: KeyboardEvent) {
               submit('#/marketplace/my-purchases');
               e.preventDefault();
             }}">
-            <Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4" />
+            <Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4"></Label>
           </a>
-          <Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5" />
+          <Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5"></Label>
         </div>
 
         <div class="flex flex-col mt-4 space-y-2 text-center">

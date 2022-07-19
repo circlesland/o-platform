@@ -110,7 +110,7 @@ onMount(() => {
 <section class="flex flex-col items-center justify-center p-6 space-y-4">
   <div class="w-full text-center">
     <h1 class="text-3xl uppercase font-heading">
-      <Label key="dapps.o-marketplace.pages.scanPurchase.scanToHandOut" />
+      <Label key="dapps.o-marketplace.pages.scanPurchase.scanToHandOut"></Label>
     </h1>
   </div>
   <div class="w-full text-center">
@@ -128,16 +128,16 @@ onMount(() => {
         bind:this="{camList}"
         class="w-full border select input">
         <option value="environment" selected
-          ><Label key="dapps.o-marketplace.pages.scanPurchase.cameraDefault" /></option>
+          ><Label key="dapps.o-marketplace.pages.scanPurchase.cameraDefault"></Label></option>
         <option value="user"
-          ><Label key="dapps.o-marketplace.pages.scanPurchase.cameraUserFacing" /></option>
+          ><Label key="dapps.o-marketplace.pages.scanPurchase.cameraUserFacing"></Label></option>
       </select>
     </div>
 
     <div class="mt-4 text-center">
-      <b><Label key="dapps.o-marketplace.pages.scanPurchase.detectedQrCode" /></b>
+      <b><Label key="dapps.o-marketplace.pages.scanPurchase.detectedQrCode"></Label></b>
       <span id="cam-qr-result" bind:this="{camQrResult}"
-        ><Label key="dapps.o-marketplace.pages.scanPurchase.none" /></span>
+        ><Label key="dapps.o-marketplace.pages.scanPurchase.none"></Label></span>
     </div>
   </div>
   <!-- <slot name="EditorActionButtons">
