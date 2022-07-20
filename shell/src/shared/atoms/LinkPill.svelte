@@ -7,7 +7,6 @@ export let props: {
   icon: string;
   text: string;
   i18nKey: string;
-  i18nKey: string;
   link: string;
   extern: boolean;
   isActive: boolean;
@@ -26,7 +25,6 @@ if ($media.small) {
 <a
   href="{props.extern ? props.link : '/#/' + props.link}"
   class="flex content-center justify-start space-x-2"
-  data-i18n-key="{props.i18nKey}"
   data-i18n-key="{props.i18nKey}"
   target="{props.extern ? '_blank' : '_self'}"
   on:click="{() => {
