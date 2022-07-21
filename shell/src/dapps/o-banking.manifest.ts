@@ -13,13 +13,11 @@ import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
+import {Jumplist, JumplistItem} from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { loadProfileByProfileId } from "../shared/api/loadProfileByProfileId";
 import { Profile } from "../shared/api/data/types";
 import {push} from "svelte-spa-router";
-import Erc721Detail from "./o-banking/pages/Erc721Detail.svelte";
-// import {getUbi, getUbiInfo} from "../shared/ubiTimer2";
 
 const transactions: Page<any, BankingDappState> = {
   routeParts: ["=transactions"],
@@ -59,13 +57,12 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
     const recipientSafeAddress = params.id ? await getRecipientAddress() : undefined;
 
     let circlesAddress;
-    const unsub = me.subscribe((o) => {
+    me.subscribe((o) => {
       circlesAddress = o?.circlesAddress;
-    });
-    unsub();
+    })();
 
     return [
-      {
+      <JumplistItem>{
         key: "transfer",
         icon: "cash",
         title: "Send Money",
@@ -79,20 +76,20 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
           });
         },
       },
-      /*{
-        key: "requestUBI",
+      <JumplistItem>{
+        key: "transfer2",
         icon: "cash",
-        title: "Request UBI",
+        title: "Send Money 2",
         displayHint: "encouraged",
         category: "Banking",
         action: async () => {
-          const safeInfo = await getUbiInfo();
-          await getUbi({
-            nextUbiAt: Date.now(),
-            tokenAddress: safeInfo.tokenAddress
+          window.o.runProcess(transfer, {
+            safeAddress: circlesAddress,
+            recipientAddress: recipientSafeAddress,
+            privateKey: sessionStorage.getItem("circlesKey"),
           });
         },
-      }*/
+      }
     ];
   },
 };

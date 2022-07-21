@@ -3,6 +3,8 @@ import Home from "./o-homepage/pages/Home.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { Link } from "@o-platform/o-interfaces/dist/routables/link";
+import {Trigger} from "@o-platform/o-interfaces/dist/routables/trigger";
+import {InitContext} from "./o-onboarding/processes/initContext";
 
 const externalChat: Link<any, DappState> = {
   type: "link",
@@ -44,6 +46,19 @@ const invite: Page<{ inviteCode: string }, DappState> = {
   component: Home,
   title: "Circles Land",
   type: "page",
+};
+
+const useAsSafeApp: Trigger<{}, DappState> = {
+  isSystem: true,
+  anonymous: true,
+  routeParts: ["=safe-app"],
+  title: "Log Out",
+  type: "trigger",
+  action: async (params) => {
+    (<any>window).runInitMachine(<InitContext>{
+      useAsSafeApp: true
+    });
+  },
 };
 
 export interface DappState {

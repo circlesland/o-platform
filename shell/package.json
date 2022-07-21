@@ -23,6 +23,7 @@
     "@jaensen/timecircles": "^1.0.3",
     "@apollo/client": "^3.4.16",
     "@dicebear/avatars": "^4.6.3",
+    "@gnosis.pm/safe-apps-sdk": "^7.5.0",
     "@dicebear/avatars-avataaars-sprites": "^4.6.3",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@krowten/svelte-heroicons": "^0.0.3",

@@ -181,7 +181,7 @@ connectToApi().then(() => {
 declare global {
   interface Window {
     o: IShell;
-    runInitMachine: () => void;
+    runInitMachine: (args?:{[x:string]:any}) => void;
   }
 }
 

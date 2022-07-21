@@ -10,7 +10,7 @@ import {
   HubSignupTransactionQueryVariables, InitDocument, InitQueryVariables,
   InvitationTransactionDocument,
   InvitationTransactionQueryVariables, Profile,
-  ProfileEvent
+  ProfileEvent, RequestSessionChallengeDocument, VerifySessionChallengeDocument
 } from "../../../shared/api/data/types";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { upsertIdentity } from "../../o-passport/processes/upsertIdentity";
@@ -31,6 +31,104 @@ import { ApiClient } from "../../../shared/apiConnection";
 import { Environment } from "../../../shared/environment";
 import {me} from "../../../shared/stores/me";
 import { upsertIdentityShort } from "../../o-passport/processes/upsertIdentityShort";
+import SafeAppsSDK, {SDKMessageEvent} from "@gnosis.pm/safe-apps-sdk"
+import * as sdk from "@gnosis.pm/safe-apps-sdk"
+
+const waitHandles: {
+  [id:string]: {
+    resolve:(SDKMessageEvent:any) => void,
+    reject: (err:Error) => void,
+    message:SDKMessageEvent
+  }
+} = {};
+
+
+window.addEventListener('message', responseMessage => {
+  const eventData:SDKMessageEvent = responseMessage.data;
+  console.log(eventData);
+  if (eventData.data?.id) {
+    const waitHandle = waitHandles[eventData.data.id];
+    waitHandle.resolve(eventData)
+  }
+  // TODO: add timeout
+});
+
+/**
+ * Sends a message to the outer frame and waits for the result
+ * @param message
+ */
+export async function postEventAndWaitForResult(message:SDKMessageEvent) {
+  const p = new Promise<SDKMessageEvent>((resolve, reject) => {
+    waitHandles[message.data.id] = {
+      message,
+      resolve,
+      reject
+    }
+  });
+
+  postMessage(message);
+
+  return p;
+}
+
+export async function loginAsSafeApp(context:InitContext) {
+  if (!context.eoa.address) {
+    throw new Error(
+        window.i18n(
+            "dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.error.contextsPropertyNotSet"
+        )
+    );
+  }
+  const apiClient = await window.o.apiClient.client.subscribeToResult();
+  const result = await apiClient.mutate({
+    mutation: RequestSessionChallengeDocument,
+    variables: {
+      address: context.eoa.address,
+    },
+  });
+
+  if (result.errors && result.errors.length) {
+    console.error(result.errors);
+    throw new Error(JSON.stringify(result.errors));
+  }
+
+  const challenge = result.data.requestSessionChallenge;
+  const pk = sessionStorage.getItem("circlesKey");
+  if (!pk) {
+    throw new Error(
+        window.i18n(
+            "dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.error.privatKeyNotUnlocked"
+        )
+    );
+  }
+
+  // TODO: Send a message to the outer frame here
+  const sdk = new SafeAppsSDK();
+  const info = await sdk.safe.getInfo();
+  console.log("safe info from frame:", info);
+  const signatureResult = await sdk.txs.signMessage(challenge)
+
+
+  const sessionResult = await apiClient.mutate({
+    mutation: VerifySessionChallengeDocument,
+    variables: {
+      challenge: challenge,
+      signature: signatureResult.safeTxHash,
+    },
+  });
+
+  if (sessionResult.data.errors && sessionResult.data.errors.length) {
+    console.error(sessionResult.data.errors);
+    throw new Error(JSON.stringify(sessionResult.data.errors));
+  }
+  if (!sessionResult.data.verifySessionChallenge?.success) {
+    throw new Error(
+        window.i18n(
+            "dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.error.couldNotGetSession"
+        )
+    );
+  }
+}
 
 export function goToPreviouslyDesiredRouteIfExisting() {
   try {
@@ -695,14 +793,22 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       },
     },
     actions: {
-      acquireSessionAndRestart: () => {
-        window.o.runProcess(acquireSession, {
-          successAction: (data) => {
+      acquireSessionAndRestart: (context:InitContext) => {
+        if (context.runAsSafeApp) {
+          loginAsSafeApp(context).then(() => {
             (<any>window).runInitMachine({
-              openLoginUserInfo: data.userInfo
+              openLoginUserInfo: {}
             });
-          },
-        });
+          })
+        } else {
+          window.o.runProcess(acquireSession, {
+            successAction: (data) => {
+              (<any>window).runInitMachine({
+                openLoginUserInfo: data.userInfo
+              });
+            },
+          });
+        }
       },
       upsertRegistrationAndRestart: (context) => {
         window.o.runProcess(upsertRegistration, {

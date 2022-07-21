@@ -9,9 +9,10 @@ import {ClaimedInvitation, Profile, ProfileEvent, SafeInfo, SessionInfo} from ".
 import {OpenloginUserInfo} from "@toruslabs/openlogin";
 
 export type InitContext = {
-  localStorageSchemaVersion: 1,
+  runAsSafeApp?: boolean;
+  localStorageSchemaVersion?: 1,
   session?: SessionInfo;
-  openLoginUserInfo: OpenloginUserInfo;
+  openLoginUserInfo?: OpenloginUserInfo;
   registration?: RegistrationData;
   invitation?: ClaimedInvitation;
   profile?: Profile;

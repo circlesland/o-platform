@@ -13,7 +13,10 @@ import {ApiClient} from "../apiConnection";
 
 export class MyTransactions extends PagedEventQuery {
   constructor(sortOrder:SortOrder, pageSize = 20) {
-    super([EventType.CrcHubTransfer, EventType.CrcMinting], sortOrder, pageSize);
+    super([
+      EventType.CrcHubTransfer,
+      EventType.CrcMinting,
+      EventType.Erc20Transfer], sortOrder, pageSize);
   }
 
   getPrimaryKey(eventPayload: EventPayload): string {
