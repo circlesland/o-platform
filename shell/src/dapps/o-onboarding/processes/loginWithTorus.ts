@@ -144,7 +144,7 @@ const processDefinition = (processId: string) =>
                 context.data.accountAddress = accAddress;
               } else {
                 // Init open login
-                await getOpenLogin();
+                //await getOpenLogin();
               }
             },
             onDone: [
