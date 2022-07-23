@@ -17,13 +17,12 @@ import { getOpenLogin } from "../../../shared/openLogin";
 import {
   FindInvitationCreatorDocument,
   Profile,
-  ProfilesDocument,
-  ProfilesQueryVariables,
   QueryFindInvitationCreatorArgs,
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
 import { AvataarGenerator } from "../../../shared/avataarGenerator";
 import {setWindowLastError} from "../../../shared/processes/actions/setWindowLastError";
+import SafeAppSDK, {SDKMessageEvent} from "@gnosis.pm/safe-apps-sdk";
 
 export type LoginWithTorusContextData = {
   chooseFlow?: {
@@ -70,6 +69,7 @@ let loginOptions = [
             class: "btn-info",
           }*/,
 ];
+
 
 const processDefinition = (processId: string) =>
   createMachine<LoginWithTorusContext, any>(
@@ -172,6 +172,13 @@ const processDefinition = (processId: string) =>
           },
           options: loginOptions = [
             {
+              key: "safeDapp",
+              label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.safeDapp.label"),
+              target: "#safeDapp",
+              class: "btn btn-outline",
+              icon: "google",
+            },
+            {
               key: "google",
               label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.google.label"),
               target: "#google",
@@ -201,6 +208,55 @@ const processDefinition = (processId: string) =>
           ],
         }),
 
+        safeDapp: {
+          id: "safeDapp",
+          entry: [
+            () => {
+              window.o.publishEvent(<PlatformEvent>{
+                type: "shell.progress",
+                message: window.i18n("dapps.o-onboarding.processes.loginWithTorus.pleaseWaitWeSigningYouIn"),
+              });
+            },
+            (context) => {
+              context.dirtyFlags = {};
+            },
+          ],
+          invoke: {
+            src: async (context) => {
+              // TODO:
+              const event = <any>{
+                data:{
+                  id: "123",
+                  method: "getPrivateKey"
+                }
+              };
+              const result = await (<any>window).postEventAndWaitForResult(event);
+              console.log(result);
+              throw new Error("Fuck it! You moron.");
+              /*
+              return {
+                privateKey: privateKey.privKey,
+                userInfo: userInfo,
+              };*/
+            },
+            onDone: {
+              actions: "assignPrivateKeyAndUserInfoToContext",
+              target: "#enterEncryptionPin",
+            },
+            onError: [
+              {
+                // user closed popup
+                cond: (context, event) => event.data.message == "user closed popup",
+                target: "#chooseFlow",
+              },
+              {
+                cond: (context, event) => (window.o.lastError = event.data),
+                actions: setWindowLastError,
+                target: "#showError",
+              },
+            ],
+          },
+        },
         google: {
           id: "google",
           entry: [
@@ -216,22 +272,6 @@ const processDefinition = (processId: string) =>
           ],
           invoke: {
             src: async (context) => {
-              /*
-              const openLogin = await getOpenLogin();
-              const authResult = await openLogin.triggerLogin({
-                typeOfLogin: "google",
-                verifier: "circles-google-testnet",
-                clientId:
-                  "906916064114-5m4nsuvu0uhs2gnav4me4rsdrnlf445k.apps.googleusercontent.com",
-              });
-              context.data.privateKey = authResult.privateKey;
-              context.data.userInfo = authResult.userInfo;
-              return {
-                privateKey: context.data.privateKey,
-                userInfo: context.data.userInfo,
-              };
-
-               */
               const openLogin = await getOpenLogin();
               const privateKey = await openLogin.login({
                 loginProvider: "google",

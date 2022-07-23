@@ -31,45 +31,7 @@ import { ApiClient } from "../../../shared/apiConnection";
 import { Environment } from "../../../shared/environment";
 import {me} from "../../../shared/stores/me";
 import { upsertIdentityShort } from "../../o-passport/processes/upsertIdentityShort";
-import SafeAppsSDK, {SDKMessageEvent} from "@gnosis.pm/safe-apps-sdk"
-import * as sdk from "@gnosis.pm/safe-apps-sdk"
-
-const waitHandles: {
-  [id:string]: {
-    resolve:(SDKMessageEvent:any) => void,
-    reject: (err:Error) => void,
-    message:SDKMessageEvent
-  }
-} = {};
-
-
-window.addEventListener('message', responseMessage => {
-  const eventData:SDKMessageEvent = responseMessage.data;
-  console.log(eventData);
-  if (eventData.data?.id) {
-    const waitHandle = waitHandles[eventData.data.id];
-    waitHandle.resolve(eventData)
-  }
-  // TODO: add timeout
-});
-
-/**
- * Sends a message to the outer frame and waits for the result
- * @param message
- */
-export async function postEventAndWaitForResult(message:SDKMessageEvent) {
-  const p = new Promise<SDKMessageEvent>((resolve, reject) => {
-    waitHandles[message.data.id] = {
-      message,
-      resolve,
-      reject
-    }
-  });
-
-  postMessage(message);
-
-  return p;
-}
+import SafeAppsSDK from "@gnosis.pm/safe-apps-sdk"
 
 export async function loginAsSafeApp(context:InitContext) {
   if (!context.eoa.address) {

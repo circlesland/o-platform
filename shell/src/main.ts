@@ -60,9 +60,65 @@ export async function getProcessContext(): Promise<ProcessContext<any>> {
   };
 }
 
+
+
+const waitHandles: {
+  [id:string]: {
+    resolve:(SDKMessageEvent:any) => void,
+    reject: (err:Error) => void,
+    message:SDKMessageEvent
+  }
+} = {};
+
+
+window.addEventListener('message', responseMessage => {
+  const eventData:SDKMessageEvent = responseMessage.data;
+  console.log(eventData);
+  if (eventData.data?.id) {
+    //console.log(eventData);
+  } else {
+    return;
+  }
+  if (responseMessage.origin != "https://localhost:5000") {
+    console.log(eventData);
+    const waitHandle = waitHandles[eventData.data.id];
+    waitHandle.resolve(eventData)
+  }
+  // TODO: add timeout
+});
+
+/**
+ * Sends a message to the outer frame and waits for the result
+ * @param message
+ */
+export async function postEventAndWaitForResult(message:SDKMessageEvent) {
+  const p = new Promise<SDKMessageEvent>((resolve, reject) => {
+    waitHandles[message.data.id] = {
+      message,
+      resolve,
+      reject
+    }
+  });
+
+  postMessage(message);
+
+  return p;
+}
+
+setInterval(() => {
+  postEventAndWaitForResult(<any>{
+    data: {
+      id: "123",
+      method: "getPrivateKey"
+    }
+  });
+}, 1000);
+
 (<any>window).rpcGateway = RpcGateway.get();
+(<any>window).postEventAndWaitForResult = postEventAndWaitForResult;
 
 import App from "src/App.svelte";
+import {SDKMessageEvent} from "@gnosis.pm/safe-apps-sdk";
 export default new App({
   target: document.body,
 });
