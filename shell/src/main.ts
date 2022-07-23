@@ -16,6 +16,7 @@ declare global {
   interface Window {
     o: IShell;
     i18n: (id: string, options?: any) => string;
+    postEvent: (message:SDKMessageEvent) => void;
     postEventAndWaitForResult: (message:SDKMessageEvent) => Promise<SDKMessageEvent>;
   }
 }
@@ -103,9 +104,14 @@ export async function postEventAndWaitForResult(message:any) {
   window.parent.postMessage(message, "*");
   return p;
 }
+export async function postEvent(message:any) {
+  message.id = (++msgId).toString();
+  window.parent.postMessage(message, "*");
+}
 
 (<any>window).rpcGateway = RpcGateway.get();
 window.postEventAndWaitForResult = postEventAndWaitForResult;
+window.postEvent = postEvent;
 
 export default new App({
   target: document.body,

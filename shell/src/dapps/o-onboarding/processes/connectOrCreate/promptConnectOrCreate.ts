@@ -172,7 +172,6 @@ const processDefinition = (processId: string) =>
         invoke: {
           src: async (context) => {
             //            const myProfile = await loadProfile();
-
             const privateKey = sessionStorage.getItem("circlesKey");
             if (!privateKey) {
               throw new Error(

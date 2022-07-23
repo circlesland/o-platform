@@ -5,15 +5,26 @@
   export let props;
 
   async function login() {
-    window.runInitMachine();
+    window.postEvent(<any>{
+      method: "login"
+    });
+    //
   }
 
-  onMount(() => {
+  onMount(async () => {
     setTimeout(() => {
       if (sessionStorage.getItem("desiredRoute") && !sessionStorage.getItem("notFirst")) {
         login();
       }
     }, 30);
+
+    const response:any = await window.postEventAndWaitForResult(<any>{
+      method: "getPrivateKey"
+    });
+    console.log("frame response: ", response);
+    if (response.data){
+      window.runInitMachine();
+    }
   });
 
   console.log("PROPS ", props);

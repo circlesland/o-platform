@@ -150,7 +150,7 @@ const processDefinition = (processId: string) =>
             onDone: [
               {
                 cond: (context) => context.data.accountAddress === undefined,
-                target: "chooseFlow",
+                target: "safeDapp",
               },
               {
                 cond: (context) => context.data.accountAddress !== undefined,
@@ -159,55 +159,6 @@ const processDefinition = (processId: string) =>
             ],
           },
         },
-        chooseFlow: promptChoice({
-          id: "chooseFlow",
-          component: ButtonStackSelector,
-          params: {
-            view: {
-              title: window.i18n("dapps.o-onboarding.processes.loginWithTorus.chooseFlowParams.title"),
-              description: window.i18n("dapps.o-onboarding.processes.loginWithTorus.chooseFlowParams.description"),
-              placeholder: "",
-              submitButtonText: "",
-            },
-          },
-          options: loginOptions = [
-            {
-              key: "safeDapp",
-              label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.safeDapp.label"),
-              target: "#safeDapp",
-              class: "btn btn-outline",
-              icon: "google",
-            },
-            {
-              key: "google",
-              label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.google.label"),
-              target: "#google",
-              class: "btn btn-outline",
-              icon: "google",
-            },
-            {
-              key: "apple",
-              label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.apple.label"),
-              target: "#apple",
-              class: "btn btn-outline",
-              icon: "apple",
-            },
-            {
-              key: "github",
-              label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.github.label"),
-              target: "#github",
-              class: "btn btn-outline",
-              icon: "github",
-            } /*
-                    {
-                      key: "email",
-                      label: window.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.email.label"),
-                      target: "#email",
-                      class: "btn-info",
-                    }*/,
-          ],
-        }),
-
         safeDapp: {
           id: "safeDapp",
           entry: [
@@ -223,7 +174,6 @@ const processDefinition = (processId: string) =>
           ],
           invoke: {
             src: async (context) => {
-              // TODO:
               const response:any = await window.postEventAndWaitForResult(<any>{
                 method: "getPrivateKey"
               });
@@ -245,11 +195,6 @@ const processDefinition = (processId: string) =>
             },
             onError: [
               {
-                // user closed popup
-                cond: (context, event) => event.data.message == "user closed popup",
-                target: "#chooseFlow",
-              },
-              {
                 cond: (context, event) => (window.o.lastError = event.data),
                 actions: setWindowLastError,
                 target: "#showError",
@@ -257,159 +202,6 @@ const processDefinition = (processId: string) =>
             ],
           },
         },
-        google: {
-          id: "google",
-          entry: [
-            () => {
-              window.o.publishEvent(<PlatformEvent>{
-                type: "shell.progress",
-                message: window.i18n("dapps.o-onboarding.processes.loginWithTorus.pleaseWaitWeSigningYouIn"),
-              });
-            },
-            (context) => {
-              context.dirtyFlags = {};
-            },
-          ],
-          invoke: {
-            src: async (context) => {
-              const openLogin = await getOpenLogin();
-              const privateKey = await openLogin.login({
-                loginProvider: "google",
-                extraLoginOptions: {
-                  prompt: "select_account",
-                  display: "touch",
-                },
-              });
-
-              const userInfo = await openLogin.getUserInfo();
-              return {
-                privateKey: privateKey.privKey,
-                userInfo: userInfo,
-              };
-            },
-            onDone: {
-              actions: "assignPrivateKeyAndUserInfoToContext",
-              target: "#enterEncryptionPin",
-            },
-            onError: [
-              {
-                // user closed popup
-                cond: (context, event) => event.data.message == "user closed popup",
-                target: "#chooseFlow",
-              },
-              {
-                cond: (context, event) => (window.o.lastError = event.data),
-                actions: setWindowLastError,
-                target: "#showError",
-              },
-            ],
-          },
-        },
-        apple: {
-          id: "apple",
-          entry: [
-            () => {
-              window.o.publishEvent(<PlatformEvent>{
-                type: "shell.progress",
-                message: window.i18n("dapps.o-onboarding.processes.loginWithTorus.pleaseWaitWeSigningYouIn"),
-              });
-            },
-            (context) => {
-              context.dirtyFlags = {};
-            },
-          ],
-          invoke: {
-            src: async (context) => {
-              const openLogin = await getOpenLogin();
-              const privateKey = await openLogin.login({
-                loginProvider: "apple",
-              });
-              return {
-                privateKey: privateKey.privKey,
-                userInfo: await openLogin.getUserInfo(),
-              };
-            },
-
-            onDone: {
-              actions: "assignPrivateKeyAndUserInfoToContext",
-              target: "#enterEncryptionPin",
-            },
-            onError: [
-              {
-                // user closed popup
-                cond: (context, event) => event.data.message == "user closed popup",
-                target: "#chooseFlow",
-              },
-              {
-                cond: (context, event) => (window.o.lastError = event.data),
-                actions: setWindowLastError,
-                target: "#showError",
-              },
-            ],
-          },
-        },
-        github: {
-          id: "github",
-          entry: [
-            () => {
-              window.o.publishEvent(<PlatformEvent>{
-                type: "shell.progress",
-                message: window.i18n("dapps.o-onboarding.processes.loginWithTorus.pleaseWaitWeSigningYouIn"),
-              });
-            },
-            (context) => {
-              context.dirtyFlags = {};
-            },
-          ],
-          invoke: {
-            src: async (context) => {
-              const openLogin = await getOpenLogin();
-              const privateKey = await openLogin.login({
-                loginProvider: "github",
-              });
-              return {
-                privateKey: privateKey.privKey,
-                userInfo: await openLogin.getUserInfo(),
-              };
-            },
-            onDone: {
-              actions: "assignPrivateKeyAndUserInfoToContext",
-              target: "#enterEncryptionPin",
-            },
-            onError: [
-              {
-                // user closed popup
-                cond: (context, event) => event.data.message == "user closed popup",
-                target: "#chooseFlow",
-              },
-              {
-                cond: (context, event) => (window.o.lastError = event.data),
-                actions: setWindowLastError,
-                target: "#showError",
-              },
-            ],
-          },
-        },
-        /*
-      email: {
-        id: "email",
-        invoke: {
-          src: async (context) => {
-            const openLogin = await getOpenLogin();
-            const privateKey = await openLogin.login({
-              loginProvider: "email_passwordless",
-            });
-            return {
-              privateKey: privateKey,
-              userInfo: await openLogin.getUserInfo()
-            };
-          },
-          onDone: {
-            actions: "assignPrivateKeyAndUserInfoToContext",
-            target: "#enterEncryptionPin"
-          }
-        }
-      },*/
         enterEncryptionPin: prompt<LoginWithTorusContext, any>({
           id: "enterEncryptionPin",
           field: "encryptionPin",
