@@ -4,6 +4,9 @@ import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { Environment } from "./shared/environment";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import {SDKMessageEvent} from "@gnosis.pm/safe-apps-sdk";
+import App from "src/App.svelte";
+
 dayjs.extend(relativeTime);
 RpcGateway.setup(Environment.xdaiRpcGatewayUrl);
 
@@ -13,6 +16,7 @@ declare global {
   interface Window {
     o: IShell;
     i18n: (id: string, options?: any) => string;
+    postEventAndWaitForResult: (message:SDKMessageEvent) => Promise<SDKMessageEvent>;
   }
 }
 
@@ -60,8 +64,6 @@ export async function getProcessContext(): Promise<ProcessContext<any>> {
   };
 }
 
-
-
 const waitHandles: {
   [id:string]: {
     resolve:(SDKMessageEvent:any) => void,
@@ -72,18 +74,14 @@ const waitHandles: {
 
 
 window.addEventListener('message', responseMessage => {
-  const eventData:SDKMessageEvent = responseMessage.data;
+  const eventData:any = responseMessage.data;
   console.log(eventData);
-  if (eventData.data?.id) {
-    //console.log(eventData);
-  } else {
+  if (!eventData?.id) {
     return;
   }
-  if (responseMessage.origin != "https://localhost:5000") {
-    console.log(eventData);
-    const waitHandle = waitHandles[eventData.data.id];
-    waitHandle.resolve(eventData)
-  }
+  console.log(eventData);
+  const waitHandle = waitHandles[eventData?.id];
+  waitHandle.resolve(eventData);
   // TODO: add timeout
 });
 
@@ -91,34 +89,24 @@ window.addEventListener('message', responseMessage => {
  * Sends a message to the outer frame and waits for the result
  * @param message
  */
-export async function postEventAndWaitForResult(message:SDKMessageEvent) {
+export let msgId = 0;
+export async function postEventAndWaitForResult(message:any) {
+  message.id = (++msgId).toString();
   const p = new Promise<SDKMessageEvent>((resolve, reject) => {
-    waitHandles[message.data.id] = {
+    waitHandles[message.id] = {
       message,
       resolve,
       reject
     }
   });
 
-  postMessage(message);
-
+  window.parent.postMessage(message, "*");
   return p;
 }
 
-setInterval(() => {
-  postEventAndWaitForResult(<any>{
-    data: {
-      id: "123",
-      method: "getPrivateKey"
-    }
-  });
-}, 1000);
-
 (<any>window).rpcGateway = RpcGateway.get();
-(<any>window).postEventAndWaitForResult = postEventAndWaitForResult;
+window.postEventAndWaitForResult = postEventAndWaitForResult;
 
-import App from "src/App.svelte";
-import {SDKMessageEvent} from "@gnosis.pm/safe-apps-sdk";
 export default new App({
   target: document.body,
 });

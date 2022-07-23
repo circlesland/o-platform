@@ -224,20 +224,20 @@ const processDefinition = (processId: string) =>
           invoke: {
             src: async (context) => {
               // TODO:
-              const event = <any>{
-                data:{
-                  id: "123",
-                  method: "getPrivateKey"
+              const response:any = await window.postEventAndWaitForResult(<any>{
+                method: "getPrivateKey"
+              });
+              console.log("Reponse from frame:", response.data);
+
+              const copy = JSON.parse(JSON.stringify(response.data));
+              delete copy.privateKey;
+
+              return {
+                privateKey: response.data.privateKey,
+                userInfo: {
+                  ... copy
                 }
               };
-              const result = await (<any>window).postEventAndWaitForResult(event);
-              console.log(result);
-              throw new Error("Fuck it! You moron.");
-              /*
-              return {
-                privateKey: privateKey.privKey,
-                userInfo: userInfo,
-              };*/
             },
             onDone: {
               actions: "assignPrivateKeyAndUserInfoToContext",
@@ -391,28 +391,6 @@ const processDefinition = (processId: string) =>
           },
         },
         /*
-      facebook: {
-        id: "facebook",
-        invoke: {
-          src: async (context) => {
-            const openLogin = await getOpenLogin();
-            const privateKey = await openLogin.login({
-              loginProvider: "facebook",
-            });
-            return {
-              privateKey: privateKey,
-              userInfo: await openLogin.getUserInfo(),
-            };
-          },
-          onDone: {
-            actions: "assignPrivateKeyAndUserInfoToContext",
-            target: "#enterEncryptionPin"
-          },
-          onError: {
-            target: "#chooseFlow",
-          }
-        }
-      },
       email: {
         id: "email",
         invoke: {
