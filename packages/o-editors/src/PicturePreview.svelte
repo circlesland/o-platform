@@ -3,6 +3,7 @@ import { EditorContext } from "./editorContext";
 import ProcessNavigation from "./ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { onMount } from "svelte";
+import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 
 export let context: EditorContext;
 
@@ -26,16 +27,30 @@ function onkeydown(e: KeyboardEvent) {
 
 <div>
   <div class="flex flex-col w-full h-full pb-2">
-    <button
+    <!-- <button
       class="self-end text-primary"
       on:click="{() => {
         context.dirtyFlags[context.field] = true;
         context.editorDirtyFlags[context.field] = true;
         context.data[context.field] = null;
         submit();
-      }}">Clear</button>
+      }}">Clear</button> -->
     <div class="text-center">
-      <div class="inline-flex">
+      <div class="relative inline-flex">
+        <div
+          class="absolute z-10 text-center align-top list-none cursor-pointer top-1 right-2 inline-table "
+          on:click="{() => {
+            context.dirtyFlags[context.field] = true;
+            context.editorDirtyFlags[context.field] = true;
+            context.data[context.field] = null;
+            submit();
+          }}">
+          <span>
+            <span class="table-cell w-10 h-10 align-middle bg-black rounded-full text-primary bg-opacity-60">
+              <Icon name="camera" class="inline w-6 h-6 heroicon smallicon" />
+            </span>
+          </span>
+        </div>
         <div class="w-48 rounded-full w-92 h-92">
           <img
             class="m-auto rounded-full"

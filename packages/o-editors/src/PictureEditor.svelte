@@ -1,12 +1,16 @@
 <script lang="ts">
 import { EditorContext } from "./editorContext";
 import getCroppedImg from "../../../shell/src/shared/molecules/Cropper/canvasUtils";
+import ButtonGroup from "../../../shell/src/shared/molecules/ButtonGroup/ButtonGroup.svelte";
 import Dropzone from "svelte-file-dropzone";
 import ProcessNavigation from "./ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { normalizePromptField } from "@o-platform/o-process/dist/states/prompt";
 import Cropper from "svelte-easy-crop";
 import Resizer from "react-image-file-resizer";
+import { UserActions, UserActionItem } from "../../../shell/src/shared/userActions";
+
+let userActions: UserActionItem[] = [];
 
 export let context: EditorContext;
 
@@ -30,6 +34,28 @@ $: {
   if (context.params.cropShape && context.params.cropShape == "rect") {
     cropShape = context.params.cropShape;
     aspect = 4 / 3;
+  }
+  if (fileSelected) {
+    userActions = [
+      {
+        key: "remove",
+        icon: "remove",
+        title: "Remove Picture",
+        displayHint: "discouraged",
+        action: async () => {
+          reset();
+        },
+      },
+      {
+        key: "submit",
+        icon: "",
+        title: "Submit",
+        displayHint: "encouraged",
+        action: async () => {
+          submit();
+        },
+      },
+    ];
   }
 }
 
@@ -147,20 +173,26 @@ async function submit() {
       <div style="position: relative; width: 100%; height: 300px;">
         <Cropper image="{image}" bind:crop bind:zoom bind:aspect bind:cropShape on:cropcomplete="{previewCrop}" />
       </div>
-      <div class="" style="mt-2">
-        <span on:click="{() => reset()}" class="float-right cursor-pointer"> clear image </span>
-      </div>
+
       <!-- we need this, otherwise the zoom doesnt work. though it needs to stay hidden. -->
       <div class="hidden prof-pic-wrapper">
         <img bind:this="{profilePicture}" class="prof-pic" src="{image}" alt="Profile example" style="{style}" />
       </div>
     {/if}
   </div>
+  <div class="px-2 mt-4">
+    <ButtonGroup
+      actions="{userActions}"
+      layout="{{
+        orientation: 'inline',
+        alignment: 'center',
 
-  {#if fileSelected}
-    <br />
-    <ProcessNavigation on:buttonClick="{submit}" context="{context}" />
-  {/if}
+        colors: {
+          default: 'primary',
+          overrides: (action) => (action.displayHint == 'discouraged' ? 'light' : null),
+        },
+      }}" />
+  </div>
 </div>
 
 <style>
