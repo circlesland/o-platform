@@ -85,6 +85,7 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __ALLOW_VERIFY__ = "true";
   __ALLOW_CREATE_ORGANISATION__ = "true";
   __FIXED_GAS_PRICE__ = "1";
+  __USE_MOCKS__ = process.env.USE_MOCKS ? "true" : "";
   __HUMANODE_CLIENT_ID__ = "circles-ubi-staging";
   prod = false;
 }
