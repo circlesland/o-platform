@@ -60,6 +60,7 @@ export const initMachine = createMachine<InitContext, InitEvent>(
     initial: "prepare",
     context: {
       localStorageSchemaVersion: 1,
+      useMockProfileIndex: undefined,
       session: null,
       openLoginUserInfo: null,
       registration: null,
@@ -695,8 +696,9 @@ export const initMachine = createMachine<InitContext, InitEvent>(
       },
     },
     actions: {
-      acquireSessionAndRestart: () => {
+      acquireSessionAndRestart: (context) => {
         window.o.runProcess(acquireSession, {
+          useMockProfileIndex: context.useMockProfileIndex,
           successAction: (data) => {
             (<any>window).runInitMachine({
               openLoginUserInfo: data.userInfo

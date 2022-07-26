@@ -17,6 +17,7 @@ export type AcquireSessionContextData = {
   eoaAddress?: string;
   userInfo?: any;
   successAction?: (data: AcquireSessionContextData) => void;
+  useMockProfileIndex?: number
 };
 
 export type AcquireSessionContext = ProcessContext<AcquireSessionContextData>;
@@ -38,10 +39,14 @@ const processDefinition = (processId: string) =>
         invoke: {
           id: "loginWithTorus",
           src: loginWithTorus.stateMachine(`loginWithTorus`),
-          data: {
-            data: {},
-            dirtyFlags: {},
-            messages: {},
+          data: (context, event) => {
+            return {
+              data: {
+                useMockProfileIndex: context.data.useMockProfileIndex
+              },
+              dirtyFlags: {},
+              messages: {},
+            }
           },
           onDone: {
             actions: (context, event) => {
