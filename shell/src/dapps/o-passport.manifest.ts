@@ -12,7 +12,7 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { AvataarGenerator } from "../shared/avataarGenerator";
 import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { Profile } from "../shared/api/data/types";
-import { loginWithTorus } from "./o-onboarding/processes/loginWithTorus";
+import {loginWithTorus} from "./o-onboarding/processes/loginWithTorus";
 
 const index: Page<any, DappState> = {
   routeParts: ["=profile"],
@@ -66,18 +66,12 @@ const logmein: Trigger<{}, DappState> = {
   isSystem: true,
   anonymous: true,
   routeParts: ["=actions", "=login", ":keyId"],
-  title: "Log in",
+  title: "Log Out",
   type: "trigger",
-  action: async (params: any) => {
-    (<any>window).runInitMachine({
-      useMockProfileIndex: parseInt(params.keyId),
-    });
-    /*
+  action: async (params:any) => {
     window.o.runProcess(loginWithTorus, {
-      useMockProfileIndex: parseInt(params.keyId),
-      successAction: () => (<any>window).runInitMachine()
+      useMockProfileIndex: parseInt(params.keyId)
     });
-    */
   },
 };
 
@@ -174,5 +168,5 @@ export const passport: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, profile, account, settings, verifyEmail, logmeout, logmein, logmein],
+  routables: [index, profile, account, settings, verifyEmail, logmeout, logmein],
 };
