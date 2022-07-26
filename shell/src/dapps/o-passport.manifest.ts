@@ -66,18 +66,12 @@ const logmein: Trigger<{}, DappState> = {
   isSystem: true,
   anonymous: true,
   routeParts: ["=actions", "=login", ":keyId"],
-  title: "Log in",
+  title: "Log Out",
   type: "trigger",
   action: async (params:any) => {
-    (<any>window).runInitMachine({
+    window.o.runProcess(loginWithTorus, {
       useMockProfileIndex: parseInt(params.keyId)
     });
-    /*
-    window.o.runProcess(loginWithTorus, {
-      useMockProfileIndex: parseInt(params.keyId),
-      successAction: () => (<any>window).runInitMachine()
-    });
-    */
   },
 };
 
