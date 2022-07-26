@@ -155,8 +155,8 @@ export class Environment {
       "Luisito Preeti",
       "Charlize Sokol"
     ];
-    const whitespace = new RegExp('\s', 'g');
-    const emails = names.map(o => o.replace(whitespace, ".")).map(o => o + "example.com");
+    const whitespace = new RegExp("\\s", "g");
+    const emails = names.map(o => o.replace(whitespace, ".")).map(o => o + "@example.com");
     const pictures = [
       "https://images.unsplash.com/photo-1657781536566-1a1f6f5fea99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY1ODg1NTExMA&ixlib=rb-1.2.1&q=80&w=1080",
       "https://images.unsplash.com/photo-1657515726894-d65d0b3c868a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY1ODg1NTExMQ&ixlib=rb-1.2.1&q=80&w=1080",
