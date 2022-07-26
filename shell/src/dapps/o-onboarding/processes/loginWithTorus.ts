@@ -13,7 +13,7 @@ import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte"
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
-import { getOpenLogin } from "../../../shared/openLogin";
+import {getOpenLogin, GetOpenLoginResult} from "../../../shared/openLogin";
 import {
   FindInvitationCreatorDocument,
   Profile,
@@ -24,12 +24,15 @@ import {
 import { ApiClient } from "../../../shared/apiConnection";
 import { AvataarGenerator } from "../../../shared/avataarGenerator";
 import {setWindowLastError} from "../../../shared/processes/actions/setWindowLastError";
+import {OpenloginUserInfo} from "@toruslabs/openlogin";
+import {Environment} from "../../../shared/environment";
 
 export type LoginWithTorusContextData = {
   chooseFlow?: {
     key: string;
     label: string;
   };
+  useMockProfileIndex?: number,
   userInfo?: any;
   privateKey?: string;
   encryptionPin?: string;
@@ -149,6 +152,10 @@ const processDefinition = (processId: string) =>
             },
             onDone: [
               {
+                cond: (context) => context.data.useMockProfileIndex !== undefined,
+                target: "useMockProfile",
+              },
+              {
                 cond: (context) => context.data.accountAddress === undefined,
                 target: "chooseFlow",
               },
@@ -200,7 +207,65 @@ const processDefinition = (processId: string) =>
                     }*/,
           ],
         }),
+        useMockProfile: {
+          id: "useMockProfile",
+          entry: [
+            () => {
+              window.o.publishEvent(<PlatformEvent>{
+                type: "shell.progress",
+                message: window.i18n("dapps.o-onboarding.processes.loginWithTorus.pleaseWaitWeSigningYouIn"),
+              });
+            },
+            (context) => {
+              context.dirtyFlags = {};
+            },
+          ],
+          invoke: {
+            src: async (context) => {
+              const mockProfile = Environment.getTestProfile(context.data.useMockProfileIndex);
+              const openLogin = <GetOpenLoginResult>{
+                async login(params: any): Promise<{ privKey: string }> {
+                  return {
+                    privKey: mockProfile.privateKey
+                  };
+                },
+                async getUserInfo(): Promise<OpenloginUserInfo> {
+                  delete mockProfile.privateKey;
+                  return mockProfile;
+                }
+              };
+              const privateKey = await openLogin.login({
+                loginProvider: "google",
+                extraLoginOptions: {
+                  prompt: "select_account",
+                  display: "touch",
+                },
+              });
 
+              const userInfo = await openLogin.getUserInfo();
+              return {
+                privateKey: privateKey.privKey,
+                userInfo: userInfo,
+              };
+            },
+            onDone: {
+              actions: "assignPrivateKeyAndUserInfoToContext",
+              target: "#enterEncryptionPin",
+            },
+            onError: [
+              {
+                // user closed popup
+                cond: (context, event) => event.data.message == "user closed popup",
+                target: "#chooseFlow",
+              },
+              {
+                cond: (context, event) => (window.o.lastError = event.data),
+                actions: setWindowLastError,
+                target: "#showError",
+              },
+            ],
+          },
+        },
         google: {
           id: "google",
           entry: [
