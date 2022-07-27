@@ -97,8 +97,13 @@ const processDefinition = (processId: string) =>
         component: CheckoutDelivery,
         params: (context) => {
           return {
-            view: editorContent.delivery,
-            submitButtonText: editorContent.delivery.submitButtonText,
+            view: editorContent.delivery = {
+              title: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.title"),
+              description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.description"),
+              placeholder: "",
+              submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.submitButtonText"),
+            },
+            submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.submitButtonText"),
             availableDeliveryMethods: context.data.availableDeliveryMethods
           }
         },
@@ -235,10 +240,10 @@ const editorContent: { [x: string]: EditorViewContext } = {
     submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.submitButtonText"),
   },
   delivery: {
-    title: "Delivery options",
-    description: "Please select a delivery option",
+    title: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.title"),
+    description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.description"),
     placeholder: "",
-    submitButtonText: "Next",
+    submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.submitButtonText"),
   },
 };
 
