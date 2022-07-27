@@ -9,6 +9,7 @@ import { upsertShippingAddress } from "../../o-passport/processes/upsertShipping
 import { me } from "../../../shared/stores/me";
 import { PostAddress } from "../../../shared/api/data/types";
 import formatShippingAddress from "../../../shared/functions/formatPostAddress";
+import {_} from "svelte-i18n";
 
 export let context: EditorContext;
 
@@ -42,7 +43,8 @@ function submit() {
   console.log(selectedCountry);
   console.log(shippingAddressId);
   if (deliveryType == 2 && selectedCountry && selectedCountry != "Germany") {
-    error = "This shop only delivers to Germany. Please select or enter a German Postal Address.";
+    error = window.i18n("dapps.o-marketplace.molecules.checkoutDelivery.error")
+    "This shop only delivers to Germany. Please select or enter a German Postal Address.";
   } else {
     const answer = new Continue();
 
@@ -87,7 +89,7 @@ async function restartPurchase(shippingAddressId: number, oldContext: EditorCont
           bind:group="{deliveryType}"
           name="deliveryType"
           value="{2}" />
-        <span class="pb-2 align-baseline">I want this order to be delivered to me</span>
+        <span class="pb-2 align-baseline">{$_("dapps.o-marketplace.molecules.checkoutDelivery.delivery")}</span>
       </label>
     </div>
     <div class="form-control">
@@ -99,7 +101,7 @@ async function restartPurchase(shippingAddressId: number, oldContext: EditorCont
           bind:group="{deliveryType}"
           name="deliveryType"
           value="{1}" />
-        <span class="inline"> I want to pick this order up at the store</span>
+        <span class="inline">{$_("dapps.o-marketplace.molecules.checkoutDelivery.pickup")}</span>
       </label>
     </div>
     {#if deliveryType === 2}
@@ -125,19 +127,19 @@ async function restartPurchase(shippingAddressId: number, oldContext: EditorCont
                     }, 30);
                   },
                 });
-              }}">Add Address</button>
+              }}">{$_("dapps.o-marketplace.molecules.checkoutDelivery.addAddressButton")}</button>
           </div>
         </label>
       </div>
     {:else}
       <div class="flex flex-col mt-4 space-y-2 text-center">
         {#if context.data.shop.pickupAddress}
-          <div>You can pick up your order at:</div>
+          <div>{$_("dapps.o-marketplace.molecules.checkoutDelivery.youCanPickupAt")}</div>
 
           <div class="font-bold">{@html formatShippingAddress(context.data.shop.pickupAddress, true)}</div>
         {/if}
         {#if context.data.shop.openingHours}
-          <div class="pt-2">Our Opening Hours are:</div>
+          <div class="pt-2">{$_("dapps.o-marketplace.molecules.checkoutDelivery.openingHours")}</div>
 
           <div>{@html context.data.shop.openingHours}</div>
         {/if}
