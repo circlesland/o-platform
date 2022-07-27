@@ -1,19 +1,20 @@
 <script lang="ts">
 import { onMount } from "svelte";
 import {
-CreateNewStringAndKeyDocument,
+  CreateNewStringAndKeyDocument,
   GetAllStringsByMaxVersionDocument,
   GetAllStringsByMaxVersionQuery,
   GetAvailableLanguagesDocument,
   GetAvailableLanguagesQuery,
   I18n,
-MutationCreateNewStringAndKeyArgs,
+  MutationCreateNewStringAndKeyArgs,
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
 import LangSwitcher from "../../../shared/atoms/LangSwitcher.svelte";
 import { Environment } from "../../../shared/environment";
 import Tree from "../atoms/Tree.svelte";
 import { CTreeNode, StateSnapshot } from "../classes/treenode";
+import { createEventDispatcher } from "svelte";
 
 let displayedTree: CTreeNode = new CTreeNode("root");
 let keyFilter: string = "";
@@ -25,6 +26,13 @@ let createNewStringMode: boolean = false;
 let keyToCreate: string;
 let stringToCreate: string;
 let availableLanguages = [];
+let filteredI18nData: I18n[] = [];
+let fullI18nData: I18n[] = [];
+let displayedI18nData: I18n[] = [];
+
+let dispatch = createEventDispatcher();
+
+export let searchString: string = "";
 
 async function createTree(rootData: I18n[]): Promise<CTreeNode> {
   let cTreenode = new CTreeNode("root");
@@ -50,7 +58,6 @@ onMount(async () => {
   });
 });
 
-
 async function filterItems(keyFilter: string, valueFilter: string, i18nData: I18n[]) {
   const filteredByKey = i18nData.filter((item) => item.key.includes(keyFilter));
   const filteredByValue = filteredByKey.filter((item) =>
@@ -75,13 +82,14 @@ async function refreshView() {
     }
     return 0;
   });
+  fullI18nData = queryResult;
   const filteredQueryResult = queryResult.filter((o) => isSelected(o.lang));
   sortByKey(filteredQueryResult);
-  let filteredI18nData = await filterItems(keyFilter, valueFilter, filteredQueryResult);
+  filteredI18nData = await filterItems(keyFilter, searchString, filteredQueryResult);
 
   displayedTree = await createTree(filteredI18nData);
 
-  if (!snapshot && !(keyFilter.trim() != "" || valueFilter.trim() != "") && displayedTree) {
+  if (!snapshot && !(keyFilter.trim() != "" || searchString.trim() != "") && displayedTree) {
     snapshot = displayedTree.createStateSnapshot();
   } else {
     displayedTree.restoreStateSnapshot(snapshot);
@@ -91,6 +99,8 @@ async function refreshView() {
 
 $: {
   refreshView();
+  searchString;
+  //filteredI18nData
 }
 
 const toggleLanguage = async (data: string) => {
@@ -121,19 +131,17 @@ function isSelected(languageCode: string) {
   return languageList.indexOf(languageCode) > -1;
 }
 
-
 async function writeNewKeyToDb(lang: string, key: string, version: number, value: string) {
   return await ApiClient.query<I18n, MutationCreateNewStringAndKeyArgs>(CreateNewStringAndKeyDocument, {
     lang: lang,
     key: key,
     version: version,
-    value: value
-  })
+    value: value,
+  });
 }
 </script>
 
-
-<section class="text-white">
+<section class="text-white p-6">
   <!--{#if !createNewStringMode}
   <div class="flex grow justify-center mt-3">
     <form on:input="{() => refreshView()}" class="justify-start">
@@ -197,14 +205,27 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
     {/each}
   </div>-->
 
-  <div class="mr-3 ml-3">
+  <div class="flex grow justify-center">
+    <form
+      on:input="{() => {
+        refreshView();
+        dispatch('keySearch', { keyFilter: keyFilter, i18nData: filteredI18nData });
+        console.log(filteredI18nData, "bla")
+      }}">
+      <input bind:value="{keyFilter}" class="input m-1" type="text" placeholder="dapps.o-banking..." />
+    </form>
+  </div>
+
+  <div class="mr-3 ml-3 mt-3">
     <Tree
       rootNode="{displayedTree}"
+      on:display
       on:expand="{(event) => {
         let partialSnapshot = event.detail.newSnapshot;
+        
         for (let property in partialSnapshot) {
           snapshot[property] = partialSnapshot[property];
-        }
+        };
       }}" />
   </div>
 </section>

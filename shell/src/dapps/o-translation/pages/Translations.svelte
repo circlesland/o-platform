@@ -5,18 +5,29 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import TreeView from "./TreeView.svelte";
 import EditorView from "./EditorView.svelte";
+import { I18n } from "../../../shared/api/data/types";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
+
+let keyFilter: string;
+let stringFilter: string;
+let i18nData: I18n[];
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<section class="p-6 inline-grid grid-cols-4 w-full">
+<section class="p-6 inline-grid grid-cols-4 w-full min-h-[85vh]">
   <div class="h-full bg-blue-900 col-span-1">
-    <TreeView />
+    <TreeView
+      searchString="{stringFilter}"
+      on:display="{(event) => (i18nData = event.detail.displayedI18nData)}"
+      on:keySearch="{(event) => ((keyFilter = event.detail.keyFilter), (i18nData = event.detail.i18nData))}" />
   </div>
-  <div class="col-span-3">
-    <EditorView />
+  <div class="col-span-3 bg-gray-300 rounded">
+    <EditorView
+      i18nData="{i18nData}"
+      searchKey="{keyFilter}"
+      on:stringSearch="{(event) => (stringFilter = event.detail.searchString)}" />
   </div>
 </section>

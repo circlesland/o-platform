@@ -7,42 +7,27 @@ import {
   I18n,
 } from "../../../shared/api/data/types";
 
-import { paginate, PaginationNav } from "svelte-paginate";
-
 import { ApiClient } from "../../../shared/apiConnection";
 import StringEditor from "../atoms/StringEditor.svelte";
 import { Environment } from "../../../shared/environment";
+import { createEventDispatcher } from "svelte";
 
 let keyFilter: string = "";
 let valueFilter: string = "";
 let allLanguages: string[] = [];
 let languageList: string[] = [];
 
-let items: I18n[] = [];
-let currentPage: number = 1;
-let pageSize: number = 30;
-$: paginatedItems = paginate({ items, pageSize, currentPage });
-
-function isSelected(languageCode: string) {
-  return languageList.indexOf(languageCode) > -1;
-}
+const dispatch = createEventDispatcher();
 
 
+export let searchKey: string = "";
+export let i18nData: I18n[] = [];
 
-function sortByKey(dataToSort: I18n[]) {
-  dataToSort.sort((a, b) => {
-    if (a.key < b.key) {
-      return -1;
-    }
-    if (a.key > b.key) {
-      return 1;
-    }
-    return 0;
-  });
-  return dataToSort;
-}
+let items: I18n[] = i18nData;
 
-async function reload() {
+let filteredItems: I18n[] = [];
+
+async function getAllLanguages() {
   const queryResult = await ApiClient.query<I18n[], GetAllStringsByMaxVersionQuery>(
     GetAllStringsByMaxVersionDocument,
     {}
@@ -58,19 +43,48 @@ async function reload() {
     }
     return 0;
   });
-  const filteredQueryResult = queryResult.filter((o) => isSelected(o.lang));
-  sortByKey(filteredQueryResult);
-  items = filteredQueryResult;
-  console.log("reloaded")
+}
+
+
+function isSelected(languageCode: string) {
+  return languageList.indexOf(languageCode) > -1;
+}
+
+function sortByKey(dataToSort: I18n[]) {
+  dataToSort.sort((a, b) => {
+    if (a.key < b.key) {
+      return -1;
+    }
+    if (a.key > b.key) {
+      return 1;
+    }
+    return 0;
+  });
+  return dataToSort;
+}
+
+async function reload() {
+
+  items = i18nData;
+
+  console.log(i18nData, "momomomo")
+
+  console.log("reloaded", items);
 }
 
 $: {
   reload();
+  filterItems(searchKey, valueFilter)
+  items
+  i18nData
+  filteredItems
 }
 
 onMount(async () => {
   languageList.push(Environment.userLanguage);
   reload();
+
+  getAllLanguages();
 });
 
 function filterItems(keyFilter: string, valueFilter: string) {
@@ -78,9 +92,8 @@ function filterItems(keyFilter: string, valueFilter: string) {
   const filteredByValue = filteredByKey.filter((item) =>
     item.value.toLowerCase().startsWith(valueFilter.toLocaleLowerCase())
   );
-  currentPage = 1;
-  paginatedItems = paginate({ items: filteredByValue, pageSize, currentPage });
   console.log(filteredByValue);
+  filteredItems = filteredByValue;
 }
 
 const toggleLanguage = async (data: string) => {
@@ -96,21 +109,12 @@ const toggleLanguage = async (data: string) => {
 </script>
 
 <section class="flex flex-col items-center justify-center p-6">
-  <div class="pagiNav">
-    <PaginationNav
-      totalItems="{items.length}"
-      pageSize="{pageSize}"
-      currentPage="{currentPage}"
-      limit="{1}"
-      showStepOptions="{true}"
-      on:setPage="{(e) => (currentPage = e.detail.page)}" />
-  </div>
-
   <div class="w-full flex flex-row flex-wrap items-stretch justify-center">
-    <form on:input="{() => filterItems(keyFilter, valueFilter)}" class="">
-      <input bind:value="{keyFilter}" class="input m-1" type="text" placeholder="dapps.o-banking..." />
-    </form>
-    <form on:input="{() => filterItems(keyFilter, valueFilter)}">
+    <form
+      on:input="{() => {
+        filterItems(searchKey, valueFilter);
+        dispatch('stringSearch', { searchString: valueFilter });
+      }}">
       <input bind:value="{valueFilter}" class="input m-1" type="text" placeholder="String" />
     </form>
     {#each allLanguages as languageCode}
@@ -134,8 +138,8 @@ const toggleLanguage = async (data: string) => {
       <div class="table-cell p-1">Version</div>
       <div class="table-cell p-1">Input</div>
     </div>
-    {#each paginatedItems as data (data.key + data.lang + data.version)}
-      <div class="w-full table-row-group">
+    {#each filteredItems as data (data.key + data.lang + data.version)}
+      <div class="w-full table-row-group string">
         <StringEditor
           on:save="{() => reload()}"
           on:searchKey="{(e) => filterItems(e.detail.keyLink, valueFilter)}"
@@ -147,24 +151,3 @@ const toggleLanguage = async (data: string) => {
     {/each}
   </div>
 </section>
-
-<style>
-.pagiNav :global(.pagination-nav) {
-  display: flex;
-}
-
-.pagiNav :global(.option) {
-  background-color: rgba(12, 238, 238, 0.082);
-  cursor: pointer;
-  padding: 1rem;
-}
-
-.pagiNav :global(.option):hover {
-  background-color: rgba(255, 255, 255, 0.062);
-}
-
-.pagiNav :global(.option.active) {
-  color: green;
-  background-color: rgba(255, 255, 255, 0.062);
-}
-</style>

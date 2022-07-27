@@ -40,7 +40,7 @@ export class CTreeNode {
     let stateSnapshot: StateSnapshot = {};
     loopOverTree(this);
 
-    function loopOverTree(tree) {
+    function loopOverTree(tree: CTreeNode) {
       for (let i = 0; i < tree._children.length; i++) {
         stateSnapshot[tree._snapId] = tree._isExpanded;
 
