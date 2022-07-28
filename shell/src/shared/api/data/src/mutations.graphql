@@ -215,6 +215,8 @@ mutation upsertProfile(
   $cityGeonameid: Int
   $status: String!
   $successorOfCirclesAddress: String
+  $gender: Gender
+  $age: Int
 ) {
   upsertProfile(
     data: {
@@ -236,6 +238,8 @@ mutation upsertProfile(
       cityGeonameid: $cityGeonameid
       status: $status
       successorOfCirclesAddress: $successorOfCirclesAddress
+      gender: $gender
+      age: $age
     }
   ) {
     id
@@ -258,6 +262,8 @@ mutation upsertProfile(
     displayTimeCircles
     displayCurrency
     cityGeonameid
+    age
+    gender
     city {
       geonameid
       name
