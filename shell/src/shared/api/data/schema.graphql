@@ -1080,7 +1080,7 @@ input ChatMessageEventFilter {
 }
 
 input ContactAggregateFilter {
-      addresses: [String!]!
+        addresses: [String!]!
 }
 
 input CrcBalanceAggregateFilter {
