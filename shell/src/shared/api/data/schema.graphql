@@ -6,6 +6,14 @@ schema {
     subscription: Subscription
 }
 
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+    subscription: Subscription
+}
+
 directive @cost(value: Int) on FIELD_DEFINITION
 
 directive @costFactor(value: Int) on FIELD_DEFINITION
@@ -416,7 +424,6 @@ type Mutation {
     completePurchase(invoiceId: Int!, revoke: Boolean): Invoice!
     completeSale(invoiceId: Int!, revoke: Boolean): Invoice!
     confirmLegalAge(age: Int!): Boolean!
-    createNewStringAndKey(createdBy: String, key: String, lang: String, value: String, version: Int): i18n
     createTestInvitation: CreateInvitationResult!
     deleteShippingAddress(id: Int!): PostAddress
     importOrganisationsOfAccount: [Organisation!]!
@@ -651,8 +658,8 @@ type Purchased implements IEventPayload {
 }
 
 type Purchases implements IAggregatePayload {
-    lastUpdatedAt: String!
-    purchases: [Purchase!]!
+      lastUpdatedAt: String!
+      purchases: [Purchase!]!
 }
 
 type Query {
@@ -988,8 +995,8 @@ enum ContactDirection {
 }
 
 enum Direction {
-    in
-    out
+      in
+      out
 }
 
 enum DisplayCurrency {
@@ -1064,16 +1071,42 @@ enum TrustDirection {
 "A date and time value in JSON format."
 scalar Date
 
+"A date and time value in JSON format."
+scalar Date
+
 input ChatMessageEventFilter {
-    id: Int!
+      id: Int!
 }
 
 input ContactAggregateFilter {
-    addresses: [String!]!
+      addresses: [String!]!
 }
 
 input CrcBalanceAggregateFilter {
-    tokenAddresses: [String!]!
+      tokenAddresses: [String!]!
+}
+
+input CreateTagInput {
+    typeId: String!
+    value: String
+}
+
+input OfferByIdAndVersionInput {
+    offerId: Int!
+    offerVersion: Int
+}
+
+input OfferInput {
+    allergens: String
+    createdByProfileId: Int!
+    description: String
+    id: Int
+    minAge: Int
+    pictureMimeType: String!
+    pictureUrl: String!
+    pricePerUnit: String!
+    timeCirclesPriceShare: Int!
+    title: String!
 }
 
 input CreateTagInput {
@@ -1100,8 +1133,8 @@ input OfferInput {
 }
 
 input OffersAggregateFilter {
-    createdByAddresses: [String!]
-    offerIds: [Int!]
+      createdByAddresses: [String!]
+      offerIds: [Int!]
 }
 
 input PaginationArgs {
@@ -1121,11 +1154,11 @@ input PostAddressInput {
 }
 
 input ProfileAggregateFilter {
-    contacts: ContactAggregateFilter
-    crcBalance: CrcBalanceAggregateFilter
-    offers: OffersAggregateFilter
-    purchases: PurchasesAggregateFilter
-    sales: SalesAggregateFilter
+      contacts: ContactAggregateFilter
+      crcBalance: CrcBalanceAggregateFilter
+      offers: OffersAggregateFilter
+      purchases: PurchasesAggregateFilter
+      sales: SalesAggregateFilter
 }
 
 input ProfileEventFilter {
