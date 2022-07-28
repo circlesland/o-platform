@@ -2,7 +2,6 @@ mutation upsertShippingAddress($data: PostAddressInput!) {
   upsertShippingAddress(data: $data) {
     id
     name
-
     street
     house
     zip

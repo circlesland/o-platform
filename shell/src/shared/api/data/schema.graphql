@@ -416,6 +416,7 @@ type Mutation {
     completePurchase(invoiceId: Int!, revoke: Boolean): Invoice!
     completeSale(invoiceId: Int!, revoke: Boolean): Invoice!
     confirmLegalAge(age: Int!): Boolean!
+    createNewStringAndKey(createdBy: String, key: String, lang: String, value: String, version: Int): i18n
     createTestInvitation: CreateInvitationResult!
     deleteShippingAddress(id: Int!): PostAddress
     importOrganisationsOfAccount: [Organisation!]!
