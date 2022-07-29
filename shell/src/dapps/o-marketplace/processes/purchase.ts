@@ -118,8 +118,13 @@ const processDefinition = (processId: string) =>
         entry: (context) => console.log("checkoutSummary context:", context),
         component: CheckoutSummary,
         params: {
-          view: editorContent.summary,
-          submitButtonText: editorContent.summary.submitButtonText,
+          view: editorContent.summary = {
+            title: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.title"),
+            description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.description"),
+            placeholder: "",
+            submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.submitButtonText"),
+          },
+          submitButtonText: editorContent.summary.submitButtonText = window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.submitButtonText"),
         },
         navigation: {
           next: "#createPurchase",
