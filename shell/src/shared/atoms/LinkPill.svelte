@@ -1,7 +1,7 @@
 <script lang="ts">
 import Icons from "./../molecules/Icons.svelte";
 import { media } from "../stores/media";
-import {_} from "svelte-i18n";
+import { _ } from "svelte-i18n";
 
 export let props: {
   icon: string;
@@ -46,10 +46,12 @@ if ($media.small) {
     {#if props.icon}
       <Icons icon="{props.icon}" size="{iconsize}" />
     {/if}
-    {#if !props.i18nKey && props.text}
-      <div>{props.text}</div>
-    {:else if props.i18nKey}
-      {$_(props.i18nKey)}
-    {/if}
+    <div>
+      {#if !props.i18nKey && props.text}
+        {props.text}
+      {:else if props.i18nKey}
+        {$_(props.i18nKey)}
+      {/if}
+    </div>
   </div>
 </a>
