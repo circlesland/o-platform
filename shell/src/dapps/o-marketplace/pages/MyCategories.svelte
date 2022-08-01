@@ -11,6 +11,7 @@ import { useMachine } from "@xstate/svelte";
 import { flip } from "svelte/animate";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 import { me } from "../../../shared/stores/me";
+import ShopEditorSelector from "../molecules/ShopEditorSelector.svelte";
 import {
   Shop,
   ShopCategory,
@@ -49,7 +50,7 @@ let currentCategory: ShopCategoryInput;
 let currentCategoryId: any;
 let editCategoryId: Number;
 let categoryOrder: Number;
-let selectedShopIndex: any = 0;
+let selectedShopIndex: any = localStorage.getItem("editShopIndex") || 0;
 
 $: categories = categories;
 
@@ -65,10 +66,10 @@ onMount(async () => {
     return;
   }
 
-  loadShop();
+  loadShop(selectedShopIndex);
 });
 
-async function loadShop() {
+async function loadShop(selectedShopIndex) {
   shopId = shops[selectedShopIndex].id;
 
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
@@ -181,34 +182,6 @@ $: {
   }
 }
 
-// $: {
-//   if (_state) {
-//     if (editType == "largeBannerUrl") {
-//       categories[currentCategoryId].largeBannerUrl = $_state.context.data.url;
-//       submit();
-//       editType = null;
-//     }
-//   }
-// }
-
-// async function updateCategory(newCategory: Boolean = false) {
-//   try {
-//     const result = await ApiClient.mutate<UpsertShopCategoriesResult, UpsertShopCategoriesMutationVariables>(
-//       UpsertShopCategoriesDocument,
-//       { shopCategories: currentCategor }
-//     );
-//     showToast("success", "Shop successfully updated");
-//     // editShopId = null;
-//     if (newCategory) {
-//       categories = [...categories, <ShopCategory>currentCategory];
-//     } else {
-//     }
-//     return ok(result);
-//   } catch {
-//     showToast("error", "Shop not updated");
-//   }
-// }
-
 async function updateCategory() {
   const result = await ApiClient.mutate<UpsertShopCategoriesResult, UpsertShopCategoriesMutationVariables>(
     UpsertShopCategoriesDocument,
@@ -247,14 +220,6 @@ function toggleEditCategory(categoryId, index) {
   if (editCategoryId == categoryId) {
     editCategoryId = null;
   } else {
-    // delete shops[index].purchaseMetaDataKeys;
-    // delete shops[index].owner;
-    // delete shops[index].categories;
-    // delete shops[index].createdAt;
-    // delete shops[index].pickupAddress;
-    // delete shops[index].__typename;
-    // delete shops[index].deliveryMethods;
-    // currentShop = <ShopInput>shops[index];
     editCategoryId = categoryId;
   }
 }
@@ -264,15 +229,10 @@ function toggleEditCategory(categoryId, index) {
 
 <div class="mb-20 -mt-3 ">
   {#if shops}
-    <div class="flex flex-col justify-center mb-20 space-y-4">
-      <select class="self-center max-w-xs select" bind:value="{selectedShopIndex}" on:change="{(event) => loadShop()}">
-        <option disabled selected>Select a Shop</option>
-
-        {#each shops as dropdownShop, i}
-          <option value="{i}">Shop: {dropdownShop.name}</option>
-        {/each}
-      </select>
-    </div>
+    <ShopEditorSelector
+      shops="{shops}"
+      bind:shopIndex="{selectedShopIndex}"
+      on:indexChange="{(e) => loadShop(e.detail)}" />
   {/if}
   {#if shop}
     <div class="flex flex-col mb-20 space-y-4 ">

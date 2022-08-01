@@ -40,6 +40,8 @@ import ImageUpload from "../../../shared/molecules/ImageUpload/ImageUpload.svelt
 import { useMachine } from "@xstate/svelte";
 import { flip } from "svelte/animate";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import ShopEditorSelector from "../molecules/ShopEditorSelector.svelte";
+
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 export let shopId: number;
@@ -63,7 +65,7 @@ let changeList: { id: number; entry: ShopCategoryEntry }[] = [];
 let currentCategoryId: any;
 let currentEntry: ShopCategoryEntry;
 let hovering: number = null;
-let selectedShopIndex: any = 0;
+let selectedShopIndex: any = localStorage.getItem("editShopIndex") || 0;
 const options = {
   theme: "snow",
   plainclipboard: true,
@@ -77,10 +79,10 @@ onMount(async () => {
     return;
   }
 
-  loadShop();
+  loadShop(selectedShopIndex);
 });
 
-async function loadShop() {
+async function loadShop(selectedShopIndex) {
   shopId = shops[selectedShopIndex].id;
 
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
@@ -312,18 +314,13 @@ function handleEdit(event) {
   <div class="items-center w-full p-4 ">
     {#if shops}
       <div class="flex flex-col justify-center mb-20 space-y-4">
-        <select
-          class="self-center max-w-xs select"
-          bind:value="{selectedShopIndex}"
-          on:change="{(event) => loadShop()}">
-          <option disabled selected>Select a Shop</option>
-
-          {#each shops as dropdownShop, i}
-            <option value="{i}">Shop: {dropdownShop.name}</option>
-          {/each}
-        </select>
+        <ShopEditorSelector
+          shops="{shops}"
+          bind:shopIndex="{selectedShopIndex}"
+          on:indexChange="{(e) => loadShop(e.detail)}" />
       </div>
     {/if}
+
     <div class="pb-2 mx-auto space-y-4 xl:w-1/2 md:w-2/3">
       {#if shop}
         {#if categories && categories.length > 0}
