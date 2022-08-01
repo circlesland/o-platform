@@ -5,8 +5,10 @@ import { onMount } from "svelte";
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import Editor from "@tinymce/tinymce-svelte";
+// import Editor from "@tinymce/tinymce-svelte";
 import ListViewCard from "../atoms/ListViewCard.svelte";
+
+import RichTextEditor from "@o-platform/o-editors/RichTextEditor.svelte";
 
 import {
   Shop,
@@ -22,6 +24,8 @@ import {
   UpsertShopCategoryEntriesDocument,
   UpsertShopCategoryEntriesMutationVariables,
   ShopCategoryEntry,
+  ShopsQueryVariables,
+  ShopsDocument,
 } from "../../../shared/api/data/types";
 import { Environment } from "../../../shared/environment";
 import { Readable } from "svelte/store";
@@ -59,25 +63,36 @@ let changeList: { id: number; entry: ShopCategoryEntry }[] = [];
 let currentCategoryId: any;
 let currentEntry: ShopCategoryEntry;
 let hovering: number = null;
+let selectedShopIndex: any = 0;
+const options = {
+  theme: "snow",
+  plainclipboard: true,
+};
 
 onMount(async () => {
-  if (!$me || !$me.shops || !$me.shops.length) {
+  shops = await ApiClient.query<Shop[], ShopsQueryVariables>(ShopsDocument, {
+    ownerId: $me.id,
+  });
+  if (!shops || !shops.length) {
     return;
   }
 
-  shopId = $me.shops[0].id;
+  loadShop();
+});
+
+async function loadShop() {
+  shopId = shops[selectedShopIndex].id;
+
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
     id: parseInt(shopId.toString()),
   });
 
   categories = shop.categories;
   categoryInput = categories;
-});
+}
 
 async function updateOffer(entry) {
   try {
-    console.log("ENTRY", entry);
-
     delete entry.product.__typename;
     delete entry.product.createdByProfile;
     delete entry.product.version;
@@ -86,7 +101,7 @@ async function updateOffer(entry) {
     delete entry.product.tags;
 
     offerInput = entry.product;
-    console.log("offerInput", offerInput);
+
     offerInput.createdByProfileId = $me.id;
     offerInput.pictureMimeType = "image/jpeg";
     offerInput.timeCirclesPriceShare = 100;
@@ -94,7 +109,7 @@ async function updateOffer(entry) {
     const result = await ApiClient.mutate<Offer, UpsertOfferMutationVariables>(UpsertOfferDocument, {
       offer: offerInput,
     });
-    console.log("result", result);
+
     showToast("success", "Product was updated");
 
     if (entry.id) {
@@ -295,6 +310,20 @@ function handleEdit(event) {
 
 <div class="w-full px-4 mx-auto -mt-3 xs:w-5/6">
   <div class="items-center w-full p-4 ">
+    {#if shops}
+      <div class="flex flex-col justify-center mb-20 space-y-4">
+        <select
+          class="self-center max-w-xs select"
+          bind:value="{selectedShopIndex}"
+          on:change="{(event) => loadShop()}">
+          <option disabled selected>Select a Shop</option>
+
+          {#each shops as dropdownShop, i}
+            <option value="{i}">Shop: {dropdownShop.name}</option>
+          {/each}
+        </select>
+      </div>
+    {/if}
     <div class="pb-2 mx-auto space-y-4 xl:w-1/2 md:w-2/3">
       {#if shop}
         {#if categories && categories.length > 0}
@@ -341,17 +370,9 @@ function handleEdit(event) {
 
                     <div class="break-all ">
                       <h1 class="w-full mt-2 text-left label">Description</h1>
-                      <Editor
-                        scriptSrc="tinymce/tinymce.min.js"
-                        bind:value="{entry.product.description}"
-                        on:input="{() => changeEntry(entry.id, entry)}" />
-                      <!-- <input
-                      type="text"
-                      size="30"
-                      class="input"
-                      placeholder="{entry.product.description}"
-                      bind:value="{entry.product.description}"
-                      on:input="{() => changeEntry(entry.id, entry)}" /> -->
+                      <RichTextEditor
+                        bind:editorValue="{entry.product.description}"
+                        on:valueChange="{(e) => (entry.product.description = e.detail)}" />
                     </div>
 
                     <div class="grid grid-cols-1 gap-4 auto-rows-auto xs:grid-cols-3">
@@ -445,6 +466,10 @@ function handleEdit(event) {
     </div>
   </div>
 </div>
+
+<svelte:head>
+  <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css" />
+</svelte:head>
 
 <style>
 .table-row-group.is-active {
