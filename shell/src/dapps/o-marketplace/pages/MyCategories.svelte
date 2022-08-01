@@ -235,7 +235,7 @@ function toggleEditCategory(categoryId, index) {
       on:indexChange="{(e) => loadShop(e.detail)}" />
   {/if}
   {#if shop}
-    <div class="flex flex-col mb-20 space-y-4 ">
+    <div class="flex flex-col pb-20 space-y-4 ">
       {#if categories.length > 0}
         <div class="flex flex-col space-y-4">
           {#each categories as category, index (category.id)}

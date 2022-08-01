@@ -220,7 +220,7 @@ async function createNewShop() {
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="mb-20 -mt-3 ">
+<div class="pb-20 -mt-3 ">
   <!-- <div class="flex flex-wrap items-stretch space-x-4 space-y-8"> -->
   {#if shops}
     {#each shops as shop, index (shop.id)}
