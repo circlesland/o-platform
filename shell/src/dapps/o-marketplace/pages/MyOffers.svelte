@@ -310,157 +310,154 @@ function handleEdit(event) {
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="w-full px-4 mx-auto -mt-3 xs:w-5/6">
-  <div class="items-center w-full p-4 ">
-    {#if shops}
-      <div class="flex flex-col justify-center mb-20 space-y-4">
-        <ShopEditorSelector
-          shops="{shops}"
-          bind:shopIndex="{selectedShopIndex}"
-          on:indexChange="{(e) => loadShop(e.detail)}" />
-      </div>
-    {/if}
+<div class="pb-20 mx-auto -mt-3 space-y-4 xl:w-1/2 md:w-2/3">
+  {#if shops}
+    <div class="flex flex-col justify-center ">
+      <ShopEditorSelector
+        shops="{shops}"
+        bind:shopIndex="{selectedShopIndex}"
+        on:indexChange="{(e) => loadShop(e.detail)}" />
+    </div>
+  {/if}
 
-    <div class="pb-2 mx-auto space-y-4 xl:w-1/2 md:w-2/3">
-      {#if shop}
-        {#if categories && categories.length > 0}
-          {#each categories as category, catindex (category.name)}
-            <div class="w-full p-2 whitespace-nowrap rounded-t-md">
-              <h1 class="inline pr-4 h1">{category.name}</h1>
-              <button class="inline btn btn-primary btn-square btn-sm" on:click="{() => addProduct(category.id)}"
-                >+</button>
-            </div>
+  <div class="flex flex-col mb-20 space-y-4 ">
+    {#if shop}
+      {#if categories && categories.length > 0}
+        {#each categories as category, catindex (category.name)}
+          <div class="w-full p-2 whitespace-nowrap rounded-t-md">
+            <h1 class="inline pr-4 h1">{category.name}</h1>
+            <button class="inline btn btn-primary btn-square btn-sm" on:click="{() => addProduct(category.id)}"
+              >+</button>
+          </div>
 
-            {#if category.entries}
-              {#each category.entries as entry, index (entry.id)}
-                <div class="relative">
-                  {#if editOfferId == entry.id}
-                    <div
-                      class="absolute z-10 text-center align-top list-none cursor-pointer top-1 left-2 inline-table "
-                      on:click="{() => imageEditor(category.id, entry.id, false)}">
-                      <span>
-                        <span
-                          class="table-cell w-10 h-10 align-middle bg-black rounded-full text-primary bg-opacity-60">
-                          <Icon name="camera" class="inline w-6 h-6 heroicon smallicon" />
-                        </span>
-                      </span>
-                    </div>
-                  {/if}
-                  <ListViewCard
-                    entry="{entry}"
-                    shopId="{shopId}"
-                    editable="{true}"
-                    id="{entry.id}"
-                    on:edit="{handleEdit}" />
-                </div>
+          {#if category.entries}
+            {#each category.entries as entry, index (entry.id)}
+              <div class="relative">
                 {#if editOfferId == entry.id}
-                  <div class="flex flex-col space-y-4 ">
-                    <div class="">
-                      <h1 class="w-full mt-2 text-left label">Title</h1>
-                      <input
-                        type="text"
-                        class="w-full input"
-                        placeholder="{entry.product.title}"
-                        bind:value="{entry.product.title}"
-                        on:input="{() => changeEntry(entry.id, entry)}" />
-                    </div>
-
-                    <div class="break-all ">
-                      <h1 class="w-full mt-2 text-left label">Description</h1>
-                      <RichTextEditor
-                        bind:editorValue="{entry.product.description}"
-                        on:valueChange="{(e) => (entry.product.description = e.detail)}" />
-                    </div>
-
-                    <div class="grid grid-cols-1 gap-4 auto-rows-auto xs:grid-cols-3">
-                      <div class="break-all xs:justify-self-start">
-                        <h4 class="w-full mt-2 text-left label">Price per Unit</h4>
-                        <input
-                          type="text"
-                          class="w-20 input"
-                          placeholder="{entry.product.pricePerUnit}"
-                          bind:value="{entry.product.pricePerUnit}"
-                          on:input="{() => changeEntry(entry.id, entry)}" />
-                      </div>
-                      <div class="xs:justify-self-center">
-                        <h4 class="w-full mt-2 text-left label">Change Category</h4>
-                        <select
-                          class="select"
-                          value="{category.id}"
-                          on:change="{(event) => changeCategory(event, entry.id, index, catindex, category.id)}">
-                          {#each categories as listcategory}
-                            <option value="{listcategory.id}">{listcategory.name}</option>
-                          {/each}
-                        </select>
-                      </div>
-                      <div class="xs:justify-self-end">
-                        <h4 class="w-full mt-2 text-left label">Display</h4>
-                        <input
-                          type="checkbox"
-                          class="inline-block toggle toggle-primary"
-                          value="{entry.enabled}"
-                          bind:checked="{entry.enabled}"
-                          on:change="{() => updateCategoryEntries(category.entries)}" />
-                        <div class="inline-block align-top">Enabled?</div>
-                      </div>
-
-                      <div class="xs:justify-self-start">
-                        <h4 class="w-full mt-2 text-left label">Minimum Age Restriction</h4>
-                        <input
-                          type="number"
-                          class="w-20 input"
-                          placeholder="{entry.product.minAge}"
-                          bind:value="{entry.product.minAge}" />
-                      </div>
-                      <div class="xs:justify-self-center">
-                        <h4 class="w-full mt-2 text-left label">Product Version</h4>
-                        {entry.productVersion}
-                      </div>
-                    </div>
-
-                    <div class="relative flex items-center py-5">
-                      <div class="flex-grow border-t border-gray-400"></div>
-                      <span class="flex-shrink mx-4 text-gray-400"
-                        ><button class="btn btn-primary" on:click="{updateOffer(entry)}">Save Offer</button></span>
-                      <div class="flex-grow border-t border-gray-400"></div>
-                    </div>
+                  <div
+                    class="absolute z-10 text-center align-top list-none cursor-pointer top-1 left-2 inline-table "
+                    on:click="{() => imageEditor(category.id, entry.id, false)}">
+                    <span>
+                      <span class="table-cell w-10 h-10 align-middle bg-black rounded-full text-primary bg-opacity-60">
+                        <Icon name="camera" class="inline w-6 h-6 heroicon smallicon" />
+                      </span>
+                    </span>
                   </div>
                 {/if}
-              {/each}
-            {/if}
-          {/each}
-          {#if showModal}
-            <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
-              {#if editImage}
-                <ImageUpload on:submit="{handleImageUpload}" cropShape="square" aspect="{1 / 1}" maxWidth="{800}" />
-              {:else}
-                <div class="flex flex-col w-full h-full p-4">
-                  <button
-                    class="self-center mb-4 btn btn-primary btn-sm"
-                    on:click="{() => {
-                      editImage = true;
-                    }}">Remove Image</button>
-                  <div class="text-center">
-                    <div class="inline-flex">
-                      <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
+                <ListViewCard
+                  entry="{entry}"
+                  shopId="{shopId}"
+                  editable="{true}"
+                  id="{entry.id}"
+                  on:edit="{handleEdit}" />
+              </div>
+              {#if editOfferId == entry.id}
+                <div class="flex flex-col space-y-4 ">
+                  <div class="">
+                    <h1 class="w-full mt-2 text-left label">Title</h1>
+                    <input
+                      type="text"
+                      class="w-full input"
+                      placeholder="{entry.product.title}"
+                      bind:value="{entry.product.title}"
+                      on:input="{() => changeEntry(entry.id, entry)}" />
+                  </div>
+
+                  <div class="break-all ">
+                    <h1 class="w-full mt-2 text-left label">Description</h1>
+                    <RichTextEditor
+                      bind:editorValue="{entry.product.description}"
+                      on:valueChange="{(e) => (entry.product.description = e.detail)}" />
+                  </div>
+
+                  <div class="grid grid-cols-1 gap-4 auto-rows-auto xs:grid-cols-3">
+                    <div class="break-all xs:justify-self-start">
+                      <h4 class="w-full mt-2 text-left label">Price per Unit</h4>
+                      <input
+                        type="text"
+                        class="w-20 input"
+                        placeholder="{entry.product.pricePerUnit}"
+                        bind:value="{entry.product.pricePerUnit}"
+                        on:input="{() => changeEntry(entry.id, entry)}" />
                     </div>
+                    <div class="xs:justify-self-center">
+                      <h4 class="w-full mt-2 text-left label">Change Category</h4>
+                      <select
+                        class="select"
+                        value="{category.id}"
+                        on:change="{(event) => changeCategory(event, entry.id, index, catindex, category.id)}">
+                        {#each categories as listcategory}
+                          <option value="{listcategory.id}">{listcategory.name}</option>
+                        {/each}
+                      </select>
+                    </div>
+                    <div class="xs:justify-self-end">
+                      <h4 class="w-full mt-2 text-left label">Display</h4>
+                      <input
+                        type="checkbox"
+                        class="inline-block toggle toggle-primary"
+                        value="{entry.enabled}"
+                        bind:checked="{entry.enabled}"
+                        on:change="{() => updateCategoryEntries(category.entries)}" />
+                      <div class="inline-block align-top">Enabled?</div>
+                    </div>
+
+                    <div class="xs:justify-self-start">
+                      <h4 class="w-full mt-2 text-left label">Minimum Age Restriction</h4>
+                      <input
+                        type="number"
+                        class="w-20 input"
+                        placeholder="{entry.product.minAge}"
+                        bind:value="{entry.product.minAge}" />
+                    </div>
+                    <div class="xs:justify-self-center">
+                      <h4 class="w-full mt-2 text-left label">Product Version</h4>
+                      {entry.productVersion}
+                    </div>
+                  </div>
+
+                  <div class="relative flex items-center py-5">
+                    <div class="flex-grow border-t border-gray-400"></div>
+                    <span class="flex-shrink mx-4 text-gray-400"
+                      ><button class="btn btn-primary" on:click="{updateOffer(entry)}">Save Offer</button></span>
+                    <div class="flex-grow border-t border-gray-400"></div>
                   </div>
                 </div>
               {/if}
-            </Center>
+            {/each}
           {/if}
-        {:else}
-          <div class="text-center">
-            You don't have any Categories set up yet. <a
-              href="/#/marketplace/my-categories"
-              class="link"
-              alt="set up categories">Create a Category</a>
-          </div>
+        {/each}
+        {#if showModal}
+          <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
+            {#if editImage}
+              <ImageUpload on:submit="{handleImageUpload}" cropShape="square" aspect="{1 / 1}" maxWidth="{800}" />
+            {:else}
+              <div class="flex flex-col w-full h-full p-4">
+                <button
+                  class="self-center mb-4 btn btn-primary btn-sm"
+                  on:click="{() => {
+                    editImage = true;
+                  }}">Remove Image</button>
+                <div class="text-center">
+                  <div class="inline-flex">
+                    <img class="m-auto " id="cropCanvas" src="{currentImage}" height="300" alt="avatar" />
+                  </div>
+                </div>
+              </div>
+            {/if}
+          </Center>
         {/if}
       {:else}
-        <h2>sorry, you don't have any stores. are you logged in as the right Organization?</h2>
+        <div class="text-center">
+          You don't have any Categories set up yet. <a
+            href="/#/marketplace/my-categories"
+            class="link"
+            alt="set up categories">Create a Category</a>
+        </div>
       {/if}
-    </div>
+    {:else}
+      <h2>sorry, you don't have any stores. are you logged in as the right Organization?</h2>
+    {/if}
   </div>
 </div>
 
