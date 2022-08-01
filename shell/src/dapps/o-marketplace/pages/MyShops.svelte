@@ -39,7 +39,7 @@ import { useMachine } from "@xstate/svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import Editor from "@tinymce/tinymce-svelte";
+import RichTextEditor from "@o-platform/o-editors/RichTextEditor.svelte";
 
 import formatShippingAddress from "../../../shared/functions/formatPostAddress";
 import List from "../../../shared/molecules/Select/List.svelte";
@@ -68,9 +68,6 @@ onMount(async () => {
   });
 
   deliveryMethods = await ApiClient.query<DeliveryMethod[], DeliveryMethodsQueryVariables>(DeliveryMethodsDocument, {});
-
-  console.log("METHODS: ", deliveryMethods);
-  console.log("SHOPPES", shops);
 });
 
 const tinymceloaded = () => {
@@ -86,7 +83,7 @@ async function updateShop(newShop: Boolean = false) {
 
     const result = await ApiClient.mutate<Shop, UpsertShopMutationVariables>(UpsertShopDocument, { shop: currentShop });
     showToast("success", "Shop successfully updated");
-  
+
     if (newShop) {
       currentShop.id = result.id;
       shops = [...shops, <Shop>currentShop];
@@ -326,19 +323,28 @@ async function createNewShop() {
               <h1 class="w-full mt-2 text-left label">Description</h1>
 
               <div class="w-full">
-                <Editor scriptSrc="tinymce/tinymce.min.js" id="myshopDescription" bind:value="{shop.description}" />
+                <RichTextEditor
+                  editorId="1"
+                  bind:editorValue="{shop.description}"
+                  on:valueChange="{(e) => (shop.description = e.detail)}" />
               </div>
 
               <h1 class="w-full mt-2 text-left label">Opening Hours</h1>
 
               <div class="w-full">
-                <Editor scriptSrc="tinymce/tinymce.min.js" id="myshopOpeningHours" bind:value="{shop.openingHours}" />
+                <RichTextEditor
+                  editorId="2"
+                  bind:editorValue="{shop.openingHours}"
+                  on:valueChange="{(e) => (shop.openingHours = e.detail)}" />
               </div>
 
               <h1 class="w-full mt-2 text-left label">Legal Text</h1>
 
               <div class="w-full">
-                <Editor scriptSrc="tinymce/tinymce.min.js" id="myshopLegalText" bind:value="{shop.legalText}" />
+                <RichTextEditor
+                  editorId="3"
+                  bind:editorValue="{shop.legalText}"
+                  on:valueChange="{(e) => (shop.legalText = e.detail)}" />
               </div>
               <div class="w-full mt-2 text-left label">Terms of Service Link</div>
               <div class="flex flex-row w-full space-x-2">

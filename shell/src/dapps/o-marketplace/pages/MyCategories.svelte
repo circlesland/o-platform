@@ -29,13 +29,14 @@ import { ApiClient } from "../../../shared/apiConnection";
 import Center from "../../../shared/layouts/Center.svelte";
 import { Environment } from "../../../shared/environment";
 import { Readable } from "svelte/store";
-import Editor from "@tinymce/tinymce-svelte";
+import RichTextEditor from "@o-platform/o-editors/RichTextEditor.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 export let shopId: number;
 
 let shop: Shop | null = null;
+let shops: Shop[] | null = null;
 let _state: Readable<any>;
 let showModal: Boolean = false;
 let editImage: Boolean = false;
@@ -48,6 +49,7 @@ let currentCategory: ShopCategoryInput;
 let currentCategoryId: any;
 let editCategoryId: Number;
 let categoryOrder: Number;
+let selectedShopIndex: any = 0;
 
 $: categories = categories;
 
@@ -55,8 +57,7 @@ onMount(async () => {
   if (!$me) {
     return;
   }
-
-  const shops = await ApiClient.query<Shop[], ShopsQueryVariables>(ShopsDocument, {
+  shops = await ApiClient.query<Shop[], ShopsQueryVariables>(ShopsDocument, {
     ownerId: $me.id,
   });
 
@@ -64,7 +65,12 @@ onMount(async () => {
     return;
   }
 
-  shopId = shops[0].id;
+  loadShop();
+});
+
+async function loadShop() {
+  shopId = shops[selectedShopIndex].id;
+
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
     id: parseInt(shopId.toString()),
   });
@@ -86,7 +92,7 @@ onMount(async () => {
   } else {
     categories = shop.categories;
   }
-});
+}
 
 const drop = (target, thisCategory) => {
   const newTracklist = categories;
@@ -257,8 +263,19 @@ function toggleEditCategory(categoryId, index) {
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <div class="mb-20 -mt-3 ">
+  {#if shops}
+    <div class="flex flex-col justify-center mb-20 space-y-4">
+      <select class="self-center max-w-xs select" bind:value="{selectedShopIndex}" on:change="{(event) => loadShop()}">
+        <option disabled selected>Select a Shop</option>
+
+        {#each shops as dropdownShop, i}
+          <option value="{i}">Shop: {dropdownShop.name}</option>
+        {/each}
+      </select>
+    </div>
+  {/if}
   {#if shop}
-    <div class="flex flex-col mb-20 space-y-4 sm:grid-cols-2 ">
+    <div class="flex flex-col mb-20 space-y-4 ">
       {#if categories.length > 0}
         <div class="flex flex-col space-y-4">
           {#each categories as category, index (category.id)}
@@ -321,10 +338,9 @@ function toggleEditCategory(categoryId, index) {
                   <h1 class="w-full mt-2 text-left label">Description</h1>
                   {#if editCategoryId == category.id}
                     <div class="w-full">
-                      <Editor
-                        scriptSrc="tinymce/tinymce.min.js"
-                        id="myshopLegalText"
-                        bind:value="{category.description}" />
+                      <RichTextEditor
+                        bind:editorValue="{category.description}"
+                        on:valueChange="{(e) => (category.description = e.detail)}" />
                     </div>
                   {/if}
                   <div class="w-full px-1 text-sm">{@html category.description}</div>
