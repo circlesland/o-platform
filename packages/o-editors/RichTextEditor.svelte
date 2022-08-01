@@ -4,7 +4,6 @@ import { onMount } from "svelte";
 import { createEventDispatcher } from "svelte";
 
 let quill = null;
-let loaded = false;
 
 export let editorValue;
 export let editorId = "1";
@@ -25,8 +24,11 @@ onMount(() => {
   quill.on("text-change", function (delta, oldDelta, source) {
     dispatch("valueChange", quill.root.innerHTML);
   });
-  // loaded = true;
 });
 </script>
 
 <div id="{editorId}" class="w-full bg-white"></div>
+
+<svelte:head>
+  <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
+</svelte:head>
