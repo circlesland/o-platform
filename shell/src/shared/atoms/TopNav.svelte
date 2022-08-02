@@ -9,7 +9,7 @@ import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 import LangSwitcher from "./LangSwitcher.svelte";
 export let runtimeDapp: RuntimeDapp<any>;
 let profile: Profile;
-let showSwitcher = false;
+let showSwitcher = true;
 $: name = profile?.circlesAddress ? profile.circlesAddress : "";
 $: {
   if ($me) {
