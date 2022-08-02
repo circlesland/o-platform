@@ -7,9 +7,9 @@ import { onMount } from "svelte";
 import { EditorContext } from "@o-platform/o-editors/src/editorContext";
 import { upsertShippingAddress } from "../../o-passport/processes/upsertShippingAddress";
 import { me } from "../../../shared/stores/me";
-import { PostAddress } from "../../../shared/api/data/types";
+import { DeliveryMethod, PostAddress } from "../../../shared/api/data/types";
 import formatShippingAddress from "../../../shared/functions/formatPostAddress";
-import {_} from "svelte-i18n";
+import { _ } from "svelte-i18n";
 
 export let context: EditorContext;
 
@@ -18,11 +18,10 @@ let balance: number = 0;
 let shippingAddressId: number;
 let deliveryType: number = 1;
 let error: string = null;
+let availableDeliveryMethods: DeliveryMethod[];
 
 onMount(() => {
-  const availableDeliveryMethods = context.data.availableDeliveryMethods
-    ? context.data.availableDeliveryMethods
-    : context.params.availableDeliveryMethods;
+  availableDeliveryMethods = context.data.shop.deliveryMethods;
 
   if (availableDeliveryMethods) {
     if (!context.data[context.field]) {
@@ -31,6 +30,8 @@ onMount(() => {
       deliveryType = context.data[context.field].deliveryMethodId;
       shippingAddressId = context.data[context.field].shippingAddressId;
     }
+  } else {
+    deliveryType = 1;
   }
 });
 
@@ -43,8 +44,8 @@ function submit() {
   console.log(selectedCountry);
   console.log(shippingAddressId);
   if (deliveryType == 2 && selectedCountry && selectedCountry != "Germany") {
-    error = window.i18n("dapps.o-marketplace.molecules.checkoutDelivery.error")
-    "This shop only delivers to Germany. Please select or enter a German Postal Address.";
+    error = window.i18n("dapps.o-marketplace.molecules.checkoutDelivery.error");
+    ("This shop only delivers to Germany. Please select or enter a German Postal Address.");
   } else {
     const answer = new Continue();
 
@@ -81,18 +82,24 @@ async function restartPurchase(shippingAddressId: number, oldContext: EditorCont
 {/if}
 <div class="p-5">
   <div>
-    <div class="form-control">
-      <label class="cursor-pointer label">
-        <input
-          type="radio"
-          class=" radio radio-primary radio-sm"
-          bind:group="{deliveryType}"
-          name="deliveryType"
-          value="{2}" />
-        <span class="pb-2 align-baseline">{$_("dapps.o-marketplace.molecules.checkoutDelivery.delivery")}</span>
-      </label>
-    </div>
-    <div class="form-control">
+    {#if availableDeliveryMethods}
+      <div class="flex flex-row justify-center space-x-4">
+        {#each availableDeliveryMethods as dMethod}
+          <div class="form-control ">
+            <label class="cursor-pointer label">
+              <input
+                type="radio"
+                class=" radio radio-primary radio-sm"
+                bind:group="{deliveryType}"
+                name="deliveryType"
+                value="{dMethod.id}" />
+              <span class="pb-2 align-baseline">{dMethod.name}</span>
+            </label>
+          </div>
+        {/each}
+      </div>
+    {/if}
+    <!-- <div class="form-control">
       <label class="cursor-pointer label">
         <input
           type="radio"
@@ -103,7 +110,7 @@ async function restartPurchase(shippingAddressId: number, oldContext: EditorCont
           value="{1}" />
         <span class="inline">{$_("dapps.o-marketplace.molecules.checkoutDelivery.pickup")}</span>
       </label>
-    </div>
+    </div> -->
     {#if deliveryType === 2}
       <div id="addreses" class="form-control">
         <label class="cursor-pointer label" for="addresses">
