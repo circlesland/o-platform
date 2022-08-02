@@ -12,7 +12,7 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { AvataarGenerator } from "../shared/avataarGenerator";
 import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { Profile } from "../shared/api/data/types";
-import {loginWithTorus} from "./o-onboarding/processes/loginWithTorus";
+import { loginWithTorus } from "./o-onboarding/processes/loginWithTorus";
 
 const index: Page<any, DappState> = {
   routeParts: ["=profile"],
@@ -68,9 +68,9 @@ const logmein: Trigger<{}, DappState> = {
   routeParts: ["=actions", "=login", ":keyId"],
   title: "Log in",
   type: "trigger",
-  action: async (params:any) => {
+  action: async (params: any) => {
     (<any>window).runInitMachine({
-      useMockProfileIndex: parseInt(params.keyId)
+      useMockProfileIndex: parseInt(params.keyId),
     });
     /*
     window.o.runProcess(loginWithTorus, {
@@ -154,6 +154,7 @@ export const passport: DappManifest<DappState> = {
               type: "shell.authenticated",
               profile: o,
             });
+            localStorage.removeItem("editShopIndex");
             location.reload();
             /*window.o.publishEvent(<PlatformEvent>{
               type: "shell.closeModal"
