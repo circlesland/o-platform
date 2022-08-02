@@ -59,6 +59,7 @@ let deliveryMethods: DeliveryMethod[] | null = [];
 let selectedDeliveryMethodIds: number[] = [];
 let currentShopIndex: any;
 let currentShop: ShopInput;
+let currentShop2: Shop;
 let currentImage: string = null;
 let editName: Boolean = false;
 
@@ -69,6 +70,8 @@ onMount(async () => {
 
   deliveryMethods = await ApiClient.query<DeliveryMethod[], DeliveryMethodsQueryVariables>(DeliveryMethodsDocument, {});
 });
+
+$: selectedDeliveryMethodIds = selectedDeliveryMethodIds;
 
 const tinymceloaded = () => {
   const tiny = window.tinymce.init({
@@ -86,9 +89,12 @@ async function updateShop(newShop: Boolean = false) {
 
     if (newShop) {
       currentShop.id = result.id;
-      shops = [...shops, <Shop>currentShop];
+      shops = [...shops, result];
       editShopId = result.id;
     } else {
+      shops = await ApiClient.query<Shop[], ShopsQueryVariables>(ShopsDocument, {
+        ownerId: $me.id,
+      });
     }
     editShopId = null;
     return ok(result);
@@ -101,7 +107,6 @@ function toggleEditShop(shopId, index) {
   if (editShopId == shopId) {
     editShopId = null;
   } else {
-    delete shops[index].purchaseMetaDataKeys;
     delete shops[index].owner;
     delete shops[index].categories;
     delete shops[index].createdAt;
@@ -111,6 +116,7 @@ function toggleEditShop(shopId, index) {
     selectedDeliveryMethodIds = shops[index].deliveryMethods ? shops[index].deliveryMethods.map((a) => a.id) : [];
 
     delete shops[index].deliveryMethods;
+
     currentShop = <ShopInput>shops[index];
 
     editShopId = shopId;
