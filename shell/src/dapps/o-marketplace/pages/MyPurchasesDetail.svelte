@@ -24,6 +24,7 @@ import Label from "../../../shared/atoms/Label.svelte";
 import { myPurchases } from "../../../shared/stores/myPurchases";
 import relativeTimeString from "../../../shared/functions/relativeTimeString";
 import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let id: string;
 
