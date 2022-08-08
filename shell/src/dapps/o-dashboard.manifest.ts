@@ -7,6 +7,7 @@ import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Link } from "@o-platform/o-interfaces/dist/routables/link";
 
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import { Environment } from "../shared/environment";
 
 const index: Page<any, DappState> = {
   isSystem: false,
