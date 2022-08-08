@@ -2,6 +2,12 @@
  * Contains environment variables which are filled in by webpack.
  */
 export class Environment {
+
+
+  public static get supportUrl() : string {
+    return window.i18n("common.supportUrl");
+  }
+
   public static get authEndpointUrl(): string {
     return "__AUTH_ENDPOINT__";
   }

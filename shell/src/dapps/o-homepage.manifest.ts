@@ -3,6 +3,7 @@ import Home from "./o-homepage/pages/Home.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { Link } from "@o-platform/o-interfaces/dist/routables/link";
+import {Environment} from "../shared/environment";
 
 const externalChat: Link<any, DappState> = {
   type: "link",
@@ -10,7 +11,7 @@ const externalChat: Link<any, DappState> = {
   icon: "chat",
   routeParts: ["=chat"],
   openInNewTab: true,
-  url: () => "https://discord.gg/CS6xq7jECR",
+  url: () => Environment.supportUrl,
 };
 const externalForum: Link<any, DappState> = {
   type: "link",
