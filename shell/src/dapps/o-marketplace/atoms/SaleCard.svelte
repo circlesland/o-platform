@@ -8,7 +8,7 @@ import UserImage from "../../../shared/atoms/UserImage.svelte";
 import Button from "../../../shared/atoms/button/Button.svelte";
 import ButtonContext from "../../../shared/atoms/button/buttonContext";
 import { mySales } from "../../../shared/stores/mySales";
-import { purchased } from "./MyPurchaseCard.svelte";
+
 import Label from "../../../shared/atoms/Label.svelte";
 
 export let event: ProfileEvent;
@@ -155,12 +155,12 @@ function getTableNoFromMetadata(metadataJson: string | undefined) {
             class:text-alert-dark="{!sale.invoice.paymentTransactionHash}"
             class:text-success="{sale.invoice.paymentTransactionHash}">
             {#if sale.invoice.paymentTransactionHash}
-              <Label key="dapps.o-marketplace.pages.mySales.paid"></Label>
+              <Label key="dapps.o-marketplace.pages.mySales.paid" />
               <Icons icon="check" size="{4}" customClass="inline" />
             {:else if sale.invoice.cancelledAt}
-              <Label key="dapps.o-marketplace.pages.mySales.cancelled"></Label>
+              <Label key="dapps.o-marketplace.pages.mySales.cancelled" />
             {:else}
-              <Label key="dapps.o-marketplace.pages.mySales.paymentPending"></Label>
+              <Label key="dapps.o-marketplace.pages.mySales.paymentPending" />
             {/if}
           </div>
 
@@ -170,9 +170,9 @@ function getTableNoFromMetadata(metadataJson: string | undefined) {
               class:text-primary-lighter="{!sale.invoice.sellerSignature}"
               class:text-success="{sale.invoice.sellerSignature}">
               {#if !sale.invoice.sellerSignature}
-                <Label key="dapps.o-marketplace.pages.mySales.notPickedUp"></Label>
+                <Label key="dapps.o-marketplace.pages.mySales.notPickedUp" />
               {:else}
-                <Label key="dapps.o-marketplace.pages.mySales.pickedUp"></Label>
+                <Label key="dapps.o-marketplace.pages.mySales.pickedUp" />
               {/if}
               {#if sale.invoice.sellerSignature}
                 <Icons icon="check" size="{4}" customClass="inline" />
