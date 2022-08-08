@@ -89,20 +89,20 @@ function onkeydown(e: KeyboardEvent) {
       </div>
       <div class="flex items-center justify-end w-full -mt-2">
         <span class="mr-2 text-sm font-medium text-gray-400">
-          {$_("dapps.o-marketplace.molecules.checkoutSummary.total" )}
+          {$_("dapps.o-marketplace.molecules.checkoutSummary.total")}
         </span>
         <span class="w-20 text-lg font-bold text-right">
           {context.data.total.toFixed(2)} €
         </span>
       </div>
-      <div class="flex items-center justify-end w-full -mt-2">
+      <!-- <div class="flex items-center justify-end w-full -mt-2">
         <span class="mr-2 text-sm font-medium text-gray-400">
           {$_("dapps.o-marketplace.molecules.checkoutSummary.tax" )}
         </span>
         <span class="w-20 text-lg text-right font-primary text-dark-lightest">
           {((context.data.total.toFixed(2) / 1.19) * (19 / 100)).toFixed(2)} €
         </span>
-      </div>
+      </div> -->
       <div class="flex items-center justify-end w-full -mt-2">
         <span class="mr-2 text-sm font-medium text-gray-400">Time Circles:</span>
         <span class="w-20 text-lg text-right font-primary text-dark-lightest"
