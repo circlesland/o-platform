@@ -1,17 +1,17 @@
 <script lang="ts">
-  import {purchase} from "../processes/purchase";
-  import Icons from "../../../shared/molecules/Icons.svelte";
-  import {_} from "svelte-i18n";
-  import {Shop} from "../../../shared/api/data/types";
-  import {me} from "../../../shared/stores/me";
-  import {Liquidity, PayableStatusBySeller, PaymentAmountsBySeller} from "../functions/liquidity";
-  import {onMount} from "svelte";
-  import {assetBalances} from "../../../shared/stores/assetsBalances";
-  import {Currency} from "../../../shared/currency";
-  import {BN} from "ethereumjs-util";
-  import {cartContents, cartContentsByShop} from "../stores/shoppingCartStore";
-  import {ShoppingCartItem} from "../types/ShoppingCartItem";
-  import Label from "../../../shared/atoms/Label.svelte";
+import { purchase } from "../processes/purchase";
+import Icons from "../../../shared/molecules/Icons.svelte";
+import { _ } from "svelte-i18n";
+import { Shop } from "../../../shared/api/data/types";
+import { me } from "../../../shared/stores/me";
+import { Liquidity, PayableStatusBySeller, PaymentAmountsBySeller } from "../functions/liquidity";
+import { onMount } from "svelte";
+import { assetBalances } from "../../../shared/stores/assetsBalances";
+import { Currency } from "../../../shared/currency";
+import { BN } from "ethereumjs-util";
+import { cartContents, cartContentsByShop, totalPrice } from "../stores/shoppingCartStore";
+import { ShoppingCartItem } from "../types/ShoppingCartItem";
+import Label from "../../../shared/atoms/Label.svelte";
 
 type ItemsOfShop = {
   total: number;
@@ -169,79 +169,94 @@ function handleClickOutside(event) {
         </header>
       </div>
 
-            {#each displayShop.items as item, index}
-                <div class="flex items-center justify-between w-full pb-6 mb-6 border-b" class:mt-8="{index == 0}">
-                    <div class="flex items-center w-full">
-                        <img class="w-16 rounded-full mask mask-circle" src="{item.pictureUrl}" alt="{item.title}"/>
-                        <div class="flex flex-col items-start w-full ml-2 space-y-2">
-                            <div class="flex flex-row justify-between w-full">
-                                <div class="md:text-md">{item.title}</div>
-                                <div class="self-center cursor-pointer text-dark"
-                                     on:click="{() => removeAllItems(item.offerId)}"
-                                     class:hidden="{!editable}">
-                                    <Icons icon="trash" size="4"/>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-end w-full">
-                                <div class="flex-grow text-sm text-left text-dark-lightest">
-                                    1 {item.unitTag ? item.unitTag.value : "item"}
-                                </div>
-                                <div class="flex pr-8">
-                                    <div class="font-semibold cursor-pointer span"
-                                         on:click="{() => removeOneItem(item.offerId)}"
-                                         class:hidden="{!editable}">
-                                        -
-                                    </div>
-                                    <div class="w-8 h-6 mx-2 text-sm text-center bg-gray-100 border rounded focus:outline-none">
-                                        {item.qty}
-                                    </div>
-                                    <span class="font-semibold cursor-pointer"
-                                          on:click="{() => addOneItem(item.offerId, shopIndex)}"
-                                          class:hidden="{!editable}">+</span>
-                                </div>
-                                <div class="items-center">
-                                    <span class="inline-block whitespace-nowrap">{item.pricePerUnit}
-                                        <span class="font-enso"> EUR</span>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+      {#each displayShop.items as item, index}
+        <div class="flex items-center justify-between w-full pb-6 mb-6 border-b" class:mt-8="{index == 0}">
+          <div class="flex items-center w-full">
+            <img class="w-16 rounded-full mask mask-circle" src="{item.pictureUrl}" alt="{item.title}" />
+            <div class="flex flex-col items-start w-full ml-2 space-y-2">
+              <div class="flex flex-row justify-between w-full">
+                <div class="md:text-md">{item.title}</div>
+                <div
+                  class="self-center cursor-pointer text-dark"
+                  on:click="{() => removeAllItems(item.offerId)}"
+                  class:hidden="{!editable}">
+                  <Icons icon="trash" size="4" />
                 </div>
-            {/each}
-            {#if editable}
-                <div class="flex items-center justify-end">
-                    <span class="mr-2 text-sm font-medium text-gray-400">
-                        <Label key="dapps.o-marketplace.pages.shoppingCart.total"></Label>
-                    </span>
-                    <span class="text-lg font-bold">
-                        {displayShop.total.toFixed(2)}
-                        <span class="font-enso">EUR</span>
-                    </span>
+              </div>
+              <div class="flex items-center justify-end w-full">
+                <div class="flex-grow text-sm text-left text-dark-lightest">
+                  1 {item.unitTag ? item.unitTag.value : "item"}
                 </div>
-
-                {#if isLoading}
-                    <button class="h-auto btn-block btn btn-disabled">
-                        <Label key="dapps.o-marketplace.pages.shoppingCart.checkOut"></Label>
-                    </button>
-                {:else if payableStatusBySeller[displayShop.shop.owner.circlesAddress].payable}
-                    <button class="h-auto btn-block btn btn-primary" on:click="{() => checkout(shopIndex)}">
-                        <Label key="dapps.o-marketplace.pages.shoppingCart.checkOut"></Label>
-                    </button>
-                {:else if payableStatusBySeller[displayShop.shop.owner.circlesAddress].payable === false}
-                    <div class="w-full text-center text-alert">
-                        {@html $_(payableStatusBySeller[displayShop.shop.owner.circlesAddress].reason)}
-                    </div>
-                {/if}
-            {/if}
+                <div class="flex pr-8">
+                  <div
+                    class="font-semibold cursor-pointer span"
+                    on:click="{() => removeOneItem(item.offerId)}"
+                    class:hidden="{!editable}">
+                    -
+                  </div>
+                  <div class="w-8 h-6 mx-2 text-sm text-center bg-gray-100 border rounded focus:outline-none">
+                    {item.qty}
+                  </div>
+                  <span
+                    class="font-semibold cursor-pointer"
+                    on:click="{() => addOneItem(item.offerId, shopIndex)}"
+                    class:hidden="{!editable}">+</span>
+                </div>
+                <div class="items-center">
+                  <span class="inline-block whitespace-nowrap"
+                    >{item.pricePerUnit}
+                    <span class="font-enso"> EUR</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {/each}
+      {#if editable}
+        <div class="flex items-center justify-end">
+          <span class="mr-2 text-sm font-medium text-gray-400">
+            <Label key="dapps.o-marketplace.pages.shoppingCart.total" />
+          </span>
+          <span class="text-lg font-bold">
+            {displayShop.total.toFixed(2)}
+            <span class="font-enso">EUR</span>
+          </span>
+        </div>
+        {#if displayShop.total.toFixed(2) > 50}
+          <div class="mb-4 text-right text-error">
+            {@html $_("dapps.o-marketplace.pages.shoppingCart.max50")}
+          </div>
         {/if}
-    {/each}
+
+        {#if isLoading}
+          <button class="h-auto btn-block btn btn-disabled">
+            <Label key="dapps.o-marketplace.pages.shoppingCart.checkOut" />
+          </button>
+        {:else if payableStatusBySeller[displayShop.shop.owner.circlesAddress].payable}
+          {#if displayShop.total.toFixed(2) > 50}
+            <button class="h-auto btn-block btn btn-disabled disabled">
+              {@html $_("dapps.o-marketplace.pages.shoppingCart.checkOut")}
+            </button>
+          {:else}
+            <button class="h-auto btn-block btn btn-primary" on:click="{() => checkout(shopIndex)}">
+              {@html $_("dapps.o-marketplace.pages.shoppingCart.checkOut")}
+            </button>
+          {/if}
+        {:else if payableStatusBySeller[displayShop.shop.owner.circlesAddress].payable === false}
+          <div class="w-full text-center text-alert">
+            {@html $_(payableStatusBySeller[displayShop.shop.owner.circlesAddress].reason)}
+          </div>
+        {/if}
+      {/if}
+    {/if}
+  {/each}
 {:else}
-    <p class="mt-6 text-center">
-        <Label key="dapps.o-marketplace.pages.shoppingCart.yourCartIsEmpty"></Label>
-    </p>
-    <div class="w-full mt-6">
-        <button class="h-auto btn-block btn btn-light" on:click="{(event) => handleClickOutside(event)}"
-        ><Label key="dapps.o-marketplace.pages.shoppingCart.continueShopping"></Label></button>
-    </div>
+  <p class="mt-6 text-center">
+    <Label key="dapps.o-marketplace.pages.shoppingCart.yourCartIsEmpty" />
+  </p>
+  <div class="w-full mt-6">
+    <button class="h-auto btn-block btn btn-light" on:click="{(event) => handleClickOutside(event)}"
+      ><Label key="dapps.o-marketplace.pages.shoppingCart.continueShopping" /></button>
+  </div>
 {/if}
