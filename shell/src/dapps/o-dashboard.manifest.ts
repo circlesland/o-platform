@@ -54,7 +54,7 @@ const externalChat: Link<any, DappState> = {
   icon: "chat",
   routeParts: [],
   openInNewTab: true,
-  url: () => "https://discord.gg/CS6xq7jECR",
+  url: () => Environment.supportUrl,
 };
 const externalForum: Link<any, DappState> = {
   type: "link",

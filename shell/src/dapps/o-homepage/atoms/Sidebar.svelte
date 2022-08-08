@@ -3,6 +3,7 @@ import { clickOutside } from "src/shared/functions/clickOutside.ts";
 import Hamburger from "./Hamburger.svelte";
 import { _ } from "svelte-i18n";
 import Label from "../../../shared/atoms/Label.svelte";
+import {Environment} from "../../../shared/environment";
 export let open = false;
 
 function handleClickOutside(event) {
@@ -25,7 +26,7 @@ function handleClickOutside(event) {
       ><Label key="dapps.o-homepage.atoms.sidebar.home"></Label></a>
 
     <a
-      href="https://discord.gg/CS6xq7jECR"
+      href="{Environment.supportUrl}"
       target="_blank"
       aria-label="Our product"
       title="Our product"

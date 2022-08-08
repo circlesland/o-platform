@@ -65,7 +65,7 @@ function sortAlphabetically(a, b) {
           {$_("dapps.o-dashboard.pages.invites.canNotInvite3" )}<br /><br />
           {$_("dapps.o-dashboard.pages.invites.canNotInvite4" )}
           <a
-            href="https://discord.gg/UgCVqFnx"
+            href="{Environment.supportUrl}"
             target="_blank"
             class="link link-primary">{$_("dapps.o-dashboard.pages.invites.discord" )}</a
           >.
