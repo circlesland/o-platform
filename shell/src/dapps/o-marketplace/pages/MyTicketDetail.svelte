@@ -169,13 +169,13 @@ onMount(async () => {
   <header class="grid overflow-hidden bg-white ">
     <div class="w-full text-center">
       <h1 class="text-3xl uppercase font-heading">
-        {$_("dapps.o-marketplace.pages.myTicketDetail.purchaseDetails")}
+        <Label key="dapps.o-marketplace.pages.myTicketDetail.purchaseDetails" />
       </h1>
     </div>
     <div class="w-full text-center">
       {#if purchase}
         <span class="text-dark-lightest"
-        >{$_("dapps.o-marketplace.pages.myTicketDetail.purchaseDate")}
+        ><Label key="dapps.o-marketplace.pages.myTicketDetail.purchaseDate" />
           {relativeTimeString(purchase.createdAt, 1, true)}</span>
       {/if}
     </div>
@@ -184,7 +184,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          {$_("dapps.o-marketplace.pages.myTicketDetail.loadingPurchases")}
+          <Label key="dapps.o-marketplace.pages.myTicketDetail.loadingPurchases" />
         </div>
       </div>
     </section>
@@ -254,7 +254,7 @@ onMount(async () => {
           Please show this code at the entrance:<br/>
           {#if !invoice.pickupCode}
             <h1 class="text-3xl uppercase font-heading">
-              {$_("dapps.o-marketplace.pages.myTicketDetail.noCode")}
+              <Label key="dapps.o-marketplace.pages.myTicketDetail.noCode" />
             </h1>
           {:else}
             <div class="container mt-6">

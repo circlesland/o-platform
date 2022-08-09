@@ -40,11 +40,11 @@ $: {
   </div>
   <div class="mt-4">
     <a href="{Environment.supportUrl}">
-      {$_("shared.atoms.error.pleaseTryToReload")}<a
+      <Label key="shared.atoms.error.pleaseTryToReload" /><a
         href="{Environment.supportUrl}"
         target="_blank"
         class="btn-link">{Environment.supportUrl}</a
-      >{$_("shared.atoms.error.ifTheProblemPersists")}
+      ><Label key="shared.atoms.error.ifTheProblemPersists" />
     </a>
   </div>
   <div class="mt-4">

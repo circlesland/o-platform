@@ -177,13 +177,13 @@ onMount(async () => {
   <header class="grid overflow-hidden bg-white ">
     <div class="w-full text-center">
       <h1 class="text-3xl uppercase font-heading">
-        {$_("dapps.o-marketplace.pages.myPurchaseDetail.purchaseDetails")}
+        <Label key="dapps.o-marketplace.pages.myPurchaseDetail.purchaseDetails" />
       </h1>
     </div>
     <div class="w-full text-center">
       {#if purchase}
         <span class="text-dark-lightest"
-          >{$_("dapps.o-marketplace.pages.myPurchaseDetail.purchaseDate")}
+          ><Label key="dapps.o-marketplace.pages.myPurchaseDetail.purchaseDate" />
           {relativeTimeString(purchase.createdAt, 1, true)}</span>
       {/if}
     </div>
@@ -193,7 +193,7 @@ onMount(async () => {
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
-            {$_("dapps.o-marketplace.pages.myPurchaseDetail.loadingPurchases")}
+            <Label key="dapps.o-marketplace.pages.myPurchaseDetail.loadingPurchases" />
           </div>
         </div>
       </div>
@@ -269,7 +269,7 @@ onMount(async () => {
               {#if invoice.sellerSignature}
                 Your order has been shipped
               {:else if invoice.simplePickupCode}
-                {$_("dapps.o-marketplace.pages.myPurchaseDetail.yourPickupNumber")}
+                <Label key="dapps.o-marketplace.pages.myPurchaseDetail.yourPickupNumber" />
                 {invoice.simplePickupCode}
               {/if}
             </h1>
@@ -285,7 +285,7 @@ onMount(async () => {
           <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
             <h1 class="p-2 text-center text-white uppercase bg-dark-dark">
               {#if invoice.simplePickupCode}
-                {$_("dapps.o-marketplace.pages.myPurchaseDetail.yourPickupNumber")}
+                <Label key="dapps.o-marketplace.pages.myPurchaseDetail.yourPickupNumber" />
                 {invoice.simplePickupCode}
               {/if}
             </h1>
@@ -294,7 +294,7 @@ onMount(async () => {
           <div class="w-full text-center">
             {#if !invoice.pickupCode}
               <h1 class="text-3xl uppercase font-heading">
-                {$_("dapps.o-marketplace.pages.myPurchaseDetail.noCode")}
+                <Label key="dapps.o-marketplace.pages.myPurchaseDetail.noCode" />
               </h1>
             {:else}
               <div class="container mt-6">

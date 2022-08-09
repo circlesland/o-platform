@@ -76,14 +76,14 @@ function onkeydown(e: KeyboardEvent) {
         <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
           <h1 class="p-2 text-white uppercase bg-dark-dark">
             <div class="text-sm">
-              {$_("dapps.o-marketplace.molecules.checkoutConfirm.yourPickupCode")}: &nbsp;{context.params
+              <Label key="dapps.o-marketplace.molecules.checkoutConfirm.yourPickupCode" />: &nbsp;{context.params
                 .simplePickupCode}
             </div>
           </h1>
         </div>
 
         <div class="text-center">
-          {$_("dapps.o-marketplace.molecules.checkoutConfirm.howToPickup1")}
+          <Label key="dapps.o-marketplace.molecules.checkoutConfirm.howToPickup1" />
         </div>
 
         <div class="w-full mt-6 text-center">
@@ -94,9 +94,9 @@ function onkeydown(e: KeyboardEvent) {
           </div>
         </div>
         <div class="text-sm text-center">
-          {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode1")}<span class="text-primary-dark"
-            >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode2")}</span
-          >{$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode3")}
+          <Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode1" /><span class="text-primary-dark"
+            ><Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode2" /></span
+          ><Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode3" />
           <a
             title="My Purchases"
             href="/#"
@@ -106,9 +106,9 @@ function onkeydown(e: KeyboardEvent) {
               submit('#/marketplace/my-purchases');
               e.preventDefault();
             }}">
-            {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4")}
+            <Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode4" />
           </a>
-          {$_("dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5")}
+          <Label key="dapps.o-marketplace.molecules.checkoutConfirm.toSeeCode5" />
         </div>
 
         <div class="flex flex-col mt-4 space-y-2 text-center">
