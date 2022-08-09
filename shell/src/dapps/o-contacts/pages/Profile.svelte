@@ -155,7 +155,7 @@ async function setProfile(id: string) {
           {#if profile.circlesAddress === $me.circlesAddress}
             You
           {:else}
-            <Label key="dapps.o-contacts.pages.profile.profile" />
+            {$_("dapps.o-contacts.pages.profile.profile")}
           {/if}
         </h1>
       </div>
@@ -236,7 +236,7 @@ async function setProfile(id: string) {
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">
-                    <Label key="dapps.o-contacts.pages.profile.members" />
+                    {$_("dapps.o-contacts.pages.profile.members")}
                   </div>
                   <div class="flex flex-row flex-wrap mt-2 ">
                     {#each profile.members as memberProfile}

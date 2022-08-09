@@ -1,7 +1,7 @@
 <script lang="ts">
 import { _ } from "svelte-i18n";
-import Label from "./Label.svelte";
 import {Environment} from "../environment";
+import Label from "./Label.svelte";
 export let data: {
   error: Error;
 };
@@ -40,11 +40,11 @@ $: {
   </div>
   <div class="mt-4">
     <a href="{Environment.supportUrl}">
-      <Label key="shared.atoms.error.pleaseTryToReload"></Label><a
+      {$_("shared.atoms.error.pleaseTryToReload")}<a
         href="{Environment.supportUrl}"
         target="_blank"
         class="btn-link">{Environment.supportUrl}</a
-      ><Label key="shared.atoms.error.ifTheProblemPersists"></Label>
+      >{$_("shared.atoms.error.ifTheProblemPersists")}
     </a>
   </div>
   <div class="mt-4">
