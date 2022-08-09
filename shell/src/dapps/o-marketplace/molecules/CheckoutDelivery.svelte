@@ -9,7 +9,7 @@ import { upsertShippingAddress } from "../../o-passport/processes/upsertShipping
 import { me } from "../../../shared/stores/me";
 import { DeliveryMethod, PostAddress } from "../../../shared/api/data/types";
 import formatShippingAddress from "../../../shared/functions/formatPostAddress";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let context: EditorContext;
 

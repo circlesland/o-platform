@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { _ } from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 </script>
 
 <div class="flex flex-col items-center space-y-4">

@@ -5,7 +5,7 @@ import UserImage from "src/shared/atoms/UserImage.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { me } from "../../../shared/stores/me";
 import { truncateString } from "../../../shared/functions/truncateString";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import {addToCart, AddToCartContextData} from "../processes/addToCart";
 
 export let param: Offer = <any>{

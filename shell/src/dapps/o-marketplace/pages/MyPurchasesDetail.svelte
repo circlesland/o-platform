@@ -20,7 +20,7 @@ import UserImage from "../../../shared/atoms/UserImage.svelte";
 import formatShippingAddress from "../../../shared/functions/formatPostAddress";
 
 import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import { myPurchases } from "../../../shared/stores/myPurchases";
 import relativeTimeString from "../../../shared/functions/relativeTimeString";
 import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";

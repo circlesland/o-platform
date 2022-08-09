@@ -1,7 +1,7 @@
 <script lang="ts">
 import Icons from "./../molecules/Icons.svelte";
 import { media } from "../stores/media";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let props: {
   icon: string;

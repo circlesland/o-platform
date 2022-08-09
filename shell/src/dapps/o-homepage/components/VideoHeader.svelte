@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import UAParser from "ua-parser-js";
   import Icons from "src/shared/molecules/Icons.svelte";
-  import { _ } from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
 
   let parser = new UAParser();
   let player: any;

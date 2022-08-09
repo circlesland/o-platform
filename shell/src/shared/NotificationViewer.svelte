@@ -15,7 +15,7 @@ import { UserActions, UserActionItem } from "./userActions";
 import { createEventDispatcher } from "svelte";
 import ButtonGroup from "./molecules/ButtonGroup/ButtonGroup.svelte";
 import { EventType } from "./api/data/types";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let context: NotificationViewerContext;
 

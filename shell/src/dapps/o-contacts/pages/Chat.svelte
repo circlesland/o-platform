@@ -6,7 +6,7 @@
   import ChatListCard from "../atoms/ChatListCard.svelte";
   import {contacts} from "../../../shared/stores/contacts";
 
-  import { _ } from "svelte-i18n";
+  import Label from "../../../shared/atoms/Label.svelte";
   import {Contact} from "../../../shared/api/data/types";
 
   export let runtimeDapp: RuntimeDapp<any>;

@@ -5,7 +5,7 @@ import UserImage from "../../../shared/atoms/UserImage.svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { truncateString } from "../../../shared/functions/truncateString";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import { addToCart, AddToCartContextData } from "../processes/addToCart";
 
 export let entry: ShopCategoryEntry;

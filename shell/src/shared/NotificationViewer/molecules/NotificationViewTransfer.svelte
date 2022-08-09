@@ -4,7 +4,7 @@ import { Currency } from "../../../shared/currency";
 import { CrcHubTransfer, ProfileEvent } from "../../api/data/types";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { me } from "../../stores/me";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let event: ProfileEvent;
 

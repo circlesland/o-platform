@@ -1,7 +1,7 @@
 <script>
 import { clickOutside } from "src/shared/functions/clickOutside.ts";
 import Hamburger from "./Hamburger.svelte";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import {Environment} from "../../../shared/environment";
 export let open = false;
 

@@ -4,7 +4,7 @@
 	import TransfersFinder from './CirclesTransfersFinder.svelte';
 
 	import { formatValue } from './utility.js';
-	import { _ } from "svelte-i18n";
+	import Label from "../../../shared/atoms/Label.svelte";
 
 	let maxValue = '0';
 	let transfers = [];

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { purchase } from "../processes/purchase";
 import Icons from "../../../shared/molecules/Icons.svelte";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import { Shop } from "../../../shared/api/data/types";
 import { me } from "../../../shared/stores/me";
 import { Liquidity, PayableStatusBySeller, PaymentAmountsBySeller } from "../functions/liquidity";

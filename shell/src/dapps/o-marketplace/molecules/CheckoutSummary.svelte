@@ -4,7 +4,7 @@ import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { Currency } from "../../../shared/currency";
 import ShopMetadata from "../../../shared/molecules/ShopMetadata.svelte";
 import { onMount } from "svelte";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let context: any;
 let metadataError: Boolean = false;

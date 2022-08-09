@@ -3,7 +3,7 @@ import Icons from "../../../shared/molecules/Icons.svelte";
 import { push } from "svelte-spa-router";
 import relativeTimeString from "../../../shared/functions/relativeTimeString";
 import { Invoice, ProfileEvent, SaleEvent } from "../../../shared/api/data/types";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import Button from "../../../shared/atoms/button/Button.svelte";
 import ButtonContext from "../../../shared/atoms/button/buttonContext";

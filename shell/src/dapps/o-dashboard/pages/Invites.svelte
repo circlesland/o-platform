@@ -12,7 +12,7 @@ import {
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
 import { Environment } from "../../../shared/environment";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 import {me} from "../../../shared/stores/me";
 

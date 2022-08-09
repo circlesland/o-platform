@@ -2,7 +2,7 @@
 import { push } from "svelte-spa-router";
 import { ProfileEvent, Purchased } from "../../../shared/api/data/types";
 import Icons from "../../../shared/molecules/Icons.svelte";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import relativeTimeString from "../../../shared/functions/relativeTimeString";

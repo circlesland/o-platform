@@ -6,7 +6,7 @@ import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 import { push } from "svelte-spa-router";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { offers } from "../../../shared/stores/offers";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import { Offer, Shop, ShopDocument, ShopQueryVariables } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
 import {addToCart, AddToCartContextData} from "../processes/addToCart";

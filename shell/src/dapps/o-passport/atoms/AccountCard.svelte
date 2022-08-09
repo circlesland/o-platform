@@ -2,7 +2,7 @@
 import { slide } from "svelte/transition";
 import * as bip39 from "bip39";
 import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let key;
 let isOpen = false;

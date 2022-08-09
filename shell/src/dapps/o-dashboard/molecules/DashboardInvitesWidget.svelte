@@ -5,7 +5,7 @@ import ButtonContext from "../../../shared/atoms/button/buttonContext";
 import Button from "../../../shared/atoms/button/Button.svelte";
 import { me } from "../../../shared/stores/me";
 import {Stats} from "../../../shared/api/data/types";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 
 let shareButton: ButtonContext = {

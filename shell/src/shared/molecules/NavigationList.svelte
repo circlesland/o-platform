@@ -1,7 +1,7 @@
 <script lang="ts">
 import { onMount } from "svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import LinkPill from "../atoms/LinkPill.svelte";
 import {getRouteList} from "../functions/getRouteList";
 

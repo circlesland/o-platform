@@ -13,7 +13,7 @@ import { AssetBalance } from "../../../shared/api/data/types";
 import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import { assetBalances } from "../../../shared/stores/assetsBalances";
 import { BN } from "ethereumjs-util";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 
 export let runtimeDapp: RuntimeDapp<any>;
