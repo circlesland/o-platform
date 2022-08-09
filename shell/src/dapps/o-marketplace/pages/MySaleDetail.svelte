@@ -163,7 +163,7 @@ onMount(async () => {
     <div class="w-full text-center">
       {#if invoice}
         <span class="text-dark-lightest"
-          >{$_("dapps.o-marketplace.pages.mySaleDetail.saleDate")}
+          ><Label key="dapps.o-marketplace.pages.mySaleDetail.saleDate" />
           {relativeTimeString(invoice.createdAt, 1, true)}</span>
       {/if}
     </div>
@@ -174,12 +174,12 @@ onMount(async () => {
           class:text-alert-dark="{!invoice.paymentTransactionHash}"
           class:text-success="{invoice.paymentTransactionHash}">
           {#if invoice.paymentTransactionHash}
-            {$_("dapps.o-marketplace.pages.mySales.paid")}
+            <Label key="dapps.o-marketplace.pages.mySales.paid" />
             <Icons icon="check" size="{4}" customClass="inline" />
           {:else if invoice.cancelledAt}
-            {$_("dapps.o-marketplace.pages.mySales.cancelled")}
+            <Label key="dapps.o-marketplace.pages.mySales.cancelled" />
           {:else}
-            {$_("dapps.o-marketplace.pages.mySales.paymentPending")}
+            <Label key="dapps.o-marketplace.pages.mySales.paymentPending" />
           {/if}
         </div>
 
@@ -193,7 +193,7 @@ onMount(async () => {
               <Icons icon="check" size="{4}" customClass="inline" />
             {/if}
           {:else}
-            {$_("dapps.o-marketplace.pages.mySales.pickupCode")}
+            <Label key="dapps.o-marketplace.pages.mySales.pickupCode" />
             {#if invoice.pickupCode}
               <Icons icon="check" size="{4}" customClass="inline" />
             {/if}
@@ -211,7 +211,7 @@ onMount(async () => {
               <Icons icon="closex" size="{2}" customClass="inline" />
             {/if}
           {:else}
-            {$_("dapps.o-marketplace.pages.mySales.pickedUp")}
+            <Label key="dapps.o-marketplace.pages.mySales.pickedUp" />
             {#if invoice.sellerSignature}
               <Icons icon="check" size="{4}" customClass="inline" />
             {:else}
