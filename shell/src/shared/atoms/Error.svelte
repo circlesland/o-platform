@@ -1,7 +1,6 @@
 <script lang="ts">
-import Label from "../../../shared/atoms/Label.svelte";
-import {Environment} from "../environment";
 import Label from "./Label.svelte";
+import {Environment} from "../environment";
 export let data: {
   error: Error;
 };
