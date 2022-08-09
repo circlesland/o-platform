@@ -1,5 +1,5 @@
 <script lang="ts">
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import {Environment} from "../environment";
 export let data: {
   error: Error;

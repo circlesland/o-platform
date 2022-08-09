@@ -5,7 +5,7 @@ import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { onMount } from "svelte";
 import { contacts } from "../../../o-contacts.manifest";
 
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let event: ProfileEvent;
 
