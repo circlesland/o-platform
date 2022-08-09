@@ -4,7 +4,7 @@ import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import {Contact} from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import {trustFromContactMetadata} from "../../../shared/functions/trustFromContactMetadata";
 
 export let contact: Contact;

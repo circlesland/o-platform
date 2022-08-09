@@ -13,7 +13,7 @@ import { loadOrganisationsBySafeAddress } from "../../../shared/api/loadOrganisa
 import { getCountryName } from "../../../shared/countries";
 import { onMount } from "svelte";
 import ContactCard from "../../o-contacts/atoms/ContactCard.svelte";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 
 export let id: string;

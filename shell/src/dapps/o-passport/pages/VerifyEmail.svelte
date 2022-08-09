@@ -3,7 +3,7 @@ import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { onMount } from "svelte";
 import { Environment } from "../../../shared/environment";

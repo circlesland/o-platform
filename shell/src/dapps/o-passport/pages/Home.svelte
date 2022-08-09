@@ -6,7 +6,7 @@ import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { Profile } from "../../../shared/api/data/types";
 import { upsertIdentity } from "../processes/upsertIdentity";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 import { Environment } from "../../../shared/environment";
 

@@ -6,7 +6,7 @@ import TopNav from "../../../shared/atoms/TopNav.svelte";
 import PageHeader from "../../../shared/atoms/PageHeader.svelte";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { stats } from "../../../shared/stores/stats";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import { Environment } from "../../../shared/environment";
 
 export let runtimeDapp: RuntimeDapp<any>;

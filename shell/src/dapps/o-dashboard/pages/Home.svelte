@@ -16,7 +16,7 @@ import {
 } from "../../../shared/api/data/types";
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import { Environment } from "../../../shared/environment";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import DashboardInvitesWidget from "../molecules/DashboardInvitesWidget.svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 import LangSwitcher from "../../../shared/atoms/LangSwitcher.svelte";

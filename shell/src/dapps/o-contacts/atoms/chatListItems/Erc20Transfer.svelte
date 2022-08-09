@@ -7,7 +7,7 @@ import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { onMount } from "svelte";
 import { banking } from "../../../o-banking.manifest";
 
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let event: ProfileEvent;
 

@@ -2,7 +2,7 @@
 import { onMount } from "svelte";
 import { push } from "svelte-spa-router";
 import { ExchangeTokenDocument } from "../../../shared/api/data/types";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let params: {
   jwt?: string;

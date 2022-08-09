@@ -1,7 +1,7 @@
 <script lang="ts">
 import CartItems from "../molecules/CartItems.svelte";
 import { purchase } from "../processes/purchase";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 import { onMount } from "svelte";
 

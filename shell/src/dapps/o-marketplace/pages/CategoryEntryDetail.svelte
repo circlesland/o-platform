@@ -5,7 +5,7 @@ import { Subscription } from "rxjs";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 import { push } from "svelte-spa-router";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import { ApiClient } from "../../../shared/apiConnection";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { addToCart, AddToCartContextData } from "../processes/addToCart";

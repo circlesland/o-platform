@@ -2,7 +2,7 @@
 import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { Profile, Organisation } from "../../../shared/api/data/types";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";
 import { push } from "svelte-spa-router";
 import formatShippingAddress from "../../../shared/functions/formatPostAddress";
