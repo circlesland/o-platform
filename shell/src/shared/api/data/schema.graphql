@@ -976,6 +976,7 @@ type i18n {
   createdBy: String
   version: Int
   value: String
+  pagination_key: String
 }
 
 enum SortOrder {
@@ -1330,6 +1331,9 @@ type Query {
   getAllStringsByMaxVersion: [i18n]
   getAllStringsByMaxVersionAndLang(lang: String): [i18n]
   getOlderVersionsByKeyAndLang(key: String, lang: String): [i18n]
+  getStringsByMaxVersionKeyAndValue(key: String, value: String): [i18n]
+  getFirst20StringsByMaxVersionKey(key: String): [i18n]
+  getPaginatedStrings(pagination_key: String, key: String): [i18n]
   allProfiles(sinceLastChange: Date): [ExportProfile]!
   allTrusts(sinceLastChange: Date): [ExportTrustRelation!]!
   getRandomAccount: RandomAccount

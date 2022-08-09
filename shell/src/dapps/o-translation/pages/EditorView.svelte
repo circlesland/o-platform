@@ -2,9 +2,14 @@
 import { onMount } from "svelte";
 
 import {
+  CountStringsDocument,
   GetAllStringsByMaxVersionDocument,
   GetAllStringsByMaxVersionQuery,
+  GetStringsByMaxVersionKeyAndValueDocument,
+  GetStringsByMaxVersionKeyAndValueQuery,
   I18n,
+  QueryCountStringsArgs,
+  QueryGetStringsByMaxVersionKeyAndValueArgs,
 } from "../../../shared/api/data/types";
 
 import { ApiClient } from "../../../shared/apiConnection";
@@ -12,20 +17,27 @@ import StringEditor from "../atoms/StringEditor.svelte";
 import { Environment } from "../../../shared/environment";
 import { createEventDispatcher } from "svelte";
 
+
 let keyFilter: string = "";
 let valueFilter: string = "";
 let allLanguages: string[] = [];
 let languageList: string[] = [];
+let stringsAmount: number;
 
 const dispatch = createEventDispatcher();
-
 
 export let searchKey: string = "";
 export let i18nData: I18n[] = [];
 
+let nextData: I18n[] = [];
+
 let items: I18n[] = i18nData;
 
 let filteredItems: I18n[] = [];
+
+let offset: number = 0;
+
+
 
 async function getAllLanguages() {
   const queryResult = await ApiClient.query<I18n[], GetAllStringsByMaxVersionQuery>(
@@ -44,7 +56,6 @@ async function getAllLanguages() {
     return 0;
   });
 }
-
 
 function isSelected(languageCode: string) {
   return languageList.indexOf(languageCode) > -1;
@@ -65,19 +76,25 @@ function sortByKey(dataToSort: I18n[]) {
 
 async function reload() {
 
+  //console.log(i18nData, "momomomo");
+
+  //console.log("reloaded", items);
+  i18nData = i18nData.concat(nextData);
   items = i18nData;
-
-  console.log(i18nData, "momomomo")
-
-  console.log("reloaded", items);
+  console.log("new i18ndata", i18nData)
 }
 
 $: {
-  reload();
-  filterItems(searchKey, valueFilter)
-  items
-  i18nData
-  filteredItems
+  //reload();
+  //  filterItems(searchKey, valueFilter);
+  //  items;
+  i18nData;
+  filteredItems;
+  //  console.log("schmogesfinger", i18nData.length);
+  //  loadMore(i18nData.length, searchKey);
+  stringsAmount;
+  nextData;
+  searchKey
 }
 
 onMount(async () => {
@@ -85,6 +102,9 @@ onMount(async () => {
   reload();
 
   getAllLanguages();
+
+  //get20Strings(offset, searchKey);
+
 });
 
 function filterItems(keyFilter: string, valueFilter: string) {
@@ -106,6 +126,16 @@ const toggleLanguage = async (data: string) => {
     languageList.push(data);
   }
 };
+
+
+
+
+async function getStringCount(searchKey: string) {
+  let result = await ApiClient.query<number, QueryCountStringsArgs>(CountStringsDocument, {
+    key: searchKey,
+  });
+  return result
+}
 </script>
 
 <section class="flex flex-col items-center justify-center p-6">
@@ -130,24 +160,24 @@ const toggleLanguage = async (data: string) => {
     {/each}
   </div>
 
-  <div class="table">
-    <div class="table-header-group">
-      <div class="table-cell p-1">String</div>
-      <div class="table-cell p-1">Key</div>
-      <div class="table-cell p-1">Language</div>
-      <div class="table-cell p-1">Version</div>
-      <div class="table-cell p-1">Input</div>
+  {#each i18nData as data (data.key + data.lang + data.version)}
+    <div class="w-full">
+      <StringEditor
+        on:save="{() => reload()}"
+        on:searchKey="{(e) => filterItems(e.detail.keyLink, valueFilter)}"
+        dataString="{data.value}"
+        dataKey="{data.key}"
+        dataLang="{data.lang}"
+        dataVersion="{data.version}" />
     </div>
-    {#each filteredItems as data (data.key + data.lang + data.version)}
-      <div class="w-full table-row-group string">
-        <StringEditor
-          on:save="{() => reload()}"
-          on:searchKey="{(e) => filterItems(e.detail.keyLink, valueFilter)}"
-          dataString="{data.value}"
-          dataKey="{data.key}"
-          dataLang="{data.lang}"
-          dataVersion="{data.version}" />
-      </div>
-    {/each}
-  </div>
+  {/each}
+  <button
+    class="btn-primary rounded-btn"
+    on:click="{async () => {
+      stringsAmount = await getStringCount(searchKey);
+      console.log('string amount', stringsAmount);
+      dispatch("loadMoreStrings")
+    }}">
+    load more
+  </button>
 </section>

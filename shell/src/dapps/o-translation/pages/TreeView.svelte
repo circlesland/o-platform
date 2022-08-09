@@ -2,12 +2,15 @@
 import { onMount } from "svelte";
 import {
   CreateNewStringAndKeyDocument,
+  EventsDocument,
   GetAllStringsByMaxVersionDocument,
   GetAllStringsByMaxVersionQuery,
   GetAvailableLanguagesDocument,
   GetAvailableLanguagesQuery,
+  GetStringsByMaxVersionKeyAndValueDocument,
   I18n,
   MutationCreateNewStringAndKeyArgs,
+  QueryGetStringsByMaxVersionKeyAndValueArgs,
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
 import LangSwitcher from "../../../shared/atoms/LangSwitcher.svelte";
@@ -29,6 +32,8 @@ let availableLanguages = [];
 let filteredI18nData: I18n[] = [];
 let fullI18nData: I18n[] = [];
 let displayedI18nData: I18n[] = [];
+
+let disabled: boolean = true;
 
 let dispatch = createEventDispatcher();
 
@@ -101,6 +106,7 @@ $: {
   refreshView();
   searchString;
   //filteredI18nData
+  getFilteredI18nDataFromDb(keyFilter, searchString);
 }
 
 const toggleLanguage = async (data: string) => {
@@ -138,6 +144,16 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
     version: version,
     value: value,
   });
+}
+
+async function getFilteredI18nDataFromDb(searchKey: string, valueFilter: string) {
+  displayedI18nData = await ApiClient.query<I18n[], QueryGetStringsByMaxVersionKeyAndValueArgs>(
+    GetStringsByMaxVersionKeyAndValueDocument,
+    {
+      key: searchKey,
+      value: valueFilter + "%",
+    }
+  );
 }
 </script>
 
@@ -205,27 +221,34 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
     {/each}
   </div>-->
 
-  <div class="flex grow justify-center">
-    <form
-      on:input="{() => {
-        refreshView();
-        dispatch('keySearch', { keyFilter: keyFilter, i18nData: filteredI18nData });
-        console.log(filteredI18nData, "bla")
-      }}">
-      <input bind:value="{keyFilter}" class="input m-1" type="text" placeholder="dapps.o-banking..." />
-    </form>
-  </div>
+  <form
+    class="flex grow justify-center"
+    on:submit|preventDefault="{() => {
+      refreshView();
+      getFilteredI18nDataFromDb(keyFilter, searchString);
+      dispatch('keySearch', { keyFilter: keyFilter, i18nData: displayedI18nData });
+    }}">
+    <input bind:value="{keyFilter}" class="input rounded-r-none" type="text" placeholder="dapps.o-banking..." />
+    {#if keyFilter == ""}
+      <button class="btn-primary btn-disabled btn-md rounded-btn rounded-l-none bg-gray-400 text-white">
+        search
+      </button>
+    {:else}
+      <button class="btn-primary btn-md rounded-btn rounded-l-none">search</button>
+    {/if}
+  </form>
 
   <div class="mr-3 ml-3 mt-3">
     <Tree
       rootNode="{displayedTree}"
-      on:display
+      on:showStrings
+      on:expand
       on:expand="{(event) => {
         let partialSnapshot = event.detail.newSnapshot;
-        
+
         for (let property in partialSnapshot) {
           snapshot[property] = partialSnapshot[property];
-        };
+        }
       }}" />
   </div>
 </section>

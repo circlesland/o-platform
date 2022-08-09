@@ -5,29 +5,62 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import TreeView from "./TreeView.svelte";
 import EditorView from "./EditorView.svelte";
-import { I18n } from "../../../shared/api/data/types";
+import { GetPaginatedStringsDocument, I18n, QueryGetPaginatedStringsArgs } from "../../../shared/api/data/types";
+import { onMount } from "svelte";
+import { ApiClient } from "../../../shared/apiConnection";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
-let keyFilter: string;
-let stringFilter: string;
-let i18nData: I18n[];
+let keyFilter: string = "";
+let stringFilter: string = "";
+let i18nData: I18n[] = [];
+let pagination_key: string = "";
+
+onMount(() => {
+  get20Strings(pagination_key, keyFilter);
+});
+
+$: i18nData;
+
+async function get20Strings(pagination_key: string, searchKey: string) {
+  let queryResult = await ApiClient.query<I18n[], QueryGetPaginatedStringsArgs>(GetPaginatedStringsDocument, {
+    key: searchKey,
+    pagination_key: pagination_key,
+  });
+  i18nData = i18nData.concat(queryResult);
+}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<section class="p-6 inline-grid grid-cols-4 w-full min-h-[85vh]">
+<section class="p-6 inline-grid grid-cols-4 w-full min-h-[85vh] mb-[10vh]">
   <div class="h-full bg-blue-900 col-span-1">
     <TreeView
       searchString="{stringFilter}"
-      on:display="{(event) => (i18nData = event.detail.displayedI18nData)}"
+      on:showStrings="{(event) => {
+        console.log("mutti")
+        if (
+          !keyFilter.split('.').includes(event.detail.searchKey.split('.')[0]) ||
+          keyFilter !== event.detail.searchKey
+        ) {
+          i18nData = [];
+        }
+        keyFilter = event.detail.searchKey;
+        console.log("keyfilter", keyFilter)
+
+        get20Strings(pagination_key, keyFilter);
+      }}"
       on:keySearch="{(event) => ((keyFilter = event.detail.keyFilter), (i18nData = event.detail.i18nData))}" />
   </div>
   <div class="col-span-3 bg-gray-300 rounded">
     <EditorView
       i18nData="{i18nData}"
       searchKey="{keyFilter}"
-      on:stringSearch="{(event) => (stringFilter = event.detail.searchString)}" />
+      on:stringSearch="{(event) => (stringFilter = event.detail.searchString)}"
+      on:loadMoreStrings="{() => {
+        pagination_key = i18nData[i18nData.length - 1].pagination_key;
+        get20Strings(pagination_key, keyFilter);
+      }}" />
   </div>
 </section>

@@ -2167,6 +2167,41 @@ query getStringByLanguage($lang: String) {
   }
 }
 
+query getStringsByMaxVersionKeyAndValue($key: String, $value: String) {
+  getStringsByMaxVersionKeyAndValue(key: $key, value: $value) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+
+query getFirst20StringsByMaxVersionKey($key: String) {
+  getFirst20StringsByMaxVersionKey(key: $key) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+
+query getPaginatedStrings($pagination_key: String, $key: String) {
+  getPaginatedStrings(pagination_key: $pagination_key, key: $key) {
+    lang
+    key
+    createdBy
+    version
+    value
+    pagination_key
+  }
+}
+
+query countStrings($key: String) {
+  countStrings(key: $key) 
+}
+
 query getAvailableLanguages {
   getAvailableLanguages {
     lang

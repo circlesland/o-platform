@@ -70,10 +70,11 @@ function calculateNegativeMargin() {
 //calculateNegativeMargin();
 </script>
 
-<div class="flex-row w-full {editBorder} rounded-box p-5 hover:border-2 hover:border-dark-dark hover:border-dotted">
+<div class="flex-row min-w-[600px] {editBorder} rounded-box p-5 hover:border-2 hover:border-dark-dark hover:border-dotted">
   <div class="flex justify-between w-full">
     <p class="text-gray-400 w-40">{dataKey}</p>
     <div class="flex">
+      <p>{dataLang}</p>
       {#if dataVersion > 1}
         <p>Version:</p>
 
