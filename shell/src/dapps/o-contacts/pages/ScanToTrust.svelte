@@ -22,7 +22,6 @@ import { ApiClient } from "../../../shared/apiConnection";
 import { setTrust } from "../../../dapps/o-banking/processes/setTrust";
 import { Environment } from "../../../shared/environment";
 import { ok, err, Result } from "neverthrow";
-import Label from "../../../shared/atoms/Label.svelte";
 
 let video: HTMLVideoElement;
 let scanner: QrScanner;
@@ -204,16 +203,16 @@ onMount(() => {
         bind:this="{camList}"
         class="w-full border select input">
         <option value="environment" selected
-          ><Label key="dapps.o-marketplace.pages.scanPurchase.cameraDefault"></Label></option>
+          >{$_("dapps.o-marketplace.pages.scanPurchase.cameraDefault")}</option>
         <option value="user"
-          ><Label key="dapps.o-marketplace.pages.scanPurchase.cameraUserFacing"></Label></option>
+          >{$_("dapps.o-marketplace.pages.scanPurchase.cameraUserFacing")}</option>
       </select>
     </div>
 
     <div class="mt-4 text-center">
-      <b><Label key="dapps.o-marketplace.pages.scanPurchase.detectedQrCode"></Label></b>
+      <b>{$_("dapps.o-marketplace.pages.scanPurchase.detectedQrCode")}</b>
       <span id="cam-qr-result" bind:this="{camQrResult}"
-        ><Label key="dapps.o-marketplace.pages.scanPurchase.none"></Label></span>
+        >{$_("dapps.o-marketplace.pages.scanPurchase.none")}</span>
     </div>
   </div>
   <!-- <slot name="EditorActionButtons">
