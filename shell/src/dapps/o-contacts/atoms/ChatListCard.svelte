@@ -13,7 +13,7 @@ import {
 } from "../../../shared/api/data/types";
 import DateView from "../../../shared/atoms/Date.svelte";
 
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let param: Contact;
 

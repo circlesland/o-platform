@@ -11,6 +11,7 @@ import { onMount } from "svelte";
 
 import dayjs from "dayjs";
 
+import Label from "../../../../shared/atoms/Label.svelte";
 
 export let event: ProfileEvent;
 
