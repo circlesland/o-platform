@@ -12,14 +12,14 @@ let foo = false;
 <section class="flex flex-col items-center justify-center p-6 space-y-4">
   <div class="w-full text-center">
     <h1 class="text-3xl uppercase font-heading undefined">
-      {$_("dapps.o-dashboard.pages.shareInvitation.shareTitle")}
+      <Label key="dapps.o-dashboard.pages.shareInvitation.shareTitle" />
     </h1>
   </div>
 
   {#if $me && $me.invitationLink}
     <div class="w-full text-center">
       <span class="text-dark-lightest">
-        {$_("dapps.o-dashboard.pages.shareInvitation.shareDescription")}
+        <Label key="dapps.o-dashboard.pages.shareInvitation.shareDescription" />
       </span>
     </div>
     <div class="w-full">
@@ -65,7 +65,7 @@ let foo = false;
   {:else}
     <div class="w-full text-center">
       <span class="text-alert"
-        >{$_("dapps.o-dashboard.pages.shareInvitation.shareRefused")}</span>
+        ><Label key="dapps.o-dashboard.pages.shareInvitation.shareRefused" /></span>
     </div>
   {/if}
 </section>

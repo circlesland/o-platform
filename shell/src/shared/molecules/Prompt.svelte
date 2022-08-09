@@ -96,6 +96,6 @@ const onBlur = () => window.o.publishEvent({ type: "shell.inputBlurred" });
   </slot> -->
   </section>
 {:else}
-  {$_("shared.molecules.prompt.nothingToDisplay" )}
+  <Label key="shared.molecules.prompt.nothingToDisplay"  />
   <br />
 {/if}

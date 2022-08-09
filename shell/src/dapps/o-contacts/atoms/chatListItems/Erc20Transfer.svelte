@@ -48,19 +48,19 @@ function getValues(): {
   if (event.direction == "in") {
     title = `${
       event.contact_address_profile.firstName
-    } ${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.ifIn.title.sentYou")} ${displayCirclesAmount(
+    } $<Label key="dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.ifIn.title.sentYou" /> ${displayCirclesAmount(
       transfer.value,
       null,
       true,
       false
-    )} ${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.ifIn.title.tokens")}`;
+    )} $<Label key="dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.ifIn.title.tokens" />`;
   } else {
-    title = ` ${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.ifOut.youSent")} ${displayCirclesAmount(
+    title = ` $<Label key="dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.ifOut.youSent" /> ${displayCirclesAmount(
       transfer.value,
       null,
       true,
       false
-    )} ${$_("dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.ifOut.tokensTo")} ${event.contact_address_profile.firstName}`;
+    )} $<Label key="dapps.o-contacts.atoms.chatListItems.erc20Transfer.getValues.ifOut.tokensTo" /> ${event.contact_address_profile.firstName}`;
   }
 
   return {

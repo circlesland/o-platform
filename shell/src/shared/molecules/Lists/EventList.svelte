@@ -137,7 +137,7 @@ const handleChange = async (e) => {
     <div
             class="flex items-center w-full p-4 space-x-2 bg-white rounded-lg shadow">
       <div class="flex flex-col items-start text-center">
-        <div>{$_("shared.molecules.lists.eventList.loading" )}</div>
+        <div><Label key="shared.molecules.lists.eventList.loading"  /></div>
       </div>
     </div>
   </section>

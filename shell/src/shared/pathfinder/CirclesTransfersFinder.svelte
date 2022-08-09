@@ -27,6 +27,6 @@
     class="w-full mb-4 input input-lg input-bordered"
   />
 
-  <button class="btn btn-block btn-primary" on:click={compute}>{$_("shared.pathfinder.circlesTransferFinder.showNow" )}</button>
+  <button class="btn btn-block btn-primary" on:click={compute}><Label key="shared.pathfinder.circlesTransferFinder.showNow"  /></button>
 
 </main>

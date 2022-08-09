@@ -80,7 +80,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.categoryDetail.loadingOffers" )}</div>
+          <div><Label key="dapps.o-marketplace.pages.categoryDetail.loadingOffers"  /></div>
         </div>
       </div>
     </section>
@@ -89,7 +89,7 @@ onMount(async () => {
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
-            <b>{$_("dapps.o-marketplace.pages.categoryDetail.error" )}</b>
+            <b><Label key="dapps.o-marketplace.pages.categoryDetail.error"  /></b>
           </div>
         </div>
       </div>
@@ -105,7 +105,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.categoryDetail.noOffers" )}</div>
+          <div><Label key="dapps.o-marketplace.pages.categoryDetail.noOffers"  /></div>
         </div>
       </div>
     </section>

@@ -50,7 +50,7 @@ if ($media.small) {
       {#if !props.i18nKey && props.text}
         {props.text}
       {:else if props.i18nKey}
-        {$_(props.i18nKey)}
+        <Label key=props.i18nKey />
       {/if}
     </div>
   </div>

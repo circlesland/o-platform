@@ -21,13 +21,13 @@ onMount(() => {
   const {trustIn, trustOut} = trustFromContactMetadata(contact);
 
   if (trustIn > 0 && trustOut > 0) {
-    message += `${$_("dapps.o-contacts.atoms.contactCard.mutualTrust")}`;
+    message += `$<Label key="dapps.o-contacts.atoms.contactCard.mutualTrust" />`;
   } else if (!trustIn && trustOut > 0) {
-    message += `${$_("dapps.o-contacts.atoms.contactCard.trustedByYou")}`;
+    message += `$<Label key="dapps.o-contacts.atoms.contactCard.trustedByYou" />`;
   } else if (trustIn > 0 && !trustOut) {
-    message += `${$_("dapps.o-contacts.atoms.contactCard.isTrustingYou")}`;
+    message += `$<Label key="dapps.o-contacts.atoms.contactCard.isTrustingYou" />`;
   } else {
-    message += `${$_("dapps.o-contacts.atoms.contactCard.notTrusted")}`;
+    message += `$<Label key="dapps.o-contacts.atoms.contactCard.notTrusted" />`;
   }
 });
 

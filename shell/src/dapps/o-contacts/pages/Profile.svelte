@@ -111,13 +111,13 @@ async function setProfile(id: string) {
     }
 
     if (trustIn > 0 && trustOut > 0) {
-      trustMessage = `${$_("dapps.o-contacts.pages.profile.mutualTrust")}`;
+      trustMessage = `$<Label key="dapps.o-contacts.pages.profile.mutualTrust" />`;
     } else if (!trustIn && trustOut > 0) {
-      trustMessage = `${$_("dapps.o-contacts.pages.profile.trustedByYou")}`;
+      trustMessage = `$<Label key="dapps.o-contacts.pages.profile.trustedByYou" />`;
     } else if (trustIn > 0 && !trustOut) {
-      trustMessage = `${$_("dapps.o-contacts.pages.profile.isTrustingYou")}`;
+      trustMessage = `$<Label key="dapps.o-contacts.pages.profile.isTrustingYou" />`;
     } else {
-      trustMessage = `${$_("dapps.o-contacts.pages.profile.notTrusted")}`;
+      trustMessage = `$<Label key="dapps.o-contacts.pages.profile.notTrusted" />`;
     }
   }
 
@@ -134,7 +134,7 @@ async function setProfile(id: string) {
     key: "banned",
     icon: "trash",
     colorClass: "text-alert-dark",
-    title: `${$_("dapps.o-contacts.pages.profile.revokedUppercase")}`,
+    title: `$<Label key="dapps.o-contacts.pages.profile.revokedUppercase" />`,
     action: () => {},
   };
 }
@@ -152,7 +152,7 @@ async function setProfile(id: string) {
           {#if profile.circlesAddress === $me.circlesAddress}
             You
           {:else}
-            {$_("dapps.o-contacts.pages.profile.profile")}
+            <Label key="dapps.o-contacts.pages.profile.profile" />
           {/if}
         </h1>
       </div>
@@ -183,7 +183,7 @@ async function setProfile(id: string) {
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">
-                    {$_("dapps.o-contacts.pages.profile.trust")}
+                    <Label key="dapps.o-contacts.pages.profile.trust" />
                   </div>
                   <div class="flex flex-wrap content-start">
                     {trustMessage}
@@ -194,7 +194,7 @@ async function setProfile(id: string) {
             <section class="justify-center mb-2 ">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="text-left text-2xs text-dark-lightest">
-                  {$_("dapps.o-contacts.pages.profile.mutualFriends")}
+                  <Label key="dapps.o-contacts.pages.profile.mutualFriends" />
                 </div>
                 <div class="flex flex-row flex-wrap mt-2 ">
                   {#if commonTrusts.length}
@@ -206,7 +206,7 @@ async function setProfile(id: string) {
                       {/if}
                     {/each}
                   {:else}
-                    {$_("dapps.o-contacts.pages.profile.noMutualFriends")}
+                    <Label key="dapps.o-contacts.pages.profile.noMutualFriends" />
                   {/if}
                 </div>
               </div>
@@ -215,7 +215,7 @@ async function setProfile(id: string) {
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">
-                    {$_("dapps.o-contacts.pages.profile.memberAt")}
+                    <Label key="dapps.o-contacts.pages.profile.memberAt" />
                   </div>
                   <div class="flex flex-row flex-wrap mt-2 ">
                     {#each profile.memberships as membership}
@@ -233,7 +233,7 @@ async function setProfile(id: string) {
               <section class="justify-center mb-2 ">
                 <div class="flex flex-col w-full pt-2 space-y-1">
                   <div class="text-left text-2xs text-dark-lightest">
-                    {$_("dapps.o-contacts.pages.profile.members")}
+                    <Label key="dapps.o-contacts.pages.profile.members" />
                   </div>
                   <div class="flex flex-row flex-wrap mt-2 ">
                     {#each profile.members as memberProfile}
@@ -251,7 +251,7 @@ async function setProfile(id: string) {
             <section class="justify-center">
               <div class="flex flex-col w-full pt-2 space-y-1">
                 <div class="mb-1 text-left text-2xs text-dark-lightest">
-                  {$_("dapps.o-contacts.pages.profile.address")}
+                  <Label key="dapps.o-contacts.pages.profile.address" />
                 </div>
                 <div class="flex items-center w-full text-2xs">
                   {profile.circlesAddress}
