@@ -1,7 +1,7 @@
 <script lang="ts">
 import Icons from "./../molecules/Icons.svelte";
 import { media } from "../stores/media";
-import Label from "../../../shared/atoms/Label.svelte";
+import Label from "./Label.svelte";
 
 export let props: {
   icon: string;
@@ -50,7 +50,7 @@ if ($media.small) {
       {#if !props.i18nKey && props.text}
         {props.text}
       {:else if props.i18nKey}
-        <Label key=props.i18nKey />
+        <Label key="{props.i18nKey}" />
       {/if}
     </div>
   </div>
