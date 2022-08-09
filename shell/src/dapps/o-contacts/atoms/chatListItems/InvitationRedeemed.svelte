@@ -8,7 +8,6 @@ import {
 } from "../../../../shared/api/data/types";
 import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { onMount } from "svelte";
-import Label from "../../../shared/atoms/Label.svelte";
 
 export let event: ProfileEvent;
 

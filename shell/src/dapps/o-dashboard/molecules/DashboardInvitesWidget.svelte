@@ -6,6 +6,7 @@ import Button from "../../../shared/atoms/button/Button.svelte";
 import { me } from "../../../shared/stores/me";
 import {Stats} from "../../../shared/api/data/types";
 import Label from "../../../shared/atoms/Label.svelte";
+import { _ } from "svelte-i18n";
 
 
 let shareButton: ButtonContext = {
@@ -53,12 +54,12 @@ $: {
     {/if}
     <div class="absolute grid w-full grid-cols-3 px-2 text-white top-3">
       {#if _stats.goals.nextGoal > 0}
-        <div class="text-sm text-left">{_stats.profilesCount} <Label key="dapps.o-dashboard.molecules.dashboardInvitesWidget.citizens" /></div>
+        <div class="text-sm text-left inline-flex flex-none justify-start"><div class="pr-1">{_stats.profilesCount}</div> <Label key="dapps.o-dashboard.molecules.dashboardInvitesWidget.citizens" /></div>
         <div class="w-auto -mt-1 leading-0">
           {Math.floor((100 * _stats.profilesCount) / _stats.goals.nextGoal)}%
         </div>
-        <div class="-ml-2 text-sm text-right whitespace-nowrap">
-          +{_stats.goals.nextGoal - _stats.profilesCount > 0 ? _stats.goals.nextGoal - _stats.profilesCount : 0} <Label key="dapps.o-dashboard.molecules.dashboardInvitesWidget.tillNextParty" />
+        <div class="-ml-2 text-sm text-right inline-flex flex-nowrap justify-end">
+          <div class="pr-1">+{_stats.goals.nextGoal - _stats.profilesCount > 0 ? _stats.goals.nextGoal - _stats.profilesCount : 0}</div> <Label key="dapps.o-dashboard.molecules.dashboardInvitesWidget.tillNextParty" />
         </div>
       {/if}
     </div>

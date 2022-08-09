@@ -1,6 +1,6 @@
 <script lang="ts">
   import "../../../shared/css/tailwind.css";
-  import TopNav from "src/shared/atoms/TopNav.svelte";
+  import TopNav from "../../../shared/atoms/TopNav.svelte";
   import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
   import { Routable } from "@o-platform/o-interfaces/dist/routable";
   import VideoHeader from "../components/VideoHeader.svelte";
