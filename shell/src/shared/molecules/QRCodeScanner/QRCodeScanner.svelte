@@ -6,7 +6,6 @@ import { push } from "svelte-spa-router";
 import { showToast } from "../../../shared/toast";
 import { _ } from "svelte-i18n";
 import { mySales } from "../../../shared/stores/mySales";
-import Label from "../../atoms/Label.svelte";
 
 let saleEvent: ProfileEvent;
 let sale: SaleEvent;
@@ -111,7 +110,7 @@ onMount(() => {
 <section class="flex flex-col items-center justify-center p-6 space-y-4">
   <div class="w-full text-center">
     <h1 class="text-3xl uppercase font-heading">
-      <Label key="dapps.o-marketplace.pages.scanPurchase.scanToHandOut"></Label>
+      {$_("dapps.o-marketplace.pages.scanPurchase.scanToHandOut")}
     </h1>
   </div>
   <div class="w-full text-center">
@@ -129,16 +128,16 @@ onMount(() => {
         bind:this="{camList}"
         class="w-full border select input">
         <option value="environment" selected
-          ><Label key="dapps.o-marketplace.pages.scanPurchase.cameraDefault"></Label></option>
+          >{$_("dapps.o-marketplace.pages.scanPurchase.cameraDefault")}</option>
         <option value="user"
-          ><Label key="dapps.o-marketplace.pages.scanPurchase.cameraUserFacing"></Label></option>
+          >{$_("dapps.o-marketplace.pages.scanPurchase.cameraUserFacing")}</option>
       </select>
     </div>
 
     <div class="mt-4 text-center">
-      <b><Label key="dapps.o-marketplace.pages.scanPurchase.detectedQrCode"></Label></b>
+      <b>{$_("dapps.o-marketplace.pages.scanPurchase.detectedQrCode")}</b>
       <span id="cam-qr-result" bind:this="{camQrResult}"
-        ><Label key="dapps.o-marketplace.pages.scanPurchase.none"></Label></span>
+        >{$_("dapps.o-marketplace.pages.scanPurchase.none")}</span>
     </div>
   </div>
   <!-- <slot name="EditorActionButtons">

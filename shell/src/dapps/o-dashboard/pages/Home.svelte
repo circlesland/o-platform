@@ -19,7 +19,6 @@ import { Environment } from "../../../shared/environment";
 import { _ } from "svelte-i18n";
 import DashboardInvitesWidget from "../molecules/DashboardInvitesWidget.svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
-import Label from "../../../shared/atoms/Label.svelte";
 import LangSwitcher from "../../../shared/atoms/LangSwitcher.svelte";
 import { ApiClient } from "../../../shared/apiConnection";
 
@@ -109,7 +108,7 @@ async function fetchStats() {
             <Icon name="identification" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            <Label key="dapps.o-dashboard.pages.home.passport"></Label>
+            {$_("dapps.o-dashboard.pages.home.passport")}
           </div>
         </div>
       </section>
@@ -121,7 +120,7 @@ async function fetchStats() {
             <Icon name="users" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            <Label key="dapps.o-dashboard.pages.home.contacts"></Label>
+            {$_("dapps.o-dashboard.pages.home.contacts")}
           </div>
         </div>
       </section>
@@ -133,7 +132,7 @@ async function fetchStats() {
             <Icon name="chat" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            <Label key="dapps.o-dashboard.pages.home.chat"></Label>
+            {$_("dapps.o-dashboard.pages.home.chat")}
           </div>
         </div>
       </section>
@@ -145,7 +144,7 @@ async function fetchStats() {
             <Icon name="cash" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            <Label key="dapps.o-dashboard.pages.home.banking"></Label>
+            {$_("dapps.o-dashboard.pages.home.banking")}
           </div>
         </div>
       </section>
@@ -157,7 +156,7 @@ async function fetchStats() {
             <Icon name="shopping-cart" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            <Label key="dapps.o-dashboard.pages.home.market"></Label>
+            {$_("dapps.o-dashboard.pages.home.market")}
           </div>
         </div>
       </section>
@@ -171,7 +170,7 @@ async function fetchStats() {
               <Icon name="badge-check" class="w-20 h-20 heroicon" />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
-              <Label key="dapps.o-dashboard.pages.home.verified"></Label>
+              {$_("dapps.o-dashboard.pages.home.verified")}
             </div>
           </div>
         </section>
@@ -185,7 +184,7 @@ async function fetchStats() {
               <Icon name="ticket" class="w-20 h-20 heroicon" />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
-              <Label key="dapps.o-dashboard.pages.home.tickets"></Label>
+              {$_("dapps.o-dashboard.pages.home.tickets")}
             </div>
           </div>
         </section>
@@ -199,7 +198,7 @@ async function fetchStats() {
               <Icon name="photograph" class="w-20 h-20 heroicon" />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
-              <Label key="dapps.o-dashboard.pages.home.gallery"></Label>
+              {$_("dapps.o-dashboard.pages.home.gallery")}
             </div>
           </div>
         </section>

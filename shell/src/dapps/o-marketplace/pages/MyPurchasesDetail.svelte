@@ -24,7 +24,6 @@ import { _ } from "svelte-i18n";
 import { myPurchases } from "../../../shared/stores/myPurchases";
 import relativeTimeString from "../../../shared/functions/relativeTimeString";
 import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";
-import Label from "../../../shared/atoms/Label.svelte";
 
 export let id: string;
 
@@ -184,7 +183,7 @@ onMount(async () => {
     <div class="w-full text-center">
       {#if purchase}
         <span class="text-dark-lightest"
-          ><Label key="dapps.o-marketplace.pages.myPurchaseDetail.purchaseDate" />
+          >{$_("dapps.o-marketplace.pages.myPurchaseDetail.purchaseDate")}
           {relativeTimeString(purchase.createdAt, 1, true)}</span>
       {/if}
     </div>
@@ -270,7 +269,7 @@ onMount(async () => {
               {#if invoice.sellerSignature}
                 Your order has been shipped
               {:else if invoice.simplePickupCode}
-                <Label key="dapps.o-marketplace.pages.myPurchaseDetail.yourPickupNumber" />
+                {$_("dapps.o-marketplace.pages.myPurchaseDetail.yourPickupNumber")}
                 {invoice.simplePickupCode}
               {/if}
             </h1>
@@ -286,7 +285,7 @@ onMount(async () => {
           <div class="pb-1 bg-gradient-to-r from-gradient1 to-gradient2">
             <h1 class="p-2 text-center text-white uppercase bg-dark-dark">
               {#if invoice.simplePickupCode}
-                <Label key="dapps.o-marketplace.pages.myPurchaseDetail.yourPickupNumber" />
+                {$_("dapps.o-marketplace.pages.myPurchaseDetail.yourPickupNumber")}
                 {invoice.simplePickupCode}
               {/if}
             </h1>
@@ -295,7 +294,7 @@ onMount(async () => {
           <div class="w-full text-center">
             {#if !invoice.pickupCode}
               <h1 class="text-3xl uppercase font-heading">
-                <Label key="dapps.o-marketplace.pages.myPurchaseDetail.noCode" />
+                {$_("dapps.o-marketplace.pages.myPurchaseDetail.noCode")}
               </h1>
             {:else}
               <div class="container mt-6">

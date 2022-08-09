@@ -5,7 +5,6 @@ import Icons from "../../../shared/molecules/Icons.svelte";
 import { CrcMinting, ProfileEvent } from "../../api/data/types";
 
 import { _ } from "svelte-i18n";
-import Label from "../../atoms/Label.svelte";
 
 export let event: ProfileEvent;
 
@@ -22,7 +21,7 @@ let amountTime = Currency.instance()
 </script>
 
 <div class="mt-1 text-sm text-center text-dark-lightest">
-  <Label key="shared.molecules.notificationViewer.molecules.notificationViewUbi.caChing"></Label>
+  {$_("shared.molecules.notificationViewer.molecules.notificationViewUbi.caChing")}
 </div>
 
 <div class="self-center text-6xl text-center text-success font-heading">
