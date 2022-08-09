@@ -41,15 +41,15 @@ function getValues(): {
   const crcTrust = <CrcTrust>event.payload;
 
   if (event.direction == "in" && crcTrust.limit == 0) {
-    title = `${event.contact_address_profile.firstName} ${$_("dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.untrustedYou")}`;
+    title = `${event.contact_address_profile.firstName} $<Label key="dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.untrustedYou" />`;
     titleClass = "text-alert";
   } else if (event.direction == "in" && crcTrust.limit > 0) {
-    title = `${event.contact_address_profile.firstName} ${$_("dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.trustedYou")}`;
+    title = `${event.contact_address_profile.firstName} $<Label key="dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.trustedYou" />`;
   } else if (event.direction == "out" && crcTrust.limit == 0) {
-    title = `${$_("dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.youUntrusted")} ${event.contact_address_profile.firstName}`;
+    title = `$<Label key="dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.youUntrusted" /> ${event.contact_address_profile.firstName}`;
     titleClass = "text-alert";
   } else if (event.direction == "out" && crcTrust.limit > 0) {
-    title = `${$_("dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.youTrusted")} ${event.contact_address_profile.firstName}`;
+    title = `$<Label key="dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.youTrusted" /> ${event.contact_address_profile.firstName}`;
   }
 
   return {
