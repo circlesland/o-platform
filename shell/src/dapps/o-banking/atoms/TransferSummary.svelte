@@ -60,7 +60,7 @@ let now = new Date();
     <!-- {#if _context.data && _context.data.transitivePath}
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          {$_("dapps.o-banking.atoms.transferSummary.paymentPath" )}
+          <Label key="dapps.o-banking.atoms.transferSummary.paymentPath"  />
         </div>
         <div class="flex items-center w-full">
           <CirclesTransferGraph
@@ -72,7 +72,7 @@ let now = new Date();
     {/if} -->
     <div class="flex flex-col w-full space-y-1">
       <div class="mb-1 text-left text-2xs text-dark-lightest">
-        {$_("common.date" )}
+        <Label key="common.date"  />
       </div>
 
       <div class="flex items-center w-full">
@@ -83,7 +83,7 @@ let now = new Date();
     </div>
 
     <!-- <div class="flex flex-col w-full space-y-1">
-      <div class="mb-1 text-left text-2xs text-dark-lightest">{$_("dapps.o-banking.atoms.transferSummary.amount" )}</div>
+      <div class="mb-1 text-left text-2xs text-dark-lightest"><Label key="dapps.o-banking.atoms.transferSummary.amount"  /></div>
 
       <div class="flex items-center w-full">
         <div class="text-left ">
@@ -102,7 +102,7 @@ let now = new Date();
 
     <div class="flex flex-col w-full space-y-1">
       <div class="mb-1 text-left text-2xs text-dark-lightest">
-        {$_("dapps.o-banking.atoms.transferSummary.recipientAddress" )}
+        <Label key="dapps.o-banking.atoms.transferSummary.recipientAddress"  />
       </div>
 
       <div class="flex items-center w-full">
@@ -112,7 +112,7 @@ let now = new Date();
 
     <div class="flex flex-col w-full space-y-1">
       <div class="mb-1 text-left text-2xs text-dark-lightest">
-        {$_("dapps.o-banking.atoms.transferSummary.block" )}
+        <Label key="dapps.o-banking.atoms.transferSummary.block"  />
       </div>
 
       <div class="flex items-center w-full">
@@ -124,7 +124,7 @@ let now = new Date();
 
     <div class="flex flex-col w-full space-y-1">
       <div class="mb-1 text-left text-2xs text-dark-lightest">
-        {$_("dapps.o-banking.atoms.transferSummary.transactionHash" )}
+        <Label key="dapps.o-banking.atoms.transferSummary.transactionHash"  />
       </div>
 
       <div class="flex items-center w-full text-primarydark">

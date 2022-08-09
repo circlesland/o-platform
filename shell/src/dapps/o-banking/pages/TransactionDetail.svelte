@@ -200,12 +200,12 @@ function openDetail(transfer: ProfileEvent) {
         }}">
         {#if transfer.direction === "in"}
           <span class="mt-4 text-xl break-words">
-            {$_("dapps.o-banking.pages.transactionDetail.from" )}
+            <Label key="dapps.o-banking.pages.transactionDetail.from"  />
             {displayableName ? displayableName : ""}
           </span>
         {:else}
           <span class="mt-4 text-xl break-words">
-            {$_("dapps.o-banking.pages.transactionDetail.to" )}
+            <Label key="dapps.o-banking.pages.transactionDetail.to"  />
             {displayableName ? displayableName : ""}
           </span>
         {/if}
@@ -216,7 +216,7 @@ function openDetail(transfer: ProfileEvent) {
       <!-- {#if path && path.transfers}
         <div class="flex flex-col w-full space-y-1">
           <div class="mb-1 text-left text-2xs text-dark-lightest">
-            {$_("dapps.o-banking.pages.transactionDetail.paymentPath" )}
+            <Label key="dapps.o-banking.pages.transactionDetail.paymentPath"  />
           </div>
           <div class="flex items-center w-full">
             <CirclesTransferGraph
@@ -228,7 +228,7 @@ function openDetail(transfer: ProfileEvent) {
       {/if} -->
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          {$_("common.date" )}
+          <Label key="common.date"  />
         </div>
         <div class="flex items-center w-full">
           <div class="text-left ">
@@ -240,7 +240,7 @@ function openDetail(transfer: ProfileEvent) {
       </div>
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          {$_("dapps.o-banking.pages.transactionDetail.fullAmountCrc" )}
+          <Label key="dapps.o-banking.pages.transactionDetail.fullAmountCrc"  />
         </div>
         <div class="flex items-center w-full">
           <div class="text-left ">
@@ -261,7 +261,7 @@ function openDetail(transfer: ProfileEvent) {
       </div>
       <!-- <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          {$_("dapps.o-banking.pages.transactionDetail.amountCircles" )}
+          <Label key="dapps.o-banking.pages.transactionDetail.amountCircles"  />
         </div>
         <div class="flex items-center w-full">
           <div class="text-left ">
@@ -275,7 +275,7 @@ function openDetail(transfer: ProfileEvent) {
       </div> -->
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          {$_("common.from" )}
+          <Label key="common.from"  />
         </div>
         <div class="flex items-center w-full">
           <div class="text-left break-all">{fromProfile.circlesAddress}</div>
@@ -283,7 +283,7 @@ function openDetail(transfer: ProfileEvent) {
       </div>
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          {$_("common.to" )}
+          <Label key="common.to"  />
         </div>
         <div class="flex items-center w-full">
           <div class="text-left break-all">{toProfile.circlesAddress}</div>
@@ -291,7 +291,7 @@ function openDetail(transfer: ProfileEvent) {
       </div>
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          {$_("common.block" )}
+          <Label key="common.block"  />
         </div>
         <div class="flex items-center w-full">
           <div class="text-left break-all">{transfer.block_number}</div>
@@ -299,7 +299,7 @@ function openDetail(transfer: ProfileEvent) {
       </div>
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          {$_("dapps.o-banking.pages.transactionDetail.transactionHash" )}
+          <Label key="dapps.o-banking.pages.transactionDetail.transactionHash"  />
         </div>
         <div class="flex items-center w-full text-primarydark">
           <div class="text-left break-all">

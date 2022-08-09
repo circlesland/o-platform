@@ -149,7 +149,7 @@ loading = false;
     <section class="flex items-center justify-center mb-2 ">
       <Card>
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-banking.pages.assets.loadingTokens" )}</div>
+          <div><Label key="dapps.o-banking.pages.assets.loadingTokens"  /></div>
         </div>
       </Card>
     </section>

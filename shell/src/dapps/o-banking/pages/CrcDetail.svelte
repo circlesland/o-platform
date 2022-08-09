@@ -21,13 +21,13 @@ onMount(async () => {
 
 <div class="p-5">
   <div class="w-full mb-4 text-center">
-    <h1 class="uppercase font-heading">{$_("dapps.o-banking.pages.crcDetail.individualCircles")}</h1>
+    <h1 class="uppercase font-heading"><Label key="dapps.o-banking.pages.crcDetail.individualCircles" /></h1>
   </div>
   {#if loading}
     <section class="flex items-center justify-center mb-2 ">
       <Card>
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-banking.pages.crcDetail.loadingTokens" )}</div>
+          <div><Label key="dapps.o-banking.pages.crcDetail.loadingTokens"  /></div>
         </div>
       </Card>
     </section>

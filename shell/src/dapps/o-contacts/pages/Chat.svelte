@@ -30,13 +30,13 @@ div.px-4.mx-auto.-mt-3.mb-20(class='md:w-2/3 xl:w-1/2')
     section.flex.items-center.justify-center.mb-2
       div.flex.items-center.w-full.p-4.space-x-2.bg-white.shadow
         div.flex.flex-col.items-start
-          div {$_("dapps.o-contacts.pages.chat.loadingConversations")}
+          div <Label key="dapps.o-contacts.pages.chat.loadingConversations" />
     +elseif('error')
       section.flex.items-center.justify-center.mb-2
         div.flex.items-center.w-full.p-4.space-x-2.bg-white.shadow
           div.flex.flex-col.items-start
             div
-              b {$_("dapps.o-contacts.pages.chat.error")}
+              b <Label key="dapps.o-contacts.pages.chat.error" />
               | {error}
     +else
       +if('_contacts')

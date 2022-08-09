@@ -16,7 +16,7 @@ let payload: MembershipAccepted = <MembershipAccepted>event.payload;
     <NotificationProfile profile="{event.contact_address_profile}" />
   </div>
   <div class="self-center pb-2 text-2xl text-center font-heading">
-    {$_("shared.molecules.notificationViewer.molecules.notificationViewMembershipAccepted.acceptedYourInvitation" )}
+    <Label key="shared.molecules.notificationViewer.molecules.notificationViewMembershipAccepted.acceptedYourInvitation"  />
   </div>
 
   <NotificationProfile profile="{payload.organisation_profile}" />

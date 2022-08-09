@@ -46,7 +46,7 @@ let amountTime = Currency.instance()
     </div>
   {/if}
   <div class="self-center pb-2 mt-4 text-2xl text-center font-heading">
-    {$_("shared.molecules.notificationViewer.molecules.notificationViewTransfer.from")}
+    <Label key="shared.molecules.notificationViewer.molecules.notificationViewTransfer.from" />
   </div>
   <div class="pb-4">
     <NotificationProfile profile="{payload.from_profile}" />

@@ -13,7 +13,7 @@
 <main>
 	<TransfersFinder bind:maxValue={maxValue} bind:transfers={transfers}></TransfersFinder>
 	<hr/>
-	<p>{$_("shared.pathfinder.app.visualizingFlowOf", { values: { flow: formatValue(maxValue)}})}</p>
+	<p><Label key="shared.pathfinder.app.visualizingFlowOf", { values: { flow: formatValue(maxValue />})}</p>
 	<TransferGraph transfers={transfers}></TransferGraph>
 	<AdjacencyGraph></AdjacencyGraph>
 	<hr/>

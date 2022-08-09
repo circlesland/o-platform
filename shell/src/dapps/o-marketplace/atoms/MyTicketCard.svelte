@@ -83,19 +83,19 @@ function getTableNoFromMetadata(metadataJson:string|undefined) {
             class:text-info="{!purchased.purchase.invoices[0].paymentTransactionHash &&
               !purchased.purchase.invoices[0].cancelledAt}">
             {#if purchased.purchase.invoices[0].paymentTransactionHash}
-              {$_("dapps.o-marketplace.pages.myPurchases.paid")}
+              <Label key="dapps.o-marketplace.pages.myPurchases.paid" />
               <Icons icon="check" size="{4}" customClass="inline" />
             {:else if purchased.purchase.invoices[0].cancelledAt}
-              {$_("dapps.o-marketplace.pages.myPurchases.cancelled")}
+              <Label key="dapps.o-marketplace.pages.myPurchases.cancelled" />
             {:else}
-              {$_("dapps.o-marketplace.pages.myPurchases.paymentPending")}
+              <Label key="dapps.o-marketplace.pages.myPurchases.paymentPending" />
             {/if}
           </div>
           <div
             class="inline-block text-xs "
             class:text-inactive="{!purchased.purchase.invoices[0].pickupCode}"
             class:text-success="{purchased.purchase.invoices[0].pickupCode}">
-            {$_("dapps.o-marketplace.pages.myPurchases.entranceCode")}
+            <Label key="dapps.o-marketplace.pages.myPurchases.entranceCode" />
             {#if purchased.purchase.invoices[0].pickupCode}
               <Icons icon="check" size="{4}" customClass="inline" />
             {/if}

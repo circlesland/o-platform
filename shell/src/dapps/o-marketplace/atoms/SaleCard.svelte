@@ -154,12 +154,12 @@ function getTableNoFromMetadata(metadataJson: string | undefined) {
             class:text-alert-dark="{!sale.invoice.paymentTransactionHash}"
             class:text-success="{sale.invoice.paymentTransactionHash}">
             {#if sale.invoice.paymentTransactionHash}
-              {$_("dapps.o-marketplace.pages.mySales.paid")}
+              <Label key="dapps.o-marketplace.pages.mySales.paid" />
               <Icons icon="check" size="{4}" customClass="inline" />
             {:else if sale.invoice.cancelledAt}
-              {$_("dapps.o-marketplace.pages.mySales.cancelled")}
+              <Label key="dapps.o-marketplace.pages.mySales.cancelled" />
             {:else}
-              {$_("dapps.o-marketplace.pages.mySales.paymentPending")}
+              <Label key="dapps.o-marketplace.pages.mySales.paymentPending" />
             {/if}
           </div>
 
@@ -169,9 +169,9 @@ function getTableNoFromMetadata(metadataJson: string | undefined) {
               class:text-primary-lighter="{!sale.invoice.sellerSignature}"
               class:text-success="{sale.invoice.sellerSignature}">
               {#if !sale.invoice.sellerSignature}
-                {$_("dapps.o-marketplace.pages.mySales.notPickedUp")}
+                <Label key="dapps.o-marketplace.pages.mySales.notPickedUp" />
               {:else}
-                {$_("dapps.o-marketplace.pages.mySales.pickedUp")}
+                <Label key="dapps.o-marketplace.pages.mySales.pickedUp" />
               {/if}
               {#if sale.invoice.sellerSignature}
                 <Icons icon="check" size="{4}" customClass="inline" />

@@ -49,7 +49,7 @@ function sortAlphabetically(a, b) {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-contacts.pages.contacts.loadingContacts" )}</div>
+          <div><Label key="dapps.o-contacts.pages.contacts.loadingContacts"  /></div>
         </div>
       </div>
     </section>

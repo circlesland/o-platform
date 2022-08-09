@@ -68,7 +68,7 @@ function onkeydown(e: KeyboardEvent) {
     <!-- {#if _context.data && _context.data.transitivePath}
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
-          {$_("dapps.o-banking.atoms.transferConfirmation.paymentPath" )}
+          <Label key="dapps.o-banking.atoms.transferConfirmation.paymentPath"  />
         </div>
         <div class="flex items-center w-full">
           <CirclesTransferGraph
@@ -80,7 +80,7 @@ function onkeydown(e: KeyboardEvent) {
     {/if} -->
     <div class="flex flex-col w-full space-y-1">
       <div class="mb-1 text-left text-2xs text-dark-lightest">
-        {$_("common.date" )}
+        <Label key="common.date"  />
       </div>
 
       <div class="flex items-center w-full">
@@ -107,7 +107,7 @@ function onkeydown(e: KeyboardEvent) {
 
     <div class="flex flex-col w-full space-y-1">
       <div class="mb-1 text-left text-2xs text-dark-lightest">
-        {$_("dapps.o-banking.atoms.transferConfirmation.recipientAddress" )}
+        <Label key="dapps.o-banking.atoms.transferConfirmation.recipientAddress"  />
       </div>
 
       <div class="flex items-center w-full">

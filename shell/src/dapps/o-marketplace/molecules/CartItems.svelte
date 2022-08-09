@@ -216,7 +216,7 @@ function handleClickOutside(event) {
       {#if editable}
         <div class="flex items-center justify-end">
           <span class="mr-2 text-sm font-medium text-gray-400">
-            {$_("dapps.o-marketplace.pages.shoppingCart.total")}
+            <Label key="dapps.o-marketplace.pages.shoppingCart.total" />
           </span>
           <span class="text-lg font-bold">
             {displayShop.total.toFixed(2)}
@@ -231,7 +231,7 @@ function handleClickOutside(event) {
 
         {#if isLoading}
           <button class="h-auto btn-block btn btn-disabled">
-            {$_("dapps.o-marketplace.pages.shoppingCart.checkOut")}
+            <Label key="dapps.o-marketplace.pages.shoppingCart.checkOut" />
           </button>
         {:else if payableStatusBySeller[displayShop.shop.owner.circlesAddress].payable}
           {#if displayShop.total.toFixed(2) > 50}
@@ -253,10 +253,10 @@ function handleClickOutside(event) {
   {/each}
 {:else}
   <p class="mt-6 text-center">
-    {$_("dapps.o-marketplace.pages.shoppingCart.yourCartIsEmpty")}
+    <Label key="dapps.o-marketplace.pages.shoppingCart.yourCartIsEmpty" />
   </p>
   <div class="w-full mt-6">
     <button class="h-auto btn-block btn btn-light" on:click="{(event) => handleClickOutside(event)}"
-      >{$_("dapps.o-marketplace.pages.shoppingCart.continueShopping")}</button>
+      ><Label key="dapps.o-marketplace.pages.shoppingCart.continueShopping" /></button>
   </div>
 {/if}

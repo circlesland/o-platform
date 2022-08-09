@@ -108,7 +108,7 @@ async function restartPurchase(shippingAddressId: number, oldContext: EditorCont
           bind:group="{deliveryType}"
           name="deliveryType"
           value="{1}" />
-        <span class="inline">{$_("dapps.o-marketplace.molecules.checkoutDelivery.pickup")}</span>
+        <span class="inline"><Label key="dapps.o-marketplace.molecules.checkoutDelivery.pickup" /></span>
       </label>
     </div> -->
     {#if deliveryType === 2}
@@ -134,19 +134,19 @@ async function restartPurchase(shippingAddressId: number, oldContext: EditorCont
                     }, 30);
                   },
                 });
-              }}">{$_("dapps.o-marketplace.molecules.checkoutDelivery.addAddressButton")}</button>
+              }}"><Label key="dapps.o-marketplace.molecules.checkoutDelivery.addAddressButton" /></button>
           </div>
         </label>
       </div>
     {:else}
       <div class="flex flex-col mt-4 space-y-2 text-center">
         {#if context.data.shop.pickupAddress}
-          <div>{$_("dapps.o-marketplace.molecules.checkoutDelivery.youCanPickupAt")}</div>
+          <div><Label key="dapps.o-marketplace.molecules.checkoutDelivery.youCanPickupAt" /></div>
 
           <div class="font-bold">{@html formatShippingAddress(context.data.shop.pickupAddress, true)}</div>
         {/if}
         {#if context.data.shop.openingHours}
-          <div class="pt-2">{$_("dapps.o-marketplace.molecules.checkoutDelivery.openingHours")}</div>
+          <div class="pt-2"><Label key="dapps.o-marketplace.molecules.checkoutDelivery.openingHours" /></div>
 
           <div>{@html context.data.shop.openingHours}</div>
         {/if}

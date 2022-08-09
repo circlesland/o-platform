@@ -43,7 +43,7 @@ function loadDetailPage() {
           <div class="px-2">
             <Icons icon="home" />
           </div>
-          <span class="block mt-1 text-3xs">{$_("dapps.o-marketplace.atoms.transactionItemCard.sending" )}</span>
+          <span class="block mt-1 text-3xs"><Label key="dapps.o-marketplace.atoms.transactionItemCard.sending"  /></span>
         </div>
       </div>
     </div>
