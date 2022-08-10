@@ -29,11 +29,11 @@ $: {
           stroke-width="2"
           d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
       </svg>
-      <label class="pt-3 break-all"
+      <span class="pt-3 break-all"
         ><h4><strong><Label key="shared.atoms.error.processEncounteredAnError" ></Label></strong></h4>
         <br />
         <span>{error.message}</span>
-      </label>
+      </span>
       <br />
     </div>
   </div>

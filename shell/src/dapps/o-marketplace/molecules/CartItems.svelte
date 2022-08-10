@@ -27,7 +27,6 @@ type ItemsOfShop = {
 };
 
 export let editable: boolean = true;
-export let shop: any;
 
 let payableStatusBySeller: PayableStatusBySeller;
 

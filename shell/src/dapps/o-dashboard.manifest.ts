@@ -16,13 +16,7 @@ const index: Page<any, DappState> = {
   title: "common.home",
   type: "page",
 };
-const monitor: Page<any, DappState> = {
-  isSystem: true,
-  routeParts: ["=monitor"],
-  component: Monitor,
-  title: "common.monitoring",
-  type: "page",
-};
+
 const invites: Page<any, DappState> = {
   routeParts: ["=invites"],
   component: RedeemedInvitations,
@@ -129,5 +123,5 @@ export const home: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, invites, inviteLeaderboard, sharePersonalInvite, externalChat, externalForum, monitor],
+  routables: [index, invites, inviteLeaderboard, sharePersonalInvite, externalChat, externalForum],
 };
