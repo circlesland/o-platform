@@ -224,7 +224,7 @@ function handleClickOutside(event) {
         </div>
         {#if displayShop.total.toFixed(2) > 50}
           <div class="mb-4 text-right text-error">
-            {@html $_("dapps.o-marketplace.pages.shoppingCart.max50")}
+            <Label key="dapps.o-marketplace.pages.shoppingCart.max50" />
           </div>
         {/if}
 
@@ -235,16 +235,16 @@ function handleClickOutside(event) {
         {:else if payableStatusBySeller[displayShop.shop.owner.circlesAddress].payable}
           {#if displayShop.total.toFixed(2) > 50}
             <button class="h-auto btn-block btn btn-disabled disabled">
-              {@html $_("dapps.o-marketplace.pages.shoppingCart.checkOut")}
+              <Label key="dapps.o-marketplace.pages.shoppingCart.checkOut" />
             </button>
           {:else}
             <button class="h-auto btn-block btn btn-primary" on:click="{() => checkout(shopIndex)}">
-              {@html $_("dapps.o-marketplace.pages.shoppingCart.checkOut")}
+              <Label key="dapps.o-marketplace.pages.shoppingCart.checkOut" />
             </button>
           {/if}
         {:else if payableStatusBySeller[displayShop.shop.owner.circlesAddress].payable === false}
           <div class="w-full text-center text-alert">
-            {@html $_(payableStatusBySeller[displayShop.shop.owner.circlesAddress].reason)}
+            <Label key="{payableStatusBySeller[displayShop.shop.owner.circlesAddress].reason}" />
           </div>
         {/if}
       {/if}
