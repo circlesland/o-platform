@@ -1,6 +1,6 @@
 <script>
 	import {onMount, tick} from 'svelte';
-	import {_} from "svelte-i18n";
+	import Label from '../../atoms/Label.svelte';
 
 	// props
 	export let items = undefined;

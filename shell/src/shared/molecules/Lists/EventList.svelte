@@ -20,6 +20,7 @@ import {poppedScrollPosition, scrollToTop, scrollToBottom, scrollToPosition, pop
 import {Readable} from "svelte/store";
 import {SvelteComponentDev} from "svelte/internal";
 import {_} from "svelte-i18n";
+import Label from "../../atoms/Label.svelte";
 
 export let views: EventListViewMap = {};
 export let reverse: boolean = false;

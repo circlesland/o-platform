@@ -8,6 +8,7 @@ import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { stats } from "../../../shared/stores/stats";
 import Label from "../../../shared/atoms/Label.svelte";
 import { Environment } from "../../../shared/environment";
+import { _ } from "svelte-i18n";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;

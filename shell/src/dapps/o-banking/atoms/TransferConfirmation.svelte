@@ -10,6 +10,7 @@ import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelt
 import { loadProfile } from "../../../shared/functions/loadProfile";
 import { Currency } from "../../../shared/currency";
 import { _ } from "svelte-i18n"
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let context: any;
 let _context: any;

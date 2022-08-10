@@ -2,7 +2,7 @@
 import NotificationProfile from "./NotificationProfile.svelte";
 
 import { InvitationRedeemed, ProfileEvent } from "../../api/data/types";
-import {_} from "svelte-i18n";
+import Label from "../../atoms/Label.svelte";
 
 
 export let event: ProfileEvent;
