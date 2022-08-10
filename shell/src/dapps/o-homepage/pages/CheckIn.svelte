@@ -11,7 +11,6 @@ import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
-export let address = "";
 
 let loading = true;
 let shop: Shop;
