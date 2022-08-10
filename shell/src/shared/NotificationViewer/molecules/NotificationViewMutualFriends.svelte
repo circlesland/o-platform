@@ -2,7 +2,7 @@
 import {CommonTrust, CommonTrustDocument, CommonTrustQueryVariables, Profile} from "src/shared/api/data/types";
 import UserImage from "src/shared/atoms/UserImage.svelte";
 import {ApiClient} from "../../apiConnection";
-import {_} from "svelte-i18n";
+import Label from "../../atoms/Label.svelte";
 
 export const profile: Profile = undefined;
 export const eventData: any = undefined;

@@ -3,7 +3,7 @@ import NotificationProfile from "./NotificationProfile.svelte";
 
 import { MembershipOffer, ProfileEvent } from "../../api/data/types";
 
-import {_} from "svelte-i18n";
+import Label from "../../atoms/Label.svelte";
 
 
 export let event: ProfileEvent;
