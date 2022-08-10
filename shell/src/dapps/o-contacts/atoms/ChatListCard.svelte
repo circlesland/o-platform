@@ -13,7 +13,7 @@ import {
 } from "../../../shared/api/data/types";
 import DateView from "../../../shared/atoms/Date.svelte";
 
-import Label from "../../../shared/atoms/Label.svelte";
+import { _ } from "svelte-i18n";
 
 export let param: Contact;
 
@@ -55,13 +55,13 @@ $: {
   }
   let trustStatus = "";
   if (trustIn > 0 && trustOut > 0) {
-    trustStatus = `$<Label key="dapps.o-contacts.atoms.chatListCard.mutualTrust" />`;
+    trustStatus = `${$_("dapps.o-contacts.atoms.chatListCard.mutualTrust")}`;
   } else if (!trustIn && trustOut > 0) {
-    trustStatus = `$<Label key="dapps.o-contacts.atoms.chatListCard.trustedByYou" />`;
+    trustStatus = `${$_("dapps.o-contacts.atoms.chatListCard.trustedByYou")}`;
   } else if (trustIn > 0 && !trustOut) {
-    trustStatus = `$<Label key="dapps.o-contacts.atoms.chatListCard.isTrustingYou" />`;
+    trustStatus = `${$_("dapps.o-contacts.atoms.chatListCard.isTrustingYou")}`;
   } else {
-    trustStatus = `$<Label key="dapps.o-contacts.atoms.chatListCard.notTrusted" />`;
+    trustStatus = `${$_("dapps.o-contacts.atoms.chatListCard.notTrusted")}`;
   }
 
   const unixTimestamp = parseInt(param.lastContactAt);
@@ -87,9 +87,9 @@ $: {
       case EventType.CrcTrust:
         message = `${displayName} ${
           mostRecentDisplayEvent.value > 0
-            ? `$<Label key="dapps.o-contacts.atoms.chatListCard.trusted" />`
-            : `$<Label key="dapps.o-contacts.atoms.chatListCard.untrusted" />`
-        } $<Label key="dapps.o-contacts.atoms.chatListCard.you" />`;
+            ? `${$_("dapps.o-contacts.atoms.chatListCard.trusted")}`
+            : `${$_("dapps.o-contacts.atoms.chatListCard.untrusted")}`
+        } ${$_("dapps.o-contacts.atoms.chatListCard.you")}`;
         break;
       case EventType.CrcHubTransfer:
         message = `${displayName} ${$_(
@@ -107,7 +107,7 @@ $: {
           mostRecentDisplayEvent.value,
           null,
           false
-        )} $<Label key="dapps.o-contacts.atoms.chatListCard.tokens" />`;
+        )} ${$_("dapps.o-contacts.atoms.chatListCard.tokens")}`;
         break;
       case EventType.ChatMessage:
         message = `${displayName} ${$_(
@@ -128,10 +128,10 @@ $: {
   } else {
     switch (mostRecentDisplayEvent.type) {
       case EventType.CrcTrust:
-        message = `$<Label key="dapps.o-contacts.atoms.chatListCard.You" /> ${
+        message = `${$_("dapps.o-contacts.atoms.chatListCard.You")} ${
           mostRecentDisplayEvent.value > 0
-            ? `$<Label key="dapps.o-contacts.atoms.chatListCard.trusted" />`
-            : `$<Label key="dapps.o-contacts.atoms.chatListCard.untrusted" />`
+            ? `${$_("dapps.o-contacts.atoms.chatListCard.trusted")}`
+            : `${$_("dapps.o-contacts.atoms.chatListCard.untrusted")}`
         } ${displayName}`;
         break;
       case EventType.CrcHubTransfer:
@@ -153,10 +153,10 @@ $: {
           null,
           true,
           false
-        )} $<Label key="dapps.o-contacts.atoms.chatListCard.token" />`;
+        )} ${$_("dapps.o-contacts.atoms.chatListCard.token")}`;
         break;
       case EventType.ChatMessage:
-        message = `$<Label key="dapps.o-contacts.atoms.chatListCard.youWrote" /> ${
+        message = `${$_("dapps.o-contacts.atoms.chatListCard.youWrote")} ${
           mostRecentDisplayEvent.value
         }`;
         break;
@@ -168,7 +168,7 @@ $: {
       case EventType.MembershipOffer:
         message = `${$_(
           "dapps.o-contacts.atoms.chatListCard.youInvited"
-        )} ${displayName} $<Label key="dapps.o-contacts.atoms.chatListCard.to" /> ${
+        )} ${displayName} ${$_("dapps.o-contacts.atoms.chatListCard.to")} ${
           mostRecentDisplayEvent.value
         }`;
         break;

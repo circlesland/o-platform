@@ -8,6 +8,7 @@ import { Currency } from "../../../shared/currency";
 import { Profile } from "../../../shared/api/data/types";
 import { loadProfile } from "../../../shared/functions/loadProfile";
 import { displayableName } from "../../../shared/functions/stringHelper";
+import { _ } from "svelte-i18n"
 import Label from "../../../shared/atoms/Label.svelte";
 
 
