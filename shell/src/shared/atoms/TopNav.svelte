@@ -48,7 +48,7 @@ $: {
         </div>
       {/if}
       {#if profile}
-        {#if profile.__typename === "Organisation"}
+        {#if profile.__typename !== "Profile"}
           <div class="mr-4 text-white cursor-pointer" on:click="{() => push(`#/marketplace/scan-purchase`)}">
             <Icon name="qrcode" class="w-6 h-6 heroicon smallicon" />
           </div>

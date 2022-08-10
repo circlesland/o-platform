@@ -1,6 +1,6 @@
 <script lang="ts">
-import UserImage from "src/shared/atoms/UserImage.svelte";
 import { isMobile } from "../functions/isMobile";
+import UserImage from "./UserImage.svelte";
 
 export let params = {
   imageUrl: null,

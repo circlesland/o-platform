@@ -48,8 +48,9 @@ npx --no-install  graphql-codegen
 
 cd ../../../../..
 
-npx svelte-check || exit 99
-
+cd shell
+npx svelte-check --threshold=error --fail-on-warnings || exit 99
+cd ..
 echo "Building 'shell' with dapps .."
 cd shell || exit
 npm run build

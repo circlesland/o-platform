@@ -24,7 +24,7 @@ function onkeydown(e: KeyboardEvent) {
 </script>
 
 <div>
-  {#if context.messages[context.field]}
+  {#if typeof context.field == "string" && context.messages[context.field]}
     <div class="mt-2 mb-2 alert alert-error">
       <div class="flex-1">
         <svg

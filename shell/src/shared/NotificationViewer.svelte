@@ -18,7 +18,7 @@ import { EventType } from "./api/data/types";
 
 export let context: NotificationViewerContext;
 
-let data: any = context.data[context.field];
+let data: any = context.data[<string>context.field];
 
 let userActions: UserActionItem[] = [];
 

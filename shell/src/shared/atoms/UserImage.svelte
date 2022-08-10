@@ -1,8 +1,7 @@
 <script lang="ts">
-import { AvataarGenerator } from "src/shared/avataarGenerator";
 import { push } from "svelte-spa-router";
-import { verify } from "../../dapps/o-verification/processes/verify";
 import { Profile, Organisation } from "../api/data/types";
+import {AvataarGenerator} from "../avataarGenerator";
 
 export let profile: Profile | Organisation;
 export let size: number = 10;
@@ -45,7 +44,7 @@ $: {
       class:rounded-corners-white-borders="{whiteRing}"
       style="padding: {size >= 20 ? `4px` : `1px`}">
       <div class="relative w-{size} h-{size} m-auto rounded-full" class:bg-white="{!transparent}">
-        {#if profile.provenUniqueness}
+        {#if profile.__typename === "Profile" && profile.provenUniqueness}
           <img
             src="/icons/verified.svg"
             alt="verified user"

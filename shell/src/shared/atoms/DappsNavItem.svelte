@@ -3,6 +3,7 @@
   import { createEventDispatcher } from "svelte";
   import Router, { push } from "svelte-spa-router";
   import Icons from "../molecules/Icons.svelte";
+  import {Readable} from "svelte/store";
 
   const dispatch = createEventDispatcher();
 
@@ -11,7 +12,7 @@
   export let icon: string = null;
   export let external: boolean = false;
   export let clickOnly: boolean = false;
-  const current = getContext("nav");
+  const current:Readable<any> = getContext("nav");
 
   function setSegment() {
     if (clickOnly) {

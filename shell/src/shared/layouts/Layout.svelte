@@ -155,7 +155,7 @@ function onkeydown(e: KeyboardEvent) {
   {/if}
 
   {#if layout.dialogs.center && layout.dialogs.center.isOpen}
-    <Center blur="true" on:clickedOutside="{handleClickOutside}">
+    <Center blur={true} on:clickedOutside="{handleClickOutside}">
       <svelte:component
         this="{layout.dialogs.center.component}"
         {...layout.dialogs.center.params ? layout.dialogs.center.params : {}} />

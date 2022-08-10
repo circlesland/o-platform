@@ -11,10 +11,10 @@ $: {
   _context = context;
 }
 
-context.data[context.field] =
-  context.data[context.field] === undefined
+context.data[<string>context.field] =
+  context.data[<string>context.field] === undefined
     ? false
-    : context.data[context.field];
+    : context.data[<string>context.field];
 
 const submitHandler = () => {
   const answer = new Continue();
@@ -25,7 +25,7 @@ const submitHandler = () => {
 
 <div class="mt-4 bordered">
   <div class="form-control">
-    {#if context.messages[context.field]}
+    {#if typeof context.field == "string" && context.messages[context.field]}
       <div class="mt-2 mb-2 alert alert-error">
         <div class="flex-1">
           <svg

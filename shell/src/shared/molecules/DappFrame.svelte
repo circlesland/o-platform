@@ -98,7 +98,7 @@ async function onBack() {
     runtimeDapp: RuntimeDapp<any>;
     routable: Page<any, any>;
     params: { [x: string]: any };
-  } = {};
+  } = <any>{};
 
   const previousDapp = findDappById(previous.dappId);
   previousContext.runtimeDapp = previousDapp

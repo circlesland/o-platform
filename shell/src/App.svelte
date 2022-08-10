@@ -193,8 +193,8 @@ import "./shared/css/tailwind.css";
 
 import Router from "svelte-spa-router";
 import { SvelteToast } from "./shared/molecules/Toast";
-import DappFrame from "src/shared/molecules/DappFrame.svelte";
-import NotFound from "src/shared/pages/NotFound.svelte";
+import DappFrame from "./shared/molecules/DappFrame.svelte";
+import NotFound from "./shared/pages/NotFound.svelte";
 import { interpret } from "xstate";
 import { initMachine } from "./dapps/o-onboarding/processes/init";
 import { ubiMachine } from "./shared/ubiTimer2";

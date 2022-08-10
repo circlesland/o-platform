@@ -1,8 +1,4 @@
 <script lang="ts">
-  import { Action } from "rxjs/internal/scheduler/Action";
-  import { push } from "svelte-spa-router";
-  import Icons from "src/shared/molecules/Icons.svelte";
-
   export let params = {
     headerClass: "bg-primary",
     headerText: "invite 3 pending",

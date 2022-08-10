@@ -1,8 +1,8 @@
 <script lang="ts">
-import TopNav from "src/shared/atoms/TopNav.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import Label from "../atoms/Label.svelte";
+import TopNav from "../atoms/TopNav.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
