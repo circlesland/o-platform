@@ -48,7 +48,7 @@ npx --no-install  graphql-codegen
 
 cd ../../../../..
 
-npx svelte-check || exit 99
+# npx svelte-check || exit 99
 
 echo "Building 'shell' with dapps .."
 cd shell || exit
