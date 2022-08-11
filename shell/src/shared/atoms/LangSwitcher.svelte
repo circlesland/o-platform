@@ -39,6 +39,8 @@ function changeHandler() {
     }}">
       {#if lang == "en"}
         <img src="{'/country-flags/svg/gb.svg'}" alt="{selectedValue}" class="w-20 h-20 mr-2 hover:cursor-pointer" />
+      {:else if lang == "in"}
+        <img src="{'/country-flags/svg/mc.svg'}" alt="{selectedValue}" class="w-20 h-20 mr-2 hover:cursor-pointer" />
       {:else}
         <img src="{'/country-flags/svg/' + lang + '.svg'}" alt="{selectedValue}" class="w-20 h-20 mr-2 hover:cursor-pointer" />
       {/if}
