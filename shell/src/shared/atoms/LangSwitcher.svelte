@@ -8,7 +8,8 @@ import { Environment } from "../environment";
 
 let availableLanguages = [];
 
-let selectedValue: string = Environment.userLanguage;
+let selectedValue: string;
+
 
 onMount(async () => {
   const i18nResult = await ApiClient.query<I18n[], GetAvailableLanguagesQuery>(GetAvailableLanguagesDocument, {});
@@ -24,18 +25,23 @@ onMount(async () => {
   });
 });
 
-
 function changeHandler() {
   Environment.userLanguage = selectedValue;
   location.reload();
 }
 </script>
 
-<div class="flex items-center">
-  <!--<img src="{'/country-flags/svg/' + selectedValue + '.svg'}" alt="{selectedValue}" class="table-cell w-10 h-10 mr-3" />-->
-  <select bind:value="{selectedValue}" on:change="{changeHandler}" class="">
-    {#each availableLanguages as { lang }}
-      <option class="" value="{lang}">{lang}</option>
-    {/each}
-  </select>
+<div class="flex items-center content-between w-full">
+  {#each availableLanguages as { lang }}
+    <div class="inline-flex w-full flex-grow justify-center" on:click="{() => {
+      selectedValue = lang;
+      changeHandler()
+    }}">
+      {#if lang == "en"}
+        <img src="{'/country-flags/svg/gb.svg'}" alt="{selectedValue}" class="w-20 h-20 mr-2 hover:cursor-pointer" />
+      {:else}
+        <img src="{'/country-flags/svg/' + lang + '.svg'}" alt="{selectedValue}" class="w-20 h-20 mr-2 hover:cursor-pointer" />
+      {/if}
+    </div>
+  {/each}
 </div>
