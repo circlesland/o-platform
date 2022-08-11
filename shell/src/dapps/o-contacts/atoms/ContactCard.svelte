@@ -4,7 +4,7 @@ import ItemCard from "../../../shared/atoms/ItemCard.svelte";
 import {Contact} from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 
-import Label from "../../../shared/atoms/Label.svelte";
+import { _ } from "svelte-i18n";
 import {trustFromContactMetadata} from "../../../shared/functions/trustFromContactMetadata";
 
 export let contact: Contact;
@@ -21,13 +21,13 @@ onMount(() => {
   const {trustIn, trustOut} = trustFromContactMetadata(contact);
 
   if (trustIn > 0 && trustOut > 0) {
-    message += `$<Label key="dapps.o-contacts.atoms.contactCard.mutualTrust" />`;
+    message += `${$_("dapps.o-contacts.atoms.contactCard.mutualTrust")}`;
   } else if (!trustIn && trustOut > 0) {
-    message += `$<Label key="dapps.o-contacts.atoms.contactCard.trustedByYou" />`;
+    message += `${$_("dapps.o-contacts.atoms.contactCard.trustedByYou")}`;
   } else if (trustIn > 0 && !trustOut) {
-    message += `$<Label key="dapps.o-contacts.atoms.contactCard.isTrustingYou" />`;
+    message += `${$_("dapps.o-contacts.atoms.contactCard.isTrustingYou")}`;
   } else {
-    message += `$<Label key="dapps.o-contacts.atoms.contactCard.notTrusted" />`;
+    message += `${$_("dapps.o-contacts.atoms.contactCard.notTrusted")}`;
   }
 });
 
