@@ -32,9 +32,7 @@ $: {
     <div class="justify-self-center">
       <span class="text-md text-primary text-secondary">Beta</span>
     </div>
-    {#if showSwitcher}
-      <div class="text-black clro-start-3 justify-self-center"><LangSwitcher /></div>
-    {/if}
+
 
     <div class="col-start-4 pr-1 place-self-center justify-self-end">
       {#if runtimeDapp && runtimeDapp.dappId !== "homepage:1" && !runtimeDapp.anonymous}
