@@ -71,7 +71,7 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   prod = false;
 } else if (process.env.DEPLOY_ENVIRONMENT === "docker") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
-  __API_ENDPOINT__ = "http://localhost:8989";
+  __API_ENDPOINT__ = process.env.API_ENDPOINT ? process.env.API_ENDPOINT : "http://localhost:8989";
   __APP_ID__ = "ultralocal.circles.land";
   __FILES_APP_ID__ = "dev.files.circles.land";
   __CIRCLES_HUB_ADDRESS__ = process.env.CIRCLES_HUB_ADDRESS;
