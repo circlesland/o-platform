@@ -8,6 +8,7 @@ import { Subscription } from "rxjs";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;

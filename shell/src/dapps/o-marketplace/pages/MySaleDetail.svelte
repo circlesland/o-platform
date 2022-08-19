@@ -157,7 +157,7 @@ onMount(async () => {
   <header class="grid overflow-hidden bg-white ">
     <div class="w-full text-center">
       <h1 class="text-3xl uppercase font-heading">
-        {$_("dapps.o-marketplace.pages.mySaleDetail.saleDetails" )}
+        <Label key="dapps.o-marketplace.pages.mySaleDetail.saleDetails" />
       </h1>
     </div>
     <div class="w-full text-center">
@@ -226,7 +226,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.mySaleDetail.loadingSales" )}</div>
+          <div><Label key="dapps.o-marketplace.pages.mySaleDetail.loadingSales" /></div>
         </div>
       </div>
     </section>
