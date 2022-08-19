@@ -3,4 +3,4 @@
         text: string
     };
 </script>
-{params ? params.text : window.i18n("shared.molecules.text.noText")}
+{params ? params.text : window.o.i18n("shared.molecules.text.noText")}

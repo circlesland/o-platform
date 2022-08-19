@@ -15,7 +15,7 @@ async function getMutualFriends() : Promise<CommonTrust[]> {
     });
     return mutualFriends;
   } else {
-    throw new Error(window.i18n("shared.molecules.notificationViewer.molecules.notificationViewMutualFriends.error"));
+    throw new Error(window.o.i18n("shared.molecules.notificationViewer.molecules.notificationViewMutualFriends.error"));
   }
 }
 

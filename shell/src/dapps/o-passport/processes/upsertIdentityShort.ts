@@ -38,22 +38,22 @@ export type UpsertIdentityContext = ProcessContext<UpsertIdentityContextData>;
 
 const editorContent: { [x: string]: EditorViewContext } = {
   firstName: {
-    title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.title"),
-    description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.description"),
-    placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.placeholder"),
-    submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.submitButtonText"),
+    title: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.title"),
+    description: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.description"),
+    placeholder: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.placeholder"),
+    submitButtonText: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.submitButtonText"),
   },
   emailAddress: {
-    title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.title"),
-    description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.description"),
-    placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.placeholder"),
-    submitButtonText: window.i18n(
+    title: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.title"),
+    description: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.description"),
+    placeholder: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.placeholder"),
+    submitButtonText: window.o.i18n(
       "dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.submitButtonText"
     ),
   },
   newsletter: {
-    title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.title"),
-    description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.description"),
+    title: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.title"),
+    description: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.description"),
     placeholder: "",
     submitButtonText: "",
   },
@@ -75,10 +75,10 @@ const processDefinition = (processId: string) =>
         component: EmailAddressEditor,
         params: {
           view: editorContent.emailAddress = {
-            title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.title"),
-            description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.description"),
-            placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.placeholder"),
-            submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.submitButtonText"),
+            title: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.title"),
+            description: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.description"),
+            placeholder: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.placeholder"),
+            submitButtonText: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.submitButtonText"),
           },
         },
         navigation: {
@@ -101,10 +101,10 @@ const processDefinition = (processId: string) =>
         id: "newsletter",
         component: ChoiceSelector,
         params: { view: editorContent.newsletter = {
-          title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.title"),
-          description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.description"),
-          placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.placeholder"),
-          submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.submitButtonText"),
+          title: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.title"),
+          description: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.description"),
+          placeholder: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.placeholder"),
+          submitButtonText: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.submitButtonText"),
         }},
         options: [
           {
@@ -139,13 +139,13 @@ const processDefinition = (processId: string) =>
         component: TextEditor,
         params: {
           view: editorContent.firstName = {
-            title: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.title"),
-            description: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.description"),
-            placeholder: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.placeholder"),
-            submitButtonText: window.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.submitButtonText"),
+            title: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.title"),
+            description: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.description"),
+            placeholder: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.placeholder"),
+            submitButtonText: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.submitButtonText"),
           },
         },
-        dataSchema: yup.string().required(window.i18n("dapps.o-passport.processes.upsertIdentity.requiredName")),
+        dataSchema: yup.string().required(window.o.i18n("dapps.o-passport.processes.upsertIdentity.requiredName")),
         navigation: {
           canGoBack: () => true,
           previous: "#newsletter",

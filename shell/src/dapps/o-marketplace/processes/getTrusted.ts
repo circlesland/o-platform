@@ -32,9 +32,9 @@ const processDefinition = (processId: string) =>
         component: QrCodeViewer,
         params: {
           view: {
-            title: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.title"),
-            description: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.description"),
-            submitButtonText: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.submitButtonText"),
+            title: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.title"),
+            description: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.description"),
+            submitButtonText: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.submitButtonText"),
           },
           html: () => "",
           hideNav: true,

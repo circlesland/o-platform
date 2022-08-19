@@ -37,8 +37,8 @@ const processDefinition = (processId: string) =>
         component: TextEditor,
         params: {
           view: {
-            title: window.i18n("dapps.o-passport.processes.identify.NameAtTheDoor.title"),
-            description: window.i18n("dapps.o-passport.processes.identify.NameAtTheDoor.description")
+            title: window.o.i18n("dapps.o-passport.processes.identify.NameAtTheDoor.title"),
+            description: window.o.i18n("dapps.o-passport.processes.identify.NameAtTheDoor.description")
           },
         },
         navigation: {
@@ -53,8 +53,8 @@ const processDefinition = (processId: string) =>
         component: TextEditor,
         params: {
           view: {
-            title: window.i18n("dapps.o-passport.processes.identify.street.title"),
-            description: window.i18n("dapps.o-passport.processes.identify.street.description")
+            title: window.o.i18n("dapps.o-passport.processes.identify.street.title"),
+            description: window.o.i18n("dapps.o-passport.processes.identify.street.description")
           },
         },
         navigation: {
@@ -70,8 +70,8 @@ const processDefinition = (processId: string) =>
         component: TextEditor,
         params: {
           view: {
-            title: window.i18n("dapps.o-passport.processes.identify.house.title"),
-            description: window.i18n("dapps.o-passport.processes.identify.house.description")
+            title: window.o.i18n("dapps.o-passport.processes.identify.house.title"),
+            description: window.o.i18n("dapps.o-passport.processes.identify.house.description")
           },
         },
         navigation: {
@@ -87,8 +87,8 @@ const processDefinition = (processId: string) =>
         component: TextEditor,
         params: {
           view: {
-            title: window.i18n("dapps.o-passport.processes.identify.zip.title"),
-            description: window.i18n("dapps.o-passport.processes.identify.zip.description")
+            title: window.o.i18n("dapps.o-passport.processes.identify.zip.title"),
+            description: window.o.i18n("dapps.o-passport.processes.identify.zip.description")
           },
         },
         navigation: {
@@ -104,8 +104,8 @@ const processDefinition = (processId: string) =>
         field: "cityGeonameid",
         params: {
           view: {
-            title: window.i18n("dapps.o-passport.processes.identify.city.title"),
-            description: window.i18n("dapps.o-passport.processes.identify.city.description")
+            title: window.o.i18n("dapps.o-passport.processes.identify.city.title"),
+            description: window.o.i18n("dapps.o-passport.processes.identify.city.description")
           },
         },
         navigation: {

@@ -61,7 +61,7 @@ export class Liquidity {
     return Object.entries(pathsToSellers).reduce((p, c) => {
       const payable = parseFloat(c[1].amount) <= parseFloat(c[1].path.flow);
       const reason = !payable
-        ? window.i18n("dapps.o-marketplace.functions.liquidity.maxLiquidityToSellerExceeded")
+        ? window.o.i18n("dapps.o-marketplace.functions.liquidity.maxLiquidityToSellerExceeded")
         : undefined;
 
       p[c[0]] = {

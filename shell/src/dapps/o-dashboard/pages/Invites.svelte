@@ -65,7 +65,7 @@ function sortAlphabetically(a, b) {
           <Label key="dapps.o-dashboard.pages.invites.canNotInvite3"  /><br /><br />
           <Label key="dapps.o-dashboard.pages.invites.canNotInvite4"  />
           <a
-            href="{Environment.supportUrl}"
+            href="{window.o.i18n("common.supportUrl")}"
             target="_blank"
             class="link link-primary"><Label key="dapps.o-dashboard.pages.invites.discord"  /></a
           >.

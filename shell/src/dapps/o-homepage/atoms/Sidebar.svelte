@@ -25,7 +25,7 @@ function handleClickOutside(event) {
       ><Label key="dapps.o-homepage.atoms.sidebar.home" /></a>
 
     <a
-      href="{Environment.supportUrl}"
+      href="{window.o.i18n("common.supportUrl")}"
       target="_blank"
       aria-label="Our product"
       title="Our product"

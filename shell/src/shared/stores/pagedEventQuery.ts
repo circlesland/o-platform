@@ -124,7 +124,7 @@ export abstract class PagedEventQuery implements ObjectCache<ProfileEvent>{
     });
 
     if (nextPageQueryResult.errors) {
-      throw new Error(window.i18n("shared.stores.transactions.errors.couldNotLoadData", { values: { error: JSON.stringify(nextPageQueryResult.errors)}}));
+      throw new Error(window.o.i18n("shared.stores.transactions.errors.couldNotLoadData", { values: { error: JSON.stringify(nextPageQueryResult.errors)}}));
     }
 
     let nextPage:ProfileEvent[] = nextPageQueryResult.data.events;

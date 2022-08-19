@@ -11,8 +11,8 @@ export let event: ProfileEvent;
   <ItemCard
     params="{{
       edgeless: false,
-      title: window.i18n("shared.molecules.notificationViewer.molecules.genericEventCard.title", { values: { eventType: event.type}}),
-      subTitle: window.i18n("shared.molecules.notificationViewer.molecules.genericEventCard.subTitle"),
+      title: window.o.i18n("shared.molecules.notificationViewer.molecules.genericEventCard.title", { values: { eventType: event.type}}),
+      subTitle: window.o.i18n("shared.molecules.notificationViewer.molecules.genericEventCard.subTitle"),
       noTruncate: true,
     }}">
     <div slot="itemCardEnd">

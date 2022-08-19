@@ -86,7 +86,7 @@ onMount(async () => {
   actions = [
     {
       icon: "chat",
-      title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.chat"),
+      title: window.o.i18n("dapps.o-marketplace.pages.myPurchaseDetail.chat"),
       action: () => push(`#/contacts/chat/${sellerProfile.circlesAddress}`),
     },
   ];
@@ -94,10 +94,10 @@ onMount(async () => {
   if (purchase.invoices && purchase.invoices.length) {
     const pickUpAction = {
       icon: "cash",
-      title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iPickedUp"),
+      title: window.o.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iPickedUp"),
       action: async () => {
         const action = actions.find(
-          (o) => o.title == window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iPickedUp")
+          (o) => o.title == window.o.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iPickedUp")
         );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await myPurchases.completePurchase(purchase.invoices[0].id);
@@ -106,10 +106,10 @@ onMount(async () => {
     };
     const unPickUpAction = {
       icon: "cash",
-      title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iHaventPickedUp"),
+      title: window.o.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iHaventPickedUp"),
       action: async () => {
         const action = actions.find(
-          (o) => o.title == window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iHaventPickedUp")
+          (o) => o.title == window.o.i18n("dapps.o-marketplace.pages.myPurchaseDetail.iHaventPickedUp")
         );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await myPurchases.revokeCompletionStatus(purchase.invoices[0].id);
@@ -124,12 +124,12 @@ onMount(async () => {
       actions.push(
         {
           icon: "cash",
-          title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.transaction"),
+          title: window.o.i18n("dapps.o-marketplace.pages.myPurchaseDetail.transaction"),
           action: () => push(`#/banking/transactions/${purchase.invoices[0].paymentTransactionHash}`),
         }
         // {
         //   icon: "document",
-        //   title: window.i18n("dapps.o-marketplace.pages.myPurchaseDetail.downloadInvoice"),
+        //   title: window.o.i18n("dapps.o-marketplace.pages.myPurchaseDetail.downloadInvoice"),
         //   action: async () => {
         //     for (let invoice of purchase.invoices) {
         //       const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(InvoiceDocument, {
@@ -141,7 +141,7 @@ onMount(async () => {
         // }
         // {
         //   icon: "document",
-        //   title: window.i18n(
+        //   title: window.o.i18n(
         //     "dapps.o-marketplace.pages.myPurchaseDetail.downloadInvoice"
         //   ),
         //   action: async () => {

@@ -41,6 +41,7 @@ import { ApiClient } from "../apiConnection";
 import { Environment } from "../environment";
 import { addMessages } from "svelte-i18n";
 import { init as i18nInit, getLocaleFromNavigator } from 'svelte-i18n';
+import { i18nDictionary} from "../../i18n/i18nDictionary";
 
   export let params: {
   dappId: string;
@@ -111,7 +112,7 @@ async function onBack() {
   );
   if (!routable.found) {
     throw new Error(
-      window.i18n(
+      window.o.i18n(
         "shared.molecules.dappFrame.errors.pageFromBackStackNotFound",
         { values: { error: JSON.stringify(previous) } }
       )
@@ -119,7 +120,7 @@ async function onBack() {
   }
   if (routable.routable.type != "page") {
     throw new Error(
-      window.i18n(
+      window.o.i18n(
         "shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage",
         { values: { error: JSON.stringify(previous) } }
       )
@@ -167,7 +168,7 @@ async function onStay() {
   );
   if (!routable.found) {
     throw new Error(
-      window.i18n(
+      window.o.i18n(
         "shared.molecules.dappFrame.errors.pageFromBackStackNotFound",
         { values: { error: JSON.stringify(previous) } }
       )
@@ -175,7 +176,7 @@ async function onStay() {
   }
   if (routable.routable.type != "page") {
     throw new Error(
-      window.i18n(
+      window.o.i18n(
         "shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage",
         { values: { error: JSON.stringify(previous) } }
       )
@@ -334,7 +335,7 @@ function findNextRoute(
     const defaultRoute = _findDefaultRoute(previousRuntimeDapp);
     if (!defaultRoute.found) {
       throw new Error(
-        window.i18n(
+        window.o.i18n(
           "shared.molecules.dappFrame.errors.pageFromBackStackNotFound",
           { values: { error: JSON.stringify(root) } }
         )
@@ -342,7 +343,7 @@ function findNextRoute(
     }
     if (defaultRoute.routable.type != "page") {
       throw new Error(
-        window.i18n(
+        window.o.i18n(
           "shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage",
           { values: { error: JSON.stringify(root) } }
         )
@@ -353,7 +354,7 @@ function findNextRoute(
 
   if (!nextRoute) {
     throw new Error(
-      window.i18n("shared.melocules.dappFrame.errors.couldNotFindRoot", {
+      window.o.i18n("shared.melocules.dappFrame.errors.couldNotFindRoot", {
         values: { item: JSON.stringify(root) },
       })
     );
@@ -1054,29 +1055,11 @@ let firstUrlChangedCall = true;
 let i18nStrings: I18n;
 let language = Environment.userLanguage;
 
-let i18nDictionary = {};
-
-function buildI18nDictonary(sourceData) {
-  for (let i = 0; i < sourceData.length; i++) {
-    i18nDictionary[sourceData[i].key] = sourceData[i].value;
-  }
-}
 
 
 async function handleUrlChanged() {
   if (!i18nStrings || language != Environment.userLanguage) {
-    await ApiClient.query<I18n, QueryGetAllStringsByMaxVersionAndLangArgs>(GetAllStringsByMaxVersionAndLangDocument, {
-      lang: language[0] + language[1],
-    }).then((i18nResult) => {
-      i18nStrings = i18nResult;
-    });
-    buildI18nDictonary(i18nStrings);
-    addMessages("dictionary", i18nDictionary);
-
-    i18nInit({
-      fallbackLocale: 'dictionary',
-      initialLocale: getLocaleFromNavigator(),
-    });
+      await i18nDictionary.instance.waitHandle
   }
 
   // log(`handleUrlChanged()`);
@@ -1099,7 +1082,7 @@ async function handleUrlChanged() {
   const findRouteResult = findRoutableByParams(runtimeDapp, params);
   if (!findRouteResult.found) {
     throw new Error(
-      window.i18n("shared.molecules.dappFrame.errors.couldNotFindParams", {
+      window.o.i18n("shared.molecules.dappFrame.errors.couldNotFindParams", {
         values: { params: JSON.stringify(params, null, 2) },
       })
     );

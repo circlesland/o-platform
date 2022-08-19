@@ -111,9 +111,9 @@ const processDefinition = (processId: string) =>
         component: HtmlViewer,
         params: {
           view: {
-            title: window.i18n("dapps.o-humanode.processes.processDefinition.cancelled.params.title"),
-            description: window.i18n("dapps.o-humanode.processes.processDefinition.cancelled.params.description"),
-            submitButtonText: window.i18n("dapps.o-humanode.processes.processDefinition.cancelled.params.submitButtontext"),
+            title: window.o.i18n("dapps.o-humanode.processes.processDefinition.cancelled.params.title"),
+            description: window.o.i18n("dapps.o-humanode.processes.processDefinition.cancelled.params.description"),
+            submitButtonText: window.o.i18n("dapps.o-humanode.processes.processDefinition.cancelled.params.submitButtontext"),
           },
           html: () => "",
           hideNav: false,
@@ -169,9 +169,9 @@ const processDefinition = (processId: string) =>
         component: HtmlViewer,
         params: {
           view: {
-            title: window.i18n("dapps.o-humanode.processes.processDefinition.showSuccess.params.title"),
-            description: window.i18n("dapps.o-humanode.processes.processDefinition.showSuccess.params.description"),
-            submitButtonText: window.i18n("dapps.o-humanode.processes.processDefinition.showSuccess.params.submitButtonText")
+            title: window.o.i18n("dapps.o-humanode.processes.processDefinition.showSuccess.params.title"),
+            description: window.o.i18n("dapps.o-humanode.processes.processDefinition.showSuccess.params.description"),
+            submitButtonText: window.o.i18n("dapps.o-humanode.processes.processDefinition.showSuccess.params.submitButtonText")
           },
           html: () => "",
           hideNav: false,
@@ -186,9 +186,9 @@ const processDefinition = (processId: string) =>
         component: HtmlViewer,
         params: {
           view: {
-            title: window.i18n("dapps.o-humanode.processes.processDefinition.showNotSuccess.params.title"),
-            description: window.i18n("dapps.o-humanode.processes.processDefinition.showNotSuccess.params.description"),
-            submitButtonText: window.i18n("dapps.o-humanode.processes.processDefinition.showNotSuccess.params.submitButtonText")
+            title: window.o.i18n("dapps.o-humanode.processes.processDefinition.showNotSuccess.params.title"),
+            description: window.o.i18n("dapps.o-humanode.processes.processDefinition.showNotSuccess.params.description"),
+            submitButtonText: window.o.i18n("dapps.o-humanode.processes.processDefinition.showNotSuccess.params.submitButtonText")
           },
           html: () => "",
           hideNav: false,

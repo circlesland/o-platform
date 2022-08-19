@@ -33,10 +33,10 @@ export type ConnectSafeContext = ProcessContext<ConnectSafeContextData>;
 
 const editorContent: { [x: string]: EditorViewContext } = {
   seedPhrase: {
-    title: window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.editorContent.seedPhrase.title"),
-    description: window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.editorContent.seedPhrase.description"),
-    placeholder: window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.editorContent.seedPhrase.placeholder"),
-    submitButtonText: window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.editorContent.seedPhrase.submitButtonText"),
+    title: window.o.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.editorContent.seedPhrase.title"),
+    description: window.o.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.editorContent.seedPhrase.description"),
+    placeholder: window.o.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.editorContent.seedPhrase.placeholder"),
+    submitButtonText: window.o.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.editorContent.seedPhrase.submitButtonText"),
   },
   selectExistingKey: {
     title: "PLEASE CHOOSE A KEY",
@@ -109,11 +109,11 @@ const processDefinition = (processId: string) =>
           )[0];
           return {
             view: editorContent.unlockPin,
-            label: window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKeyPin.label", { values: { eoaName: eoa.name}}),
-            submitButtonText: window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKeyPin.submitButtonText"),
+            label: window.o.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKeyPin.label", { values: { eoaName: eoa.name}}),
+            submitButtonText: window.o.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKeyPin.submitButtonText"),
           };
         },
-        dataSchema: yup.string().required(window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKeyPin.dataSchema")),
+        dataSchema: yup.string().required(window.o.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKeyPin.dataSchema")),
         navigation: {
           next: "#unlockKey",
         },
@@ -125,7 +125,7 @@ const processDefinition = (processId: string) =>
             const key = Object.values(context.data.availableKeys).filter(
               (o) => o.isOwner && o.encryptedPrivateKey
             )[0];
-            if (!key) throw new Error(window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKey.errors.wtf"));
+            if (!key) throw new Error(window.o.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKey.errors.wtf"));
 
             const km = new KeyManager(context.data.safeAddress);
             await km.load();
@@ -135,7 +135,7 @@ const processDefinition = (processId: string) =>
             );
 
             if (!decryptedKey) {
-              throw new Error(window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKey.errors.wrongPin"));
+              throw new Error(window.o.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.unlockKey.errors.wrongPin"));
             }
 
             sessionStorage.setItem("circlesKey", decryptedKey);
@@ -172,7 +172,7 @@ const processDefinition = (processId: string) =>
             } catch (e) {
               context.messages[
                 "seedPhrase"
-              ] = window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.checkSeedphrase.contextMessage1");
+              ] = window.o.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.checkSeedphrase.contextMessage1");
               throw e;
             }
 
@@ -184,7 +184,7 @@ const processDefinition = (processId: string) =>
             } catch (e) {
               context.messages[
                 "seedPhrase"
-              ] = window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.checkSeedphrase.contextMessage2");
+              ] = window.o.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.checkSeedphrase.contextMessage2");
               throw e;
             }
 
@@ -207,7 +207,7 @@ const processDefinition = (processId: string) =>
               });
 
               if (foundSafes.errors && foundSafes.errors.length) {
-                const msg = window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.checkSeedphrase.contextMessage3", { values: { error: JSON.stringify(foundSafes.errors)}});
+                const msg = window.o.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.checkSeedphrase.contextMessage3", { values: { error: JSON.stringify(foundSafes.errors)}});
                 context.messages["seedPhrase"] = msg;
                 throw new Error(msg);
               }
@@ -215,7 +215,7 @@ const processDefinition = (processId: string) =>
               context.data.foundSafeAddresses =
                 foundSafes.data.user?.safeAddresses ?? [];
               if (!context.data.foundSafeAddresses.length) {
-                const msg = window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.checkSeedphrase.contextMessage4", { values: { accountAddress: account.address}});
+                const msg = window.o.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.checkSeedphrase.contextMessage4", { values: { accountAddress: account.address}});
                 context.messages["seedPhrase"] = msg;
                 throw new Error(msg);
               }
@@ -257,9 +257,9 @@ const processDefinition = (processId: string) =>
         field: "safeAddress",
         component: DropdownSelectEditor,
         params: <DropdownSelectorParams<ConnectSafeContext, string, string>>{
-          label: window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.safeAddress.label"),
-          placeholder: window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.safeAddress.placeholder"),
-          submitButtonText: window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.safeAddress.submitButtonText"),
+          label: window.o.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.safeAddress.label"),
+          placeholder: window.o.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.safeAddress.placeholder"),
+          submitButtonText: window.o.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.safeAddress.submitButtonText"),
           itemTemplate: DropDownString,
           getKey: (safeAddress: any) => safeAddress.value,
           getLabel: (safeAddress: any) => safeAddress.label,
@@ -297,7 +297,7 @@ const processDefinition = (processId: string) =>
               }
               context.messages[
                 "safeAddress"
-              ] = window.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.checkSafeAddress.contextMessage", { values: { contextDataSafeAddress: context.data.safeAddress}});
+              ] = window.o.i18n("dapps.o-passport.processes.identify.connectSafe.connectSafe2.checkSafeAddress.contextMessage", { values: { contextDataSafeAddress: context.data.safeAddress}});
               throw e;
             }
           },

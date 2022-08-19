@@ -23,41 +23,41 @@ export type CreateSafeContext = ProcessContext<CreateSafeContextData>;
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 const strings = {
-  choiceConnect: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.strings.choiceConnect"),
-  choiceCreate: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.strings.choiceCreate"),
-  labelExportSeedphrase: window.i18n(
+  choiceConnect: window.o.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.strings.choiceConnect"),
+  choiceCreate: window.o.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.strings.choiceCreate"),
+  labelExportSeedphrase: window.o.i18n(
     "dapps.o-passport.processes.identify.createSafe.createSafe.strings.labelExportSeedphrase"
   ),
-  buttonExportSeedphrase: window.i18n(
+  buttonExportSeedphrase: window.o.i18n(
     "dapps.o-passport.processes.identify.createSafe.createSafe.strings.buttonExportSeedphrase"
   ),
   // labelCheckSeedphrase: (context: CreateSafeContext) => `Please enter the ${context.data.checkWordIndex == 0 ? (context.data.checkWordIndex + 1).toString() + "st" : (context.data.checkWordIndex + 1).toString() + "nd"} word of your seedphrase:`,
-  labelCheckSeedphrase: window.i18n(
+  labelCheckSeedphrase: window.o.i18n(
     "dapps.o-passport.processes.identify.createSafe.createSafe.strings.labelCheckSeedphrase"
   ),
-  buttonCheckSeedphrase: window.i18n(
+  buttonCheckSeedphrase: window.o.i18n(
     "dapps.o-passport.processes.identify.createSafe.createSafe.strings.buttonCheckSeedphrase"
   ),
 };
 
 const editorContent = {
   seedphrase: {
-    title: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.title"),
+    title: window.o.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.title"),
     titleClass: "text-alert",
-    description: window.i18n(
+    description: window.o.i18n(
       "dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.description"
     ),
-    submitButtonText: window.i18n(
+    submitButtonText: window.o.i18n(
       "dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.submitButtonText"
     ),
   },
   seedphraseCheck: {
-    title: window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphraseCheck.title"),
+    title: window.o.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphraseCheck.title"),
     titleClass: "text-alert",
-    description: window.i18n(
+    description: window.o.i18n(
       "dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphraseCheck.description"
     ),
-    submitButtonText: window.i18n(
+    submitButtonText: window.o.i18n(
       "dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphraseCheck.submitButtonText"
     ),
   },
@@ -112,25 +112,25 @@ const processDefinition = (processId: string) =>
         component: TextareaEditor,
         params: {
           view: (editorContent.seedphraseCheck = {
-            title: window.i18n(
+            title: window.o.i18n(
               "dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.title"
             ),
             titleClass: "text-alert",
-            description: window.i18n(
+            description: window.o.i18n(
               "dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.description"
             ),
-            submitButtonText: window.i18n(
+            submitButtonText: window.o.i18n(
               "dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.submitButtonText"
             ),
           }),
           hideCharacterCount: true,
-          submitButtonText: (editorContent.seedphraseCheck.submitButtonText = window.i18n(
+          submitButtonText: (editorContent.seedphraseCheck.submitButtonText = window.o.i18n(
             "dapps.o-passport.processes.identify.createSafe.createSafe.editorContent.seedphrase.submitButtonText"
           )),
         },
         dataSchema: yup
           .string()
-          .required(window.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.pleaseEnterSecretCode")),
+          .required(window.o.i18n("dapps.o-passport.processes.identify.createSafe.createSafe.pleaseEnterSecretCode")),
         navigation: {
           next: "#verifyCheckSeedPhrase",
           previous: "#backupSeedphrase",

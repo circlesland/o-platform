@@ -1,5 +1,4 @@
 <script context="module" lang="ts">
-import { IShell } from "./shell";
 import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { Generate } from "@o-platform/o-utils/dist/generate";
@@ -20,6 +19,8 @@ import { getProcessContext } from "./main";
 import { Stopped } from "@o-platform/o-process/dist/events/stopped";
 import { me } from "./shared/stores/me";
 import { Environment } from "./shared/environment";
+import { IShell } from "./iShell";
+
 
 const runningProcesses: {
   [id: string]: Process;
@@ -161,22 +162,9 @@ const shell: IShell = {
       window.o.publishEvent(requestEvent);
     });
   },
+  apiClient: new ApiConnection(Environment.apiEndpointUrl, "include"),
+  theGraphClient: new ApiConnection(Environment.circlesSubgraphEndpoint)
 };
-
-async function connectToApi() {
-  console.log(`Connecting to ${Environment.authEndpointUrl} ..`);
-  shell.authClient = new ApiConnection(Environment.authEndpointUrl);
-
-  console.log(`Connecting to ${Environment.apiEndpointUrl} ..`);
-  shell.apiClient = new ApiConnection(Environment.apiEndpointUrl, "include");
-
-  console.log(`Connecting to ${Environment.circlesSubgraphEndpoint} ..`);
-  shell.theGraphClient = new ApiConnection(Environment.circlesSubgraphEndpoint);
-}
-
-connectToApi().then(() => {
-  console.log(`Connected to ${Environment.authEndpointUrl} and ${Environment.apiEndpointUrl}`);
-});
 
 declare global {
   interface Window {

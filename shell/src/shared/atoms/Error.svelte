@@ -38,11 +38,11 @@ $: {
     </div>
   </div>
   <div class="mt-4">
-    <a href="{Environment.supportUrl}">
+    <a href="{window.o.i18n("common.supportUrl")}">
       <Label key="shared.atoms.error.pleaseTryToReload" /><a
-        href="{Environment.supportUrl}"
+        href="{window.o.i18n("common.supportUrl")}"
         target="_blank"
-        class="btn-link">{Environment.supportUrl}</a
+        class="btn-link">{window.o.i18n("common.supportUrl")}</a
       ><Label key="shared.atoms.error.ifTheProblemPersists" />
     </a>
   </div>

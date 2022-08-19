@@ -27,16 +27,16 @@ const processDefinition = (processId: string) =>
         options:[{
           key: "getTrusted",
           target: "#getTrusted",
-          label: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.options.getTrusted.label")
+          label: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.options.getTrusted.label")
         }, {
           key: "proofUniqueness",
           target: "#proofUniqueness",
-          label: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.options.proofUniqueness.label")
+          label: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.options.proofUniqueness.label")
         }],
         params: {
           view: {
-            title: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.params.title"),
-            description: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.params.description")
+            title: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.params.title"),
+            description: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.params.description")
           }
         },
         component: ChoiceSelector,
@@ -60,9 +60,9 @@ const processDefinition = (processId: string) =>
         component: QrCodeViewer,
         params: {
           view: {
-            title: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.title"),
-            description: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.description"),
-            submitButtonText: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.submitButtonText"),
+            title: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.title"),
+            description: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.description"),
+            submitButtonText: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.submitButtonText"),
           },
           html: () => "",
           hideNav: true,
@@ -79,9 +79,9 @@ const processDefinition = (processId: string) =>
         component: HtmlViewer,
         params: {
           view: {
-            title: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.proofUniqueness.params.title"),
-            description: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.proofUniqueness.params.description"),
-            submitButtonText: window.i18n("dapps.o-marketplace.processes.getTrustedByShop.proofUniqueness.params.submitButtonText"),
+            title: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.proofUniqueness.params.title"),
+            description: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.proofUniqueness.params.description"),
+            submitButtonText: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.proofUniqueness.params.submitButtonText"),
           },
           html: () => "",
           hideNav: false,

@@ -45,12 +45,12 @@ async function sendFundsFromEoa(to: string, amount: BN) {
   });
   unsub();
 
-  if (!$me) throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.notLoggedOn"));
-  if (!$me.circlesSafeOwner) throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.noEoa"));
+  if (!$me) throw new Error(window.o.i18n("dapps.o-coop.processes.createOrganisations.notLoggedOn"));
+  if (!$me.circlesSafeOwner) throw new Error(window.o.i18n("dapps.o-coop.processes.createOrganisations.noEoa"));
 
   const privateKey = sessionStorage.getItem("circlesKey");
   if (!privateKey) {
-    throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.notUnlockedPrivateKey"));
+    throw new Error(window.o.i18n("dapps.o-coop.processes.createOrganisations.notUnlockedPrivateKey"));
   }
 
   const web3 = RpcGateway.get();
@@ -81,7 +81,7 @@ async function sendFundsFromEoa(to: string, amount: BN) {
   });
 
   if (!signedTx?.rawTransaction) {
-    throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.couldNotSend"));
+    throw new Error(window.o.i18n("dapps.o-coop.processes.createOrganisations.couldNotSend"));
   }
 
   const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
@@ -98,12 +98,12 @@ async function sendFundsFromSafe(to: string, amount: BN) {
   });
   unsub();
 
-  if (!$me) throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.notLoggedOn"));
-  if (!$me.circlesSafeOwner) throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.noEoa"));
+  if (!$me) throw new Error(window.o.i18n("dapps.o-coop.processes.createOrganisations.notLoggedOn"));
+  if (!$me.circlesSafeOwner) throw new Error(window.o.i18n("dapps.o-coop.processes.createOrganisations.noEoa"));
 
   const privateKey = sessionStorage.getItem("circlesKey");
   if (!privateKey) {
-    throw new Error(window.i18n("dapps.o-coop.processes.createOrganisations.notUnlockedPrivateKey"));
+    throw new Error(window.o.i18n("dapps.o-coop.processes.createOrganisations.notUnlockedPrivateKey"));
   }
 
   const web3 = RpcGateway.get();
@@ -143,14 +143,14 @@ const processDefinition = (processId: string) =>
         component: TextEditor,
         params: {
           view: {
-            title: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.title"),
-            description: window.i18n(
+            title: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.title"),
+            description: window.o.i18n(
               "dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.description"
             ),
-            placeholder: window.i18n(
+            placeholder: window.o.i18n(
               "dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.placeholder"
             ),
-            submitButtonText: window.i18n(
+            submitButtonText: window.o.i18n(
               "dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.submitButtonText"
             ),
           },
@@ -158,7 +158,7 @@ const processDefinition = (processId: string) =>
         dataSchema: yup
           .string()
           .required(
-            window.i18n(
+            window.o.i18n(
               "dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.enterOrganisationName"
             )
           ),
@@ -171,14 +171,14 @@ const processDefinition = (processId: string) =>
         field: "cityGeonameid",
         params: {
           view: {
-            title: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.country.title"),
-            description: window.i18n(
+            title: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.country.title"),
+            description: window.o.i18n(
               "dapps.o-coop.processes.createOrganisations.createOrganisationContext.country.description"
             ),
-            placeholder: window.i18n(
+            placeholder: window.o.i18n(
               "dapps.o-coop.processes.createOrganisations.createOrganisationContext.country.placeholder"
             ),
-            submitButtonText: window.i18n(
+            submitButtonText: window.o.i18n(
               "dapps.o-coop.processes.createOrganisations.createOrganisationContext.country.submitButtonText"
             ),
           },
@@ -194,16 +194,16 @@ const processDefinition = (processId: string) =>
         component: TextareaEditor,
         params: {
           view: {
-            title: window.i18n(
+            title: window.o.i18n(
               "dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.title"
             ),
-            description: window.i18n(
+            description: window.o.i18n(
               "dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.description"
             ),
-            placeholder: window.i18n(
+            placeholder: window.o.i18n(
               "dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.placeholder"
             ),
-            submitButtonText: window.i18n(
+            submitButtonText: window.o.i18n(
               "dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.submitButtonText"
             ),
           },
@@ -214,7 +214,7 @@ const processDefinition = (processId: string) =>
           .notRequired()
           .max(
             150,
-            window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.maximumChars")
+            window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.maximumChars")
           ),
         navigation: {
           next: "#avatarUrl",
@@ -230,14 +230,14 @@ const processDefinition = (processId: string) =>
         },
         params: {
           view: {
-            title: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.avatar.title"),
-            description: window.i18n(
+            title: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.avatar.title"),
+            description: window.o.i18n(
               "dapps.o-coop.processes.createOrganisations.createOrganisationContext.avatar.description"
             ),
-            placeholder: window.i18n(
+            placeholder: window.o.i18n(
               "dapps.o-coop.processes.createOrganisations.createOrganisationContext.avatar.placeholder"
             ),
-            submitButtonText: window.i18n(
+            submitButtonText: window.o.i18n(
               "dapps.o-coop.processes.createOrganisations.createOrganisationContext.avatar.submitButtonText"
             ),
           },
@@ -267,7 +267,7 @@ const processDefinition = (processId: string) =>
           console.log(`deployOrganisation ...`);
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n("dapps.o-coop.processes.createOrganisations.deployOrganisation.progress"),
+            message: window.o.i18n("dapps.o-coop.processes.createOrganisations.deployOrganisation.progress"),
           });
         },
         invoke: {
@@ -275,7 +275,7 @@ const processDefinition = (processId: string) =>
             const privateKey = sessionStorage.getItem("circlesKey");
             if (!privateKey) {
               throw new Error(
-                window.i18n(
+                window.o.i18n(
                   "dapps.o-coop.processes.createOrganisations.createOrganisationContext.deployOrganisation.notUnlockedKey"
                 )
               );
@@ -289,7 +289,7 @@ const processDefinition = (processId: string) =>
 
             if (!$me?.circlesAddress) {
               throw new Error(
-                window.i18n(
+                window.o.i18n(
                   "dapps.o-coop.processes.createOrganisations.createOrganisationContext.deployOrganisation.needFullAccountSetup"
                 )
               );
@@ -321,7 +321,7 @@ const processDefinition = (processId: string) =>
             const privateKey = sessionStorage.getItem("circlesKey");
             if (!privateKey) {
               throw new Error(
-                window.i18n(
+                window.o.i18n(
                   "dapps.o-coop.processes.createOrganisations.createOrganisationContext.signupOrganisation.notUnlockedKey"
                 )
               );

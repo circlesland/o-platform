@@ -22,13 +22,13 @@ export type PromptRedeemInvitationContext = ProcessContext<RedeemInvitationConte
 
 const editorContent = {
   waitUntilRedeemed: {
-    title: window.i18n(
+    title: window.o.i18n(
       "dapps.o-onboarding.processes.invitation.promptRedeemInvitation.editorContent.waitUntilRedeemed.title"
     ),
-    description: window.i18n(
+    description: window.o.i18n(
       "dapps.o-onboarding.processes.invitation.promptRedeemInvitation.editorContent.waitUntilRedeemed.description"
     ),
-    submitButtonText: window.i18n(
+    submitButtonText: window.o.i18n(
       "dapps.o-onboarding.processes.invitation.promptRedeemInvitation.editorContent.waitUntilRedeemed.submitButtonText"
     ),
   },
@@ -47,7 +47,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n(
+            message: window.o.i18n(
               "dapps.o-onboarding.processes.invitation.promptRedeemInvitation.redeemInvitation.message"
             ),
           });
@@ -63,7 +63,7 @@ const processDefinition = (processId: string) =>
             if (claimResult.errors) {
               context.messages["__"] = claimResult.errors.map((o) => o.message).join(" \n");
               throw new Error(
-                window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.redeemInvitation.error", {
+                window.o.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.redeemInvitation.error", {
                   values: { contextMessages: context.messages["inviteCode"] },
                 })
               );
@@ -71,7 +71,7 @@ const processDefinition = (processId: string) =>
             if (!claimResult.data?.redeemClaimedInvitation?.success) {
               context.messages["__"] = claimResult.data.error;
               throw new Error(
-                window.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.redeemInvitation.error", {
+                window.o.i18n("dapps.o-onboarding.processes.invitation.promptRedeemInvitation.redeemInvitation.error", {
                   values: { contextMessages: context.messages["inviteCode"] },
                 })
               );
@@ -96,7 +96,7 @@ const processDefinition = (processId: string) =>
 
             if (claimResult.errors?.length || !claimResult.data.invitationTransaction?.transaction_hash) {
               throw new Error(
-                window.i18n(
+                window.o.i18n(
                   "dapps.o-onboarding.processes.invitation.promptRedeemInvitation.checkIfRedeemed.notYetRedeemed"
                 )
               );

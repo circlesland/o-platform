@@ -23,19 +23,19 @@ export type PromptConnectOrCreateContext = ProcessContext<PromptConnectOrCreateC
 
 const editorContent = {
   info: {
-    title: window.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.info.title"),
-    description: window.i18n(
+    title: window.o.i18n("dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.info.title"),
+    description: window.o.i18n(
       "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.info.description"
     ),
-    submitButtonText: window.i18n(
+    submitButtonText: window.o.i18n(
       "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.info.submitButtonText"
     ),
   },
   connectOrCreate: {
-    title: window.i18n(
+    title: window.o.i18n(
       "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.title"
     ),
-    description: window.i18n(
+    description: window.o.i18n(
       "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.description"
     ),
     placeholder: "",
@@ -68,10 +68,10 @@ const processDefinition = (processId: string) =>
         component: ButtonStackSelector,
         params: {
           view: (editorContent.connectOrCreate = {
-            title: window.i18n(
+            title: window.o.i18n(
               "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.title"
             ),
-            description: window.i18n(
+            description: window.o.i18n(
               "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.editorContent.connectOrCreate.description"
             ),
             placeholder: "",
@@ -81,7 +81,7 @@ const processDefinition = (processId: string) =>
         options: [
           {
             key: "newSafe",
-            label: window.i18n(
+            label: window.o.i18n(
               "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.connectOrCreate.options.newSafe"
             ),
             target: "#newSafe",
@@ -90,7 +90,7 @@ const processDefinition = (processId: string) =>
           },
           {
             key: "importSafe",
-            label: window.i18n(
+            label: window.o.i18n(
               "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.connectOrCreate.options.importSafe"
             ),
             target: "#importSafe",
@@ -107,7 +107,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n(
+            message: window.o.i18n(
               "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.newSafe.message"
             ),
           });
@@ -119,7 +119,7 @@ const processDefinition = (processId: string) =>
             const privateKey = sessionStorage.getItem("circlesKey");
             if (!privateKey) {
               throw new Error(
-                window.i18n(
+                window.o.i18n(
                   "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.privateKeyNotUnlocked"
                 )
               );
@@ -145,7 +145,7 @@ const processDefinition = (processId: string) =>
 
             if (result.errors) {
               throw new Error(
-                window.i18n(
+                window.o.i18n(
                   "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.couldNotUpdate",
                   { values: { result: JSON.stringify(result.errors) } }
                 )
@@ -156,7 +156,7 @@ const processDefinition = (processId: string) =>
           onError: {
             actions: (context, event) => {
               console.error(
-                window.i18n(
+                window.o.i18n(
                   "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.errorWhileDeploying"
                 ),
                 event
@@ -176,7 +176,7 @@ const processDefinition = (processId: string) =>
             const privateKey = sessionStorage.getItem("circlesKey");
             if (!privateKey) {
               throw new Error(
-                window.i18n(
+                window.o.i18n(
                   "dapps.o-onboarding.processes.connectOrCreate.promptConnectOrCreate.processDefinition.privateKeyNotUnlocked"
                 )
               );

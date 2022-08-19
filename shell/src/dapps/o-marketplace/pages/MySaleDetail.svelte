@@ -51,7 +51,7 @@ async function load() {
   actions = [
     {
       icon: "chat",
-      title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.chat"),
+      title: window.o.i18n("dapps.o-marketplace.pages.mySaleDetail.chat"),
       action: () => push(`#/contacts/chat/${buyerProfile.circlesAddress}`),
     },
   ];
@@ -62,9 +62,9 @@ async function load() {
       title:
         invoice.deliveryMethod.id == 2
           ? "mark order shipped"
-          : window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"),
+          : window.o.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"),
       action: async () => {
-        const action = actions.find((o) => o.title == window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"));
+        const action = actions.find((o) => o.title == window.o.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"));
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await mySales.completeSale(invoice.id);
       },
@@ -75,10 +75,10 @@ async function load() {
       title:
         invoice.deliveryMethod.id == 2
           ? "mark order not shipped"
-          : window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut"),
+          : window.o.i18n("dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut"),
       action: async () => {
         const action = actions.find(
-          (o) => o.title == window.i18n("dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut")
+          (o) => o.title == window.o.i18n("dapps.o-marketplace.pages.mySaleDetail.iHaventHandedOut")
         );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await mySales.revokeSale(invoice.id);
@@ -92,12 +92,12 @@ async function load() {
     actions.push(
       {
         icon: "cash",
-        title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.transaction"),
+        title: window.o.i18n("dapps.o-marketplace.pages.mySaleDetail.transaction"),
         action: () => push(`#/banking/transactions/${invoice.paymentTransactionHash}`),
       }
       // {
       //   icon: "document-text",
-      //   title: window.i18n("dapps.o-marketplace.pages.mySaleDetail.downloadInvoice"),
+      //   title: window.o.i18n("dapps.o-marketplace.pages.mySaleDetail.downloadInvoice"),
       //   action: async () => {
       //     //for (let invoice of invoice) {
       //     const invoiceData = await ApiClient.query<string, QueryInvoiceArgs>(InvoiceDocument, {

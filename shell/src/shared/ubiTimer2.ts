@@ -65,14 +65,14 @@ export async function getUbi(context:UbiTimerContext) {
   });
   unsub();
   if (!$me)
-    throw new Error(window.i18n("shared.ubiTimer2.errors.couldNotLoadYourProfile"));
+    throw new Error(window.o.i18n("shared.ubiTimer2.errors.couldNotLoadYourProfile"));
 
   const privateKey = sessionStorage.getItem("circlesKey");
   if (!privateKey)
-    throw new Error(window.i18n("shared.ubiTimer2.errors.yourPrivateKeyIsLocked"));
+    throw new Error(window.o.i18n("shared.ubiTimer2.errors.yourPrivateKeyIsLocked"));
 
   if (!context.tokenAddress)
-    throw new Error(window.i18n("shared.ubiTimer2.errors.cannotGetUbi"));
+    throw new Error(window.o.i18n("shared.ubiTimer2.errors.cannotGetUbi"));
 
   const gnosisSafeProxy = new GnosisSafeProxy(RpcGateway.get(), $me.circlesAddress);
   const circlesAccount = new CirclesAccount($me.circlesAddress, Environment.circlesHubAddress);

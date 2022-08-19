@@ -183,7 +183,7 @@ export function generateNavManifest(args: GenerateNavManifestArgs, prompt: Promp
       newManifest.navPill.left = {
         component: ListComponent,
         props: {
-          text: window.i18n("shared.functions.generateNavManifest.back"),
+          text: window.o.i18n("shared.functions.generateNavManifest.back"),
           action: () =>
             window.o.publishEvent({
               type: args.centerContainsProcess ? "process.back" : "shell.back",
@@ -195,7 +195,7 @@ export function generateNavManifest(args: GenerateNavManifestArgs, prompt: Promp
       newManifest.navPill.right = {
         component: ListComponent,
         props: {
-          text: window.i18n("shared.functions.generateNavManifest.skip"),
+          text: window.o.i18n("shared.functions.generateNavManifest.skip"),
           action: () =>
             window.o.publishEvent({
               type: args.centerContainsProcess ? "process.skip" : "shell.forward",

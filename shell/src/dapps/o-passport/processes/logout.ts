@@ -25,9 +25,9 @@ export type LogoutContext = ProcessContext<LogoutContextData>;
 
 const editorContent = {
   logout: {
-    title: window.i18n("dapps.o-passport.processes.logout.editorContent.title"),
-    description: window.i18n("dapps.o-passport.processes.logout.editorContent.description"),
-    submitButtonText: window.i18n("dapps.o-passport.processes.logout.editorContent.submitButtonText"),
+    title: window.o.i18n("dapps.o-passport.processes.logout.editorContent.title"),
+    description: window.o.i18n("dapps.o-passport.processes.logout.editorContent.description"),
+    submitButtonText: window.o.i18n("dapps.o-passport.processes.logout.editorContent.submitButtonText"),
   },
 };
 const processDefinition = (processId: string) =>

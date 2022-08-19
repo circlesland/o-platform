@@ -23,7 +23,7 @@ $: {
 
 async function loadSale(id) {
   scanner.stop();
-  statusText = window.i18n(
+  statusText = window.o.i18n(
     "dapps.o-marketplace.pages.scanPurchase.verifyingOrder"
   );
 
@@ -35,7 +35,7 @@ async function loadSale(id) {
   }
 
   if (!sale) {
-    statusText = window.i18n(
+    statusText = window.o.i18n(
       "dapps.o-marketplace.pages.scanPurchase.invalidOrderCode"
     );
     startScanner();
@@ -46,7 +46,7 @@ async function loadSale(id) {
     push(`#/marketplace/my-sales/${sale.invoice.id}`);
     showToast(
       "success",
-      window.i18n(
+      window.o.i18n(
         "dapps.o-marketplace.pages.scanPurchase.purchaseMarkedAsDelivered"
       )
     );

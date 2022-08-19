@@ -49,7 +49,7 @@ const externalChat: Link<any, DappState> = {
   icon: "chat",
   routeParts: [],
   openInNewTab: true,
-  url: () => Environment.supportUrl,
+  url: () => window.o.i18n("common.supportUrl"),
 };
 const externalForum: Link<any, DappState> = {
   type: "link",

@@ -98,12 +98,12 @@ const processDefinition = (processId: string) =>
         params: (context) => {
           return {
             view: editorContent.delivery = {
-              title: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.title"),
-              description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.description"),
+              title: window.o.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.title"),
+              description: window.o.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.description"),
               placeholder: "",
-              submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.submitButtonText"),
+              submitButtonText: window.o.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.submitButtonText"),
             },
-            submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.submitButtonText"),
+            submitButtonText: window.o.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.submitButtonText"),
             availableDeliveryMethods: context.data.availableDeliveryMethods
           }
         },
@@ -119,12 +119,12 @@ const processDefinition = (processId: string) =>
         component: CheckoutSummary,
         params: {
           view: editorContent.summary = {
-            title: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.title"),
-            description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.description"),
+            title: window.o.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.title"),
+            description: window.o.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.description"),
             placeholder: "",
-            submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.submitButtonText"),
+            submitButtonText: window.o.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.submitButtonText"),
           },
-          submitButtonText: editorContent.summary.submitButtonText = window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.submitButtonText"),
+          submitButtonText: editorContent.summary.submitButtonText = window.o.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.submitButtonText"),
         },
         navigation: {
           next: "#createPurchase",
@@ -206,17 +206,17 @@ const processDefinition = (processId: string) =>
         params: (context) => {
           return {
             view: {
-              title: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.title"),
-              description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.description"),
+              title: window.o.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.title"),
+              description: window.o.i18n("dapps.o-marketplace.processes.purchases.editorContent.success.description"),
               placeholder: "",
-              submitButtonText: window.i18n(
+              submitButtonText: window.o.i18n(
                 "dapps.o-marketplace.processes.purchases.editorContent.success.submitButtonText"
               ),
             },
             html: ``,
             simplePickupCode: context.data.simplePickupCode,
             pickupCode: context.data.pickupCode,
-            submitButtonText: window.i18n(
+            submitButtonText: window.o.i18n(
               "dapps.o-marketplace.processes.purchases.editorContent.success.submitButtonText"
             ),
             hideNav: false,
@@ -239,16 +239,16 @@ const processDefinition = (processId: string) =>
 
 const editorContent: { [x: string]: EditorViewContext } = {
   summary: {
-    title: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.title"),
-    description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.description"),
+    title: window.o.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.title"),
+    description: window.o.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.description"),
     placeholder: "",
-    submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.submitButtonText"),
+    submitButtonText: window.o.i18n("dapps.o-marketplace.processes.purchases.editorContent.summary.submitButtonText"),
   },
   delivery: {
-    title: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.title"),
-    description: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.description"),
+    title: window.o.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.title"),
+    description: window.o.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.description"),
     placeholder: "",
-    submitButtonText: window.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.submitButtonText"),
+    submitButtonText: window.o.i18n("dapps.o-marketplace.processes.purchases.editorContent.delivery.submitButtonText"),
   },
 };
 
@@ -266,7 +266,7 @@ const setShopMetadata = (context) =>
 const showCreatePurchaseWaitingMessage = () =>
   window.o.publishEvent(<PlatformEvent>{
     type: "shell.progress",
-    message: window.i18n("dapps.o-marketplace.processes.purchases.createPurchase.message"),
+    message: window.o.i18n("dapps.o-marketplace.processes.purchases.createPurchase.message"),
   });
 
 const createPurchaseService = async (context: PurchaseContext) => {
@@ -308,7 +308,7 @@ const createPurchaseService = async (context: PurchaseContext) => {
 const showCalculatePathWaitingMessage = () => {
   window.o.publishEvent(<PlatformEvent>{
     type: "shell.progress",
-    message: window.i18n("dapps.o-marketplace.processes.purchases.calculatePaths.message"),
+    message: window.o.i18n("dapps.o-marketplace.processes.purchases.calculatePaths.message"),
   });
 };
 
@@ -343,7 +343,7 @@ const calculatePathService = async (context) => {
 const showPaymentTransferWaitingMessage = () => {
   window.o.publishEvent(<PlatformEvent>{
     type: "shell.progress",
-    message: window.i18n("dapps.o-marketplace.processes.purchases.pay.message"),
+    message: window.o.i18n("dapps.o-marketplace.processes.purchases.pay.message"),
   });
 };
 
@@ -358,7 +358,7 @@ const setNotAllInvoicesArePayableError = (context, event) => {
     invoices = invoices.splice(pi_i, 1);
   });
   const errorMessage =
-    window.i18n("dapps.o-marketplace.processes.purchases.calculatePaths.errorMessage") +
+    window.o.i18n("dapps.o-marketplace.processes.purchases.calculatePaths.errorMessage") +
     `${invoices.map((o) => o.sellerAddress).join(", ")}`;
   window.o.lastError = new Error(errorMessage);
 };
@@ -402,7 +402,7 @@ const paySingleInvoiceAndRemoveItFromContext = async (context) => {
     currentInvoice.invoice.buyerAddress,
     sessionStorage.getItem("circlesKey"),
     currentInvoice.path,
-    window.i18n("dapps.o-marketplace.processes.purchases.pay.paymentOfInvoice") + `${currentInvoice.invoice.id}`
+    window.o.i18n("dapps.o-marketplace.processes.purchases.pay.paymentOfInvoice") + `${currentInvoice.invoice.id}`
   );
 
   context.data.paidInvoices.push(currentInvoice);

@@ -5,7 +5,7 @@ export class Environment {
 
 
   public static get supportUrl() : string {
-    return window.i18n("common.supportUrl");
+    return window.o.i18n("common.supportUrl");
   }
 
   public static get authEndpointUrl(): string {

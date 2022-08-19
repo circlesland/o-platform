@@ -21,10 +21,10 @@ export type ShowNotificationsContext = ProcessContext<ShowNotificationsContextDa
 
 const editorContent: { [x: string]: EditorViewContext } = {
   showNotifications: {
-    title: window.i18n("shared.processes.showNotifications.editorContent.title"),
+    title: window.o.i18n("shared.processes.showNotifications.editorContent.title"),
     description: "",
     placeholder: "",
-    submitButtonText: window.i18n("shared.processes.showNotifications.editorContent.submitButtonText"),
+    submitButtonText: window.o.i18n("shared.processes.showNotifications.editorContent.submitButtonText"),
   },
 };
 
@@ -41,14 +41,14 @@ const processDefinition = (processId: string) =>
           context.data.currentEventIndex = -1;
           context.data.currentEvent = undefined;
           strings = {
-            CrcHubTransfer: window.i18n("shared.processes.showNotifications.strings.crcHubTransfer"),
-            CrcTrust: window.i18n("shared.processes.showNotifications.strings.crcTrust"),
-            CrcUntrust: window.i18n("shared.processes.showNotifications.strings.crc_untrust"),
-            ChatMessage: window.i18n("shared.processes.showNotifications.strings.chatMessage"),
-            CrcMinting: window.i18n("shared.processes.showNotifications.strings.crcMinting"),
-            MembershipOffer: window.i18n("shared.processes.showNotifications.strings.membershipOffer"),
+            CrcHubTransfer: window.o.i18n("shared.processes.showNotifications.strings.crcHubTransfer"),
+            CrcTrust: window.o.i18n("shared.processes.showNotifications.strings.crcTrust"),
+            CrcUntrust: window.o.i18n("shared.processes.showNotifications.strings.crc_untrust"),
+            ChatMessage: window.o.i18n("shared.processes.showNotifications.strings.chatMessage"),
+            CrcMinting: window.o.i18n("shared.processes.showNotifications.strings.crcMinting"),
+            MembershipOffer: window.o.i18n("shared.processes.showNotifications.strings.membershipOffer"),
             InvitationCreated: "",
-            MembershipAccepted: window.i18n("shared.processes.showNotifications.strings.membershipAccepted"),
+            MembershipAccepted: window.o.i18n("shared.processes.showNotifications.strings.membershipAccepted"),
           };
         },
         always: "#fetchNext",
@@ -104,7 +104,7 @@ const processDefinition = (processId: string) =>
               titleClass: "",
               description: "",
               placeholder: "",
-              submitButtonText: window.i18n("shared.processes.showNotifications.submitButtonText"),
+              submitButtonText: window.o.i18n("shared.processes.showNotifications.submitButtonText"),
             },
             push: (target) => push(target),
           };
@@ -150,7 +150,7 @@ const processDefinition = (processId: string) =>
         type: "final",
         id: "success",
         data: (context, event: PlatformEvent) => {
-          return window.i18n("shared.processes.showNotifications.yeah");
+          return window.o.i18n("shared.processes.showNotifications.yeah");
         },
       },
     },

@@ -22,8 +22,8 @@ export type UpsertRegistrationContext = ProcessContext<UpsertRegistrationContext
 
 const editorContent: { [x: string]: EditorViewContext } = {
   newsletter: {
-    title: window.i18n("dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.title"),
-    description: window.i18n(
+    title: window.o.i18n("dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.title"),
+    description: window.o.i18n(
       "dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.description"
     ),
     placeholder: "",
@@ -45,10 +45,10 @@ const processDefinition = (processId: string) =>
         component: ChoiceSelector,
         params: {
           view: (editorContent.newsletter = {
-            title: window.i18n(
+            title: window.o.i18n(
               "dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.title"
             ),
-            description: window.i18n(
+            description: window.o.i18n(
               "dapps.o-onboarding.processes.registration.promptRegistration.editorContent.newsletter.description"
             ),
             placeholder: "",
@@ -58,7 +58,7 @@ const processDefinition = (processId: string) =>
         options: [
           {
             key: "dontSubscribe",
-            label: window.i18n("dapps.o-onboarding.processes.registration.promptRegistration.noThanks"),
+            label: window.o.i18n("dapps.o-onboarding.processes.registration.promptRegistration.noThanks"),
             target: "#upsertRegistration",
             action: (context) => {
               context.data.newsletter = false;
@@ -66,7 +66,7 @@ const processDefinition = (processId: string) =>
           },
           {
             key: "subscribe",
-            label: window.i18n("dapps.o-onboarding.processes.registration.promptRegistration.yesPlease"),
+            label: window.o.i18n("dapps.o-onboarding.processes.registration.promptRegistration.yesPlease"),
             target: "#upsertRegistration",
             action: (context) => {
               context.data.newsletter = true;

@@ -45,9 +45,9 @@ const processDefinition = (processId: string) =>
         component: TextareaEditor,
         isSensitive: true,
         params: {
-          label: window.i18n("dapps.o-onboarding.processes.fromCirclesLand.seedPhraseParams.label"),
-          placeholder: window.i18n("dapps.o-onboarding.processes.fromCirclesLand.seedPhraseParams.placeholder"),
-          submitButtonText: window.i18n("dapps.o-onboarding.processes.fromCirclesLand.seedPhraseParams.submitButtonText"),
+          label: window.o.i18n("dapps.o-onboarding.processes.fromCirclesLand.seedPhraseParams.label"),
+          placeholder: window.o.i18n("dapps.o-onboarding.processes.fromCirclesLand.seedPhraseParams.placeholder"),
+          submitButtonText: window.o.i18n("dapps.o-onboarding.processes.fromCirclesLand.seedPhraseParams.submitButtonText"),
         },
         navigation: {
           next: "#checkSeedphrase",
@@ -71,7 +71,7 @@ const processDefinition = (processId: string) =>
             } catch (e) {
               context.messages[
                 "seedPhrase"
-              ] = window.i18n("dapps.o-onboarding.processes.fromCirclesLand.checkSeedphrase.errors.cannotConvertToPrivateKey");
+              ] = window.o.i18n("dapps.o-onboarding.processes.fromCirclesLand.checkSeedphrase.errors.cannotConvertToPrivateKey");
               throw e;
             }
 
@@ -83,7 +83,7 @@ const processDefinition = (processId: string) =>
             } catch (e) {
               context.messages[
                 "seedPhrase"
-              ] = window.i18n("dapps.o-onboarding.processes.fromCirclesLand.checkSeedphrase.errors.cannotConvertToEthereum");
+              ] = window.o.i18n("dapps.o-onboarding.processes.fromCirclesLand.checkSeedphrase.errors.cannotConvertToEthereum");
               throw e;
             }
 
@@ -115,7 +115,7 @@ const processDefinition = (processId: string) =>
               });
 
               if (foundSafes.errors && foundSafes.errors.length) {
-                const msg = window.i18n("dapps.o-onboarding.processes.fromCirclesLand.checkSeedphrase.errors.errorWhileTryingToFindSafe", { values: { error: JSON.stringify(foundSafes.errors)}});
+                const msg = window.o.i18n("dapps.o-onboarding.processes.fromCirclesLand.checkSeedphrase.errors.errorWhileTryingToFindSafe", { values: { error: JSON.stringify(foundSafes.errors)}});
                 context.messages["seedPhrase"] = msg;
                 throw new Error(msg);
               }
@@ -125,7 +125,7 @@ const processDefinition = (processId: string) =>
                 .map((o) => o.id);
 
               if (!context.data.foundSafeAddresses.length) {
-                const msg = window.i18n("dapps.o-onboarding.processes.fromCirclesLand.checkSeedphrase.errors.couldNotFindSafe", { values: { accountAddress: account.address }});
+                const msg = window.o.i18n("dapps.o-onboarding.processes.fromCirclesLand.checkSeedphrase.errors.couldNotFindSafe", { values: { accountAddress: account.address }});
                 context.messages["seedPhrase"] = msg;
                 throw new Error(msg);
               }
@@ -168,9 +168,9 @@ const processDefinition = (processId: string) =>
         field: "chooseSafeAddress",
         component: DropdownSelectEditor,
         params: <DropdownSelectorParams<ConnectSafeContext, string, string>>{
-          label: window.i18n("dapps.o-onboarding.processes.fromCirclesLand.chooseSafeAddress.label"),
-          placeholder: window.i18n("dapps.o-onboarding.processes.fromCirclesLand.chooseSafeAddress.placeholder"),
-          submitButtonText: window.i18n("dapps.o-onboarding.processes.fromCirclesLand.chooseSafeAddress.submitButtonText"),
+          label: window.o.i18n("dapps.o-onboarding.processes.fromCirclesLand.chooseSafeAddress.label"),
+          placeholder: window.o.i18n("dapps.o-onboarding.processes.fromCirclesLand.chooseSafeAddress.placeholder"),
+          submitButtonText: window.o.i18n("dapps.o-onboarding.processes.fromCirclesLand.chooseSafeAddress.submitButtonText"),
           itemTemplate: DropDownString,
           getKey: (safeAddress: any) => safeAddress.value,
           getLabel: (safeAddress: any) => safeAddress.label,
@@ -210,7 +210,7 @@ const processDefinition = (processId: string) =>
             } catch (e) {
               context.messages[
                 "chooseSafeAddress"
-              ] = window.i18n("dapps.o-onboarding.processes.fromCirclesLand.checkSafeAddress.error", { values: { addressToCheck: addressToCheck}});
+              ] = window.o.i18n("dapps.o-onboarding.processes.fromCirclesLand.checkSafeAddress.error", { values: { addressToCheck: addressToCheck}});
 
               throw e;
             }

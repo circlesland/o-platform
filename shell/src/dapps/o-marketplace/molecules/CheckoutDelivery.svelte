@@ -44,7 +44,7 @@ function submit() {
   console.log(selectedCountry);
   console.log(shippingAddressId);
   if (deliveryType == 2 && selectedCountry && selectedCountry != "Germany") {
-    error = window.i18n("dapps.o-marketplace.molecules.checkoutDelivery.error");
+    error = window.o.i18n("dapps.o-marketplace.molecules.checkoutDelivery.error");
     ("This shop only delivers to Germany. Please select or enter a German Postal Address.");
   } else {
     const answer = new Continue();

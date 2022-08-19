@@ -105,7 +105,7 @@ onMount(async () => {
 
     if (transfer.payload) {
       if (transfer.payload?.__typename == "CrcMinting") {
-        message = window.i18n("dapps.o-banking.pages.transactionDetail.ubi");
+        message = window.o.i18n("dapps.o-banking.pages.transactionDetail.ubi");
       } else {
         message = transfer.payload.tags?.find(
           (o) => o.typeId === "o-banking:transfer:message:1"

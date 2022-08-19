@@ -22,7 +22,7 @@ export class ApiClient {
         });
         const foundAggregate = aggregates.find(o => o.type == type)?.payload;
         if (!foundAggregate) {
-            throw new Error(window.i18n("shared.apiConnection.errors.couldNotFindType", { values: { type: type}}));
+            throw new Error(window.o.i18n("shared.apiConnection.errors.couldNotFindType", { values: { type: type}}));
         }
         return <TPayloadType><any>foundAggregate;
     }
@@ -41,7 +41,7 @@ export class ApiClient {
         });
 
         if (result.errors?.length > 0) {
-            throw new Error(window.i18n("shared.apiConnection.errors.someThingWentWrong", { values: { error: result.errors.map((o) => o.message).join("\n")}}));
+            throw new Error(window.o.i18n("shared.apiConnection.errors.someThingWentWrong", { values: { error: result.errors.map((o) => o.message).join("\n")}}));
         }
 
         return <TResult>result.data[dataProp];
@@ -57,7 +57,7 @@ export class ApiClient {
         });
 
         if (result.errors?.length > 0) {
-            throw new Error(window.i18n("shared.apiConnection.errors.someThingWentWrong", { values: { error: result.errors.map((o) => o.message).join("\n")}}));
+            throw new Error(window.o.i18n("shared.apiConnection.errors.someThingWentWrong", { values: { error: result.errors.map((o) => o.message).join("\n")}}));
         }
 
         return <TResult>result.data[dataProp];
@@ -66,19 +66,19 @@ export class ApiClient {
     private static getResultSelectionProperty(documentNode: DocumentNode) {
         const definition: any = documentNode.definitions.length == 1 ? documentNode.definitions[0] : null;
         if (!definition) {
-            throw new Error(window.i18n("shared.apiConnection.errors.noOrMoreThanOneDefinitions"))
+            throw new Error(window.o.i18n("shared.apiConnection.errors.noOrMoreThanOneDefinitions"))
         }
         if (!definition.selectionSet) {
-            throw new Error(window.i18n("shared.apiConnection.errors.noSelectionSet"))
+            throw new Error(window.o.i18n("shared.apiConnection.errors.noSelectionSet"))
         }
         if (definition.selectionSet.selections?.length != 1) {
-            throw new Error(window.i18n("shared.apiConnection.errors.noOrMoreThanOneSelection"))
+            throw new Error(window.o.i18n("shared.apiConnection.errors.noOrMoreThanOneSelection"))
         }
 
         const selection = definition.selectionSet.selections[0];
         const dataProp: string = selection.name.value;
         if (!dataProp) {
-            throw new Error(window.i18n("shared.apiConnection.errors.selectionHasNoName"))
+            throw new Error(window.o.i18n("shared.apiConnection.errors.selectionHasNoName"))
         }
         return dataProp;
     }
@@ -86,7 +86,7 @@ export class ApiClient {
     private static stripUnknownProperties(documentNode: DocumentNode, input:any) {
         const definition: any = documentNode.definitions.length == 1 ? documentNode.definitions[0] : null;
         if (!definition) {
-            throw new Error(window.i18n("shared.apiConnection.errors.noOrMoreThanOneDefinitions"))
+            throw new Error(window.o.i18n("shared.apiConnection.errors.noOrMoreThanOneDefinitions"))
         }
         if (!definition.variableDefinitions) {
             return input
@@ -97,7 +97,7 @@ export class ApiClient {
         const selection = definition.selectionSet.selections[0];
         const dataProp: string = selection.name.value;
         if (!dataProp) {
-            throw new Error(window.i18n("shared.apiConnection.errors.selectionHasNoName"))
+            throw new Error(window.o.i18n("shared.apiConnection.errors.selectionHasNoName"))
         }
         return input;
         //return dataProp;
@@ -195,7 +195,7 @@ export class ApiConnection
                 const { kind, operation } = <OperationDefinitionNode>getMainDefinition(query);
                 return kind === 'OperationDefinition' && operation === 'subscription';
             } else {
-                throw new Error(window.i18n("shared.apiConnection.errors.returnedFragmentDefinitionNode"))
+                throw new Error(window.o.i18n("shared.apiConnection.errors.returnedFragmentDefinitionNode"))
             }
           },
           wsLink,

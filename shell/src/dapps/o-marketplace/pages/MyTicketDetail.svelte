@@ -85,7 +85,7 @@ onMount(async () => {
   actions = [
     {
       icon: "chat",
-      title: window.i18n("dapps.o-marketplace.pages.myTicketDetail.chat"),
+      title: window.o.i18n("dapps.o-marketplace.pages.myTicketDetail.chat"),
       action: () => push(`#/contacts/chat/${sellerProfile.circlesAddress}`),
     },
     {
@@ -101,10 +101,10 @@ onMount(async () => {
   if (purchase.invoices && purchase.invoices.length) {
     const pickUpAction = {
       icon: "cash",
-      title: window.i18n("dapps.o-marketplace.pages.myTicketDetail.iPickedUp"),
+      title: window.o.i18n("dapps.o-marketplace.pages.myTicketDetail.iPickedUp"),
       action: async () => {
         const action = actions.find(
-          (o) => o.title == window.i18n("dapps.o-marketplace.pages.myTicketDetail.iPickedUp")
+          (o) => o.title == window.o.i18n("dapps.o-marketplace.pages.myTicketDetail.iPickedUp")
         );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await myPurchases.completePurchase(purchase.invoices[0].id);
@@ -113,10 +113,10 @@ onMount(async () => {
     };
     const unPickUpAction = {
       icon: "cash",
-      title: window.i18n("dapps.o-marketplace.pages.myTicketDetail.iHaventPickedUp"),
+      title: window.o.i18n("dapps.o-marketplace.pages.myTicketDetail.iHaventPickedUp"),
       action: async () => {
         const action = actions.find(
-          (o) => o.title == window.i18n("dapps.o-marketplace.pages.myTicketDetail.iHaventPickedUp")
+          (o) => o.title == window.o.i18n("dapps.o-marketplace.pages.myTicketDetail.iHaventPickedUp")
         );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await myPurchases.revokeCompletionStatus(purchase.invoices[0].id);
@@ -128,12 +128,12 @@ onMount(async () => {
       && !purchase.invoices[0].paymentTransactionHash.startsWith("0x0000000000000000")) {
       actions.push({
                 icon: "cash",
-                title: window.i18n("dapps.o-marketplace.pages.myTicketDetail.transaction"),
+                title: window.o.i18n("dapps.o-marketplace.pages.myTicketDetail.transaction"),
                 action: () => push(`#/banking/transactions/${purchase.invoices[0].paymentTransactionHash}`),
               }
               // {
               //   icon: "document",
-              //   title: window.i18n(
+              //   title: window.o.i18n(
               //     "dapps.o-marketplace.pages.myTicketDetail.downloadInvoice"
               //   ),
               //   action: async () => {

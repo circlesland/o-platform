@@ -15,7 +15,7 @@ export async function loadProfileByProfileId(profileId: number) : Promise<Profil
             : undefined;
 
     if (!apiProfile) {
-        throw new Error(window.i18n("shared.api.loadProfileByProfileId.error", { values: { profileId: profileId }}));
+        throw new Error(window.o.i18n("shared.api.loadProfileByProfileId.error", { values: { profileId: profileId }}));
     }
 
     return {

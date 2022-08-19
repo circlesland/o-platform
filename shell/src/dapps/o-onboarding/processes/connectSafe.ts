@@ -38,24 +38,24 @@ export type PromptConnectOrCreateContext = ProcessContext<PromptConnectOrCreateC
 
 const editorContent = {
   seedPhrase: {
-    title: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.title"),
-    description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.description"),
-    placeholder: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.placeholder"),
-    submitButtonText: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.submitButtonText"),
+    title: window.o.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.title"),
+    description: window.o.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.description"),
+    placeholder: window.o.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.placeholder"),
+    submitButtonText: window.o.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.submitButtonText"),
   },
   addOwnerInfo: {
-    title: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.title"),
-    description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.description"),
+    title: window.o.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.title"),
+    description: window.o.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.description"),
     placeholder: "",
-    submitButtonText: window.i18n(
+    submitButtonText: window.o.i18n(
       "dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.submitButtonText"
     ),
   },
   accountIsDeadInfo: {
-    title: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.title"),
-    description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.description"),
+    title: window.o.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.title"),
+    description: window.o.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.description"),
     placeholder: "",
-    submitButtonText: window.i18n(
+    submitButtonText: window.o.i18n(
       "dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.submitButtonText"
     ),
   },
@@ -68,7 +68,7 @@ async function safeInfoFromSeedphrase(context: ConnectSafeContext): Promise<Conn
   } catch (e) {
     return {
       success: false,
-      errorMessage: window.i18n("dapps.o-onboarding.processes.connectSafe.safeInfoFromSeedphrase.seedphraseError"),
+      errorMessage: window.o.i18n("dapps.o-onboarding.processes.connectSafe.safeInfoFromSeedphrase.seedphraseError"),
     };
   }
 
@@ -82,7 +82,7 @@ async function safeInfoFromSeedphrase(context: ConnectSafeContext): Promise<Conn
     return {
       success: false,
       errorMessage:
-        window.i18n("dapps.o-onboarding.processes.connectSafe.safeInfoFromSeedphrase.foundNoSafes") +
+        window.o.i18n("dapps.o-onboarding.processes.connectSafe.safeInfoFromSeedphrase.foundNoSafes") +
         `${importedAccount.address.toLowerCase()}.`,
     };
   }
@@ -168,12 +168,12 @@ const processDefinition = (processId: string) =>
         component: SimpleDropDownEditor,
         params: <DropdownSelectorParams<PromptConnectOrCreateContext, SafeInfo, string>>{
           view: {
-            title: window.i18n("dapps.o-onboarding.processes.connectSafe.selectSafe.title"),
-            description: window.i18n("dapps.o-onboarding.processes.connectSafe.selectSafe.description"),
-            submitButtonText: window.i18n("dapps.o-onboarding.processes.connectSafe.selectSafe.submitButtonText"),
+            title: window.o.i18n("dapps.o-onboarding.processes.connectSafe.selectSafe.title"),
+            description: window.o.i18n("dapps.o-onboarding.processes.connectSafe.selectSafe.description"),
+            submitButtonText: window.o.i18n("dapps.o-onboarding.processes.connectSafe.selectSafe.submitButtonText"),
           },
           placeholder: "",
-          submitButtonText: window.i18n("dapps.o-onboarding.processes.connectSafe.selectSafe.submitButtonText"),
+          submitButtonText: window.o.i18n("dapps.o-onboarding.processes.connectSafe.selectSafe.submitButtonText"),
           itemTemplate: DropDownCandidateSafe, // TODO: This is not used by the SimpleDropDownEditor
           getKey: (o) => o.safeAddress,
           getLabel: (o) => (o.safeProfile ? o.safeProfile.displayName : o.safeAddress),
@@ -209,14 +209,14 @@ const processDefinition = (processId: string) =>
         component: HtmlViewer,
         params: {
           view: editorContent.accountIsDeadInfo = {
-            title: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.title"),
-            description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.description"),
+            title: window.o.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.title"),
+            description: window.o.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.description"),
             placeholder: "",
-            submitButtonText: window.i18n(
+            submitButtonText: window.o.i18n(
               "dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.submitButtonText"
             ),
           },
-          html: () => editorContent.accountIsDeadInfo.description = window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.description"),
+          html: () => editorContent.accountIsDeadInfo.description = window.o.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.accountIsDeadInfo.description"),
           hideNav: false,
         },
         navigation: {
@@ -230,14 +230,14 @@ const processDefinition = (processId: string) =>
         component: HtmlViewer,
         params: {
           view: editorContent.addOwnerInfo = {
-            title: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.title"),
-            description: window.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.description"),
+            title: window.o.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.title"),
+            description: window.o.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.description"),
             placeholder: "",
-            submitButtonText: window.i18n(
+            submitButtonText: window.o.i18n(
               "dapps.o-onboarding.processes.connectSafe.editorContent.addOwnerInfo.submitButtonText"
             ),
           },
-          html: () => "", //window.i18n("dapps.o-onboarding.processes.connectSafe.addNewOwnerInfo"),
+          html: () => "", //window.o.i18n("dapps.o-onboarding.processes.connectSafe.addNewOwnerInfo"),
           hideNav: false,
         },
         navigation: {
@@ -250,7 +250,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n("dapps.o-onboarding.processes.connectSafe.addNewOwner"),
+            message: window.o.i18n("dapps.o-onboarding.processes.connectSafe.addNewOwner"),
           });
         },
         invoke: {
@@ -314,7 +314,7 @@ const processDefinition = (processId: string) =>
 
             window.o.publishEvent(<PlatformEvent>{
               type: "shell.progress",
-              message: window.i18n(
+              message: window.o.i18n(
                 "dapps.o-onboarding.processes.connectSafe.updateRegistration.importingYourOrganisations"
               ),
             });
@@ -338,7 +338,7 @@ const processDefinition = (processId: string) =>
             for (let orga of orgas) {
               window.o.publishEvent(<PlatformEvent>{
                 type: "shell.progress",
-                message: window.i18n("dapps.o-onboarding.processes.connectSafe.updateRegistration.addingYouAsOwner", {
+                message: window.o.i18n("dapps.o-onboarding.processes.connectSafe.updateRegistration.addingYouAsOwner", {
                   values: { orgaName: orga.name },
                 }),
               });
@@ -356,7 +356,7 @@ const processDefinition = (processId: string) =>
 
             window.o.publishEvent(<PlatformEvent>{
               type: "shell.progress",
-              message: window.i18n("dapps.o-onboarding.processes.connectSafe.publishEvent"),
+              message: window.o.i18n("dapps.o-onboarding.processes.connectSafe.publishEvent"),
             });
 
             const $me = await loadProfile();
