@@ -2,10 +2,9 @@
  * Contains environment variables which are filled in by webpack.
  */
 export class Environment {
-
-
-  public static get supportUrl() : string {
-    return window.o.i18n("common.supportUrl");
+  public static get showLanguageSwitcher(): boolean {
+    // @ts-ignore
+    return "__SHOW_LANGUAGE_SWITCHER__" == "true";
   }
 
   public static get authEndpointUrl(): string {
@@ -103,10 +102,10 @@ export class Environment {
     return "__OPENLOGIN_CLIENT_ID__";
   }
 
-  public static getShopMetadata(shopId:number) : string {
+  public static getShopMetadata(shopId: number): string {
     return localStorage.getItem("shopMetadata." + shopId);
   }
-  public static setShopMetadata(shopId:number, data:string) {
+  public static setShopMetadata(shopId: number, data: string) {
     return localStorage.setItem("shopMetadata." + shopId, data);
   }
   public static get userLanguage(): string {
@@ -116,22 +115,21 @@ export class Environment {
       return navigator.language.toLowerCase();
     }
   }
-  public static set userLanguage(value:string) {
+  public static set userLanguage(value: string) {
     localStorage.setItem("userLanguage", value);
   }
 
-  public static getTestProfile(index:number) : {
-    privateKey: string,
-    email: string,
-    name: string,
-    typeOfLogin: string
-    profileImage: string,
-    aggregateVerifier: "not-verified",
-    verifier: "not-verified",
-    verifierId: "not-verified"
+  public static getTestProfile(index: number): {
+    privateKey: string;
+    email: string;
+    name: string;
+    typeOfLogin: string;
+    profileImage: string;
+    aggregateVerifier: "not-verified";
+    verifier: "not-verified";
+    verifierId: "not-verified";
   } {
-    if (!this.useMockLogin)
-      throw new Error(`The built-in test keys can only be used if USE_MOCKS == true.`);
+    if (!this.useMockLogin) throw new Error(`The built-in test keys can only be used if USE_MOCKS == true.`);
 
     const names = [
       "Chica Vahan",
@@ -153,10 +151,10 @@ export class Environment {
       "Prachi Remus",
       "Tekakwitha Miia",
       "Luisito Preeti",
-      "Charlize Sokol"
+      "Charlize Sokol",
     ];
     const whitespace = new RegExp("\\s", "g");
-    const emails = names.map(o => o.replace(whitespace, ".")).map(o => o + "@example.com");
+    const emails = names.map((o) => o.replace(whitespace, ".")).map((o) => o + "@example.com");
     const pictures = [
       "https://images.unsplash.com/photo-1657781536566-1a1f6f5fea99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY1ODg1NTExMA&ixlib=rb-1.2.1&q=80&w=1080",
       "https://images.unsplash.com/photo-1657515726894-d65d0b3c868a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY1ODg1NTExMQ&ixlib=rb-1.2.1&q=80&w=1080",
@@ -177,7 +175,7 @@ export class Environment {
       "https://images.unsplash.com/photo-1656512020955-3cb9e505d024?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY1ODg1NTI3MQ&ixlib=rb-1.2.1&q=80&w=1080",
       "https://images.unsplash.com/photo-1658212668675-e7156a34ac45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY1ODg1NTI4Mg&ixlib=rb-1.2.1&q=80&w=1080",
       "https://images.unsplash.com/photo-1658009250465-374c761daeaa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY1ODg1NTMzMA&ixlib=rb-1.2.1&q=80&w=1080",
-      "https://images.unsplash.com/photo-1656931251449-07493b9f6caf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY1ODg1NTMzMw&ixlib=rb-1.2.1&q=80&w=1080"
+      "https://images.unsplash.com/photo-1656931251449-07493b9f6caf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTY1ODg1NTMzMw&ixlib=rb-1.2.1&q=80&w=1080",
     ];
     const keys = [
       "0x471ae2170c3fea6a94f63f38e9a13faaf7bde116a9617fec9b931fc1837103c0",
@@ -198,17 +196,17 @@ export class Environment {
       "0x62462f1170ca5466b8cc25b58b07fb7b75e8459fc7938be6088b5274d50c0944",
       "0x8e28e98c6df2fa973935e52d1372dc47b31543e9b8c1e13a892004bc0c6b31cc",
       "0xd2766d27c7c2610dea001771ddb1240b786259ee9805b4b608ac76b536bab2f7",
-      "0x4a11d4624530d9379a2229e227bb52f14f09245af86739ca10ee42f297230f94"
+      "0x4a11d4624530d9379a2229e227bb52f14f09245af86739ca10ee42f297230f94",
     ];
-    const profiles:{
-      privateKey: string,
-      email: string,
-      name: string,
-      typeOfLogin: string
-      profileImage: string,
-      aggregateVerifier: "not-verified",
-      verifier: "not-verified",
-      verifierId: "not-verified"
+    const profiles: {
+      privateKey: string;
+      email: string;
+      name: string;
+      typeOfLogin: string;
+      profileImage: string;
+      aggregateVerifier: "not-verified";
+      verifier: "not-verified";
+      verifierId: "not-verified";
     }[] = [];
     for (let i = 0; i < keys.length; i++) {
       const email = emails[i];
@@ -223,7 +221,7 @@ export class Environment {
         typeOfLogin: "google",
         verifier: "not-verified",
         verifierId: "not-verified",
-        aggregateVerifier: "not-verified"
+        aggregateVerifier: "not-verified",
       });
     }
     return profiles[index];

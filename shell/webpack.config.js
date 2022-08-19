@@ -37,6 +37,7 @@ let __ALLOW_VERIFY__ = "true"; // !process.env.ALLOW_VERIFY ? "false" : "true";
 let __ALLOW_CREATE_ORGANISATION__ = !process.env.ALLOW_CREATE_ORGANISATION ? "false" : "true";
 let __USE_MOCKS__ = !process.env.USE_MOCKS ? "false" : "true";
 let __FIXED_GAS_PRICE__ = !process.env.FIXED_GAS_PRICE ? "0" : process.env.FIXED_GAS_PRICE;
+let __SHOW_LANGUAGE_SWITCHER__ = "true";
 
 if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __AUTH_ENDPOINT__ = "https://auth.circles.name";
@@ -44,6 +45,7 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __APP_ID__ = "circles.land";
   __EXTERNAL_URL__ = "https://circles.land";
   __FILES_APP_ID__ = "files.circles.land";
+  __SHOW_LANGUAGE_SWITCHER__ = "false";
   prod = true;
 } else if (process.env.DEPLOY_ENVIRONMENT === "dev") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
@@ -52,6 +54,7 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __EXTERNAL_URL__ = "https://staging.circles.land";
   __FILES_APP_ID__ = "dev.files.circles.land";
   __HUMANODE_CLIENT_ID__ = "circles-ubi-staging";
+  __SHOW_LANGUAGE_SWITCHER__ = "false";
   prod = false;
 } else if (process.env.DEPLOY_ENVIRONMENT === "local") {
   __AUTH_ENDPOINT__ = "https://dev.auth.circles.name";
@@ -113,6 +116,7 @@ console.log(`__USE_MOCKS__: ${__USE_MOCKS__}`);
 console.log(`__ALLOW_VERIFY__: ${__ALLOW_VERIFY__}`);
 console.log(`__ALLOW_CREATE_ORGANISATION__: ${__ALLOW_CREATE_ORGANISATION__}`);
 console.log(`__FIXED_GAS_PRICE__: ${__FIXED_GAS_PRICE__}`);
+console.log(`__SHOW_LANGUAGE_SWITCHER__: ${__SHOW_LANGUAGE_SWITCHER__}`);
 
 const sveltePath = path.resolve("node_modules", "svelte");
 
@@ -370,6 +374,15 @@ module.exports = {
         options: {
           search: "__FILES_APP_ID__",
           replace: __FILES_APP_ID__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__SHOW_LANGUAGE_SWITCHER__",
+          replace: __SHOW_LANGUAGE_SWITCHER__,
           flags: "g",
         },
       },
