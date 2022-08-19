@@ -242,7 +242,10 @@ declare global {
 
 
 
-import App from "src/App.svelte";
-export default new App({
-  target: document.body,
-});
+function load() {
+  const App = require("src/App.svelte");
+  new App.default({
+    target: document.body,
+  });
+}
+load();
