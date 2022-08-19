@@ -2,7 +2,7 @@ import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
-import { i18nDictionary } from "./i18n/i18nDictionary";
+import { I18nDictionary } from "./i18n/i18nDictionary";
 import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { Generate } from "@o-platform/o-utils/dist/generate";
@@ -91,7 +91,7 @@ const runningProcesses: {
 } = {};
 
 window.o = {
-  i18n: (key: string, options?: any) => i18nDictionary.instance.getString(key, options),
+  i18n: (key: string, options?: any) => I18nDictionary.instance.getString(key, options),
   stateMachines: {
     findById(processId: string) {
       return runningProcesses[processId];

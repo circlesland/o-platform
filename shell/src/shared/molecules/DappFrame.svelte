@@ -41,7 +41,7 @@ import { ApiClient } from "../apiConnection";
 import { Environment } from "../environment";
 import { addMessages } from "svelte-i18n";
 import { init as i18nInit, getLocaleFromNavigator } from 'svelte-i18n';
-import { i18nDictionary} from "../../i18n/i18nDictionary";
+import { I18nDictionary} from "../../i18n/i18nDictionary";
 
   export let params: {
   dappId: string;
@@ -1059,7 +1059,7 @@ let language = Environment.userLanguage;
 
 async function handleUrlChanged() {
   if (!i18nStrings || language != Environment.userLanguage) {
-      await i18nDictionary.instance.waitHandle
+      await I18nDictionary.instance.waitHandle
   }
 
   // log(`handleUrlChanged()`);
