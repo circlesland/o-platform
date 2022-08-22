@@ -475,6 +475,7 @@ mutation upsertShop($shop: ShopInput!) {
       entries {
         id
         sortOrder
+        currentInventory
         product {
           id
           version

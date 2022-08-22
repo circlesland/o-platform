@@ -1124,6 +1124,7 @@ export type Query = {
   getAllStringsByMaxVersionAndLang?: Maybe<Array<Maybe<I18n>>>;
   getAvailableLanguages?: Maybe<Array<Maybe<I18n>>>;
   getOlderVersionsByKeyAndLang?: Maybe<Array<Maybe<I18n>>>;
+  getRandomAccount?: Maybe<RandomAccount>;
   getStringByLanguage?: Maybe<Array<I18n>>;
   getStringByMaxVersion?: Maybe<I18n>;
   hubSignupTransaction?: Maybe<ProfileEvent>;
@@ -1147,6 +1148,7 @@ export type Query = {
   shop?: Maybe<Shop>;
   shops: Array<Shop>;
   shopsById: Array<Shop>;
+  signMessage: Scalars['String'];
   stats: Stats;
   tagById?: Maybe<Tag>;
   tags: Array<Tag>;
@@ -1314,6 +1316,12 @@ export type QueryShopsByIdArgs = {
 };
 
 
+export type QuerySignMessageArgs = {
+  key: Scalars['String'];
+  message: Scalars['String'];
+};
+
+
 export type QueryTagByIdArgs = {
   id: Scalars['Int'];
 };
@@ -1363,6 +1371,12 @@ export type QueryTagsInput = {
 
 export type QueryUniqueProfileInput = {
   id: Scalars['Int'];
+};
+
+export type RandomAccount = {
+  __typename?: 'RandomAccount';
+  address?: Maybe<Scalars['String']>;
+  privateKey?: Maybe<Scalars['String']>;
 };
 
 export type RedeemClaimedInvitationResult = {
@@ -1540,6 +1554,7 @@ export type ShopCategory = {
 export type ShopCategoryEntry = {
   __typename?: 'ShopCategoryEntry';
   createdAt: Scalars['Date'];
+  currentInventory?: Maybe<Scalars['Int']>;
   enabled?: Maybe<Scalars['Boolean']>;
   id: Scalars['Int'];
   private?: Maybe<Scalars['Boolean']>;
@@ -3710,7 +3725,7 @@ export type ShopQuery = (
       & Pick<ShopCategory, 'id' | 'name' | 'description' | 'sortOrder' | 'shopId' | 'smallBannerUrl' | 'largeBannerUrl' | 'private' | 'enabled' | 'createdAt' | 'productListingStyle'>
       & { entries?: Maybe<Array<(
         { __typename?: 'ShopCategoryEntry' }
-        & Pick<ShopCategoryEntry, 'id' | 'sortOrder' | 'private' | 'productId' | 'productVersion' | 'shopCategoryId' | 'enabled'>
+        & Pick<ShopCategoryEntry, 'id' | 'sortOrder' | 'private' | 'productId' | 'productVersion' | 'shopCategoryId' | 'enabled' | 'currentInventory'>
         & { product?: Maybe<(
           { __typename?: 'Offer' }
           & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'minAge'>
@@ -6636,6 +6651,7 @@ export const ShopDocument = gql`
         productVersion
         shopCategoryId
         enabled
+        currentInventory
         product {
           id
           version

@@ -6,14 +6,6 @@ schema {
     subscription: Subscription
 }
 
-# This file was generated based on ".graphqlconfig". Do not edit manually.
-
-schema {
-    query: Query
-    mutation: Mutation
-    subscription: Subscription
-}
-
 directive @cost(value: Int) on FIELD_DEFINITION
 
 directive @costFactor(value: Int) on FIELD_DEFINITION
@@ -659,8 +651,8 @@ type Purchased implements IEventPayload {
 }
 
 type Purchases implements IAggregatePayload {
-      lastUpdatedAt: String!
-      purchases: [Purchase!]!
+    lastUpdatedAt: String!
+    purchases: [Purchase!]!
 }
 
 type Query {
@@ -682,6 +674,7 @@ type Query {
     getAllStringsByMaxVersionAndLang(lang: String): [i18n]
     getAvailableLanguages: [i18n]
     getOlderVersionsByKeyAndLang(key: String, lang: String): [i18n]
+    getRandomAccount: RandomAccount
     getStringByLanguage(lang: String): [i18n!]
     getStringByMaxVersion(key: String, lang: String): i18n
     hubSignupTransaction: ProfileEvent
@@ -705,12 +698,18 @@ type Query {
     shop(id: Int!, ownerId: Int): Shop
     shops(ownerId: Int): [Shop!]!
     shopsById(ids: [Int!]!): [Shop!]!
+    signMessage(key: String!, message: String!): String!
     stats: Stats!
     tagById(id: Int!): Tag
     tags(query: QueryTagsInput!): [Tag!]!
     trustRelations(safeAddress: String!): [TrustRelation!]!
     verifications(filter: VerifiedSafesFilter, pagination: PaginationArgs): [Verification!]!
     version: Version!
+}
+
+type RandomAccount {
+    address: String
+    privateKey: String
 }
 
 type RedeemClaimedInvitationResult {
@@ -852,6 +851,7 @@ type ShopCategory {
 
 type ShopCategoryEntry {
     createdAt: Date!
+    currentInventory: Int
     enabled: Boolean
     id: Int!
     private: Boolean
@@ -996,8 +996,8 @@ enum ContactDirection {
 }
 
 enum Direction {
-      in
-      out
+    in
+    out
 }
 
 enum DisplayCurrency {
@@ -1072,42 +1072,16 @@ enum TrustDirection {
 "A date and time value in JSON format."
 scalar Date
 
-"A date and time value in JSON format."
-scalar Date
-
 input ChatMessageEventFilter {
-      id: Int!
+    id: Int!
 }
 
 input ContactAggregateFilter {
-        addresses: [String!]!
+    addresses: [String!]!
 }
 
 input CrcBalanceAggregateFilter {
-      tokenAddresses: [String!]!
-}
-
-input CreateTagInput {
-    typeId: String!
-    value: String
-}
-
-input OfferByIdAndVersionInput {
-    offerId: Int!
-    offerVersion: Int
-}
-
-input OfferInput {
-    allergens: String
-    createdByProfileId: Int!
-    description: String
-    id: Int
-    minAge: Int
-    pictureMimeType: String!
-    pictureUrl: String!
-    pricePerUnit: String!
-    timeCirclesPriceShare: Int!
-    title: String!
+    tokenAddresses: [String!]!
 }
 
 input CreateTagInput {
@@ -1134,8 +1108,8 @@ input OfferInput {
 }
 
 input OffersAggregateFilter {
-      createdByAddresses: [String!]
-      offerIds: [Int!]
+    createdByAddresses: [String!]
+    offerIds: [Int!]
 }
 
 input PaginationArgs {
@@ -1155,11 +1129,11 @@ input PostAddressInput {
 }
 
 input ProfileAggregateFilter {
-      contacts: ContactAggregateFilter
-      crcBalance: CrcBalanceAggregateFilter
-      offers: OffersAggregateFilter
-      purchases: PurchasesAggregateFilter
-      sales: SalesAggregateFilter
+    contacts: ContactAggregateFilter
+    crcBalance: CrcBalanceAggregateFilter
+    offers: OffersAggregateFilter
+    purchases: PurchasesAggregateFilter
+    sales: SalesAggregateFilter
 }
 
 input ProfileEventFilter {
@@ -1241,6 +1215,7 @@ input SearchInput {
 }
 
 input ShopCategoryEntryInput {
+    currentInventory: Int
     enabled: Boolean
     id: Int
     name: String

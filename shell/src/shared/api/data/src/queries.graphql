@@ -2290,6 +2290,7 @@ query shop($id: Int!) {
         productVersion
         shopCategoryId
         enabled
+        currentInventory
         product {
           id
           version
