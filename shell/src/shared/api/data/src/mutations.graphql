@@ -79,7 +79,7 @@ mutation updateValue($lang: String, $key: String, $createdBy: String, $value: St
   }
 }
 
-mutation createNewStringAndKey($lang: String, $key: String, $createdBy: String, $version: Int, $value: String){
+mutation createNewStringAndKey($lang: String, $key: String, $createdBy: String, $version: Int, $value: String) {
   createNewStringAndKey(lang: $lang, key: $key, createdBy: $createdBy, version: $version, value: $value) {
     lang
     key
@@ -475,12 +475,13 @@ mutation upsertShop($shop: ShopInput!) {
       entries {
         id
         sortOrder
-        currentInventory
+
         product {
           id
           version
           title
           description
+          currentInventory
           pictureUrl
           pricePerUnit
           createdByProfile {

@@ -2290,7 +2290,7 @@ query shop($id: Int!) {
         productVersion
         shopCategoryId
         enabled
-        currentInventory
+
         product {
           id
           version
@@ -2299,6 +2299,7 @@ query shop($id: Int!) {
           pictureUrl
           pricePerUnit
           minAge
+          currentInventory
           createdByProfile {
             id
             displayName

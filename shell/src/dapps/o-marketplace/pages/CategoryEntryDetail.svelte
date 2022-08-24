@@ -40,7 +40,7 @@ onMount(async () => {
     if (products.length > 0) {
       offer = products[0];
     }
-
+    console.log("FFER", offer);
     loading = false;
   }
 });
@@ -175,20 +175,26 @@ function _addToCart(item: Offer & { shopId: number }) {
           </button>
         </div>
         <div class="flex-grow">
-          <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => _addToCart(offer)}">
-            <Label key="dapps.o-marketplace.pages.offerDetail.addToCart" />
-            <div class="absolute mr-1 right-2">
-              {#if offer.minAge}
-                {#if offer.minAge < 18}
-                  <Icons icon="under16" customClass="inline" size="{6}" />
+          {#if offer.currentInventory !== null && offer.currentInventory < 1}
+            <button type="submit" class="relative btn btn-disabled btn-block">
+              <Label key="dapps.o-marketplace.pages.offerDetail.soldOut" />
+            </button>
+          {:else}
+            <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => _addToCart(offer)}">
+              <Label key="dapps.o-marketplace.pages.offerDetail.addToCart" />
+              <div class="absolute mr-1 right-2">
+                {#if offer.minAge}
+                  {#if offer.minAge < 18}
+                    <Icons icon="under16" customClass="inline" size="{6}" />
+                  {:else}
+                    <Icons icon="under18" customClass="inline" size="{6}" />
+                  {/if}
                 {:else}
-                  <Icons icon="under18" customClass="inline" size="{6}" />
+                  <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
                 {/if}
-              {:else}
-                <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
-              {/if}
-            </div>
-          </button>
+              </div>
+            </button>
+          {/if}
         </div>
       </div>
     </div>
