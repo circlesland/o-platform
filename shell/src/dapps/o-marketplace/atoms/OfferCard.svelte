@@ -92,16 +92,22 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
 
       <div class="flex flex-row space-x-4">
         <div class="">
-          <button
-            type="submit"
-            class="relative btn btn-primary btn-square"
-            on:click="{() => _addToCart({ ...entry.product, shopId: shopId })}">
-            <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
-          </button>
+          {#if entry.product.currentInventory !== null && entry.product.currentInventory < 1}
+            <button type="submit" class="relative btn btn-disabled">
+              <Label key="dapps.o-marketplace.pages.offerDetail.soldOut" />
+            </button>
+          {:else}
+            <button
+              type="submit"
+              class="relative btn btn-primary btn-square"
+              on:click="{() => _addToCart({ ...entry.product, shopId: shopId })}">
+              <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
+            </button>
+          {/if}
         </div>
         <div class="flex-grow">
           <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => loadDetailPage(shopId)}">
-            <Label key="dapps.o-marketplace.atoms.offerCard.details"></Label>
+            <Label key="dapps.o-marketplace.atoms.offerCard.details" />
             <div class="absolute mr-1 right-2">
               <Icon name="eye" class="w-6 h-6 heroicon smallicon" />
             </div>
