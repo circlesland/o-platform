@@ -7,6 +7,9 @@ import Icons from "../../../shared/molecules/Icons.svelte";
 import { truncateString } from "../../../shared/functions/truncateString";
 import Label from "../../../shared/atoms/Label.svelte";
 import { addToCart, AddToCartContextData } from "../processes/addToCart";
+import { getTrustedByShop } from "../processes/getTrustedByShop";
+import { trustFromContactMetadata } from "../../../shared/functions/trustFromContactMetadata";
+import { contacts } from "../../../shared/stores/contacts";
 
 export let entry: ShopCategoryEntry;
 export let shopId: number;
@@ -16,12 +19,28 @@ function loadDetailPage() {
   push("#/marketplace/detail/" + shopId + "/" + entry.id);
 }
 
-function _addToCart(item: Offer & { shopId: number }) {
-  window.o.runProcess(addToCart, <AddToCartContextData>{
-    offerId: parseInt(item.id.toString()),
-    shopId: parseInt(item.shopId.toString()),
-    redirectTo: `#/marketplace/cart`,
-  });
+async function _addToCart(item: Offer & { shopId: number }) {
+  console.log("entry", entry);
+  const contact = await contacts.findBySafeAddress(entry.product.createdByProfile.circlesAddress);
+  const { trustIn, trustOut } = trustFromContactMetadata(contact);
+
+  if (trustIn > 0) {
+    window.o.runProcess(addToCart, <AddToCartContextData>{
+      offerId: parseInt(item.id.toString()),
+      shopId: parseInt(item.shopId.toString()),
+      redirectTo: `#/marketplace/cart`,
+    });
+  } else {
+    window.o.runProcess(getTrustedByShop, {
+      successAction: () => {
+        window.o.runProcess(addToCart, <AddToCartContextData>{
+          offerId: parseInt(item.id.toString()),
+          shopId: parseInt(item.shopId.toString()),
+          redirectTo: `#/marketplace/cart`,
+        });
+      },
+    });
+  }
 }
 
 let now = new Date();
