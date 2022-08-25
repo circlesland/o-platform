@@ -2407,6 +2407,8 @@ query offersByIdAndVersion($query: [OfferByIdAndVersionInput!]!) {
     title
     pictureUrl
     pricePerUnit
+    currentInventory
+    version
     tags {
       typeId
       value

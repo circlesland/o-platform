@@ -2,7 +2,15 @@
 import { purchase } from "../processes/purchase";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import Label from "../../../shared/atoms/Label.svelte";
-import { Shop } from "../../../shared/api/data/types";
+import {
+  Shop,
+  Offer,
+  OffersByIdAndVersionQuery,
+  OffersByIdAndVersionDocument,
+  QueryOffersByIdAndVersionArgs,
+  OffersByIdAndVersionQueryVariables,
+  OfferByIdAndVersionInput,
+} from "../../../shared/api/data/types";
 import { me } from "../../../shared/stores/me";
 import { Liquidity, PayableStatusBySeller, PaymentAmountsBySeller } from "../functions/liquidity";
 import { onMount } from "svelte";
@@ -11,6 +19,7 @@ import { Currency } from "../../../shared/currency";
 import { BN } from "ethereumjs-util";
 import { cartContents, cartContentsByShop, totalPrice } from "../stores/shoppingCartStore";
 import { ShoppingCartItem } from "../types/ShoppingCartItem";
+import { ApiClient } from "../../../shared/apiConnection";
 
 type ItemsOfShop = {
   total: number;
@@ -33,6 +42,7 @@ let payableStatusBySeller: PayableStatusBySeller;
 let isLoading: Boolean = true;
 let checked: boolean = false;
 let balance: number = 0;
+let immediateErrorMessage: string = "";
 
 let insufficientFunds: boolean = false;
 let shoppingCartItemsOfShop: ItemsOfShop[] = [];
@@ -92,32 +102,85 @@ onMount(async () => {
   refresh();
 });
 
+async function checkInventoryAvailable(shopIndex): Promise<boolean> {
+  const cartContents = await $cartContentsByShop;
+  let inventoryTmp = [];
+  let inventory = {};
+
+  if (cartContents[shopIndex] && cartContents[shopIndex].items) {
+    cartContents[shopIndex].items.forEach(async (item) => {
+      const offers: Offer[] = await ApiClient.query<Offer[], QueryOffersByIdAndVersionArgs>(
+        OffersByIdAndVersionDocument,
+        {
+          query: [{ offerId: parseInt(item.offerId.toString()) }],
+        }
+      );
+      if (offers) {
+        if (offers[0].currentInventory !== null) {
+          inventoryTmp.push({ id: item.offerId, inventory: offers[0].currentInventory - item.qty });
+
+          inventory = inventoryTmp.map(({ id }) => id);
+          console.log("INVEN", inventoryTmp);
+        }
+        // console.log("SEL", selectedIds);
+      }
+      return inventory;
+    });
+  } else {
+    return false;
+  }
+}
+
 async function checkout(shopIndex) {
   const cartContents = await $cartContentsByShop;
 
-  window.o.runProcess(purchase, {
-    items: cartContents[shopIndex].items,
-    shop: cartContents[shopIndex].shop,
-    sellerProfile: cartContents[shopIndex].shop.owner,
-    availableDeliveryMethods: [
-      {
-        id: 1,
-        name: "Pickup at store",
-      },
-      {
-        id: 2,
-        name: "Delivery",
-      },
-    ],
-  });
+  //for each item get offer and compare inventory with amount
+
+  // cartContents[shopIndex].items.forEach(async (item) => {
+  //   const offers: Offer[] = await ApiClient.query<Offer[], QueryOffersByIdAndVersionArgs>(
+  //     OffersByIdAndVersionDocument,
+  //     {
+  //       query: [{ offerId: parseInt(item.offerId.toString()) }],
+  //     }
+  //   );
+
+  //   if (offers) {
+  //     if (offers[0].currentInventory != null && offers[0].currentInventory < item.qty) {
+  //       console.log("HAMMA NEMME");
+  //     } else {
+  //       console.log("MAGSCH A GUGG DAZU?");
+  //     }
+  //   }
+  // });
+  // window.o.runProcess(purchase, {
+  //   items: cartContents[shopIndex].items,
+  //   shop: cartContents[shopIndex].shop,
+  //   sellerProfile: cartContents[shopIndex].shop.owner,
+  //   availableDeliveryMethods: [
+  //     {
+  //       id: 1,
+  //       name: "Pickup at store",
+  //     },
+  //     {
+  //       id: 2,
+  //       name: "Delivery",
+  //     },
+  //   ],
+  // });
 }
 
-function addOneItem(id) {
-  let filteredContent = $cartContents;
-  filteredContent.push(filteredContent.find((x) => x.id === id));
-  $cartContents = filteredContent;
-  shoppingCartItemsOfShop = shoppingCartItemsOfShop;
-  refresh();
+async function addOneItem(id, shopIndex) {
+  let inventory = await checkInventoryAvailable(shopIndex);
+  if (inventory && inventory[id] && inventory[id] > 0) {
+    let filteredContent = $cartContents;
+    filteredContent.push(filteredContent.find((x) => x.id === id));
+    $cartContents = filteredContent;
+    shoppingCartItemsOfShop = shoppingCartItemsOfShop;
+    refresh();
+  } else {
+    // immediateErrorMessage = "Sorry, we don't have any more than the selected amount in stock.";
+    return false;
+  }
 }
 
 function removeOneItem(id) {
@@ -196,6 +259,7 @@ function handleClickOutside(event) {
                   <div class="w-8 h-6 mx-2 text-sm text-center bg-gray-100 border rounded focus:outline-none">
                     {item.qty}
                   </div>
+
                   <span
                     class="font-semibold cursor-pointer"
                     on:click="{() => addOneItem(item.offerId, shopIndex)}"
@@ -211,6 +275,9 @@ function handleClickOutside(event) {
             </div>
           </div>
         </div>
+        {#if immediateErrorMessage}
+          <p class="text-alert">{immediateErrorMessage}</p>
+        {/if}
       {/each}
       {#if editable}
         <div class="flex items-center justify-end">

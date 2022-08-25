@@ -1138,6 +1138,7 @@ export type Query = {
   cities: Array<City>;
   tags: Array<Tag>;
   tagById?: Maybe<Tag>;
+  offerById: Offer;
   offersByIdAndVersion: Array<Offer>;
   directPath: TransitivePath;
   paymentPath: TransitivePath;
@@ -1268,6 +1269,11 @@ export type QueryTagsArgs = {
 
 
 export type QueryTagByIdArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type QueryOfferByIdArgs = {
   id: Scalars['Int'];
 };
 
@@ -2308,7 +2314,7 @@ export type UpsertOfferMutation = (
   { __typename?: 'Mutation' }
   & { upsertOffer: (
     { __typename?: 'Offer' }
-    & Pick<Offer, 'id' | 'version' | 'createdAt' | 'createdByAddress' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'minAge' | 'timeCirclesPriceShare'>
+    & Pick<Offer, 'id' | 'version' | 'createdAt' | 'createdByAddress' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'minAge' | 'currentInventory' | 'timeCirclesPriceShare'>
     & { tags?: Maybe<Array<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'typeId' | 'value'>
@@ -3802,7 +3808,7 @@ export type OffersByIdAndVersionQuery = (
   { __typename?: 'Query' }
   & { offersByIdAndVersion: Array<(
     { __typename?: 'Offer' }
-    & Pick<Offer, 'id' | 'title' | 'pictureUrl' | 'pricePerUnit'>
+    & Pick<Offer, 'id' | 'title' | 'pictureUrl' | 'pricePerUnit' | 'currentInventory' | 'version'>
     & { tags?: Maybe<Array<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'typeId' | 'value'>
@@ -4350,6 +4356,7 @@ export const UpsertOfferDocument = gql`
     pictureUrl
     pricePerUnit
     minAge
+    currentInventory
     timeCirclesPriceShare
     tags {
       typeId
@@ -6772,6 +6779,8 @@ export const OffersByIdAndVersionDocument = gql`
     title
     pictureUrl
     pricePerUnit
+    currentInventory
+    version
     tags {
       typeId
       value

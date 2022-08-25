@@ -525,6 +525,7 @@ mutation upsertOffer($offer: OfferInput!) {
     pictureUrl
     pricePerUnit
     minAge
+    currentInventory
     timeCirclesPriceShare
     tags {
       typeId
