@@ -35,6 +35,8 @@ type ItemsOfShop = {
   items: ShoppingCartItem[];
 };
 
+type Inventory = { id: number; inventory: number }[];
+
 export let editable: boolean = true;
 
 let payableStatusBySeller: PayableStatusBySeller;
@@ -42,7 +44,7 @@ let payableStatusBySeller: PayableStatusBySeller;
 let isLoading: Boolean = true;
 let checked: boolean = false;
 let balance: number = 0;
-let immediateErrorMessage: string = "";
+let immediateErrorMessage: { id: number; error: string };
 
 let insufficientFunds: boolean = false;
 let shoppingCartItemsOfShop: ItemsOfShop[] = [];
@@ -102,85 +104,74 @@ onMount(async () => {
   refresh();
 });
 
-async function checkInventoryAvailable(shopIndex): Promise<boolean> {
-  const cartContents = await $cartContentsByShop;
-  let inventoryTmp = [];
-  let inventory = {};
-
-  if (cartContents[shopIndex] && cartContents[shopIndex].items) {
-    cartContents[shopIndex].items.forEach(async (item) => {
-      const offers: Offer[] = await ApiClient.query<Offer[], QueryOffersByIdAndVersionArgs>(
-        OffersByIdAndVersionDocument,
-        {
-          query: [{ offerId: parseInt(item.offerId.toString()) }],
-        }
-      );
-      if (offers) {
-        if (offers[0].currentInventory !== null) {
-          inventoryTmp.push({ id: item.offerId, inventory: offers[0].currentInventory - item.qty });
-
-          inventory = inventoryTmp.map(({ id }) => id);
-          console.log("INVEN", inventoryTmp);
-        }
-        // console.log("SEL", selectedIds);
-      }
-      return inventory;
-    });
-  } else {
-    return false;
+async function getInventory(item) {
+  const offer: Offer = await ApiClient.query<Offer, QueryOffersByIdAndVersionArgs>(OffersByIdAndVersionDocument, {
+    query: [{ offerId: parseInt(item.offerId.toString()) }],
+  });
+  if (offer) {
+    if (offer[0].currentInventory !== null) {
+      console.log("QTY", item.qty);
+      return offer[0].currentInventory;
+    }
   }
 }
 
 async function checkout(shopIndex) {
   const cartContents = await $cartContentsByShop;
 
-  //for each item get offer and compare inventory with amount
-
-  // cartContents[shopIndex].items.forEach(async (item) => {
-  //   const offers: Offer[] = await ApiClient.query<Offer[], QueryOffersByIdAndVersionArgs>(
-  //     OffersByIdAndVersionDocument,
-  //     {
-  //       query: [{ offerId: parseInt(item.offerId.toString()) }],
-  //     }
-  //   );
-
-  //   if (offers) {
-  //     if (offers[0].currentInventory != null && offers[0].currentInventory < item.qty) {
-  //       console.log("HAMMA NEMME");
-  //     } else {
-  //       console.log("MAGSCH A GUGG DAZU?");
-  //     }
-  //   }
-  // });
-  // window.o.runProcess(purchase, {
-  //   items: cartContents[shopIndex].items,
-  //   shop: cartContents[shopIndex].shop,
-  //   sellerProfile: cartContents[shopIndex].shop.owner,
-  //   availableDeliveryMethods: [
-  //     {
-  //       id: 1,
-  //       name: "Pickup at store",
-  //     },
-  //     {
-  //       id: 2,
-  //       name: "Delivery",
-  //     },
-  //   ],
-  // });
+  window.o.runProcess(purchase, {
+    items: cartContents[shopIndex].items,
+    shop: cartContents[shopIndex].shop,
+    sellerProfile: cartContents[shopIndex].shop.owner,
+    availableDeliveryMethods: [
+      {
+        id: 1,
+        name: "Pickup at store",
+      },
+      {
+        id: 2,
+        name: "Delivery",
+      },
+    ],
+  });
 }
 
 async function addOneItem(id, shopIndex) {
-  let inventory = await checkInventoryAvailable(shopIndex);
-  if (inventory && inventory[id] && inventory[id] > 0) {
+  const currentCartContents = await $cartContentsByShop;
+  const currentItem = currentCartContents[shopIndex].items.find((x) => x.offerId === id);
+  const count = await getInventory(currentItem);
+  if (count && count - currentItem.qty <= 0) {
+    return;
+    immediateErrorMessage = { id: id, error: "Sorry, we don't have any more than the selected amount in stock." };
+  } else {
     let filteredContent = $cartContents;
     filteredContent.push(filteredContent.find((x) => x.id === id));
     $cartContents = filteredContent;
     shoppingCartItemsOfShop = shoppingCartItemsOfShop;
     refresh();
-  } else {
-    // immediateErrorMessage = "Sorry, we don't have any more than the selected amount in stock.";
-    return false;
   }
+
+  // const inventory: Inventory = await checkInventoryAvailable(shopIndex);
+  // if (inventory) {
+  //   console.log("inventory", inventory.length);
+  //   console.log("id:", id);
+
+  //   console.log(
+  //     "HEY",
+  //     inventory.find((x) => x.id === id)
+  //   );
+  // }
+
+  // if (inventory && inventory[id] && inventory[id] > 0) {
+  //   let filteredContent = $cartContents;
+  //   filteredContent.push(filteredContent.find((x) => x.id === id));
+  //   $cartContents = filteredContent;
+  //   shoppingCartItemsOfShop = shoppingCartItemsOfShop;
+  //   refresh();
+  // } else {
+  //   // immediateErrorMessage = "Sorry, we don't have any more than the selected amount in stock.";
+  //   return false;
+  // }
 }
 
 function removeOneItem(id) {
@@ -237,7 +228,14 @@ function handleClickOutside(event) {
             <img class="w-16 rounded-full mask mask-circle" src="{item.pictureUrl}" alt="{item.title}" />
             <div class="flex flex-col items-start w-full ml-2 space-y-2">
               <div class="flex flex-row justify-between w-full">
-                <div class="md:text-md">{item.title}</div>
+                <div class="md:text-md">
+                  {item.title}
+                  {#if item.currentInventory}
+                    <span class="ml-4 text-xs text-alert-light">
+                      {item.currentInventory} in Stock
+                    </span>
+                  {/if}
+                </div>
                 <div
                   class="self-center cursor-pointer text-dark"
                   on:click="{() => removeAllItems(item.offerId)}"
