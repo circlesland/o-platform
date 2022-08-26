@@ -4,7 +4,7 @@ import QrScanner from "qr-scanner";
 import { onDestroy, onMount } from "svelte";
 import { push } from "svelte-spa-router";
 import { showToast } from "../../../shared/toast";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import { mySales } from "../../../shared/stores/mySales";
 
 let saleEvent: ProfileEvent;
@@ -27,7 +27,7 @@ onDestroy(() => {
 
 async function loadSale(id) {
   scanner.stop();
-  statusText = window.i18n(
+  statusText = window.o.i18n(
     "dapps.o-marketplace.pages.scanPurchase.verifyingOrder"
   );
 
@@ -39,7 +39,7 @@ async function loadSale(id) {
   }
 
   if (!sale || sale.invoice.sellerSignature) {
-    statusText = window.i18n(
+    statusText = window.o.i18n(
       "dapps.o-marketplace.pages.scanPurchase.invalidOrderCode"
     );
     startScanner();
@@ -50,7 +50,7 @@ async function loadSale(id) {
     push(`#/marketplace/my-sales/${sale.invoice.id}`);
     showToast(
       "success",
-      window.i18n(
+      window.o.i18n(
         "dapps.o-marketplace.pages.scanPurchase.purchaseMarkedAsDelivered"
       )
     );
@@ -114,7 +114,7 @@ onMount(() => {
 <section class="flex flex-col items-center justify-center p-6 space-y-4">
   <div class="w-full text-center">
     <h1 class="text-3xl uppercase font-heading">
-      {$_("dapps.o-marketplace.pages.scanPurchase.scanToHandOut")}
+      <Label key="dapps.o-marketplace.pages.scanPurchase.scanToHandOut"  />
     </h1>
   </div>
   <div class="w-full text-center">
@@ -132,18 +132,16 @@ onMount(() => {
         bind:this="{camList}"
         class="w-full border select input">
         <option value="environment" selected
-          >{$_("dapps.o-marketplace.pages.scanPurchase.cameraDefault")}</option>
+          ><Label key="dapps.o-marketplace.pages.scanPurchase.cameraDefault"  /></option>
         <option value="user"
-          >{$_(
-            "dapps.o-marketplace.pages.scanPurchase.cameraUserFacing"
-          )}</option>
+          ><Label key="dapps.o-marketplace.pages.scanPurchase.cameraUserFacing" /></option>
       </select>
     </div>
 
     <div class="mt-4 text-center">
-      <b>{$_("dapps.o-marketplace.pages.scanPurchase.detectedQrCode")}</b>
+      <b><Label key="dapps.o-marketplace.pages.scanPurchase.detectedQrCode"  /></b>
       <span id="cam-qr-result" bind:this="{camQrResult}"
-        >{$_("dapps.o-marketplace.pages.scanPurchase.none")}</span>
+        ><Label key="dapps.o-marketplace.pages.scanPurchase.none"  /></span>
     </div>
   </div>
   <!-- <slot name="EditorActionButtons">

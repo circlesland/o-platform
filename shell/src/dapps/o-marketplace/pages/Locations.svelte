@@ -1,18 +1,15 @@
 <script lang="ts">
-import SimpleHeader from "src/shared/atoms/SimpleHeader.svelte";
+import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { contacts } from "../../../shared/stores/contacts";
 import { ApiClient } from "../../../shared/apiConnection";
-import { CapabilityType, Organisation, Shop, ShopsDocument, ShopsQueryVariables } from "../../../shared/api/data/types";
+import { Organisation, Shop, ShopsDocument, ShopsQueryVariables } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { trustFromContactMetadata } from "../../../shared/functions/trustFromContactMetadata";
 import { inbox } from "../../../shared/stores/inbox";
-import { getTrustedByShop } from "../processes/getTrustedByShop";
 import { me } from "../../../shared/stores/me";
-import { getTrusted } from "../processes/getTrusted";
-import ShopMetadata from "../../../shared/molecules/ShopMetadata.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -43,7 +40,7 @@ async function load() {
           largeBannerUrl: o.largeBannerUrl,
           smallBannerUrl: o.smallBannerUrl,
         },
-        enabled: isMyShop(o.id) || trustIn > 0,
+        enabled: o.enabled,
         productListingType: o.productListingStyle == "LIST" ? "list" : "market",
       };
     })
@@ -53,17 +50,7 @@ async function load() {
 onMount(async () => await load());
 
 async function locationClicked(orga) {
-  const alreadyVerified = (await me.getSessionInfo()).capabilities.find(
-    (o) => o.type == CapabilityType.VerifiedByHumanode
-  );
-
-  if (orga.enabled) {
-    loadLocationPage(`${orga.productListingType}/${orga.shopId}`);
-  } else if (!alreadyVerified) {
-    await window.o.runProcess(getTrustedByShop, {}, {});
-  } else {
-    await window.o.runProcess(getTrusted, {}, {});
-  }
+  loadLocationPage(`${orga.productListingType}/${orga.shopId}`);
 }
 
 function isMyShop(shopId) {
@@ -84,7 +71,7 @@ function isMyShop(shopId) {
     </section>
 
     {#each orgas as orga}
-      {#if !orga.shop.private || isMyShop(orga.shop.id)}
+      {#if (orga.shop.enabled && !orga.shop.private) || isMyShop(orga.shop.id)}
         <section
           class="flex items-start m-4 rounded-xl"
           class:cursor-pointer="{orga.shop.enabled}"
@@ -94,17 +81,8 @@ function isMyShop(shopId) {
               <div class="relative rounded-xl image-wrapper">
                 <img src="{orga.shop.largeBannerUrl}" alt="" class="w-full rounded-xl" />
                 <div
-                  class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-3xl rounded-l-full font-heading top-2 bg-light-lightest">
+                  class="absolute right-0 py-2 pt-3 pl-4 pr-2 mt-2 text-3xl bg-white rounded-l-full font-heading top-2">
                   <span class="inline-block">{orga.shop.name}</span>
-                </div>
-                <div
-                  class="absolute right-0 py-2 pl-4 pr-1 mt-2 text-xs rounded-l-full cursor-pointer bottom-4 bg-alert-lightest has-tooltip"
-                  class:hidden="{orga.shop.enabled}">
-                  <span class="px-2 mt-12 text-sm bg-white rounded shadow-sm right-20 tooltip bottom-10">
-                    <!--Find one of our friendly circlesland people to trust you for
-                  this shop.-->
-                  </span>
-                  You need to get trusted by this shop.
                 </div>
               </div>
             </header>

@@ -74,7 +74,7 @@ export class MyPurchases extends PagedEventQuery {
       }
     });
     if (!completedInvoice.data?.completePurchase) {
-      throw new Error(window.i18n("shared.stores.purchases.errors.couldNotRevoke"));
+      throw new Error(window.o.i18n("shared.stores.purchases.errors.couldNotRevoke"));
     }
 
     await this.findSingleItemFallback([AggregateType.Purchases], completedInvoice.data.purchase.id);

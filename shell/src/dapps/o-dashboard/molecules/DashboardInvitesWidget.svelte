@@ -5,16 +5,10 @@ import ButtonContext from "../../../shared/atoms/button/buttonContext";
 import Button from "../../../shared/atoms/button/Button.svelte";
 import { me } from "../../../shared/stores/me";
 import {Stats} from "../../../shared/api/data/types";
+import Label from "../../../shared/atoms/Label.svelte";
+import { _ } from "svelte-i18n";
 
-let leaderboardButton: ButtonContext = {
-  label: "leaderboard",
-  color: "light",
-  style: "small",
-  disableLoading: true,
-  action: async () => {
-    push("#/home/leaderboard");
-  },
-};
+
 let shareButton: ButtonContext = {
   label: "share invite link",
   color: "primary",
@@ -60,13 +54,12 @@ $: {
     {/if}
     <div class="absolute grid w-full grid-cols-3 px-2 text-white top-3">
       {#if _stats.goals.nextGoal > 0}
-        <div class="text-sm text-left">{_stats.profilesCount} Citizens</div>
+        <div class="text-sm text-left inline-flex flex-none justify-start"><div class="pr-1">{_stats.profilesCount}</div> <Label key="dapps.o-dashboard.molecules.dashboardInvitesWidget.citizens" /></div>
         <div class="w-auto -mt-1 leading-0">
           {Math.floor((100 * _stats.profilesCount) / _stats.goals.nextGoal)}%
         </div>
-        <div class="-ml-2 text-sm text-right whitespace-nowrap">
-          +{_stats.goals.nextGoal - _stats.profilesCount > 0 ? _stats.goals.nextGoal - _stats.profilesCount : 0} till next
-          party
+        <div class="-ml-2 text-sm text-right inline-flex flex-nowrap justify-end">
+          <div class="pr-1">+{_stats.goals.nextGoal - _stats.profilesCount > 0 ? _stats.goals.nextGoal - _stats.profilesCount : 0}</div> <Label key="dapps.o-dashboard.molecules.dashboardInvitesWidget.tillNextParty" />
         </div>
       {/if}
     </div>
@@ -77,21 +70,37 @@ $: {
         <div class="self-center text-6xl font-heading">
           {!$stats ? ". . ." : _stats.myRank.rank}
         </div>
-        <div class="text-sm text-dark-lightest">My leaderrank</div>
+        <div class="text-sm text-dark-lightest"><Label key="dapps.o-dashboard.molecules.dashboardInvitesWidget.myLeaderrank" /></div>
       </div>
       <div class="flex flex-col self-center space-y-2 justify-items-center">
         <div class="self-center text-6xl cursor-pointer font-heading" on:click="{() => push('#/home/invites')}">
           {!$stats ? ". . ." : _stats.myRank.redeemedInvitationsCount}
         </div>
-        <div class="text-sm text-dark-lightest">My invites</div>
+        <div class="text-sm text-dark-lightest"><Label key="dapps.o-dashboard.molecules.dashboardInvitesWidget.myInvites" /></div>
       </div>
     </div>
   {/if}
 
   {#if $me && $me.__typename === "Profile"}
     <div class="flex flex-row justify-around mt-4 mb-1 text-center">
-      <Button context="{leaderboardButton}" />
-      <Button context="{shareButton}" />
+      <Button context="{{
+        label: $_("dapps.o-dashboard.molecules.dashboardInvitesWidget.leaderBoardButton"),
+        color: "light",
+        style: "small",
+        disableLoading: true,
+        action: async () => {
+          push("#/home/leaderboard");
+        },
+      }}" />
+      <Button context="{{
+        label: $_("dapps.o-dashboard.molecules.dashboardInvitesWidget.invieteLinkButton"),
+        color: "primary",
+        style: "small",
+        disableLoading: true,
+        action: async () => {
+          push("#/home/share");
+        },
+      }}" />
     </div>
   {/if}
 </section>

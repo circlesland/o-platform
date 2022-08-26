@@ -11,7 +11,6 @@ import { onMount } from "svelte";
 
 import dayjs from "dayjs";
 
-import { _ } from "svelte-i18n";
 
 export let event: ProfileEvent;
 
@@ -74,10 +73,10 @@ if (event && event.payload.__typename == "Purchased") {
           class:text-info="{!purchase.paymentTransactionHash &&
             !purchase.cancelledAt}">
           {#if purchase.paymentTransactionHash}
-            <span>{$_("dapps.o-marketplace.pages.myPurchases.paid")}</span>
+            <span><Label key="dapps.o-marketplace.pages.myPurchases.paid"  /></span>
             <Icons icon="check" size="{4}" customClass="inline" />
           {:else if purchase.cancelledAt}
-            <span>{$_("dapps.o-marketplace.pages.myPurchases.cancelled")}</span>
+            <span><Label key="dapps.o-marketplace.pages.myPurchases.cancelled"  /></span>
           {:else}
             <span
               >{$_(
@@ -89,7 +88,7 @@ if (event && event.payload.__typename == "Purchased") {
           class="inline-block text-xs "
           class:text-inactive="{!purchase.pickupCode}"
           class:text-success="{purchase.pickupCode}">
-          <span>{$_("dapps.o-marketplace.pages.myPurchases.pickupCode")}</span>
+          <span><Label key="dapps.o-marketplace.pages.myPurchases.pickupCode"  /></span>
           {#if purchase.pickupCode}
             <Icons icon="check" size="{4}" customClass="inline" />
           {/if}
@@ -98,7 +97,7 @@ if (event && event.payload.__typename == "Purchased") {
           class="inline-block text-xs"
           class:text-inactive="{!purchase.sellerSignature}"
           class:text-success="{purchase.sellerSignature}">
-          <span>{$_("dapps.o-marketplace.pages.myPurchases.pickedUp")}</span>
+          <span><Label key="dapps.o-marketplace.pages.myPurchases.pickedUp"  /></span>
           {#if purchase.sellerSignature}
             <Icons icon="check" size="{4}" customClass="inline" />
           {:else}

@@ -4,18 +4,23 @@ import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
 import { me } from "../../../shared/stores/me";
+import Label from "../../../shared/atoms/Label.svelte";
 
 let foo = false;
 </script>
 
 <section class="flex flex-col items-center justify-center p-6 space-y-4">
   <div class="w-full text-center">
-    <h1 class="text-3xl uppercase font-heading undefined">Share an invite to circlesland</h1>
+    <h1 class="text-3xl uppercase font-heading undefined">
+      <Label key="dapps.o-dashboard.pages.shareInvitation.shareTitle" />
+    </h1>
   </div>
 
   {#if $me && $me.invitationLink}
     <div class="w-full text-center">
-      <span class="text-dark-lightest">Show this QR Code or choose a way to share an invite link below</span>
+      <span class="text-dark-lightest">
+        <Label key="dapps.o-dashboard.pages.shareInvitation.shareDescription" />
+      </span>
     </div>
     <div class="w-full">
       <center>
@@ -60,7 +65,7 @@ let foo = false;
   {:else}
     <div class="w-full text-center">
       <span class="text-alert"
-        >You can't invite others just yet. you have to get verified first.<br />We're working on it :)</span>
+        ><Label key="dapps.o-dashboard.pages.shareInvitation.shareRefused" /></span>
     </div>
   {/if}
 </section>

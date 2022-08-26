@@ -143,7 +143,7 @@ export function promptFile<
         component: PictureEditor,
         params: {
           view: spec.params.view,
-          submitButtonText: window.i18n("shared.api.promptFile.saveImage"),
+          submitButtonText: window.o.i18n("shared.api.promptFile.saveImage"),
           cropShape: spec.params?.cropShape ?? null,
         },
         navigation: {
@@ -171,7 +171,7 @@ export function promptFile<
           },
           {
             actions: (context: TContext) => {
-              context.messages[field.name] = window.i18n("shared.api.promptFile.pleaseSpecifyValidFile");
+              context.messages[field.name] = window.o.i18n("shared.api.promptFile.pleaseSpecifyValidFile");
             },
             target: `#${id("checkPreviewFile")}`,
           },
@@ -186,7 +186,7 @@ export function promptFile<
           console.log(`uploadFile entry`);
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n("shared.api.promptFile.uploadingFile"),
+            message: window.o.i18n("shared.api.promptFile.uploadingFile"),
           });
         },
         invoke: {
@@ -219,13 +219,13 @@ export function promptFile<
       errorUploadingFile: prompt<TContext, any>({
         field: "errorUploadingFile",
         entry: (context) => {
-          context.data.errorUploadingFile = window.i18n("shared.api.promptFile.contextDataErrorUploadFile");
+          context.data.errorUploadingFile = window.o.i18n("shared.api.promptFile.contextDataErrorUploadFile");
           context.dirtyFlags[field.name] = true;
         },
         component: HtmlViewer,
         isSensitive: true,
         params: {
-          submitButtonText: window.i18n("shared.api.promptFile.tryAgain"),
+          submitButtonText: window.o.i18n("shared.api.promptFile.tryAgain"),
           html: (context) => context.data.errorUploadingFile,
         },
         navigation: {

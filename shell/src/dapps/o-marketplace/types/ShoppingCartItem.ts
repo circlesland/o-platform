@@ -9,4 +9,5 @@ export type ShoppingCartItem = {
   description?: string;
   pricePerUnit?: number;
   sellerAddress?: string;
+  currentInventory?: number;
 };

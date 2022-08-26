@@ -12,11 +12,12 @@ import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { AvataarGenerator } from "../shared/avataarGenerator";
 import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { Profile } from "../shared/api/data/types";
+import { loginWithTorus } from "./o-onboarding/processes/loginWithTorus";
 
 const index: Page<any, DappState> = {
   routeParts: ["=profile"],
   component: Home,
-  title: "Profile",
+  title: "common.profile",
   type: "page",
 };
 
@@ -39,14 +40,14 @@ const profile: Page<any, DappState> = {
 const account: Page<any, DappState> = {
   routeParts: ["=accounts"],
   component: Account,
-  title: "Accounts",
+  title: "common.accounts",
   type: "page",
 };
 
 const settings: Page<any, DappState> = {
   routeParts: ["=settings"],
   component: Settings,
-  title: "Settings",
+  title: "common.settings",
   type: "page",
 };
 
@@ -58,6 +59,25 @@ const logmeout: Trigger<{}, DappState> = {
   type: "trigger",
   action: async (params) => {
     window.o.runProcess(logout, {});
+  },
+};
+
+const logmein: Trigger<{}, DappState> = {
+  isSystem: true,
+  anonymous: true,
+  routeParts: ["=actions", "=login", ":keyId"],
+  title: "Log in",
+  type: "trigger",
+  action: async (params: any) => {
+    (<any>window).runInitMachine({
+      useMockProfileIndex: parseInt(params.keyId),
+    });
+    /*
+    window.o.runProcess(loginWithTorus, {
+      useMockProfileIndex: parseInt(params.keyId),
+      successAction: () => (<any>window).runInitMachine()
+    });
+    */
   },
 };
 
@@ -134,6 +154,7 @@ export const passport: DappManifest<DappState> = {
               type: "shell.authenticated",
               profile: o,
             });
+            localStorage.removeItem("editShopIndex");
             location.reload();
             /*window.o.publishEvent(<PlatformEvent>{
               type: "shell.closeModal"
@@ -153,5 +174,5 @@ export const passport: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, profile, account, settings, verifyEmail, logmeout],
+  routables: [index, profile, account, settings, verifyEmail, logmeout, logmein],
 };

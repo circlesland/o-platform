@@ -358,12 +358,34 @@ export type ExchangeTokenResponse = {
   errorMessage?: Maybe<Scalars['String']>;
 };
 
+export type ExportProfile = {
+  __typename?: 'ExportProfile';
+  lastChange: Scalars['Date'];
+  circlesAddress: Scalars['String'];
+  displayName: Scalars['String'];
+  avatarUrl?: Maybe<Scalars['String']>;
+};
+
+export type ExportTrustRelation = {
+  __typename?: 'ExportTrustRelation';
+  lastChange: Scalars['Date'];
+  trusterAddress: Scalars['String'];
+  trusteeAddress: Scalars['String'];
+  trustLimit: Scalars['Int'];
+};
+
 export type FibonacciGoals = {
   __typename?: 'FibonacciGoals';
   lastGoal: Scalars['Int'];
   currentValue: Scalars['Int'];
   nextGoal: Scalars['Int'];
 };
+
+export enum Gender {
+  Male = 'MALE',
+  Female = 'FEMALE',
+  Divers = 'DIVERS'
+}
 
 export type GnosisSafeEthTransfer = IEventPayload & {
   __typename?: 'GnosisSafeEthTransfer';
@@ -528,6 +550,7 @@ export type Memberships = IAggregatePayload & {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  payWithPath: TransitivePath;
   announcePayment: AnnouncePaymentResult;
   purchase: Array<Invoice>;
   completePurchase: Invoice;
@@ -562,6 +585,16 @@ export type Mutation = {
   verifySafe: VerifySafeResult;
   revokeSafeVerification: VerifySafeResult;
   proofUniqueness: ProofUniquenessResult;
+  updateValue?: Maybe<I18n>;
+  addNewLang?: Maybe<Scalars['Int']>;
+  createNewStringAndKey?: Maybe<I18n>;
+};
+
+
+export type MutationPayWithPathArgs = {
+  from: Scalars['String'];
+  to: Scalars['String'];
+  amount: Scalars['String'];
 };
 
 
@@ -726,6 +759,29 @@ export type MutationProofUniquenessArgs = {
   humanodeToken: Scalars['String'];
 };
 
+
+export type MutationUpdateValueArgs = {
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationAddNewLangArgs = {
+  langToCreate?: Maybe<Scalars['String']>;
+  langToCopyFrom?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationCreateNewStringAndKeyArgs = {
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+  version?: Maybe<Scalars['Int']>;
+};
+
 export type MyInviteRank = {
   __typename?: 'MyInviteRank';
   rank: Scalars['Int'];
@@ -755,6 +811,7 @@ export type Offer = {
   createdByAddress: Scalars['String'];
   createdAt: Scalars['String'];
   minAge?: Maybe<Scalars['Int']>;
+  currentInventory?: Maybe<Scalars['Int']>;
   title: Scalars['String'];
   pictureUrl: Scalars['String'];
   pictureMimeType: Scalars['String'];
@@ -778,6 +835,8 @@ export type OfferInput = {
   pictureMimeType: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   allergens?: Maybe<Scalars['String']>;
+  minAge?: Maybe<Scalars['Int']>;
+  currentInventory?: Maybe<Scalars['Int']>;
   pricePerUnit: Scalars['String'];
   timeCirclesPriceShare: Scalars['Int'];
 };
@@ -903,6 +962,8 @@ export type Profile = {
   shops?: Maybe<Array<Shop>>;
   shippingAddresses?: Maybe<Array<PostAddress>>;
   provenUniqueness?: Maybe<Scalars['Boolean']>;
+  age?: Maybe<Scalars['Int']>;
+  gender?: Maybe<Gender>;
 };
 
 export type ProfileAggregate = {
@@ -1073,14 +1134,29 @@ export type Query = {
   findSafesByOwner: Array<SafeInfo>;
   search: Array<Profile>;
   stats: Stats;
+  deliveryMethods?: Maybe<Array<Maybe<DeliveryMethod>>>;
   cities: Array<City>;
   tags: Array<Tag>;
   tagById?: Maybe<Tag>;
+  offerById: Offer;
   offersByIdAndVersion: Array<Offer>;
   directPath: TransitivePath;
+  paymentPath: TransitivePath;
   invoice?: Maybe<Scalars['String']>;
   findInvitationCreator?: Maybe<Profile>;
   clientAssertionJwt: Scalars['String'];
+  getAllStrings?: Maybe<Array<Maybe<I18n>>>;
+  getAllStringsByLanguage?: Maybe<Array<Maybe<I18n>>>;
+  getStringByLanguage?: Maybe<Array<I18n>>;
+  getStringByMaxVersion?: Maybe<I18n>;
+  getAvailableLanguages?: Maybe<Array<Maybe<I18n>>>;
+  getAllStringsByMaxVersion?: Maybe<Array<Maybe<I18n>>>;
+  getAllStringsByMaxVersionAndLang?: Maybe<Array<Maybe<I18n>>>;
+  getOlderVersionsByKeyAndLang?: Maybe<Array<Maybe<I18n>>>;
+  allProfiles: Array<Maybe<ExportProfile>>;
+  allTrusts: Array<ExportTrustRelation>;
+  getRandomAccount?: Maybe<RandomAccount>;
+  signMessage: Scalars['String'];
 };
 
 
@@ -1197,12 +1273,24 @@ export type QueryTagByIdArgs = {
 };
 
 
+export type QueryOfferByIdArgs = {
+  id: Scalars['Int'];
+};
+
+
 export type QueryOffersByIdAndVersionArgs = {
   query: Array<OfferByIdAndVersionInput>;
 };
 
 
 export type QueryDirectPathArgs = {
+  from: Scalars['String'];
+  to: Scalars['String'];
+  amount: Scalars['String'];
+};
+
+
+export type QueryPaymentPathArgs = {
   from: Scalars['String'];
   to: Scalars['String'];
   amount: Scalars['String'];
@@ -1216,6 +1304,49 @@ export type QueryInvoiceArgs = {
 
 export type QueryFindInvitationCreatorArgs = {
   code: Scalars['String'];
+};
+
+
+export type QueryGetAllStringsByLanguageArgs = {
+  lang?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetStringByLanguageArgs = {
+  lang?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetStringByMaxVersionArgs = {
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetAllStringsByMaxVersionAndLangArgs = {
+  lang?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetOlderVersionsByKeyAndLangArgs = {
+  key?: Maybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryAllProfilesArgs = {
+  sinceLastChange?: Maybe<Scalars['Date']>;
+};
+
+
+export type QueryAllTrustsArgs = {
+  sinceLastChange?: Maybe<Scalars['Date']>;
+};
+
+
+export type QuerySignMessageArgs = {
+  message: Scalars['String'];
+  key: Scalars['String'];
 };
 
 export type QueryCitiesByGeonameIdInput = {
@@ -1247,6 +1378,12 @@ export type QueryTagsInput = {
 
 export type QueryUniqueProfileInput = {
   id: Scalars['Int'];
+};
+
+export type RandomAccount = {
+  __typename?: 'RandomAccount';
+  privateKey?: Maybe<Scalars['String']>;
+  address?: Maybe<Scalars['String']>;
 };
 
 export type RedeemClaimedInvitationResult = {
@@ -1477,6 +1614,7 @@ export type ShopInput = {
   tosLink?: Maybe<Scalars['String']>;
   healthInfosLink?: Maybe<Scalars['String']>;
   adultOnly?: Maybe<Scalars['Boolean']>;
+  deliveryMethodIds?: Maybe<Array<Scalars['Int']>>;
 };
 
 export enum ShopListingStyle {
@@ -1522,11 +1660,13 @@ export type TransitivePath = {
   __typename?: 'TransitivePath';
   requestedAmount: Scalars['String'];
   flow: Scalars['String'];
+  success: Scalars['Boolean'];
   transfers: Array<TransitiveTransfer>;
 };
 
 export type TransitiveTransfer = {
   __typename?: 'TransitiveTransfer';
+  isHubTransfer?: Maybe<Scalars['Boolean']>;
   from: Scalars['String'];
   to: Scalars['String'];
   token: Scalars['String'];
@@ -1594,6 +1734,8 @@ export type UpsertProfileInput = {
   displayTimeCircles?: Maybe<Scalars['Boolean']>;
   cityGeonameid?: Maybe<Scalars['Int']>;
   displayCurrency?: Maybe<DisplayCurrency>;
+  age?: Maybe<Scalars['Int']>;
+  gender?: Maybe<Gender>;
 };
 
 export type UpsertShopCategoriesResult = {
@@ -1648,6 +1790,15 @@ export type WelcomeMessage = IEventPayload & {
   transaction_hash?: Maybe<Scalars['String']>;
   invitedBy: Scalars['String'];
   invitedBy_profile?: Maybe<Profile>;
+};
+
+export type I18n = {
+  __typename?: 'i18n';
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['String']>;
+  version?: Maybe<Scalars['Int']>;
+  value?: Maybe<Scalars['String']>;
 };
 
 export type UpsertShippingAddressMutationVariables = Exact<{
@@ -1717,6 +1868,50 @@ export type VerifySessionChallengeMutation = (
   & { verifySessionChallenge?: Maybe<(
     { __typename?: 'ExchangeTokenResponse' }
     & Pick<ExchangeTokenResponse, 'success' | 'errorMessage'>
+  )> }
+);
+
+export type AddNewLangMutationVariables = Exact<{
+  langToCreate?: Maybe<Scalars['String']>;
+  langToCopyFrom?: Maybe<Scalars['String']>;
+}>;
+
+
+export type AddNewLangMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addNewLang'>
+);
+
+export type UpdateValueMutationVariables = Exact<{
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+}>;
+
+
+export type UpdateValueMutation = (
+  { __typename?: 'Mutation' }
+  & { updateValue?: Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'value' | 'version'>
+  )> }
+);
+
+export type CreateNewStringAndKeyMutationVariables = Exact<{
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['String']>;
+  version?: Maybe<Scalars['Int']>;
+  value?: Maybe<Scalars['String']>;
+}>;
+
+
+export type CreateNewStringAndKeyMutation = (
+  { __typename?: 'Mutation' }
+  & { createNewStringAndKey?: Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
   )> }
 );
 
@@ -1871,6 +2066,8 @@ export type UpsertProfileMutationVariables = Exact<{
   cityGeonameid?: Maybe<Scalars['Int']>;
   status: Scalars['String'];
   successorOfCirclesAddress?: Maybe<Scalars['String']>;
+  gender?: Maybe<Gender>;
+  age?: Maybe<Scalars['Int']>;
 }>;
 
 
@@ -1878,7 +2075,7 @@ export type UpsertProfileMutation = (
   { __typename?: 'Mutation' }
   & { upsertProfile: (
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid'>
+    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'age' | 'gender'>
     & { city?: Maybe<(
       { __typename?: 'City' }
       & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
@@ -2061,7 +2258,7 @@ export type UpsertShopMutation = (
         & Pick<ShopCategoryEntry, 'id' | 'sortOrder'>
         & { product?: Maybe<(
           { __typename?: 'Offer' }
-          & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit'>
+          & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'currentInventory' | 'pictureUrl' | 'pricePerUnit'>
           & { createdByProfile?: Maybe<(
             { __typename?: 'Profile' }
             & Pick<Profile, 'id' | 'displayName' | 'avatarUrl' | 'circlesAddress'>
@@ -2117,7 +2314,7 @@ export type UpsertOfferMutation = (
   { __typename?: 'Mutation' }
   & { upsertOffer: (
     { __typename?: 'Offer' }
-    & Pick<Offer, 'id' | 'version' | 'createdAt' | 'createdByAddress' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'timeCirclesPriceShare'>
+    & Pick<Offer, 'id' | 'version' | 'createdAt' | 'createdByAddress' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'minAge' | 'currentInventory' | 'timeCirclesPriceShare'>
     & { tags?: Maybe<Array<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'typeId' | 'value'>
@@ -2151,7 +2348,7 @@ export type InitQuery = (
       & Pick<Capability, 'type'>
     )>, profile?: Maybe<(
       { __typename?: 'Profile' }
-      & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'provenUniqueness' | 'circlesTokenAddress'>
+      & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'confirmedLegalAge' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'provenUniqueness' | 'circlesTokenAddress'>
       & { shippingAddresses?: Maybe<Array<(
         { __typename?: 'PostAddress' }
         & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
@@ -2192,6 +2389,17 @@ export type InitQuery = (
       )> }
     )> }
   ) }
+);
+
+export type DeliveryMethodsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DeliveryMethodsQuery = (
+  { __typename?: 'Query' }
+  & { deliveryMethods?: Maybe<Array<Maybe<(
+    { __typename?: 'DeliveryMethod' }
+    & Pick<DeliveryMethod, 'id' | 'name'>
+  )>>> }
 );
 
 export type LastAcknowledgedAtQueryVariables = Exact<{
@@ -2997,7 +3205,7 @@ export type StreamQuery = (
             )>> }
           )>, offer?: Maybe<(
             { __typename?: 'Offer' }
-            & Pick<Offer, 'id' | 'title' | 'pictureUrl' | 'pricePerUnit'>
+            & Pick<Offer, 'id' | 'title' | 'pictureUrl' | 'pricePerUnit' | 'minAge'>
             & { tags?: Maybe<Array<(
               { __typename?: 'Tag' }
               & Pick<Tag, 'typeId' | 'value'>
@@ -3037,7 +3245,7 @@ export type StreamQuery = (
             )>> }
           )>, offer?: Maybe<(
             { __typename?: 'Offer' }
-            & Pick<Offer, 'id' | 'pictureUrl' | 'title' | 'description' | 'pricePerUnit'>
+            & Pick<Offer, 'id' | 'pictureUrl' | 'title' | 'description' | 'pricePerUnit' | 'minAge'>
             & { tags?: Maybe<Array<(
               { __typename?: 'Tag' }
               & Pick<Tag, 'typeId' | 'value'>
@@ -3185,7 +3393,7 @@ export type AggregatesQuery = (
       & Pick<Offers, 'lastUpdatedAt'>
       & { offers: Array<(
         { __typename?: 'Offer' }
-        & Pick<Offer, 'id' | 'version' | 'createdByAddress' | 'createdAt' | 'title' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'pricePerUnit' | 'timeCirclesPriceShare'>
+        & Pick<Offer, 'id' | 'version' | 'createdByAddress' | 'createdAt' | 'title' | 'minAge' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'pricePerUnit' | 'timeCirclesPriceShare'>
         & { createdByProfile?: Maybe<(
           { __typename?: 'Profile' }
           & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'smallBannerUrl' | 'provenUniqueness'>
@@ -3233,7 +3441,7 @@ export type AggregatesQuery = (
             )>> }
           )>, offer: (
             { __typename?: 'Offer' }
-            & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'timeCirclesPriceShare'>
+            & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'minAge' | 'timeCirclesPriceShare'>
             & { createdByProfile?: Maybe<(
               { __typename?: 'Profile' }
               & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
@@ -3296,7 +3504,7 @@ export type AggregatesQuery = (
             )>> }
           )>, offer?: Maybe<(
             { __typename?: 'Offer' }
-            & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'timeCirclesPriceShare'>
+            & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'minAge' | 'timeCirclesPriceShare'>
             & { createdByProfile?: Maybe<(
               { __typename?: 'Profile' }
               & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
@@ -3330,6 +3538,106 @@ export type AggregatesQuery = (
       )> }
     ) }
   )> }
+);
+
+export type GetAllStringsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllStringsQuery = (
+  { __typename?: 'Query' }
+  & { getAllStrings?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'version' | 'value'>
+  )>>> }
+);
+
+export type GetAllStringsByLanguageQueryVariables = Exact<{
+  lang?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetAllStringsByLanguageQuery = (
+  { __typename?: 'Query' }
+  & { getAllStringsByLanguage?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )>>> }
+);
+
+export type GetAllStringsByMaxVersionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllStringsByMaxVersionQuery = (
+  { __typename?: 'Query' }
+  & { getAllStringsByMaxVersion?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )>>> }
+);
+
+export type GetAllStringsByMaxVersionAndLangQueryVariables = Exact<{
+  lang?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetAllStringsByMaxVersionAndLangQuery = (
+  { __typename?: 'Query' }
+  & { getAllStringsByMaxVersionAndLang?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )>>> }
+);
+
+export type GetStringByMaxVersionQueryVariables = Exact<{
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetStringByMaxVersionQuery = (
+  { __typename?: 'Query' }
+  & { getStringByMaxVersion?: Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )> }
+);
+
+export type GetOlderVersionsByKeyAndLangQueryVariables = Exact<{
+  key?: Maybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetOlderVersionsByKeyAndLangQuery = (
+  { __typename?: 'Query' }
+  & { getOlderVersionsByKeyAndLang?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )>>> }
+);
+
+export type GetStringByLanguageQueryVariables = Exact<{
+  lang?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetStringByLanguageQuery = (
+  { __typename?: 'Query' }
+  & { getStringByLanguage?: Maybe<Array<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )>> }
+);
+
+export type GetAvailableLanguagesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAvailableLanguagesQuery = (
+  { __typename?: 'Query' }
+  & { getAvailableLanguages?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang'>
+  )>>> }
 );
 
 export type DirectPathQueryVariables = Exact<{
@@ -3426,7 +3734,7 @@ export type ShopQuery = (
         & Pick<ShopCategoryEntry, 'id' | 'sortOrder' | 'private' | 'productId' | 'productVersion' | 'shopCategoryId' | 'enabled'>
         & { product?: Maybe<(
           { __typename?: 'Offer' }
-          & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit'>
+          & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'minAge' | 'currentInventory'>
           & { createdByProfile?: Maybe<(
             { __typename?: 'Profile' }
             & Pick<Profile, 'id' | 'displayName' | 'avatarUrl' | 'circlesAddress' | 'provenUniqueness'>
@@ -3500,7 +3808,7 @@ export type OffersByIdAndVersionQuery = (
   { __typename?: 'Query' }
   & { offersByIdAndVersion: Array<(
     { __typename?: 'Offer' }
-    & Pick<Offer, 'id' | 'title' | 'pictureUrl' | 'pricePerUnit'>
+    & Pick<Offer, 'id' | 'title' | 'pictureUrl' | 'pricePerUnit' | 'currentInventory' | 'version'>
     & { tags?: Maybe<Array<(
       { __typename?: 'Tag' }
       & Pick<Tag, 'typeId' | 'value'>
@@ -3592,6 +3900,39 @@ export const VerifySessionChallengeDocument = gql`
   verifySessionChallenge(challenge: $challenge, signature: $signature) {
     success
     errorMessage
+  }
+}
+    `;
+export const AddNewLangDocument = gql`
+    mutation addNewLang($langToCreate: String, $langToCopyFrom: String) {
+  addNewLang(langToCreate: $langToCreate, langToCopyFrom: $langToCopyFrom)
+}
+    `;
+export const UpdateValueDocument = gql`
+    mutation updateValue($lang: String, $key: String, $createdBy: String, $value: String) {
+  updateValue(lang: $lang, key: $key, createdBy: $createdBy, value: $value) {
+    lang
+    key
+    createdBy
+    value
+    version
+  }
+}
+    `;
+export const CreateNewStringAndKeyDocument = gql`
+    mutation createNewStringAndKey($lang: String, $key: String, $createdBy: String, $version: Int, $value: String) {
+  createNewStringAndKey(
+    lang: $lang
+    key: $key
+    createdBy: $createdBy
+    version: $version
+    value: $value
+  ) {
+    lang
+    key
+    createdBy
+    version
+    value
   }
 }
     `;
@@ -3715,9 +4056,9 @@ export const TagTransactionDocument = gql`
 }
     `;
 export const UpsertProfileDocument = gql`
-    mutation upsertProfile($id: Int, $firstName: String!, $lastName: String, $emailAddress: String, $askedForEmailAddress: Boolean!, $dream: String, $country: String, $avatarUrl: String, $avatarCid: String, $avatarMimeType: String, $circlesAddress: String, $circlesSafeOwner: String, $newsletter: Boolean, $displayCurrency: DisplayCurrency, $displayTimeCircles: Boolean, $cityGeonameid: Int, $status: String!, $successorOfCirclesAddress: String) {
+    mutation upsertProfile($id: Int, $firstName: String!, $lastName: String, $emailAddress: String, $askedForEmailAddress: Boolean!, $dream: String, $country: String, $avatarUrl: String, $avatarCid: String, $avatarMimeType: String, $circlesAddress: String, $circlesSafeOwner: String, $newsletter: Boolean, $displayCurrency: DisplayCurrency, $displayTimeCircles: Boolean, $cityGeonameid: Int, $status: String!, $successorOfCirclesAddress: String, $gender: Gender, $age: Int) {
   upsertProfile(
-    data: {id: $id, firstName: $firstName, lastName: $lastName, emailAddress: $emailAddress, askedForEmailAddress: $askedForEmailAddress, dream: $dream, country: $country, avatarUrl: $avatarUrl, avatarCid: $avatarCid, avatarMimeType: $avatarMimeType, circlesAddress: $circlesAddress, circlesSafeOwner: $circlesSafeOwner, newsletter: $newsletter, displayCurrency: $displayCurrency, displayTimeCircles: $displayTimeCircles, cityGeonameid: $cityGeonameid, status: $status, successorOfCirclesAddress: $successorOfCirclesAddress}
+    data: {id: $id, firstName: $firstName, lastName: $lastName, emailAddress: $emailAddress, askedForEmailAddress: $askedForEmailAddress, dream: $dream, country: $country, avatarUrl: $avatarUrl, avatarCid: $avatarCid, avatarMimeType: $avatarMimeType, circlesAddress: $circlesAddress, circlesSafeOwner: $circlesSafeOwner, newsletter: $newsletter, displayCurrency: $displayCurrency, displayTimeCircles: $displayTimeCircles, cityGeonameid: $cityGeonameid, status: $status, successorOfCirclesAddress: $successorOfCirclesAddress, gender: $gender, age: $age}
   ) {
     id
     circlesAddress
@@ -3739,6 +4080,8 @@ export const UpsertProfileDocument = gql`
     displayTimeCircles
     displayCurrency
     cityGeonameid
+    age
+    gender
     city {
       geonameid
       name
@@ -3965,6 +4308,7 @@ export const UpsertShopDocument = gql`
           version
           title
           description
+          currentInventory
           pictureUrl
           pricePerUnit
           createdByProfile {
@@ -4011,6 +4355,8 @@ export const UpsertOfferDocument = gql`
     description
     pictureUrl
     pricePerUnit
+    minAge
+    currentInventory
     timeCirclesPriceShare
     tags {
       typeId
@@ -4040,6 +4386,7 @@ export const InitDocument = gql`
       id
       circlesAddress
       displayCurrency
+      confirmedLegalAge
       circlesSafeOwner
       invitationLink
       successorOfCirclesAddress
@@ -4134,6 +4481,14 @@ export const InitDocument = gql`
       }
       circlesTokenAddress
     }
+  }
+}
+    `;
+export const DeliveryMethodsDocument = gql`
+    query deliveryMethods {
+  deliveryMethods {
+    id
+    name
   }
 }
     `;
@@ -5424,6 +5779,7 @@ export const StreamDocument = gql`
               title
               pictureUrl
               pricePerUnit
+              minAge
               tags {
                 typeId
                 value
@@ -5511,6 +5867,7 @@ export const StreamDocument = gql`
               title
               description
               pricePerUnit
+              minAge
               tags {
                 typeId
                 value
@@ -5644,6 +6001,7 @@ export const AggregatesDocument = gql`
           createdByAddress
           createdAt
           title
+          minAge
           pictureUrl
           pictureMimeType
           description
@@ -5884,6 +6242,7 @@ export const AggregatesDocument = gql`
               description
               pictureUrl
               pricePerUnit
+              minAge
               timeCirclesPriceShare
               createdByProfile {
                 id
@@ -6014,6 +6373,7 @@ export const AggregatesDocument = gql`
               description
               pictureUrl
               pricePerUnit
+              minAge
               timeCirclesPriceShare
               createdByProfile {
                 id
@@ -6091,6 +6451,89 @@ export const AggregatesDocument = gql`
         }
       }
     }
+  }
+}
+    `;
+export const GetAllStringsDocument = gql`
+    query getAllStrings {
+  getAllStrings {
+    lang
+    key
+    version
+    value
+  }
+}
+    `;
+export const GetAllStringsByLanguageDocument = gql`
+    query getAllStringsByLanguage($lang: String) {
+  getAllStringsByLanguage(lang: $lang) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+    `;
+export const GetAllStringsByMaxVersionDocument = gql`
+    query getAllStringsByMaxVersion {
+  getAllStringsByMaxVersion {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+    `;
+export const GetAllStringsByMaxVersionAndLangDocument = gql`
+    query getAllStringsByMaxVersionAndLang($lang: String) {
+  getAllStringsByMaxVersionAndLang(lang: $lang) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+    `;
+export const GetStringByMaxVersionDocument = gql`
+    query getStringByMaxVersion($lang: String, $key: String) {
+  getStringByMaxVersion(lang: $lang, key: $key) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+    `;
+export const GetOlderVersionsByKeyAndLangDocument = gql`
+    query getOlderVersionsByKeyAndLang($key: String, $lang: String) {
+  getOlderVersionsByKeyAndLang(lang: $lang, key: $key) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+    `;
+export const GetStringByLanguageDocument = gql`
+    query getStringByLanguage($lang: String) {
+  getStringByLanguage(lang: $lang) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+    `;
+export const GetAvailableLanguagesDocument = gql`
+    query getAvailableLanguages {
+  getAvailableLanguages {
+    lang
   }
 }
     `;
@@ -6223,6 +6666,8 @@ export const ShopDocument = gql`
           description
           pictureUrl
           pricePerUnit
+          minAge
+          currentInventory
           createdByProfile {
             id
             displayName
@@ -6334,6 +6779,8 @@ export const OffersByIdAndVersionDocument = gql`
     title
     pictureUrl
     pricePerUnit
+    currentInventory
+    version
     tags {
       typeId
       value
@@ -6370,6 +6817,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     verifySessionChallenge(variables: VerifySessionChallengeMutationVariables): Promise<VerifySessionChallengeMutation> {
       return withWrapper(() => client.request<VerifySessionChallengeMutation>(print(VerifySessionChallengeDocument), variables));
+    },
+    addNewLang(variables?: AddNewLangMutationVariables): Promise<AddNewLangMutation> {
+      return withWrapper(() => client.request<AddNewLangMutation>(print(AddNewLangDocument), variables));
+    },
+    updateValue(variables?: UpdateValueMutationVariables): Promise<UpdateValueMutation> {
+      return withWrapper(() => client.request<UpdateValueMutation>(print(UpdateValueDocument), variables));
+    },
+    createNewStringAndKey(variables?: CreateNewStringAndKeyMutationVariables): Promise<CreateNewStringAndKeyMutation> {
+      return withWrapper(() => client.request<CreateNewStringAndKeyMutation>(print(CreateNewStringAndKeyDocument), variables));
     },
     claimInvitation(variables: ClaimInvitationMutationVariables): Promise<ClaimInvitationMutation> {
       return withWrapper(() => client.request<ClaimInvitationMutation>(print(ClaimInvitationDocument), variables));
@@ -6442,6 +6898,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     init(variables?: InitQueryVariables): Promise<InitQuery> {
       return withWrapper(() => client.request<InitQuery>(print(InitDocument), variables));
+    },
+    deliveryMethods(variables?: DeliveryMethodsQueryVariables): Promise<DeliveryMethodsQuery> {
+      return withWrapper(() => client.request<DeliveryMethodsQuery>(print(DeliveryMethodsDocument), variables));
     },
     lastAcknowledgedAt(variables: LastAcknowledgedAtQueryVariables): Promise<LastAcknowledgedAtQuery> {
       return withWrapper(() => client.request<LastAcknowledgedAtQuery>(print(LastAcknowledgedAtDocument), variables));
@@ -6526,6 +6985,30 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     aggregates(variables: AggregatesQueryVariables): Promise<AggregatesQuery> {
       return withWrapper(() => client.request<AggregatesQuery>(print(AggregatesDocument), variables));
+    },
+    getAllStrings(variables?: GetAllStringsQueryVariables): Promise<GetAllStringsQuery> {
+      return withWrapper(() => client.request<GetAllStringsQuery>(print(GetAllStringsDocument), variables));
+    },
+    getAllStringsByLanguage(variables?: GetAllStringsByLanguageQueryVariables): Promise<GetAllStringsByLanguageQuery> {
+      return withWrapper(() => client.request<GetAllStringsByLanguageQuery>(print(GetAllStringsByLanguageDocument), variables));
+    },
+    getAllStringsByMaxVersion(variables?: GetAllStringsByMaxVersionQueryVariables): Promise<GetAllStringsByMaxVersionQuery> {
+      return withWrapper(() => client.request<GetAllStringsByMaxVersionQuery>(print(GetAllStringsByMaxVersionDocument), variables));
+    },
+    getAllStringsByMaxVersionAndLang(variables?: GetAllStringsByMaxVersionAndLangQueryVariables): Promise<GetAllStringsByMaxVersionAndLangQuery> {
+      return withWrapper(() => client.request<GetAllStringsByMaxVersionAndLangQuery>(print(GetAllStringsByMaxVersionAndLangDocument), variables));
+    },
+    getStringByMaxVersion(variables?: GetStringByMaxVersionQueryVariables): Promise<GetStringByMaxVersionQuery> {
+      return withWrapper(() => client.request<GetStringByMaxVersionQuery>(print(GetStringByMaxVersionDocument), variables));
+    },
+    getOlderVersionsByKeyAndLang(variables?: GetOlderVersionsByKeyAndLangQueryVariables): Promise<GetOlderVersionsByKeyAndLangQuery> {
+      return withWrapper(() => client.request<GetOlderVersionsByKeyAndLangQuery>(print(GetOlderVersionsByKeyAndLangDocument), variables));
+    },
+    getStringByLanguage(variables?: GetStringByLanguageQueryVariables): Promise<GetStringByLanguageQuery> {
+      return withWrapper(() => client.request<GetStringByLanguageQuery>(print(GetStringByLanguageDocument), variables));
+    },
+    getAvailableLanguages(variables?: GetAvailableLanguagesQueryVariables): Promise<GetAvailableLanguagesQuery> {
+      return withWrapper(() => client.request<GetAvailableLanguagesQuery>(print(GetAvailableLanguagesDocument), variables));
     },
     directPath(variables: DirectPathQueryVariables): Promise<DirectPathQuery> {
       return withWrapper(() => client.request<DirectPathQuery>(print(DirectPathDocument), variables));

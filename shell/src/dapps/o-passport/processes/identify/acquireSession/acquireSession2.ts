@@ -17,6 +17,7 @@ export type AcquireSessionContextData = {
   eoaAddress?: string;
   userInfo?: any;
   successAction?: (data: AcquireSessionContextData) => void;
+  useMockProfileIndex?: number
 };
 
 export type AcquireSessionContext = ProcessContext<AcquireSessionContextData>;
@@ -38,10 +39,14 @@ const processDefinition = (processId: string) =>
         invoke: {
           id: "loginWithTorus",
           src: loginWithTorus.stateMachine(`loginWithTorus`),
-          data: {
-            data: {},
-            dirtyFlags: {},
-            messages: {},
+          data: (context, event) => {
+            return {
+              data: {
+                useMockProfileIndex: context.data.useMockProfileIndex
+              },
+              dirtyFlags: {},
+              messages: {},
+            }
           },
           onDone: {
             actions: (context, event) => {
@@ -62,7 +67,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n(
+            message: window.o.i18n(
               "dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.message"
             ),
           });
@@ -71,7 +76,7 @@ const processDefinition = (processId: string) =>
           src: async (context) => {
             if (!context.data.eoaAddress) {
               throw new Error(
-                window.i18n(
+                window.o.i18n(
                   "dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.error.contextsPropertyNotSet"
                 )
               );
@@ -93,7 +98,7 @@ const processDefinition = (processId: string) =>
             const pk = sessionStorage.getItem("circlesKey");
             if (!pk) {
               throw new Error(
-                window.i18n(
+                window.o.i18n(
                   "dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.error.privatKeyNotUnlocked"
                 )
               );
@@ -115,7 +120,7 @@ const processDefinition = (processId: string) =>
             }
             if (!sessionResult.data.verifySessionChallenge?.success) {
               throw new Error(
-                window.i18n(
+                window.o.i18n(
                   "dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.error.couldNotGetSession"
                 )
               );
@@ -143,14 +148,14 @@ const processDefinition = (processId: string) =>
       errorRequestingChallenge: prompt<AuthenticateContext, any>({
         field: "errorRequestingChallenge",
         entry: (context) => {
-          context.data.errorRequestingChallenge = window.i18n(
+          context.data.errorRequestingChallenge = window.o.i18n(
             "dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.errorRequestingChallenge.error"
           );
         },
         component: HtmlViewer,
         isSensitive: true,
         params: {
-          submitButtonText: window.i18n(
+          submitButtonText: window.o.i18n(
             "dapps.o-passport.processes.identify.acquireSession.acquireSession2.acquireSession.errorRequestingChallenge.submitButtonText"
           ),
           html: (context) => context.data.errorSendingAuthMail,

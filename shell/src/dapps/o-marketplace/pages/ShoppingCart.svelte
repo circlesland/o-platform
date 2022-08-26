@@ -1,7 +1,7 @@
 <script lang="ts">
 import CartItems from "../molecules/CartItems.svelte";
 import { purchase } from "../processes/purchase";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 import { onMount } from "svelte";
 
@@ -14,7 +14,7 @@ let deliveryType: number = 2;
   <header>
     <div class="w-full text-center">
       <h1 class="text-3xl uppercase font-heading">
-        {$_("dapps.o-marketplace.pages.shoppingCart.cart")}
+        <Label key="dapps.o-marketplace.pages.shoppingCart.cart" />
       </h1>
     </div>
   </header>

@@ -1,7 +1,8 @@
 <script>
 import { clickOutside } from "src/shared/functions/clickOutside.ts";
 import Hamburger from "./Hamburger.svelte";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
+import {Environment} from "../../../shared/environment";
 export let open = false;
 
 function handleClickOutside(event) {
@@ -21,15 +22,15 @@ function handleClickOutside(event) {
     <a
       href="/"
       class="block mb-10 font-bold tracking-wide transition-colors duration-200 hover:text-primary"
-      >{$_("dapps.o-homepage.atoms.sidebar.home")}</a>
+      ><Label key="dapps.o-homepage.atoms.sidebar.home" /></a>
 
     <a
-      href="https://discord.gg/CS6xq7jECR"
+      href="{window.o.i18n("common.supportUrl")}"
       target="_blank"
       aria-label="Our product"
       title="Our product"
       class="block mb-10 font-bold tracking-wide transition-colors duration-200 hover:text-primary"
-      >{$_("dapps.o-homepage.atoms.sidebar.chat")}</a>
+      ><Label key="dapps.o-homepage.atoms.sidebar.chat" /></a>
 
     <a
       href="https://aboutcircles.com"
@@ -37,7 +38,7 @@ function handleClickOutside(event) {
       aria-label="Our product"
       title="Our product"
       class="block mb-10 font-bold tracking-wide transition-colors duration-200 hover:text-primary"
-      >{$_("dapps.o-homepage.atoms.sidebar.forum")}</a>
+      ><Label key="dapps.o-homepage.atoms.sidebar.forum" /></a>
 
     <a
       href="https://blog.circles.land/"
@@ -45,7 +46,7 @@ function handleClickOutside(event) {
       aria-label="About us"
       title="About us"
       class="block mb-10 font-bold tracking-wide transition-colors duration-200 hover:text-primary"
-      >{$_("dapps.o-homepage.atoms.sidebar.blog")}</a>
+      ><Label key="dapps.o-homepage.atoms.sidebar.blog" /></a>
 
     <a
       href="https://blog.circles.land/whitepaper/"
@@ -53,7 +54,7 @@ function handleClickOutside(event) {
       aria-label="Sign in"
       title="Sign in"
       class="block mb-10 font-bold tracking-wide transition-colors duration-200 hover:text-primary"
-      >{$_("dapps.o-homepage.atoms.sidebar.whitepaper")}</a>
+      ><Label key="dapps.o-homepage.atoms.sidebar.whitepaper" /></a>
 
     <!-- <a
       href="/#/citizens"

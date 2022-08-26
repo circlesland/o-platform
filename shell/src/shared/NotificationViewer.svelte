@@ -15,7 +15,6 @@ import { UserActions, UserActionItem } from "./userActions";
 import { createEventDispatcher } from "svelte";
 import ButtonGroup from "./molecules/ButtonGroup/ButtonGroup.svelte";
 import { EventType } from "./api/data/types";
-import { _ } from "svelte-i18n";
 
 export let context: NotificationViewerContext;
 
@@ -32,7 +31,7 @@ const components = [
     actions: [
       {
         action: "chat",
-        label: window.i18n("shared.notificationViewer.answer"),
+        label: window.o.i18n("shared.notificationViewer.answer"),
       },
     ],
   },
@@ -55,7 +54,7 @@ const components = [
     actions: [
       {
         action: "chat",
-        label: window.i18n("shared.notificationViewer.sayThanks"),
+        label: window.o.i18n("shared.notificationViewer.sayThanks"),
       },
     ],
   },
@@ -73,7 +72,7 @@ const components = [
     actions: [
       {
         action: "setTrust",
-        label: window.i18n("shared.notificationViewer.trust", {
+        label: window.o.i18n("shared.notificationViewer.trust", {
           values: { profile: data.contact_address_profile.firstName },
         }),
       },
@@ -99,7 +98,7 @@ async function getEventActions() {
 onMount(async () => {
   let dismissAction: UserActionItem = {
     key: "dismiss",
-    title: window.i18n("shared.notificationViewer.ok"),
+    title: window.o.i18n("shared.notificationViewer.ok"),
     action: () => submit(),
   };
 
@@ -144,9 +143,9 @@ function submit() {
             setTrust: (action) => `${action.title}`,
             chat: (action) => {
               if (data.type == EventType.CrcHubTransfer) {
-                return window.i18n('shared.notificationViewer.sayThanks');
+                return window.o.i18n('shared.notificationViewer.sayThanks');
               } else if (data.type == EventType.ChatMessage) {
-                return window.i18n('shared.notificationViewer.answer');
+                return window.o.i18n('shared.notificationViewer.answer');
               } else {
                 return null;
               }

@@ -47,7 +47,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n("dapps.o-banking.processes.transferXdai.entry.message"),
+            message: window.o.i18n("dapps.o-banking.processes.transferXdai.entry.message"),
           });
         },
         invoke: {

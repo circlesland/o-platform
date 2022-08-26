@@ -4,12 +4,23 @@ import { onMount } from "svelte";
 import { push } from "svelte-spa-router";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import { Capability, CapabilityType, StatsDocument } from "../../../shared/api/data/types";
+import {
+  AggregatesDocument,
+  AggregateType,
+  Capability,
+  CapabilityType,
+  Erc721Token,
+  ProfileAggregate,
+  QueryAggregatesArgs,
+  StatsDocument,
+} from "../../../shared/api/data/types";
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import { Environment } from "../../../shared/environment";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import DashboardInvitesWidget from "../molecules/DashboardInvitesWidget.svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import LangSwitcher from "../../../shared/atoms/LangSwitcher.svelte";
+import { ApiClient } from "../../../shared/apiConnection";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -20,7 +31,7 @@ $: me;
 let disableBanking: boolean = false;
 let canVerify: boolean = false;
 let hasTickets: boolean = false;
-
+let balances: Erc721Token[] = [];
 let profilesCount: number;
 let statsResult: any;
 
@@ -36,7 +47,18 @@ const init = async () => {
   statsResult = await fetchStats();
   profilesCount = statsResult.data.stats.profilesCount;
 
-  console.log("STATS", statsResult.data);
+  // GET NFTS to decide if we display the NFTs tile //
+  const aggregates = await ApiClient.query<ProfileAggregate[], QueryAggregatesArgs>(AggregatesDocument, {
+    types: [AggregateType.Erc721Tokens],
+    safeAddress: $me.circlesAddress,
+  });
+
+  const erc721Balances: ProfileAggregate = aggregates.find((o) => o.type == AggregateType.Erc721Tokens);
+  if (!erc721Balances || erc721Balances.payload.__typename !== AggregateType.Erc721Tokens) {
+    throw new Error(`Couldn't find the Erc721Tokens in the query result.`);
+  }
+
+  balances = erc721Balances.payload.balances;
 };
 
 onMount(init);
@@ -65,6 +87,7 @@ async function fetchStats() {
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 <div class="mx-auto md:w-2/3 xl:w-1/2">
   <div class="m-4 mb-40 ">
+    <!--<LangSwitcher />-->
     <DashboardInvitesWidget stats="{statsResult}" />
     <!-- <section class="flex items-start bg-white rounded-lg shadow-md cursor-pointer">
       <div class="flex flex-col w-full" on:click={() => loadLink("/marketplace/locations")}>
@@ -85,7 +108,7 @@ async function fetchStats() {
             <Icon name="identification" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            {$_("dapps.o-dashboard.pages.home.passport")}
+            <Label key="dapps.o-dashboard.pages.home.passport" />
           </div>
         </div>
       </section>
@@ -97,7 +120,7 @@ async function fetchStats() {
             <Icon name="users" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            {$_("dapps.o-dashboard.pages.home.contacts")}
+            <Label key="dapps.o-dashboard.pages.home.contacts" />
           </div>
         </div>
       </section>
@@ -109,7 +132,7 @@ async function fetchStats() {
             <Icon name="chat" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            {$_("dapps.o-dashboard.pages.home.chat")}
+            <Label key="dapps.o-dashboard.pages.home.chat" />
           </div>
         </div>
       </section>
@@ -121,7 +144,7 @@ async function fetchStats() {
             <Icon name="cash" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            {$_("dapps.o-dashboard.pages.home.banking")}
+            <Label key="dapps.o-dashboard.pages.home.banking" />
           </div>
         </div>
       </section>
@@ -133,22 +156,11 @@ async function fetchStats() {
             <Icon name="shopping-cart" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
-            {$_("dapps.o-dashboard.pages.home.market")}
+            <Label key="dapps.o-dashboard.pages.home.market" />
           </div>
         </div>
       </section>
-      <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-        on:click="{() => loadLink('/gallery/nfts')}">
-        <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
-          <div class="pt-2 text-primary">
-            <Icon name="photograph" class="w-20 h-20 heroicon" />
-          </div>
-          <div class="mt-4 text-3xl font-heading text-dark">
-            {$_("dapps.o-dashboard.pages.home.gallery")}
-          </div>
-        </div>
-      </section>
+
       {#if canVerify}
         <section
           class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
@@ -158,7 +170,7 @@ async function fetchStats() {
               <Icon name="badge-check" class="w-20 h-20 heroicon" />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
-              {$_("dapps.o-dashboard.pages.home.verified")}
+              <Label key="dapps.o-dashboard.pages.home.verified" />
             </div>
           </div>
         </section>
@@ -172,7 +184,21 @@ async function fetchStats() {
               <Icon name="ticket" class="w-20 h-20 heroicon" />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
-              {$_("dapps.o-dashboard.pages.home.tickets")}
+              <Label key="dapps.o-dashboard.pages.home.tickets" />
+            </div>
+          </div>
+        </section>
+      {/if}
+      {#if balances.length}
+        <section
+          class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
+          on:click="{() => loadLink('/gallery/nfts')}">
+          <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
+            <div class="pt-2 text-primary">
+              <Icon name="photograph" class="w-20 h-20 heroicon" />
+            </div>
+            <div class="mt-4 text-3xl font-heading text-dark">
+              <Label key="dapps.o-dashboard.pages.home.gallery" />
             </div>
           </div>
         </section>

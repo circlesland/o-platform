@@ -10,14 +10,14 @@ export type GetTrustedByShopContextData = {
   successAction?: (data: GetTrustedByShopContextData) => void;
 };
 
-export type PerformOauthContext = ProcessContext<GetTrustedByShopContextData>;
+export type GetTrustedContext = ProcessContext<GetTrustedByShopContextData>;
 
 const processDefinition = (processId: string) =>
-  createMachine<PerformOauthContext, any>({
+  createMachine<GetTrustedContext, any>({
     id: `${processId}:getTrusted`,
     initial: "getTrusted",
     states: {
-      ...fatalError<PerformOauthContext, any>("error"),
+      ...fatalError<GetTrustedContext, any>("error"),
       getTrusted: prompt({
         id: "getTrusted",
         field: {
@@ -32,9 +32,9 @@ const processDefinition = (processId: string) =>
         component: QrCodeViewer,
         params: {
           view: {
-            title: "Get trusted by the owner",
-            description: `Let the owner of the location scan the barcode below to get trusted`,
-            submitButtonText: "Verify me",
+            title: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.title"),
+            description: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.description"),
+            submitButtonText: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.submitButtonText"),
           },
           html: () => "",
           hideNav: true,
@@ -61,7 +61,7 @@ const processDefinition = (processId: string) =>
 
 export const getTrusted: ProcessDefinition<
   void,
-  PerformOauthContext
+  GetTrustedContext
   > = {
   name: "getTrusted",
   stateMachine: <any>processDefinition,

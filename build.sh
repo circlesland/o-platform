@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export DEPLOY_ENVIRONMENT=$1
+export API_ENDPOINT=$2
 
 search='__TIMESTAMP__'
 replace=`date +"%s"`
@@ -47,6 +48,8 @@ echo "* api"
 npx --no-install  graphql-codegen
 
 cd ../../../../..
+
+# npx svelte-check || exit 99
 
 echo "Building 'shell' with dapps .."
 cd shell || exit

@@ -37,8 +37,8 @@ const processDefinition = (processId: string) =>
         component: TextEditor,
         params: {
           view: {
-            title: "Name at the door",
-            description: "Please enter the name of the person or company you're shipping to"
+            title: window.o.i18n("dapps.o-passport.processes.identify.NameAtTheDoor.title"),
+            description: window.o.i18n("dapps.o-passport.processes.identify.NameAtTheDoor.description")
           },
         },
         navigation: {
@@ -53,8 +53,8 @@ const processDefinition = (processId: string) =>
         component: TextEditor,
         params: {
           view: {
-            title: "Street",
-            description: "Please enter the street you're shipping to"
+            title: window.o.i18n("dapps.o-passport.processes.identify.street.title"),
+            description: window.o.i18n("dapps.o-passport.processes.identify.street.description")
           },
         },
         navigation: {
@@ -70,8 +70,8 @@ const processDefinition = (processId: string) =>
         component: TextEditor,
         params: {
           view: {
-            title: "House",
-            description: "Please enter the house no. or name you're shipping to"
+            title: window.o.i18n("dapps.o-passport.processes.identify.house.title"),
+            description: window.o.i18n("dapps.o-passport.processes.identify.house.description")
           },
         },
         navigation: {
@@ -87,8 +87,8 @@ const processDefinition = (processId: string) =>
         component: TextEditor,
         params: {
           view: {
-            title: "Zip",
-            description: "Please enter the zip you're shipping to"
+            title: window.o.i18n("dapps.o-passport.processes.identify.zip.title"),
+            description: window.o.i18n("dapps.o-passport.processes.identify.zip.description")
           },
         },
         navigation: {
@@ -104,8 +104,8 @@ const processDefinition = (processId: string) =>
         field: "cityGeonameid",
         params: {
           view: {
-            title: "City",
-            description: "Please enter the city you're shipping to"
+            title: window.o.i18n("dapps.o-passport.processes.identify.city.title"),
+            description: window.o.i18n("dapps.o-passport.processes.identify.city.description")
           },
         },
         navigation: {

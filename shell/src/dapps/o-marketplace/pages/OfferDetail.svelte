@@ -3,13 +3,13 @@ import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
-import { cartContents } from "../stores/shoppingCartStore";
 import { push } from "svelte-spa-router";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { offers } from "../../../shared/stores/offers";
-import { _ } from "svelte-i18n";
-import { Offer, Shop, ShopCategory, ShopDocument, ShopQueryVariables } from "../../../shared/api/data/types";
+import Label from "../../../shared/atoms/Label.svelte";
+import { Offer, Shop, ShopDocument, ShopQueryVariables } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
+import { addToCart, AddToCartContextData } from "../processes/addToCart";
 
 let isLoading: boolean;
 let error: Error;
@@ -37,10 +37,12 @@ async function load() {
 
 export let shopId: Number; // ATTENTION SHOPID IS HARDCODED BELOW AT THE API CALL!!!!!!!
 
-function addToCart(item: Offer, shopId: number) {
-  item.shopId = shopId;
-  $cartContents = $cartContents ? [...$cartContents, item] : [item];
-  push(`#/marketplace/cart`);
+function _addToCart(item: Offer, shopId: number) {
+  window.o.runProcess(addToCart, <AddToCartContextData>{
+    offerId: parseInt(item.id.toString()),
+    shopId: parseInt(shopId.toString()),
+    redirectTo: `#/marketplace/cart`,
+  });
 }
 
 onMount(async () => {
@@ -66,7 +68,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.offerDetail.loadingOffers")}</div>
+          <div><Label key="dapps.o-marketplace.pages.offerDetail.loadingOffers" /></div>
         </div>
       </div>
     </section>
@@ -75,7 +77,7 @@ onMount(async () => {
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
           <div>
-            <b>{$_("dapps.o-marketplace.pages.offerDetail.error")}</b>
+            <b><Label key="dapps.o-marketplace.pages.offerDetail.error" /></b>
           </div>
         </div>
       </div>
@@ -171,8 +173,8 @@ onMount(async () => {
           </div>
           <div class="flex-grow">
             {#if o.pricePerUnit > 0}
-              <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => addToCart(o, shopId)}">
-                {$_("dapps.o-marketplace.pages.offerDetail.addToCart")}
+              <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => _addToCart(o, shopId)}">
+                <Label key="dapps.o-marketplace.pages.offerDetail.addToCart" />
                 <div class="absolute mr-1 right-2">
                   <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
                 </div>
@@ -186,7 +188,7 @@ onMount(async () => {
     <section class="flex items-center justify-center mb-2 ">
       <div class="flex items-center w-full p-4 space-x-2 bg-white shadow ">
         <div class="flex flex-col items-start">
-          <div>{$_("dapps.o-marketplace.pages.offerDetail.notFound")}</div>
+          <div><Label key="dapps.o-marketplace.pages.offerDetail.notFound" /></div>
         </div>
       </div>
     </section>

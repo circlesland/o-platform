@@ -64,7 +64,7 @@ export class Currency {
 
   public convertTimeCirclesToCircles(amount: number, date: string) {
     if (!amount) {
-      throw new Error(window.i18n("shared.currency.errors.argumentMissing"));
+      throw new Error(window.o.i18n("shared.currency.errors.argumentMissing"));
     }
 
     const transactionDateUnix = date ? dayjs(date).unix() : this.now;
@@ -115,10 +115,10 @@ export class Currency {
     raw?: boolean
   ) {
     if (!amount) {
-      throw new Error(window.i18n("shared.currency.errors.argumentMissing"));
+      throw new Error(window.o.i18n("shared.currency.errors.argumentMissing"));
     }
     if (!me) {
-      throw new Error(window.i18n("shared.currency.errors.argumentMissing"));
+      throw new Error(window.o.i18n("shared.currency.errors.argumentMissing"));
     }
     //console.log("AMOUNT", amount);
     //console.log("displayCurrency", displayCurrency);
@@ -162,7 +162,7 @@ export class Currency {
     timeCircles: boolean = true
   ) {
     if (!amount) {
-      throw new Error(window.i18n("shared.currency.errors.argumentMissing"));
+      throw new Error(window.o.i18n("shared.currency.errors.argumentMissing"));
     }
     const dateTime = date ? dayjs(date) : dayjs();
     let value: number;

@@ -112,7 +112,7 @@ export class MySales extends PagedEventQuery {
       },
     });
     if (!completedInvoice.data?.completeSale) {
-      throw new Error(window.i18n("shared.stores.sales.errors.couldNotRevoke"));
+      throw new Error(window.o.i18n("shared.stores.sales.errors.couldNotRevoke"));
     }
     await this.findSingleItemFallback([EventType.SaleEvent], invoiceId.toString());
     this.refresh();

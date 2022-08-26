@@ -2,7 +2,6 @@ mutation upsertShippingAddress($data: PostAddressInput!) {
   upsertShippingAddress(data: $data) {
     id
     name
-
     street
     house
     zip
@@ -63,6 +62,30 @@ mutation verifySessionChallenge($challenge: String!, $signature: String!) {
   verifySessionChallenge(challenge: $challenge, signature: $signature) {
     success
     errorMessage
+  }
+}
+
+mutation addNewLang($langToCreate: String, $langToCopyFrom: String) {
+  addNewLang(langToCreate: $langToCreate, langToCopyFrom: $langToCopyFrom)
+}
+
+mutation updateValue($lang: String, $key: String, $createdBy: String, $value: String) {
+  updateValue(lang: $lang, key: $key, createdBy: $createdBy, value: $value) {
+    lang
+    key
+    createdBy
+    value
+    version
+  }
+}
+
+mutation createNewStringAndKey($lang: String, $key: String, $createdBy: String, $version: Int, $value: String) {
+  createNewStringAndKey(lang: $lang, key: $key, createdBy: $createdBy, version: $version, value: $value) {
+    lang
+    key
+    createdBy
+    version
+    value
   }
 }
 
@@ -191,6 +214,8 @@ mutation upsertProfile(
   $cityGeonameid: Int
   $status: String!
   $successorOfCirclesAddress: String
+  $gender: Gender
+  $age: Int
 ) {
   upsertProfile(
     data: {
@@ -212,6 +237,8 @@ mutation upsertProfile(
       cityGeonameid: $cityGeonameid
       status: $status
       successorOfCirclesAddress: $successorOfCirclesAddress
+      gender: $gender
+      age: $age
     }
   ) {
     id
@@ -234,6 +261,8 @@ mutation upsertProfile(
     displayTimeCircles
     displayCurrency
     cityGeonameid
+    age
+    gender
     city {
       geonameid
       name
@@ -446,11 +475,13 @@ mutation upsertShop($shop: ShopInput!) {
       entries {
         id
         sortOrder
+
         product {
           id
           version
           title
           description
+          currentInventory
           pictureUrl
           pricePerUnit
           createdByProfile {
@@ -493,6 +524,8 @@ mutation upsertOffer($offer: OfferInput!) {
     description
     pictureUrl
     pricePerUnit
+    minAge
+    currentInventory
     timeCirclesPriceShare
     tags {
       typeId

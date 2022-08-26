@@ -4,7 +4,7 @@
 	import TransfersFinder from './CirclesTransfersFinder.svelte';
 
 	import { formatValue } from './utility.js';
-	import { _ } from "svelte-i18n";
+	import Label from "../../../shared/atoms/Label.svelte";
 
 	let maxValue = '0';
 	let transfers = [];
@@ -13,7 +13,7 @@
 <main>
 	<TransfersFinder bind:maxValue={maxValue} bind:transfers={transfers}></TransfersFinder>
 	<hr/>
-	<p>{$_("shared.pathfinder.app.visualizingFlowOf", { values: { flow: formatValue(maxValue)}})}</p>
+	<p><Label key="shared.pathfinder.app.visualizingFlowOf", { values: { flow: formatValue(maxValue />})}</p>
 	<TransferGraph transfers={transfers}></TransferGraph>
 	<AdjacencyGraph></AdjacencyGraph>
 	<hr/>

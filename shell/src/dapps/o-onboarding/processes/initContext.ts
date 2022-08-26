@@ -10,6 +10,7 @@ import {OpenloginUserInfo} from "@toruslabs/openlogin";
 
 export type InitContext = {
   localStorageSchemaVersion: 1,
+  useMockProfileIndex?: number;
   session?: SessionInfo;
   openLoginUserInfo: OpenloginUserInfo;
   registration?: RegistrationData;

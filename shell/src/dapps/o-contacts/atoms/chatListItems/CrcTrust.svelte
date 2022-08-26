@@ -33,7 +33,7 @@ function getValues(): {
   icon: string;
   actions: JumplistItem[];
 } {
-  let icon = `${$_("dapps.o-contacts.atoms.chatListItems.crcTrust.getValues.icon")}`;
+  let icon = "trust";
   let title = "";
   let titleClass = "";
   let actions: JumplistItem[] = [];

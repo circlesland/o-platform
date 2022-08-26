@@ -52,7 +52,7 @@ export class UserActions {
       $me = o;
     });
     unsub();
-    if (!$me) throw new Error(window.i18n("shared.userActions.errors.couldNotLoadYourProfile"));
+    if (!$me) throw new Error(window.o.i18n("shared.userActions.errors.couldNotLoadYourProfile"));
 
     let recipientProfile = await contactStore.findBySafeAddress(targetUser.circlesAddress ?? $me.circlesAddress);
 
@@ -76,7 +76,8 @@ export class UserActions {
           {
             key: "chat",
             icon: "chat",
-            title: window.i18n("shared.userActions.chat"),
+            title: window.o.i18n("shared.userActions.chat"),
+            displayHint: "discouraged",
             action: async () => {
               push("#/contacts/chat/" + recipientProfile.contactAddress);
             },
@@ -95,7 +96,7 @@ export class UserActions {
                 {
                   key: "transfer",
                   icon: "cash",
-                  title: window.i18n("shared.userActions.sendMoney"),
+                  title: window.o.i18n("shared.userActions.sendMoney"),
                   action: async () => {
                     window.o.runProcess(transfer, {
                       safeAddress: $me.circlesAddress,
@@ -111,7 +112,7 @@ export class UserActions {
                 {
                   key: "setTrust",
                   icon: "minus-circle",
-                  title: window.i18n("shared.userActions.untrust"),
+                  title: window.o.i18n("shared.userActions.untrust"),
                   colorClass: "text-alert",
                   displayHint: "discouraged",
                   action: async () => {
@@ -129,7 +130,7 @@ export class UserActions {
                 {
                   key: "setTrust",
                   icon: "shield-check",
-                  title: window.i18n("shared.userActions.trust"),
+                  title: window.o.i18n("shared.userActions.trust"),
                   displayHint: "encouraged",
                   action: async () => {
                     window.o.runProcess(setTrust, {
@@ -145,15 +146,13 @@ export class UserActions {
         );
       }
       /* ORGA */
-    } else if (
-      recipientProfile.contactAddress_Profile.type == ProfileType.Person.toString()
-    ) {
+    } else if (recipientProfile.contactAddress_Profile.type == ProfileType.Person.toString()) {
       // Trust should be always allowed (except for orga targets)
       actions.push({
         key: "setTrust",
         icon: "shield-check",
-        title: window.i18n("shared.userActions.trust"),
-        displayHint: "encouraged",
+        title: window.o.i18n("shared.userActions.trust"),
+        displayHint: "discouraged",
         action: async () => {
           window.o.runProcess(setTrust, {
             trustLimit: 100,

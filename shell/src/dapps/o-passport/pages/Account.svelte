@@ -34,7 +34,7 @@ $: {
       edgeless: false,
       imageProfile: $me,
       title: $me.displayName,
-      subTitle: `${window.i18n('dapps.o-passport.pages.account.subTitle')}`,
+      subTitle: `${window.o.i18n('dapps.o-passport.pages.account.subTitle')}`,
       truncateMain: true,
     }}">
     <div slot="itemCardEnd">

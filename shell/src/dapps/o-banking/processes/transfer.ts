@@ -64,53 +64,53 @@ export type TransferContext = ProcessContext<TransferContextData>;
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 const strings = {
-  labelRecipientAddress: window.i18n("dapps.o-banking.processes.transfer.strings.labelRecipientAddress"),
-  tokensLabel: window.i18n("dapps.o-banking.processes.transfer.strings.tokensLabel"),
-  currencyCircles: window.i18n("dapps.o-banking.processes.transfer.strings.currencyCircles"),
-  currencyXdai: window.i18n("dapps.o-banking.processes.transfer.strings.currencyXdai"),
-  summaryLabel: window.i18n("dapps.o-banking.processes.transfer.strings.summaryLabel"),
-  messageLabel: window.i18n("dapps.o-banking.processes.transfer.strings.messageLabel"),
+  labelRecipientAddress: window.o.i18n("dapps.o-banking.processes.transfer.strings.labelRecipientAddress"),
+  tokensLabel: window.o.i18n("dapps.o-banking.processes.transfer.strings.tokensLabel"),
+  currencyCircles: window.o.i18n("dapps.o-banking.processes.transfer.strings.currencyCircles"),
+  currencyXdai: window.o.i18n("dapps.o-banking.processes.transfer.strings.currencyXdai"),
+  summaryLabel: window.o.i18n("dapps.o-banking.processes.transfer.strings.summaryLabel"),
+  messageLabel: window.o.i18n("dapps.o-banking.processes.transfer.strings.messageLabel"),
 };
 
 const editorContent: { [x: string]: EditorViewContext } = {
   recipient: {
-    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.title"),
+    title: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.title"),
     description: "",
-    placeholder: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.placeholder"),
-    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.submitButtonText"),
+    placeholder: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.placeholder"),
+    submitButtonText: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.submitButtonText"),
   },
   recipientSafeAddress: {
-    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.title"),
-    description: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.description"),
-    placeholder: window.i18n("dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.placeholder"),
-    submitButtonText: window.i18n(
+    title: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.title"),
+    description: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.description"),
+    placeholder: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.placeholder"),
+    submitButtonText: window.o.i18n(
       "dapps.o-banking.processes.transfer.editorContent.recipientSafeAddress.submitButtonText"
     ),
   },
   currency: {
-    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.currency.title"),
+    title: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.currency.title"),
     description: "",
-    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.currency.submitButtonText"),
+    submitButtonText: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.currency.submitButtonText"),
   },
   message: {
-    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.message.title"),
+    title: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.message.title"),
     description: "",
-    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.message.submitButtonText"),
+    submitButtonText: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.message.submitButtonText"),
   },
   confirm: {
-    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.title"),
+    title: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.title"),
     description: "",
-    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.submitButtonText"),
+    submitButtonText: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.submitButtonText"),
   },
   success: {
-    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.success.title"),
+    title: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.success.title"),
     description: "",
-    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.success.submitButtonText"),
+    submitButtonText: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.success.submitButtonText"),
   },
   noPath: {
-    title: window.i18n("dapps.o-banking.processes.transfer.editorContent.success.title"),
+    title: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.success.title"),
     description: "",
-    submitButtonText: window.i18n("dapps.o-banking.processes.transfer.editorContent.success.submitButtonText"),
+    submitButtonText: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.success.submitButtonText"),
   },
 };
 
@@ -168,9 +168,14 @@ const processDefinition = (processId: string) =>
         field: "recipientAddress",
         onlyWhenDirty: false,
         params: {
-          view: editorContent.recipient,
-          placeholder: editorContent.recipient.placeholder,
-          submitButtonText: window.i18n("dapps.o-banking.processes.transfer.recipientAddress.submitButtonText"),
+          view: editorContent.recipient = {
+            title: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.title"),
+            description: "",
+            placeholder: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.placeholder"),
+            submitButtonText: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.submitButtonText"),
+          },
+          placeholder: editorContent.recipient.placeholder = window.o.i18n("dapps.o-banking.processes.transfer.editorContent.recipient.placeholder"),
+          submitButtonText: window.o.i18n("dapps.o-banking.processes.transfer.recipientAddress.submitButtonText"),
         },
         navigation: {
           next: "#loadRecipientProfile",
@@ -206,7 +211,7 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n("dapps.o-banking.processes.transfer.findTransferPath.entry.message"),
+            message: window.o.i18n("dapps.o-banking.processes.transfer.findMaxFlow.entry.message"),
           });
         },
         invoke: {
@@ -263,16 +268,20 @@ const processDefinition = (processId: string) =>
         field: "tokens",
         component: CurrencyTransfer,
         params: {
-          view: editorContent.currency,
+          view: editorContent.currency = {
+            title: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.currency.title"),
+            description: "",
+            submitButtonText: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.currency.submitButtonText"),
+          },
           currencies: [
             {
               value: "crc",
-              label: strings.currencyCircles,
+              label: strings.currencyCircles = window.o.i18n("dapps.o-banking.processes.transfer.strings.currencyCircles"),
               __typename: "Currency",
             },
             {
               value: "xdai",
-              label: strings.currencyXdai,
+              label: strings.currencyXdai = window.o.i18n("dapps.o-banking.processes.transfer.strings.currencyXdai"),
               __typename: "Currency",
             },
           ],
@@ -280,11 +289,11 @@ const processDefinition = (processId: string) =>
         dataSchema: yup.object().shape({
           amount: yup
             .number()
-            .min(0.1, window.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.min"))
-            .typeError(window.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.typeError"))
-            .required(window.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.required"))
-            .positive(window.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.positive")),
-          currency: yup.string().required(window.i18n("dapps.o-banking.processes.transfer.tokens.currency")),
+            .min(0.1, window.o.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.min"))
+            .typeError(window.o.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.typeError"))
+            .required(window.o.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.required"))
+            .positive(window.o.i18n("dapps.o-banking.processes.transfer.tokens.dataSchema.positive")),
+          currency: yup.string().required(window.o.i18n("dapps.o-banking.processes.transfer.tokens.currency")),
         }),
         navigation: {
           next: "#findTransferPath",
@@ -296,14 +305,14 @@ const processDefinition = (processId: string) =>
         entry: () => {
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n("dapps.o-banking.processes.transfer.findTransferPath.entry.message"),
+            message: window.o.i18n("dapps.o-banking.processes.transfer.findTransferPath.entry.message"),
           });
         },
         invoke: {
           id: "findTransferPath",
           src: async (context) => {
             if (!context.data.recipientAddress) {
-              throw new Error(window.i18n("dapps.o-banking.processes.transfer.findTransferPath.invoke"));
+              throw new Error(window.o.i18n("dapps.o-banking.processes.transfer.findTransferPath.invoke"));
             }
             // context.data.maxFlows = {};
             // context.data.maxFlows["xdai"] = await RpcGateway.get().eth.getBalance(context.data.safeAddress);
@@ -384,7 +393,7 @@ const processDefinition = (processId: string) =>
                   ).toFixed(0) + ".00";
               }
 
-              context.messages["tokens"] = window.i18n(
+              context.messages["tokens"] = window.o.i18n(
                 "dapps.o-banking.processes.transfer.checkAmount.contextMessages",
                 { values: { formattedMax: formattedMax } }
               );
@@ -397,7 +406,11 @@ const processDefinition = (processId: string) =>
         field: "message",
         component: TextareaEditor,
         params: {
-          view: editorContent.message,
+          view: editorContent.message = {
+            title: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.message.title"),
+            description: "",
+            submitButtonText: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.message.submitButtonText"),
+          },
           maxLength: "100",
         },
         navigation: {
@@ -410,8 +423,12 @@ const processDefinition = (processId: string) =>
         field: "acceptSummary",
         component: TransferConfirmation,
         params: {
-          view: editorContent.confirm,
-          submitButtonText: editorContent.confirm.submitButtonText,
+          view: editorContent.confirm = {
+            title: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.title"),
+            description: "",
+            submitButtonText: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.submitButtonText"),
+          },
+          submitButtonText: editorContent.confirm.submitButtonText = window.o.i18n("dapps.o-banking.processes.transfer.editorContent.confirm.submitButtonText"),
           html: () => "",
         },
         navigation: {
@@ -514,7 +531,11 @@ const processDefinition = (processId: string) =>
         },
         component: TransferSummary,
         params: {
-          view: editorContent.success,
+          view: editorContent.success = {
+            title: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.success.title"),
+            description: "",
+            submitButtonText: window.o.i18n("dapps.o-banking.processes.transfer.editorContent.success.submitButtonText"),
+          },
           html: () => "",
           hideNav: false,
         },

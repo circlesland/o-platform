@@ -5,7 +5,10 @@ import { onMount } from "svelte";
 import { me } from "../../../shared/stores/me";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
-import Editor from "@tinymce/tinymce-svelte";
+// import Editor from "@tinymce/tinymce-svelte";
+import ListViewCard from "../atoms/ListViewCard.svelte";
+
+import RichTextEditor from "@o-platform/o-editors/RichTextEditor.svelte";
 
 import {
   Shop,
@@ -21,6 +24,8 @@ import {
   UpsertShopCategoryEntriesDocument,
   UpsertShopCategoryEntriesMutationVariables,
   ShopCategoryEntry,
+  ShopsQueryVariables,
+  ShopsDocument,
 } from "../../../shared/api/data/types";
 import { Environment } from "../../../shared/environment";
 import { Readable } from "svelte/store";
@@ -35,6 +40,8 @@ import ImageUpload from "../../../shared/molecules/ImageUpload/ImageUpload.svelt
 import { useMachine } from "@xstate/svelte";
 import { flip } from "svelte/animate";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import ShopEditorSelector from "../molecules/ShopEditorSelector.svelte";
+
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 export let shopId: number;
@@ -48,6 +55,7 @@ let _state: Readable<any>;
 let showModal: Boolean = false;
 let editImage: Boolean = false;
 let editType: string = "";
+let editOfferId: Number = null;
 let currentImage: string = null;
 let newOffer: OfferInput = null;
 let categories: ShopCategory[] = [];
@@ -57,26 +65,36 @@ let changeList: { id: number; entry: ShopCategoryEntry }[] = [];
 let currentCategoryId: any;
 let currentEntry: ShopCategoryEntry;
 let hovering: number = null;
+let selectedShopIndex: any = localStorage.getItem("editShopIndex") || 0;
+const options = {
+  theme: "snow",
+  plainclipboard: true,
+};
 
 onMount(async () => {
-  if (!$me || !$me.shops || !$me.shops.length) {
+  shops = await ApiClient.query<Shop[], ShopsQueryVariables>(ShopsDocument, {
+    ownerId: $me.id,
+  });
+  if (!shops || !shops.length) {
     return;
   }
 
-  shopId = $me.shops[0].id;
+  loadShop(selectedShopIndex);
+});
+
+async function loadShop(selectedShopIndex) {
+  shopId = shops[selectedShopIndex].id;
+
   shop = await ApiClient.query<Shop, ShopQueryVariables>(ShopDocument, {
     id: parseInt(shopId.toString()),
   });
 
   categories = shop.categories;
   categoryInput = categories;
-  console.log("CATE: ", shop);
-});
+}
 
 async function updateOffer(entry) {
   try {
-    console.log("ENTRY", entry);
-
     delete entry.product.__typename;
     delete entry.product.createdByProfile;
     delete entry.product.version;
@@ -85,6 +103,7 @@ async function updateOffer(entry) {
     delete entry.product.tags;
 
     offerInput = entry.product;
+
     offerInput.createdByProfileId = $me.id;
     offerInput.pictureMimeType = "image/jpeg";
     offerInput.timeCirclesPriceShare = 100;
@@ -92,6 +111,7 @@ async function updateOffer(entry) {
     const result = await ApiClient.mutate<Offer, UpsertOfferMutationVariables>(UpsertOfferDocument, {
       offer: offerInput,
     });
+
     showToast("success", "Product was updated");
 
     if (entry.id) {
@@ -115,6 +135,7 @@ async function updateOffer(entry) {
     let entryresult = await updateCategoryEntries([entry]);
     categories = categories;
     changeList = changeList;
+    editOfferId = null;
     return ok(result);
   } catch (error) {
     console.log("ERROR", error);
@@ -171,11 +192,6 @@ async function drop(event, target, catIndex) {
   await updateCategoryEntries(categories[catIndex].entries);
 }
 // Drag & Drop stuff END
-
-async function submit() {
-  // await updateCategory();
-  // showToast("success", "Categories successfully updated");
-}
 
 function imageEditor(categoryId, entryId, edit) {
   let sourceCategory: ShopCategory = categories.find((o) => o.id === categoryId);
@@ -281,131 +297,135 @@ function addProduct(categoryId) {
 
   categories = [...categories];
 }
+
+function handleEdit(event) {
+  if (editOfferId == event.detail) {
+    editOfferId = null;
+  } else {
+    editOfferId = event.detail;
+  }
+  console.log("EER", editOfferId);
+}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="w-5/6 px-4 mx-auto -mt-3">
-  <div class="items-center w-full p-4 ">
+<div class="pb-20 mx-auto -mt-3 space-y-4 xl:w-1/2 md:w-2/3">
+  {#if shops}
+    <div class="flex flex-col justify-center ">
+      <ShopEditorSelector
+        shops="{shops}"
+        bind:shopIndex="{selectedShopIndex}"
+        on:indexChange="{(e) => loadShop(e.detail)}" />
+    </div>
+  {/if}
+
+  <div class="flex flex-col mb-20 space-y-4 ">
     {#if shop}
-      {#if categories.length > 0}
+      {#if categories && categories.length > 0}
         {#each categories as category, catindex (category.name)}
-          <div class="p-2 w-min whitespace-nowrap rounded-t-md" class:bg-gray-300="{catindex % 2 == 1}">
+          <div class="w-full p-2 whitespace-nowrap rounded-t-md">
             <h1 class="inline pr-4 h1">{category.name}</h1>
             <button class="inline btn btn-primary btn-square btn-sm" on:click="{() => addProduct(category.id)}"
               >+</button>
           </div>
 
-          <div class="table p-2 mb-10 rounded-tr-md rounded-b-md" class:bg-gray-300="{catindex % 2 == 1}">
-            <div class="table-header-group p-4 mb-10">
-              <div class="table-row ">
-                <div class="table-cell pl-2 ">
-                  <Icon name="switch-vertical" class="inline w-6 h-6 heroicon smallicon" />
-                </div>
-                <div class="table-cell pl-2">Image</div>
-                <div class="table-cell pl-2">Title</div>
-                <div class="table-cell pl-2">Description</div>
-
-                <div class="table-cell pl-2">Price</div>
-                <div class="table-cell pl-2">Category</div>
-                <div class="table-cell pl-2">Enabled</div>
-                <div class="table-cell pl-2 pr-2">Version</div>
+          {#if category.entries}
+            {#each category.entries as entry, index (entry.id)}
+              <div class="relative">
+                {#if editOfferId == entry.id}
+                  <div
+                    class="absolute z-10 text-center align-top list-none cursor-pointer top-1 left-2 inline-table "
+                    on:click="{() => imageEditor(category.id, entry.id, false)}">
+                    <span>
+                      <span class="table-cell w-10 h-10 align-middle bg-black rounded-full text-primary bg-opacity-60">
+                        <Icon name="camera" class="inline w-6 h-6 heroicon smallicon" />
+                      </span>
+                    </span>
+                  </div>
+                {/if}
+                <ListViewCard
+                  entry="{entry}"
+                  shopId="{shopId}"
+                  editable="{true}"
+                  id="{entry.id}"
+                  on:edit="{handleEdit}" />
               </div>
-            </div>
-            {#if category.entries}
-              {#each category.entries as entry, index (entry.id)}
-                <div
-                  class="table-row-group"
-                  animate:flip
-                  draggable="{true}"
-                  on:dragstart="{(event) => dragstart(event, index)}"
-                  on:drop|preventDefault="{(event) => drop(event, index, catindex)}"
-                  ondragover="return false"
-                  on:dragenter="{() => (hovering = entry.id)}"
-                  class:is-active="{hovering === entry.id}">
-                  <div class="table-cell w-10 p-1 text-gray-400 cursor-move">
-                    <Icon name="menu" class="inline w-10 h-10 heroicon" />
-                  </div>
-                  <div class="relative table-cell w-12 p-1 overflow-hidden">
-                    <div class="absolute w-12 h-12 bottom-2">
-                      {#if entry.product.pictureUrl}
-                        <img
-                          class="w-12 h-12"
-                          src="{entry.product.pictureUrl}"
-                          alt="large Banner Url"
-                          on:click="{() => imageEditor(category.id, entry.id, false)}"
-                          on:change="{() => changeEntry(entry.id, entry)}" />
-                      {:else}
-                        <div
-                          on:click="{() => imageEditor(category.id, entry.id, true)}"
-                          class="link link-primary"
-                          on:change="{() => changeEntry(entry.id, entry)}">
-                          Upload image
-                        </div>
-                      {/if}
-                    </div>
-                  </div>
-                  <div class="table-cell p-1 break-all">
+              {#if editOfferId == entry.id}
+                <div class="flex flex-col space-y-4 ">
+                  <div class="">
+                    <h1 class="w-full mt-2 text-left label">Title</h1>
                     <input
                       type="text"
-                      class="input"
+                      class="w-full input"
                       placeholder="{entry.product.title}"
                       bind:value="{entry.product.title}"
                       on:input="{() => changeEntry(entry.id, entry)}" />
                   </div>
 
-                  <div class="table-cell p-1 break-all">
-                    <Editor
-                      scriptSrc="tinymce/tinymce.min.js"
-                      bind:value="{entry.product.description}"
-                      on:input="{() => changeEntry(entry.id, entry)}" />
-                    <!-- <input
-                      type="text"
-                      size="30"
-                      class="input"
-                      placeholder="{entry.product.description}"
-                      bind:value="{entry.product.description}"
-                      on:input="{() => changeEntry(entry.id, entry)}" /> -->
+                  <div class="break-all ">
+                    <h1 class="w-full mt-2 text-left label">Description</h1>
+                    <RichTextEditor
+                      bind:editorValue="{entry.product.description}"
+                      on:valueChange="{(e) => (entry.product.description = e.detail)}" />
                   </div>
 
-                  <div class="table-cell w-20 p-1 break-all">
-                    <input
-                      type="text"
-                      class="w-20 input"
-                      placeholder="{entry.product.pricePerUnit}"
-                      bind:value="{entry.product.pricePerUnit}"
-                      on:input="{() => changeEntry(entry.id, entry)}" />
+                  <div class="grid grid-cols-1 gap-4 auto-rows-auto xs:grid-cols-3">
+                    <div class="break-all xs:justify-self-start">
+                      <h4 class="w-full mt-2 text-left label">Price per Unit</h4>
+                      <input
+                        type="text"
+                        class="w-20 input"
+                        placeholder="{entry.product.pricePerUnit}"
+                        bind:value="{entry.product.pricePerUnit}"
+                        on:input="{() => changeEntry(entry.id, entry)}" />
+                    </div>
+                    <div class="xs:justify-self-center">
+                      <h4 class="w-full mt-2 text-left label">Change Category</h4>
+                      <select
+                        class="select"
+                        value="{category.id}"
+                        on:change="{(event) => changeCategory(event, entry.id, index, catindex, category.id)}">
+                        {#each categories as listcategory}
+                          <option value="{listcategory.id}">{listcategory.name}</option>
+                        {/each}
+                      </select>
+                    </div>
+                    <div class="xs:justify-self-end">
+                      <h4 class="w-full mt-2 text-left label">Display</h4>
+                      <input
+                        type="checkbox"
+                        class="inline-block toggle toggle-primary"
+                        value="{entry.enabled}"
+                        bind:checked="{entry.enabled}"
+                        on:change="{() => updateCategoryEntries(category.entries)}" />
+                      <div class="inline-block align-top">Enabled?</div>
+                    </div>
+
+                    <div class="xs:justify-self-start">
+                      <h4 class="w-full mt-2 text-left label">Minimum Age Restriction</h4>
+                      <input
+                        type="number"
+                        class="w-20 input"
+                        placeholder="{entry.product.minAge}"
+                        bind:value="{entry.product.minAge}" />
+                    </div>
+                    <div class="xs:justify-self-center">
+                      <h4 class="w-full mt-2 text-left label">Product Version</h4>
+                      {entry.productVersion}
+                    </div>
                   </div>
-                  <div class="table-cell p-1 ">
-                    <select
-                      class="select"
-                      value="{category.id}"
-                      on:change="{(event) => changeCategory(event, entry.id, index, catindex, category.id)}">
-                      {#each categories as listcategory}
-                        <option value="{listcategory.id}">{listcategory.name}</option>
-                      {/each}
-                    </select>
-                  </div>
-                  <div class="table-cell p-1 ">
-                    <input
-                      type="checkbox"
-                      class="inline-block toggle toggle-primary"
-                      value="{entry.enabled}"
-                      bind:checked="{entry.enabled}"
-                      on:change="{() => updateCategoryEntries(category.entries)}" />
-                  </div>
-                  <div class="table-cell w-16 p-1 text-center break-all">
-                    {entry.productVersion}
-                  </div>
-                  <div class="table-cell w-10 p-1 whitespace-nowrap">
-                    {#if changeList.length && changeList.find(({ id }) => id === entry.id)}
-                      <button class="btn btn-primary" on:click="{updateOffer(entry)}">Save</button>
-                    {/if}
+
+                  <div class="relative flex items-center py-5">
+                    <div class="flex-grow border-t border-gray-400"></div>
+                    <span class="flex-shrink mx-4 text-gray-400"
+                      ><button class="btn btn-primary" on:click="{updateOffer(entry)}">Save Offer</button></span>
+                    <div class="flex-grow border-t border-gray-400"></div>
                   </div>
                 </div>
-              {/each}
-            {/if}
-          </div>
+              {/if}
+            {/each}
+          {/if}
         {/each}
         {#if showModal}
           <Center blur="{true}" on:clickedOutside="{handleClickOutside}">
@@ -427,6 +447,13 @@ function addProduct(categoryId) {
             {/if}
           </Center>
         {/if}
+      {:else}
+        <div class="text-center">
+          You don't have any Categories set up yet. <a
+            href="/#/marketplace/my-categories"
+            class="link"
+            alt="set up categories">Create a Category</a>
+        </div>
       {/if}
     {:else}
       <h2>sorry, you don't have any stores. are you logged in as the right Organization?</h2>
@@ -434,8 +461,6 @@ function addProduct(categoryId) {
   </div>
 </div>
 
-<style>
-.table-row-group.is-active {
-  @apply bg-primary;
-}
-</style>
+<svelte:head>
+  <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css" />
+</svelte:head>

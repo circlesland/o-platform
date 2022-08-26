@@ -53,7 +53,7 @@ onMount(async () => {
               alt="{shop.name}"
               class="w-full rounded-xl opacity-60 object-position: center center;  " />
             <div
-              class="absolute right-0 pt-1 pb-1 pl-4 pr-2 mt-2 text-xl rounded-l-full sm:pb-2 sm:pt-3 sm:text-3xl font-heading top-2 bg-light-lightest">
+              class="absolute right-0 pt-1 pb-1 pl-4 pr-2 mt-2 text-xl bg-white rounded-l-full sm:pb-2 sm:pt-3 sm:text-3xl font-heading top-2">
               <span class="inline-block">{shop.name}</span>
             </div>
           </div>
@@ -76,7 +76,7 @@ onMount(async () => {
                       alt="{category.name}"
                       class="w-full rounded-xl opacity-60 object-position: center center;  " />
                     <div
-                      class="absolute left-0 pt-1 pb-1 pl-2 pr-4 mt-2 text-xl rounded-r-full sm:pb-2 sm:pt-3 sm:text-3xl font-heading bottom-4 bg-light-lightest">
+                      class="absolute left-0 pt-1 pb-1 pl-2 pr-4 mt-2 text-xl bg-white rounded-r-full sm:pb-2 sm:pt-3 sm:text-3xl font-heading bottom-4">
                       <span class="inline-block">{category.name}</span>
                     </div>
                   </div>

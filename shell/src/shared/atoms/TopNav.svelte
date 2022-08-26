@@ -3,17 +3,14 @@ import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import { cartContents } from "../../dapps/o-marketplace/stores/shoppingCartStore";
 import { me } from "../stores/me";
-
 import { Profile } from "../api/data/types";
 import { push } from "svelte-spa-router";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
-
+import LangSwitcher from "./LangSwitcher.svelte";
 export let runtimeDapp: RuntimeDapp<any>;
-
 let profile: Profile;
-let showSwitcher = false;
+let showSwitcher = true;
 $: name = profile?.circlesAddress ? profile.circlesAddress : "";
-
 $: {
   if ($me) {
     profile = $me;
@@ -33,15 +30,11 @@ $: {
     </div>
 
     <div class="justify-self-center">
-      <!-- {#if headerString}
-      <span class="text-md">{headerString}</span>
-      {:else if (routable ? routable.title : "<<No dapp>>") != (runtimeDapp ? runtimeDapp.title : "<<No dapp>>")}
-        <span class="text-md">{routable.title}</span>
-      {/if} -->
       <span class="text-md text-primary text-secondary">Beta</span>
     </div>
 
-    <div class="col-start-3 pr-1 place-self-center justify-self-end">
+
+    <div class="col-start-4 pr-1 place-self-center justify-self-end">
       {#if runtimeDapp && runtimeDapp.dappId !== "homepage:1" && !runtimeDapp.anonymous}
         <div class="relative mr-4 cursor-pointer justify-self-center" on:click="{() => push(`#/marketplace/cart`)}">
           {#if $cartContents && $cartContents.length > 0}
@@ -59,27 +52,6 @@ $: {
           </div>
         {/if}
       {/if}
-      <!--
-      {#if profile}
-        {#if profile.__typename === "Organisation"}
-          <div
-            class="mr-4 text-white cursor-pointer"
-            on:click="{() => push(`#/marketplace/scan-purchase`)}">
-            <Icons icon="qrcode" size="{6}" />
-          </div>
-        {/if}
-
-        <div
-          class="cursor-pointer justify-self-center"
-          on:click="{() => profileSwitcher()}">
-          <UserImage profile="{profile}" size="{8}" profileLink="{false}" />
-        </div>
-        {#if showSwitcher}
-          <OrganizationSwitcher
-            on:click_outside="{() => (showSwitcher = !showSwitcher)}" />
-        {/if}
-      {/if}
--->
     </div>
   </div>
 </div>

@@ -3,12 +3,13 @@ import Icons from "../../../shared/molecules/Icons.svelte";
 import { push } from "svelte-spa-router";
 import relativeTimeString from "../../../shared/functions/relativeTimeString";
 import { Invoice, ProfileEvent, SaleEvent } from "../../../shared/api/data/types";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import Button from "../../../shared/atoms/button/Button.svelte";
 import ButtonContext from "../../../shared/atoms/button/buttonContext";
 import { mySales } from "../../../shared/stores/mySales";
-import { purchased } from "./MyPurchaseCard.svelte";
+
+
 
 export let event: ProfileEvent;
 export let sale: SaleEvent;
@@ -154,12 +155,12 @@ function getTableNoFromMetadata(metadataJson: string | undefined) {
             class:text-alert-dark="{!sale.invoice.paymentTransactionHash}"
             class:text-success="{sale.invoice.paymentTransactionHash}">
             {#if sale.invoice.paymentTransactionHash}
-              <span>{$_("dapps.o-marketplace.pages.mySales.paid")}</span>
+              <Label key="dapps.o-marketplace.pages.mySales.paid" />
               <Icons icon="check" size="{4}" customClass="inline" />
             {:else if sale.invoice.cancelledAt}
-              <span>{$_("dapps.o-marketplace.pages.mySales.cancelled")}</span>
+              <Label key="dapps.o-marketplace.pages.mySales.cancelled" />
             {:else}
-              <span>{$_("dapps.o-marketplace.pages.mySales.paymentPending")}</span>
+              <Label key="dapps.o-marketplace.pages.mySales.paymentPending" />
             {/if}
           </div>
 
@@ -169,9 +170,9 @@ function getTableNoFromMetadata(metadataJson: string | undefined) {
               class:text-primary-lighter="{!sale.invoice.sellerSignature}"
               class:text-success="{sale.invoice.sellerSignature}">
               {#if !sale.invoice.sellerSignature}
-                <span>{$_("dapps.o-marketplace.pages.mySales.notPickedUp")}</span>
+                <Label key="dapps.o-marketplace.pages.mySales.notPickedUp" />
               {:else}
-                <span>{$_("dapps.o-marketplace.pages.mySales.pickedUp")}</span>
+                <Label key="dapps.o-marketplace.pages.mySales.pickedUp" />
               {/if}
               {#if sale.invoice.sellerSignature}
                 <Icons icon="check" size="{4}" customClass="inline" />

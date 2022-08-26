@@ -6,6 +6,9 @@ import TopNav from "../../../shared/atoms/TopNav.svelte";
 import PageHeader from "../../../shared/atoms/PageHeader.svelte";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { stats } from "../../../shared/stores/stats";
+import Label from "../../../shared/atoms/Label.svelte";
+import { Environment } from "../../../shared/environment";
+import { _ } from "svelte-i18n";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -25,6 +28,8 @@ function loadLink(link, external = false) {
     push(link);
   }
 }
+
+console.log(Environment.userLanguage)
 </script>
 
 <TopNav runtimeDapp="{runtimeDapp}" routable="{routable}" headerString="Leaderboard" />
@@ -48,7 +53,14 @@ function loadLink(link, external = false) {
     </div>
 
     <div class="mt-1 text-sm text-center cursor-pointer">
-      {first.inviteCount} Citizen{first.inviteCount > 1 ? "s" : ""} invited
+      {$_("dapps.o-dashboard.pages.inviteLeadeboard.citizensInvited", {
+        values: {
+          firstCount: first.inviteCount,
+          firstCountBigger1: first.inviteCount > 1 ? (Environment.userLanguage.startsWith("de") ? "" : "s") : "",
+        },
+      })}
+
+      <!--{first.inviteCount} Citizen{first.inviteCount > 1 ? "s" : ""} invited-->
     </div>
   </PageHeader>
 {/if}
@@ -78,7 +90,12 @@ function loadLink(link, external = false) {
                     <div class="flex flex-row text-left">
                       <div class="flex-grow leading-none">
                         <span class="inline-block text-sm">
-                          {entry.inviteCount} Citizen{entry.inviteCount > 1 ? "s" : ""} invited
+                          {$_("dapps.o-dashboard.pages.inviteLeadeboard.citizensInvitedHigherRanks", {
+                            values: {
+                              entryCount: entry.inviteCount,
+                              entryCountBigger1: entry.inviteCount > 1 ? (Environment.userLanguage.startsWith("de") ? "" : "s") : "",
+                            },
+                          })}
                         </span>
                       </div>
                     </div>

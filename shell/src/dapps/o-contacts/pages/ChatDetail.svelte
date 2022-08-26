@@ -17,6 +17,7 @@
   import EventList from "../../../shared/molecules/Lists/EventList.svelte";
   import {myChats} from "../../../shared/stores/myChat";
   import {Generate} from "@o-platform/o-utils/dist/generate";
+import Label from "../../../shared/atoms/Label.svelte";
   // import * as ECIES from "bitcore-ecies";
 
   export let id: string;
@@ -143,13 +144,13 @@
 
         <div class="pb-2 text-xs">
           {#if contactProfile.youTrust > 0 && contactProfile.trustsYou > 0}
-            {$_("dapps.o-contacts.pages.chatDetail.mutualTrust")}
+            <Label key="dapps.o-contacts.pages.chatDetail.mutualTrust"  />
           {:else if contactProfile.youTrust > 0 && !contactProfile.trustsYou}
-            {$_("dapps.o-contacts.pages.chatDetail.youTrust")}
+            <Label key="dapps.o-contacts.pages.chatDetail.youTrust"  />
             {contactProfile.contactAddressProfile.firstName}
           {:else if contactProfile.trustsYou > 0}
             {contactProfile.contactAddressProfile.firstName}
-            {$_("dapps.o-contacts.pages.chatDetail.trustsYou")}
+            <Label key="dapps.o-contacts.pages.chatDetail.trustsYou"  />
           {/if}
         </div>
       {/if}
@@ -188,7 +189,7 @@
           autocomplete="off"
           autocorrect="off"
           spellcheck="false"
-          placeholder="{$_('dapps.o-contacts.pages.chatDetail.placeholder')}"
+          placeholder="<Label key='dapps.o-contacts.pages.chatDetail.placeholder' />"
           class="order-1 w-full input input-bordered" />
         <!-- <textarea
         on:keydown="{onkeydown}"

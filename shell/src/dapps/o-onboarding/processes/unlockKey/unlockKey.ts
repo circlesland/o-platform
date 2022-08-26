@@ -55,16 +55,16 @@ const processDefinition = (processId: string) =>
           isSensitive: true,
           params: {
             view: {
-              title: window.i18n("dapps.o-onboarding.processes.unlockKey.unlockKey.enterDecryptionPinParams.title"),
-              description: window.i18n("dapps.o-onboarding.processes.unlockKey.unlockKey.enterDecryptionPinParams.description"),
-              placeholder: window.i18n("dapps.o-onboarding.processes.unlockKey.unlockKey.enterDecryptionPinParams.placeholder"),
-              submitButtonText: window.i18n("dapps.o-onboarding.processes.unlockKey.unlockKey.enterDecryptionPinParams.submitButtonText"),
+              title: window.o.i18n("dapps.o-onboarding.processes.unlockKey.unlockKey.enterDecryptionPinParams.title"),
+              description: window.o.i18n("dapps.o-onboarding.processes.unlockKey.unlockKey.enterDecryptionPinParams.description"),
+              placeholder: window.o.i18n("dapps.o-onboarding.processes.unlockKey.unlockKey.enterDecryptionPinParams.placeholder"),
+              submitButtonText: window.o.i18n("dapps.o-onboarding.processes.unlockKey.unlockKey.enterDecryptionPinParams.submitButtonText"),
             },
           },
           dataSchema: yup
             .string()
             .required(
-              window.i18n("dapps.o-onboarding.processes.unlockKey.unlockKey.dataSchemaRequired")
+              window.o.i18n("dapps.o-onboarding.processes.unlockKey.unlockKey.dataSchemaRequired")
             ),
           navigation: {
             next: "#execUnlockKey",
@@ -91,7 +91,7 @@ const processDefinition = (processId: string) =>
                 delete context.data.decryptionPin;
                 delete context.data.privateKey;
                 context.messages["decryptionPin"] =
-                window.i18n("dapps.o-onboarding.processes.unlockKey.unlockKey.couldNotDecrypt");
+                window.o.i18n("dapps.o-onboarding.processes.unlockKey.unlockKey.couldNotDecrypt");
                 throw new Error(context.messages["decryptionPin"]);
               }
 

@@ -12,6 +12,7 @@ query init {
       id
       circlesAddress
       displayCurrency
+      confirmedLegalAge
       circlesSafeOwner
       invitationLink
       successorOfCirclesAddress
@@ -111,6 +112,12 @@ query init {
   }
 }
 
+query deliveryMethods {
+  deliveryMethods {
+    id
+    name
+  }
+}
 query lastAcknowledgedAt($safeAddress: String!) {
   lastAcknowledgedAt(safeAddress: $safeAddress)
 }
@@ -1417,6 +1424,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
               title
               pictureUrl
               pricePerUnit
+              minAge
               tags {
                 typeId
                 value
@@ -1504,6 +1512,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
               title
               description
               pricePerUnit
+              minAge
               tags {
                 typeId
                 value
@@ -1636,6 +1645,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
           createdByAddress
           createdAt
           title
+          minAge
           pictureUrl
           pictureMimeType
           description
@@ -1876,6 +1886,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
               description
               pictureUrl
               pricePerUnit
+              minAge
               timeCirclesPriceShare
               createdByProfile {
                 id
@@ -2006,6 +2017,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
               description
               pictureUrl
               pricePerUnit
+              minAge
               timeCirclesPriceShare
               createdByProfile {
                 id
@@ -2083,6 +2095,81 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
         }
       }
     }
+  }
+}
+
+query getAllStrings {
+  getAllStrings {
+    lang
+    key
+    version
+    value
+  }
+}
+
+query getAllStringsByLanguage($lang: String) {
+  getAllStringsByLanguage(lang: $lang) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+
+query getAllStringsByMaxVersion {
+  getAllStringsByMaxVersion {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+
+query getAllStringsByMaxVersionAndLang($lang: String) {
+  getAllStringsByMaxVersionAndLang(lang: $lang) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+
+query getStringByMaxVersion($lang: String, $key: String) {
+  getStringByMaxVersion(lang: $lang, key: $key) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+
+query getOlderVersionsByKeyAndLang($key: String, $lang: String) {
+  getOlderVersionsByKeyAndLang(lang: $lang, key: $key) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+
+query getStringByLanguage($lang: String) {
+  getStringByLanguage(lang: $lang) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+
+query getAvailableLanguages {
+  getAvailableLanguages {
+    lang
   }
 }
 
@@ -2203,6 +2290,7 @@ query shop($id: Int!) {
         productVersion
         shopCategoryId
         enabled
+
         product {
           id
           version
@@ -2210,6 +2298,8 @@ query shop($id: Int!) {
           description
           pictureUrl
           pricePerUnit
+          minAge
+          currentInventory
           createdByProfile {
             id
             displayName
@@ -2317,6 +2407,8 @@ query offersByIdAndVersion($query: [OfferByIdAndVersionInput!]!) {
     title
     pictureUrl
     pricePerUnit
+    currentInventory
+    version
     tags {
       typeId
       value

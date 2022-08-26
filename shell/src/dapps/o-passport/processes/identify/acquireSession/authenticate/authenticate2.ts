@@ -27,35 +27,35 @@ export type AuthenticateContext = ProcessContext<AuthenticateContextData>;
  * In case you want to translate the flow later, it's nice to have the strings at one place.
  */
 const strings = {
-  labelLoginEmail: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.strings.labelLoginEmail"),
+  labelLoginEmail: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.strings.labelLoginEmail"),
   labelVerificationCode: (email: string) =>
-  window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.strings.labelVerificationCode"),
-  placeholder: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.strings.placeholder"),
+  window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.strings.labelVerificationCode"),
+  placeholder: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.strings.placeholder"),
 };
 
 const editorContent = {
   email: {
-    title: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.email.title"),
-    description: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.email.description"),
-    placeholder: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.email.placeholder"),
-    submitButtonText: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.email.submitButtonText"),
+    title: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.email.title"),
+    description: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.email.description"),
+    placeholder: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.email.placeholder"),
+    submitButtonText: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.email.submitButtonText"),
   },
   terms_privacy: {
-    title: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.terms_privacy.title"),
-    description: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.terms_privacy.description"),
-    submitButtonText: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.terms_privacy.submitButtonText"),
+    title: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.terms_privacy.title"),
+    description: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.terms_privacy.description"),
+    submitButtonText: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.terms_privacy.submitButtonText"),
   },
   verification: {
-    title: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.verification.title"),
-    description: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.verification.description"),
-    placeholder: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.verification.placeholder"),
-    submitButtonText: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.verification.submitButtonText"),
+    title: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.verification.title"),
+    description: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.verification.description"),
+    placeholder: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.verification.placeholder"),
+    submitButtonText: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.verification.submitButtonText"),
   },
   code: {
-    title: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.code.title"),
-    description: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.code.description"),
-    placeholder: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.code.placeholder"),
-    submitButtonText: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.code.submitButtonText"),
+    title: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.code.title"),
+    description: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.code.description"),
+    placeholder: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.code.placeholder"),
+    submitButtonText: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.editorContent.code.submitButtonText"),
   }
 };
 
@@ -97,13 +97,13 @@ const processDefinition = (processId: string) =>
           console.log(`C1: event`, event)
           window.o.publishEvent(<PlatformEvent>{
             type: "shell.progress",
-            message: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.acquireSession.message"),
+            message: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.acquireSession.message"),
           });
         },
         invoke: {
           src: async (context) => {
             if (!context.data.eoaAddress) {
-              throw new Error(window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.acquireSession.errors.contextsPropertyNotSet"));
+              throw new Error(window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.acquireSession.errors.contextsPropertyNotSet"));
             }
             const apiClient =
               await window.o.apiClient.client.subscribeToResult();
@@ -122,7 +122,7 @@ const processDefinition = (processId: string) =>
             const challenge = result.data.requestSessionChallenge;
             const pk = sessionStorage.getItem("circlesKey");
             if (!pk) {
-              throw new Error(window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.acquireSession.errors.privateKeyNotUnlocked"))
+              throw new Error(window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.acquireSession.errors.privateKeyNotUnlocked"))
             }
             const acc = RpcGateway.get().eth.accounts.privateKeyToAccount(pk);
             const {message, signature} = acc.sign(challenge);
@@ -140,7 +140,7 @@ const processDefinition = (processId: string) =>
               throw new Error(JSON.stringify(sessionResult.data.errors));
             }
             if (!sessionResult.data.verifySessionChallenge?.success) {
-              throw new Error(window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.acquireSession.errors.couldNotGetSession"))
+              throw new Error(window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.acquireSession.errors.couldNotGetSession"))
             }
           },
           onDone: "#success",
@@ -151,12 +151,12 @@ const processDefinition = (processId: string) =>
       errorRequestingChallenge: prompt<AuthenticateContext, any>({
         field: "errorRequestingChallenge",
         entry: (context) => {
-          context.data.errorRequestingChallenge = window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.errorRequestingChallenge.error");
+          context.data.errorRequestingChallenge = window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.errorRequestingChallenge.error");
         },
         component: HtmlViewer,
         isSensitive: true,
         params: {
-          submitButtonText: window.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.errorRequestingChallenge.submitButtonText"),
+          submitButtonText: window.o.i18n("dapps.o-passport.processes.identify.acquireSession.authenticate.authenticate2.errorRequestingChallenge.submitButtonText"),
           html: (context) => context.data.errorSendingAuthMail,
         },
         navigation: {

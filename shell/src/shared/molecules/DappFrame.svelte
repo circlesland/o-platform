@@ -24,7 +24,7 @@
   import {Process} from "@o-platform/o-process/dist/interfaces/process";
   import {media} from "../stores/media";
   import {me} from "../stores/me";
-  import {Capability, EventsDocument, EventType, NotificationEvent, Purchased, SessionInfo,} from "../api/data/types";
+  import {Capability, EventsDocument, EventType, GetAllStringsByMaxVersionAndLangDocument, I18n, NotificationEvent, Purchased, QueryGetAllStringsByMaxVersionAndLangArgs, SessionInfo,} from "../api/data/types";
   import {contacts} from "../stores/contacts";
   import {performOauth} from "../../dapps/o-humanode/processes/performOauth";
   import {clearScrollPosition, popScrollPosition, pushScrollPosition,} from "../layouts/Center.svelte";
@@ -37,6 +37,11 @@
   import {Trigger} from "@o-platform/o-interfaces/dist/routables/trigger";
   import {mySales} from "../stores/mySales";
   import {Stopped} from "@o-platform/o-process/dist/events/stopped";
+import { ApiClient } from "../apiConnection";
+import { Environment } from "../environment";
+import { addMessages } from "svelte-i18n";
+import { init as i18nInit, getLocaleFromNavigator } from 'svelte-i18n';
+import { I18nDictionary} from "../../i18n/i18nDictionary";
 
   export let params: {
   dappId: string;
@@ -107,7 +112,7 @@ async function onBack() {
   );
   if (!routable.found) {
     throw new Error(
-      window.i18n(
+      window.o.i18n(
         "shared.molecules.dappFrame.errors.pageFromBackStackNotFound",
         { values: { error: JSON.stringify(previous) } }
       )
@@ -115,7 +120,7 @@ async function onBack() {
   }
   if (routable.routable.type != "page") {
     throw new Error(
-      window.i18n(
+      window.o.i18n(
         "shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage",
         { values: { error: JSON.stringify(previous) } }
       )
@@ -163,7 +168,7 @@ async function onStay() {
   );
   if (!routable.found) {
     throw new Error(
-      window.i18n(
+      window.o.i18n(
         "shared.molecules.dappFrame.errors.pageFromBackStackNotFound",
         { values: { error: JSON.stringify(previous) } }
       )
@@ -171,7 +176,7 @@ async function onStay() {
   }
   if (routable.routable.type != "page") {
     throw new Error(
-      window.i18n(
+      window.o.i18n(
         "shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage",
         { values: { error: JSON.stringify(previous) } }
       )
@@ -330,7 +335,7 @@ function findNextRoute(
     const defaultRoute = _findDefaultRoute(previousRuntimeDapp);
     if (!defaultRoute.found) {
       throw new Error(
-        window.i18n(
+        window.o.i18n(
           "shared.molecules.dappFrame.errors.pageFromBackStackNotFound",
           { values: { error: JSON.stringify(root) } }
         )
@@ -338,7 +343,7 @@ function findNextRoute(
     }
     if (defaultRoute.routable.type != "page") {
       throw new Error(
-        window.i18n(
+        window.o.i18n(
           "shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage",
           { values: { error: JSON.stringify(root) } }
         )
@@ -349,7 +354,7 @@ function findNextRoute(
 
   if (!nextRoute) {
     throw new Error(
-      window.i18n("shared.melocules.dappFrame.errors.couldNotFindRoot", {
+      window.o.i18n("shared.melocules.dappFrame.errors.couldNotFindRoot", {
         values: { item: JSON.stringify(root) },
       })
     );
@@ -404,11 +409,15 @@ function initSession(session: SessionInfo) {
             chatStore.refresh(true);
             await contacts.findBySafeAddress(event.from, true);
             playBlblblbl = true;
-          } else if (event.type == EventType.CrcHubTransfer || event.type == EventType.CrcMinting) {
+          } else if (event.type == EventType.CrcHubTransfer
+              || event.type == EventType.CrcMinting
+              || event.type == EventType.Erc20Transfer) {
+
             const transaction = await myTransactions.findSingleItemFallback(
               myTransactions.eventTypes,
               event.transaction_hash
             );
+
             myTransactions.refresh(true);
             assetBalances.update();
 
@@ -1043,7 +1052,16 @@ let baseParams: {
 
 let firstUrlChangedCall = true;
 
+let i18nStrings: I18n;
+let language = Environment.userLanguage;
+
+
+
 async function handleUrlChanged() {
+  if (!i18nStrings || language != Environment.userLanguage) {
+      await I18nDictionary.instance.waitHandle
+  }
+
   // log(`handleUrlChanged()`);
   const navArgs = <GenerateNavManifestArgs>{};
   dapp = findDappById(params.dappId);
@@ -1064,7 +1082,7 @@ async function handleUrlChanged() {
   const findRouteResult = findRoutableByParams(runtimeDapp, params);
   if (!findRouteResult.found) {
     throw new Error(
-      window.i18n("shared.molecules.dappFrame.errors.couldNotFindParams", {
+      window.o.i18n("shared.molecules.dappFrame.errors.couldNotFindParams", {
         values: { params: JSON.stringify(params, null, 2) },
       })
     );

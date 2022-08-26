@@ -21,18 +21,18 @@ const { assign } = actions;
 
 const editorContent = {
   info: {
-    title: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.title"),
-    description: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.description"),
-    submitButtonText: window.i18n(
+    title: window.o.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.title"),
+    description: window.o.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.description"),
+    submitButtonText: window.o.i18n(
       "dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.submitButtonText"
     ),
   },
   checkInviteCode: {
-    title: window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.title"),
-    description: window.i18n(
+    title: window.o.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.title"),
+    description: window.o.i18n(
       "dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.description"
     ),
-    submitButtonText: window.i18n(
+    submitButtonText: window.o.i18n(
       "dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.submitButtonText"
     ),
   },
@@ -94,7 +94,13 @@ const processDefinition = (processId: string) =>
         field: "__",
         component: HtmlViewer,
         params: {
-          view: editorContent.info,
+          view: editorContent.info = {
+            title: window.o.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.title"),
+            description: window.o.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.description"),
+            submitButtonText: window.o.i18n(
+              "dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.info.submitButtonText"
+            ),
+          },
           html: () => "",
           hideNav: false,
         },
@@ -106,11 +112,19 @@ const processDefinition = (processId: string) =>
         field: "inviteCode",
         component: TextareaEditor,
         params: {
-          view: editorContent.checkInviteCode,
+          view: editorContent.checkInviteCode = {
+            title: window.o.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.title"),
+            description: window.o.i18n(
+              "dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.description"
+            ),
+            submitButtonText: window.o.i18n(
+              "dapps.o-onboarding.processes.invitation.promptGetInvited.editorContent.checkInviteCode.submitButtonText"
+            ),
+          },
         },
         dataSchema: yup
           .string()
-          .required(window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.dataSchemaRequired")),
+          .required(window.o.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.dataSchemaRequired")),
         navigation: {
           next: "#redeemCode",
         },
@@ -130,7 +144,7 @@ const processDefinition = (processId: string) =>
             if (claimResult.errors) {
               context.messages["inviteCode"] = claimResult.errors.map((o) => o.message).join(" \n");
               throw new Error(
-                window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.couldNotClaimInvitation", {
+                window.o.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.couldNotClaimInvitation", {
                   values: { contextMessages: context.messages["inviteCode"] },
                 })
               );
@@ -138,7 +152,7 @@ const processDefinition = (processId: string) =>
             if (!claimResult.data.claimInvitation.success) {
               context.messages["inviteCode"] = claimResult.data.claimInvitation.error;
               throw new Error(
-                window.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.couldNotClaimInvitation", {
+                window.o.i18n("dapps.o-onboarding.processes.invitation.promptGetInvited.couldNotClaimInvitation", {
                   values: { contextMessages: context.messages["inviteCode"] },
                 })
               );

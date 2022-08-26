@@ -1,33 +1,38 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
 import { Offer, ShopCategoryEntry } from "../../../shared/api/data/types";
-import { purchase } from "../processes/purchase";
 import Icons from "../../../shared/molecules/Icons.svelte";
-import { me } from "../../../shared/stores/me";
-import { cartContents } from "../stores/shoppingCartStore";
 import { truncateString } from "../../../shared/functions/truncateString";
+import { addToCart, AddToCartContextData } from "../processes/addToCart";
+import { createEventDispatcher } from "svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+const dispatch = createEventDispatcher();
 
 export let entry: ShopCategoryEntry;
 export let shopId: number;
 export let deliveryMethods: any;
+export let editable: Boolean = false;
+export let id: Number;
 
 function loadDetailPage() {
-  push("#/marketplace/detail/" + shopId + "/" + entry.id);
+  if (editable) {
+    dispatch("edit", id);
+    return;
+  } else {
+    push("#/marketplace/detail/" + shopId + "/" + entry.id);
+  }
 }
 
-function addToCart(item: Offer & { shopId: number }) {
-  $cartContents = $cartContents ? [...$cartContents, item] : [item];
-  push(`#/marketplace/cart`);
+function _addToCart(item: Offer & { shopId: number }) {
+  window.o.runProcess(addToCart, <AddToCartContextData>{
+    offerId: parseInt(item.id.toString()),
+    shopId: parseInt(item.shopId.toString()),
+    redirectTo: `#/marketplace/cart`,
+  });
 }
-
-let now = new Date();
-
-let displayName = `${entry.product.createdByProfile.displayName}`;
-displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : displayName;
 </script>
 
-<section class="flex items-start bg-white shadow-md rounded-xl">
+<section class="flex items-start bg-white shadow-md cursor-pointer rounded-xl">
   <div class="flex flex-col w-full ">
     <div class="relative flex flex-col items-stretch w-full px-4 py-4 space-y-4 ">
       <div class="flex flex-row space-x-2">
@@ -53,26 +58,33 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
             </div>
           </div>
         </div>
-        <div
-          class="flex flex-col self-start justify-end cursor-pointer text-primary"
-          on:click="{() => addToCart({ ...entry.product, shopId: shopId })}">
-          <Icons icon="cart" />
-        </div>
+        {#if editable}
+          <div
+            class="text-center align-top list-none cursor-pointer top-1 left-2 inline-table "
+            on:click="{() => dispatch('edit', id)}">
+            <span>
+              <span class="table-cell w-10 h-10 align-middle bg-black rounded-full text-primary bg-opacity-60">
+                <Icon name="pencil" class="inline w-6 h-6 heroicon smallicon" />
+              </span>
+            </span>
+          </div>
+        {:else}
+          <div
+            class="flex flex-col self-start justify-end cursor-pointer text-primary"
+            on:click="{() => _addToCart({ ...entry.product, shopId: shopId })}">
+            <Icons icon="cart" />
+          </div>
+        {/if}
       </div>
       <div class="absolute right-2 bottom-2">
         {#if deliveryMethods}
           {#each deliveryMethods as deliveryMethod, i}
             <div class="inline py-1 pl-2 pr-2 mt-2 ml-2 rounded-md text-2xs top-20 bg-primary-lightest">
               {deliveryMethod.name}
-              <!-- <Icon name="home" class="inline w-4 h-4 heroicon smallicon" /> -->
             </div>
           {/each}
         {/if}
       </div>
-
-      <!-- <div class="absolute right-0 py-2 pl-4 pr-1 mt-2 rounded-md text-2xs top-32 bg-alert-lightest">
-        Delivery <Icon name="truck" class="inline w-4 h-4 heroicon smallicon" />
-      </div> -->
     </div>
   </div>
 </section>

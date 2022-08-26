@@ -14,29 +14,29 @@ export type GetTrustedByShopContextData = {
   successAction?: (data: GetTrustedByShopContextData) => void;
 };
 
-export type PerformOauthContext = ProcessContext<GetTrustedByShopContextData>;
+export type GetTrustedByShopContext = ProcessContext<GetTrustedByShopContextData>;
 
 const processDefinition = (processId: string) =>
-  createMachine<PerformOauthContext, any>({
+  createMachine<GetTrustedByShopContext, any>({
     id: `${processId}:getTrustedByShop`,
     initial: "info",
     states: {
-      ...fatalError<PerformOauthContext, any>("error"),
+      ...fatalError<GetTrustedByShopContext, any>("error"),
       info: promptChoice(<PromptChoiceSpec<any, any>>{
         id: "info",
         options:[{
           key: "getTrusted",
           target: "#getTrusted",
-          label: "Get trusted by the owner"
+          label: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.options.getTrusted.label")
         }, {
           key: "proofUniqueness",
           target: "#proofUniqueness",
-          label: "Proof you're unique"
+          label: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.options.proofUniqueness.label")
         }],
         params: {
           view: {
-            title: "This location doesn't accept your circles.",
-            description: "<b>What can I do?</b>"
+            title: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.params.title"),
+            description: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.params.description")
           }
         },
         component: ChoiceSelector,
@@ -60,9 +60,9 @@ const processDefinition = (processId: string) =>
         component: QrCodeViewer,
         params: {
           view: {
-            title: "Get trusted by the owner",
-            description: `Let the owner of the location scan the barcode below to get trusted`,
-            submitButtonText: "Verify me",
+            title: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.title"),
+            description: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.description"),
+            submitButtonText: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.getTrusted.params.submitButtonText"),
           },
           html: () => "",
           hideNav: true,
@@ -79,10 +79,9 @@ const processDefinition = (processId: string) =>
         component: HtmlViewer,
         params: {
           view: {
-            title: "Proof you're unique",
-            description: `For Circles to work it's important that everybody uses only one account.
-                          <p class="mt-1"><b>Upload a short selfie video to immediately proof the uniqueness of your account.</b></p>`,
-            submitButtonText: "Use biometrics",
+            title: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.proofUniqueness.params.title"),
+            description: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.proofUniqueness.params.description"),
+            submitButtonText: window.o.i18n("dapps.o-marketplace.processes.getTrustedByShop.proofUniqueness.params.submitButtonText"),
           },
           html: () => "",
           hideNav: false,
@@ -116,7 +115,7 @@ const processDefinition = (processId: string) =>
 
 export const getTrustedByShop: ProcessDefinition<
   void,
-  PerformOauthContext
+  GetTrustedByShopContext
   > = {
   name: "getTrustedByShop",
   stateMachine: <any>processDefinition,

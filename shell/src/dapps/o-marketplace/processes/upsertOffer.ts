@@ -38,58 +38,58 @@ const strings = {
 
 const editorContent: { [x: string]: EditorViewContext } = {
   title: {
-    title: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.title.title"),
-    description: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.title.description"),
-    placeholder: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.title.placeholder"),
-    submitButtonText: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.title.submitButtonText"),
+    title: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.title.title"),
+    description: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.title.description"),
+    placeholder: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.title.placeholder"),
+    submitButtonText: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.title.submitButtonText"),
   },
   description: {
-    title: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.description.title"),
-    description: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.description.description"),
-    placeholder: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.description.placeholder"),
-    submitButtonText: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.description.submitButtonText"),
+    title: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.description.title"),
+    description: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.description.description"),
+    placeholder: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.description.placeholder"),
+    submitButtonText: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.description.submitButtonText"),
   },
   offerlocation: {
-    title: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerLocation.title"),
-    description: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerLocation.description"),
-    placeholder: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerLocation.placeholder"),
-    submitButtonText: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerLocation.submitButtonText"),
+    title: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerLocation.title"),
+    description: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerLocation.description"),
+    placeholder: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerLocation.placeholder"),
+    submitButtonText: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerLocation.submitButtonText"),
   },
   offerCategory: {
-    title: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerCategory.title"),
-    description: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerCategory.description"),
-    placeholder: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerCategory.placeholder"),
-    submitButtonText: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerCategory.submitButtonText"),
+    title: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerCategory.title"),
+    description: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerCategory.description"),
+    placeholder: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerCategory.placeholder"),
+    submitButtonText: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerCategory.submitButtonText"),
   },
   offerUnit: {
-    title: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnit.title"),
-    description: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnit.description"),
-    placeholder: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnit.placeholder"),
-    submitButtonText: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnit.submitButtonText"),
+    title: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnit.title"),
+    description: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnit.description"),
+    placeholder: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnit.placeholder"),
+    submitButtonText: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnit.submitButtonText"),
   },
   offerPrice: {
-    title: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerPrice.title"),
-    description: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerPrice.description"),
-    placeholder: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerPrice.placeholder"),
-    submitButtonText: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerPrice.submitButtonText"),
+    title: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerPrice.title"),
+    description: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerPrice.description"),
+    placeholder: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerPrice.placeholder"),
+    submitButtonText: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerPrice.submitButtonText"),
   },
   offerUnitAmount: {
-    title: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnitAmount.title"),
-    description: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnitAmount.description"),
-    placeholder: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnitAmount.placeholder"),
-    submitButtonText: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnitAmount.submitButtonText"),
+    title: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnitAmount.title"),
+    description: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnitAmount.description"),
+    placeholder: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnitAmount.placeholder"),
+    submitButtonText: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnitAmount.submitButtonText"),
   },
   offerDelivery: {
-    title: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerDelivery.title"),
-    description: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerDelivery.description"),
+    title: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerDelivery.title"),
+    description: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerDelivery.description"),
     placeholder: "",
-    submitButtonText: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerDelivery.submitButtonText"),
+    submitButtonText: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerDelivery.submitButtonText"),
   },
   offerImage: {
-    title: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerImage.title"),
-    description: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerImage.description"),
+    title: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerImage.title"),
+    description: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerImage.description"),
     placeholder: "",
-    submitButtonText: window.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerImage.submitButtonText"),
+    submitButtonText: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerImage.submitButtonText"),
   },
 };
 
@@ -107,7 +107,12 @@ const processDefinition = (processId: string) =>
         field: "title",
         component: TextEditor,
         params: {
-          view: editorContent.title,
+          view: editorContent.title = {
+            title: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.title.title"),
+            description: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.title.description"),
+            placeholder: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.title.placeholder"),
+            submitButtonText: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.title.submitButtonText"),
+          },
         },
         dataSchema: yup
           .string()
@@ -120,7 +125,12 @@ const processDefinition = (processId: string) =>
         field: "description",
         component: TextareaEditor,
         params: {
-          view: editorContent.description,
+          view: editorContent.description = {
+            title: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.description.title"),
+            description: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.description.description"),
+            placeholder: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.description.placeholder"),
+            submitButtonText: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.description.submitButtonText"),
+          },
           showResultsOnLoad: true,
         },
         navigation: {
@@ -134,7 +144,12 @@ const processDefinition = (processId: string) =>
         field: "categoryTagId",
         typeId: "o-marketplace:offer:category:1",
         params: {
-          view: editorContent.offerCategory,
+          view: editorContent.offerCategory = {
+            title: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerCategory.title"),
+            description: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerCategory.description"),
+            placeholder: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerCategory.placeholder"),
+            submitButtonText: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerCategory.submitButtonText"),
+          },
           showResultsOnLoad: true,
         },
         navigation: {
@@ -145,7 +160,12 @@ const processDefinition = (processId: string) =>
       geonameid: promptCity<UpsertOfferContext, any>({
         field: "geonameid",
         params: {
-          view: editorContent.offerlocation,
+          view: editorContent.offerlocation = {
+            title: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerLocation.title"),
+            description: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerLocation.description"),
+            placeholder: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerLocation.placeholder"),
+            submitButtonText: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerLocation.submitButtonText"),
+          },
         },
         navigation: {
           next: "#unitTagId",
@@ -156,7 +176,12 @@ const processDefinition = (processId: string) =>
         field: "unitTagId",
         typeId: "o-marketplace:offer:unit:1",
         params: {
-          view: editorContent.offerUnit,
+          view: editorContent.offerUnit = {
+            title: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnit.title"),
+            description: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnit.description"),
+            placeholder: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnit.placeholder"),
+            submitButtonText: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnit.submitButtonText"),
+          },
           showResultsOnLoad: true,
         },
         navigation: {
@@ -168,7 +193,12 @@ const processDefinition = (processId: string) =>
         field: "pricePerUnit",
         component: TextEditor,
         params: {
-          view: editorContent.offerPrice,
+          view: editorContent.offerPrice = {
+            title: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerPrice.title"),
+            description: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerPrice.description"),
+            placeholder: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerPrice.placeholder"),
+            submitButtonText: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerPrice.submitButtonText"),
+          },
         },
         navigation: {
           next: "#maxUnits",
@@ -179,7 +209,12 @@ const processDefinition = (processId: string) =>
         field: "maxUnits",
         component: TextEditor,
         params: {
-          view: editorContent.offerUnitAmount,
+          view: editorContent.offerUnitAmount = {
+            title: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnitAmount.title"),
+            description: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnitAmount.description"),
+            placeholder: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnitAmount.placeholder"),
+            submitButtonText: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerUnitAmount.submitButtonText"),
+          }
         },
         navigation: {
           next: "#deliveryTermsTagId",
@@ -190,7 +225,12 @@ const processDefinition = (processId: string) =>
         field: "deliveryTermsTagId",
         typeId: "o-marketplace:offer:deliveryTerms:1",
         params: {
-          view: editorContent.offerDelivery,
+          view: editorContent.offerDelivery = {
+            title: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerDelivery.title"),
+            description: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerDelivery.description"),
+            placeholder: "",
+            submitButtonText: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerDelivery.submitButtonText"),
+          },
           showResultsOnLoad: true,
         },
         navigation: {
@@ -205,7 +245,12 @@ const processDefinition = (processId: string) =>
           context.data.pictureMimeType = event.data?.mimeType;
         },
         params: {
-          view: editorContent.offerImage,
+          view: editorContent.offerImage = {
+            title: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerImage.title"),
+            description: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerImage.description"),
+            placeholder: "",
+            submitButtonText: window.o.i18n("dapps.o-marketplace.processes.upsertOffer.editorContent.offerImage.submitButtonText"),
+          },
           cropShape: "rect",
         },
         navigation: {

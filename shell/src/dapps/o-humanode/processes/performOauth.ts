@@ -111,9 +111,9 @@ const processDefinition = (processId: string) =>
         component: HtmlViewer,
         params: {
           view: {
-            title: "Couldn't complete the verification",
-            description: "The process was cancelled or an error occurred. Please try again.",
-            submitButtonText: "Try again",
+            title: window.o.i18n("dapps.o-humanode.processes.processDefinition.cancelled.params.title"),
+            description: window.o.i18n("dapps.o-humanode.processes.processDefinition.cancelled.params.description"),
+            submitButtonText: window.o.i18n("dapps.o-humanode.processes.processDefinition.cancelled.params.submitButtontext"),
           },
           html: () => "",
           hideNav: false,
@@ -169,9 +169,9 @@ const processDefinition = (processId: string) =>
         component: HtmlViewer,
         params: {
           view: {
-            title: "Success",
-            description: "You have been verified as a unique person.",
-            submitButtonText: "OK"
+            title: window.o.i18n("dapps.o-humanode.processes.processDefinition.showSuccess.params.title"),
+            description: window.o.i18n("dapps.o-humanode.processes.processDefinition.showSuccess.params.description"),
+            submitButtonText: window.o.i18n("dapps.o-humanode.processes.processDefinition.showSuccess.params.submitButtonText")
           },
           html: () => "",
           hideNav: false,
@@ -186,9 +186,9 @@ const processDefinition = (processId: string) =>
         component: HtmlViewer,
         params: {
           view: {
-            title: "Error",
-            description: "It seems like you already got a verified account.",
-            submitButtonText: "OK"
+            title: window.o.i18n("dapps.o-humanode.processes.processDefinition.showNotSuccess.params.title"),
+            description: window.o.i18n("dapps.o-humanode.processes.processDefinition.showNotSuccess.params.description"),
+            submitButtonText: window.o.i18n("dapps.o-humanode.processes.processDefinition.showNotSuccess.params.submitButtonText")
           },
           html: () => "",
           hideNav: false,

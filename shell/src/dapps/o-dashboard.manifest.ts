@@ -7,26 +7,21 @@ import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { Link } from "@o-platform/o-interfaces/dist/routables/link";
 
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import { Environment } from "../shared/environment";
 
 const index: Page<any, DappState> = {
   isSystem: false,
   routeParts: [],
   component: Home,
-  title: "Home",
+  title: "common.home",
   type: "page",
 };
-const monitor: Page<any, DappState> = {
-  isSystem: true,
-  routeParts: ["=monitor"],
-  component: Monitor,
-  title: "Monitoring",
-  type: "page",
-};
+
 const invites: Page<any, DappState> = {
   routeParts: ["=invites"],
   component: RedeemedInvitations,
   isSystem: false,
-  title: "You invited",
+  title: "common.youInvited",
   position: "main",
   type: "page",
 };
@@ -44,21 +39,21 @@ const inviteLeaderboard: Page<any, DappState> = {
   routeParts: ["=leaderboard"],
   component: InviteLeaderboard,
   isSystem: false,
-  title: "Invite Leaderboard",
+  title: "common.inviteLeaderboard",
   type: "page",
 };
 
 const externalChat: Link<any, DappState> = {
   type: "link",
-  title: "Support",
+  title: "common.support",
   icon: "chat",
   routeParts: [],
   openInNewTab: true,
-  url: () => "https://discord.gg/CS6xq7jECR",
+  url: () => window.o.i18n("common.supportUrl"),
 };
 const externalForum: Link<any, DappState> = {
   type: "link",
-  title: "Forum",
+  title: "common.forum",
   icon: "forum",
   routeParts: [],
   openInNewTab: true,
@@ -74,7 +69,7 @@ const login: Page<any, DappState> = {
 
 const externalBlog: Link<any, DappState> = {
   type: "link",
-  title: "Blog",
+  title: "common.blog",
   icon: "blog",
   routeParts: [],
   openInNewTab: true,
@@ -83,7 +78,7 @@ const externalBlog: Link<any, DappState> = {
 
 const externalWhitepaper: Link<any, DappState> = {
   type: "link",
-  title: "Whitepaper",
+  title: "common.whitepaper",
   icon: "whitepaper",
   routeParts: [],
   openInNewTab: true,
@@ -128,5 +123,5 @@ export const home: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [index, invites, inviteLeaderboard, sharePersonalInvite, externalChat, externalForum, monitor],
+  routables: [index, invites, inviteLeaderboard, sharePersonalInvite, externalChat, externalForum],
 };

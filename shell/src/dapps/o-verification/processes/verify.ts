@@ -30,13 +30,13 @@ const processDefinition = (processId: string) =>
         onlyWhenDirty: false,
         params: {
           view: {
-            title: window.i18n("dapps.o-verification.processes.verify.title"),
+            title: window.o.i18n("dapps.o-verification.processes.verify.title"),
             description: "",
-            placeholder: window.i18n("dapps.o-verification.processes.verify.placeholder"),
-            submitButtonText: window.i18n("dapps.o-verification.processes.verify.submitButtonText"),
+            placeholder: window.o.i18n("dapps.o-verification.processes.verify.placeholder"),
+            submitButtonText: window.o.i18n("dapps.o-verification.processes.verify.submitButtonText"),
           },
-          placeholder: window.i18n("dapps.o-verification.processes.verify.placeholder"),
-          submitButtonText: window.i18n("dapps.o-verification.processes.verify.submitButtonText"),
+          placeholder: window.o.i18n("dapps.o-verification.processes.verify.placeholder"),
+          submitButtonText: window.o.i18n("dapps.o-verification.processes.verify.submitButtonText"),
         },
         navigation: {
           next: "#addMember",

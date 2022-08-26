@@ -18,59 +18,39 @@ import MyTicketDetail from "./o-marketplace/pages/MyTicketDetail.svelte";
 import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
 import PleaseSignIn from "./o-marketplace/pages/PleaseSignIn.svelte";
 import ShoppingCart from "./o-marketplace/pages/ShoppingCart.svelte";
-// import { upsertOffer } from "./o-marketplace/processes/upsertOffer";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
-import { cartContents } from "./o-marketplace/stores/shoppingCartStore";
-import { Offer, ProfileType } from "../shared/api/data/types";
-import { offers } from "../shared/stores/offers";
+import { ProfileType } from "../shared/api/data/types";
 import { push } from "svelte-spa-router";
 import { me } from "../shared/stores/me";
 import CategoryEntryDetail from "./o-marketplace/pages/CategoryEntryDetail.svelte";
+import {addToCart, AddToCartContextData} from "./o-marketplace/processes/addToCart";
 
-const addToCart: Trigger<{ id: Number }, DappState> = {
+const addToCartTrigger: Trigger<{ id: number, shopId: number }, DappState> = {
   isSystem: true,
   routeParts: ["=actions", "=addToCart", ":id", ":shopId"],
   title: "Add to Cart",
   type: "trigger",
   action: async (params) => {
-    let offer: Offer & { shopId: number };
-    let cart: (Offer & { shopId: number })[] = [];
     let authenticated: boolean = false;
-    if (!params.id) {
-      return;
-    }
 
-    const unsubMe = me.subscribe((o) => {
+    me.subscribe((o) => {
       if (o) {
         authenticated = true;
       }
-    });
-    unsubMe();
+    })();
 
-    if (authenticated) {
-      const o = await offers.findById(parseInt(params.id.toString()));
-
-      if (o) {
-        offer = {
-          ...o,
-          shopId: 0,
-        };
-
-        const unsubCart = cartContents.subscribe((o) => {
-          cart = o ? o : [];
-        });
-        unsubCart();
-
-        cartContents.update((o) => (cartContents ? [...cart, offer] : [offer]));
-        push(`#/marketplace/cart`);
-      } else {
-        console.log("offer broken");
-      }
-    } else {
+    if (!authenticated) {
       console.log("not authenticated");
-      push(`#/marketplace/pleasesignin`);
+      await push(`#/marketplace/pleasesignin`);
+      return;
     }
+
+    window.o.runProcess(addToCart, <AddToCartContextData>{
+      offerId: parseInt(params.id.toString()),
+      shopId: parseInt(params.shopId.toString()),
+      redirectTo: `#/marketplace/cart`
+    });
   },
 };
 
@@ -93,7 +73,7 @@ const list: Page<any, DappState> = {
 const locations: Page<any, DappState> = {
   routeParts: ["=locations"],
   component: Locations,
-  title: "Locations",
+  title: "common.locations",
   type: "page",
 };
 
@@ -175,19 +155,19 @@ const myOffersDetail: Page<any, DappState> = {
   position: "modal",
   routeParts: ["=my-offers", ":id"],
   component: OfferDetail,
-  title: "Offer detail",
+  title: "common.offerDetail",
   type: "page",
 };
 const myPurchases: Page<any, DappState> = {
   routeParts: ["=my-purchases"],
   component: MyPurchases,
-  title: "My purchases",
+  title: "common.myPurchases",
   type: "page",
 };
 const myTickets: Page<any, DappState> = {
   routeParts: ["=my-tickets"],
   component: MyTickets,
-  title: "My tickets",
+  title: "common.myTickets",
   type: "page",
 };
 const scanPurchase: Page<any, DappState> = {
@@ -275,7 +255,7 @@ export const marketplace: DappManifest<DappState> = {
     locations,
     list,
     market,
-    addToCart,
+    addToCartTrigger,
     pleaseSignIn,
     // favorites,
     offerDetail,

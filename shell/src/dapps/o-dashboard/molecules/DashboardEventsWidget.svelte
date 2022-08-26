@@ -2,13 +2,14 @@
 import CitizensProgressBar from "../atoms/CitizensProgressBar.svelte";
 import { push } from "svelte-spa-router";
 import {stats} from "../../../shared/stores/stats";
+import Label from "../../../shared/atoms/Label.svelte";
 
 </script>
 
 <section class="p-4 mb-4 bg-white rounded-lg shadow-md dashboard-card">
   <div class="w-full text-center">
-    <h1>WANT MORE PARTIES?</h1>
-    <span class="text-dark-lightest">Invite your friends.</span>
+    <h1><Label key="dapps.o-dashboard.molecules.dashboardEventsWidget.wantMoreParties" /></h1>
+    <span class="text-dark-lightest"><Label key="dapps.o-dashboard.molecules.dashboardEventsWidget.inviteYourFriends" /></span>
   </div>
   {#if $stats}
     <CitizensProgressBar

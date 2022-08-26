@@ -105,6 +105,7 @@ module.exports = {
         darkgrey: "#E2E7EB",
         background: "#F5F8FF",
         newbackground: "#EFF1F7",
+        pagebackground: "#EDEDED",
 
         gradient1: "#1DD6A4",
         gradient2: "#41C7F1",

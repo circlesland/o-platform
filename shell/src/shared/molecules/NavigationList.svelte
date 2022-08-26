@@ -1,10 +1,9 @@
 <script lang="ts">
-import Icons from "src/shared/molecules/Icons.svelte";
-import { clickOutside } from "src/shared/functions/clickOutside.ts";
 import { onMount } from "svelte";
-import LinkPill from "src/shared/atoms/LinkPill.svelte";
-import { getRouteList } from "src/shared/functions/getRouteList";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { _ } from "svelte-i18n";
+import LinkPill from "../atoms/LinkPill.svelte";
+import {getRouteList} from "../functions/getRouteList";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: RuntimeDapp<any>;
@@ -34,14 +33,16 @@ $: {
   <div class="relative flex-shrink-0 w-auto pt-4 pb-12 space-y-2">
     <LinkPill
       props="{{
-        text: 'Privacy Policy',
+        text: $_('common.privacyPolicy'),
+        i18nKey: 'common.privacyPolicy',
         link: 'https://coda.io/@circlesland/terms/privacy-policy-3',
         extern: true,
         isSmall: true,
       }}" />
     <LinkPill
       props="{{
-        text: 'Terms of Service',
+        text: $_('common.termsOfService'),
+        i18nKey: 'common.termsOfService',
         link: 'https://coda.io/@circlesland/terms',
         extern: true,
         isSmall: true,
@@ -52,7 +53,8 @@ $: {
         <LinkPill
           props="{{
             icon: navItem.icon,
-            text: navItem.title,
+            text: $_(`${navItem.title}`),
+            i18nKey: navItem.title,
             link: navItem.url,
             extern: navItem.extern,
             isActive: navItem.isActive,

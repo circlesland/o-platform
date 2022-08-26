@@ -46,13 +46,13 @@ const processDefinition = (processId: string) =>
         component: TextEditor,
         params: {
           view: {
-            title: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.title"),
-            description: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.description"),
-            placeholder: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.placeholder"),
-            submitButtonText: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.submitButtonText"),
+            title: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.title"),
+            description: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.description"),
+            placeholder: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.placeholder"),
+            submitButtonText: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.submitButtonText"),
           },
         },
-        dataSchema: yup.string().required(window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.enterOrganisationName")),
+        dataSchema: yup.string().required(window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.name.enterOrganisationName")),
         navigation: {
           next: "#country",
         },
@@ -62,10 +62,10 @@ const processDefinition = (processId: string) =>
         field: "cityGeonameid",
         params: {
           view: {
-            title: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.country.title"),
-            description: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.country.description"),
-            placeholder: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.country.placeholder"),
-            submitButtonText: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.country.submitButtonText"),
+            title: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.country.title"),
+            description: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.country.description"),
+            placeholder: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.country.placeholder"),
+            submitButtonText: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.country.submitButtonText"),
           }
         },
         navigation: {
@@ -79,17 +79,17 @@ const processDefinition = (processId: string) =>
         component: TextareaEditor,
         params: {
           view: {
-            title: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.title"),
-            description: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.description"),
-            placeholder: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.placeholder"),
-            submitButtonText: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.submitButtonText"),
+            title: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.title"),
+            description: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.description"),
+            placeholder: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.placeholder"),
+            submitButtonText: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.submitButtonText"),
           }
         },
         dataSchema: yup
           .string()
           .nullable()
           .notRequired()
-          .max(150, window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.maximumChars")),
+          .max(150, window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.description.maximumChars")),
         navigation: {
           next: "#avatarUrl",
           canSkip: () => true,
@@ -103,10 +103,10 @@ const processDefinition = (processId: string) =>
         },
         params: {
           view: {
-            title: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.avatar.title"),
-            description: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.avatar.description"),
-            placeholder: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.avatar.placeholder"),
-            submitButtonText: window.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.avatar.submitButtonText"),
+            title: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.avatar.title"),
+            description: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.avatar.description"),
+            placeholder: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.avatar.placeholder"),
+            submitButtonText: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.avatar.submitButtonText"),
           },
         },
         navigation: {

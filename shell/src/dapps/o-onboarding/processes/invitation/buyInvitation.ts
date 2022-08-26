@@ -65,7 +65,11 @@ const processDefinition = (processId: string) =>
         field: "__",
         component: HtmlViewer,
         params: {
-          view: editorContent.info,
+          view: (editorContent.info = {
+            title: "Get invited",
+            description: "Find somebody who can give you an invite code to join.",
+            submitButtonText: "I have a code",
+          }),
           html: () => "",
           hideNav: false,
         },
@@ -77,9 +81,17 @@ const processDefinition = (processId: string) =>
         field: "inviteCode",
         component: TextareaEditor,
         params: {
-          view: editorContent.checkInviteCode,
+          view: (editorContent.checkInviteCode = {
+            title: "Enter invitation code",
+            description: "Please enter your invitation code below to get started.",
+            submitButtonText: "Verify",
+          }),
         },
-        dataSchema: yup.string().required(window.i18n("dapps.o-onboarding.processes.invitation.buyInvitation.editorContent.dataSchemaRequired")),
+        dataSchema: yup
+          .string()
+          .required(
+            window.o.i18n("dapps.o-onboarding.processes.invitation.buyInvitation.editorContent.dataSchemaRequired")
+          ),
         navigation: {
           next: "#redeemCode",
         },
@@ -98,7 +110,7 @@ const processDefinition = (processId: string) =>
             if (claimResult.errors) {
               context.messages["inviteCode"] = claimResult.errors.map((o) => o.message).join(" \n");
               throw new Error(
-                window.i18n(
+                window.o.i18n(
                   "dapps.o-onboarding.processes.invitation.buyInvitation.editorContent.couldNotClaimInvitation",
                   { values: { contextMessages: context.messages["inviteCode"] } }
                 )
@@ -107,7 +119,7 @@ const processDefinition = (processId: string) =>
             if (!claimResult.data.claimInvitation.success) {
               context.messages["inviteCode"] = claimResult.data.claimInvitation.error;
               throw new Error(
-                window.i18n(
+                window.o.i18n(
                   "dapps.o-onboarding.processes.invitation.buyInvitation.editorContent.couldNotClaimInvitation",
                   { values: { contextMessages: context.messages["inviteCode"] } }
                 )

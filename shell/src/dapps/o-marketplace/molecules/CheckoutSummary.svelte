@@ -2,16 +2,15 @@
 import ProcessNavigation from "@o-platform/o-editors/src/ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { Currency } from "../../../shared/currency";
-import { _ } from "svelte-i18n";
 import ShopMetadata from "../../../shared/molecules/ShopMetadata.svelte";
-import {onMount} from "svelte";
+import { onMount } from "svelte";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let context: any;
 let metadataError: Boolean = false;
 let placeholder: Boolean = true;
 let metadata: any;
 let isLoading: Boolean = true;
-
 
 function submit() {
   if (context.data.shop.purchaseMetaDataKeys && metadataError) {
@@ -90,20 +89,20 @@ function onkeydown(e: KeyboardEvent) {
       </div>
       <div class="flex items-center justify-end w-full -mt-2">
         <span class="mr-2 text-sm font-medium text-gray-400">
-          {$_("dapps.o-marketplace.molecules.checkoutSummary.total")}
+          <Label key="dapps.o-marketplace.molecules.checkoutSummary.total" />
         </span>
         <span class="w-20 text-lg font-bold text-right">
           {context.data.total.toFixed(2)} €
         </span>
       </div>
-      <div class="flex items-center justify-end w-full -mt-2">
+      <!-- <div class="flex items-center justify-end w-full -mt-2">
         <span class="mr-2 text-sm font-medium text-gray-400">
-          {$_("dapps.o-marketplace.molecules.checkoutSummary.tax")}
+          <Label key="dapps.o-marketplace.molecules.checkoutSummary.tax"  />
         </span>
         <span class="w-20 text-lg text-right font-primary text-dark-lightest">
-          {((19 / 100) * context.data.total).toFixed(2)} €
+          {((context.data.total.toFixed(2) / 1.19) * (19 / 100)).toFixed(2)} €
         </span>
-      </div>
+      </div> -->
       <div class="flex items-center justify-end w-full -mt-2">
         <span class="mr-2 text-sm font-medium text-gray-400">Time Circles:</span>
         <span class="w-20 text-lg text-right font-primary text-dark-lightest"

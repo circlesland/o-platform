@@ -1,11 +1,15 @@
 <script lang="ts">
 import { push } from "svelte-spa-router";
 import { Offer, ShopCategoryEntry } from "../../../shared/api/data/types";
-import UserImage from "src/shared/atoms/UserImage.svelte";
+import UserImage from "../../../shared/atoms/UserImage.svelte";
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
-import { cartContents } from "../stores/shoppingCartStore";
+import Icons from "../../../shared/molecules/Icons.svelte";
 import { truncateString } from "../../../shared/functions/truncateString";
-import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
+import { addToCart, AddToCartContextData } from "../processes/addToCart";
+import { getTrustedByShop } from "../processes/getTrustedByShop";
+import { trustFromContactMetadata } from "../../../shared/functions/trustFromContactMetadata";
+import { contacts } from "../../../shared/stores/contacts";
 
 export let entry: ShopCategoryEntry;
 export let shopId: number;
@@ -15,9 +19,28 @@ function loadDetailPage() {
   push("#/marketplace/detail/" + shopId + "/" + entry.id);
 }
 
-function addToCart(item: Offer & { shopId: number }) {
-  $cartContents = $cartContents ? [...$cartContents, item] : [item];
-  push(`#/marketplace/cart`);
+async function _addToCart(item: Offer & { shopId: number }) {
+  console.log("entry", entry);
+  const contact = await contacts.findBySafeAddress(entry.product.createdByProfile.circlesAddress);
+  const { trustIn, trustOut } = trustFromContactMetadata(contact);
+
+  if (trustIn > 0) {
+    window.o.runProcess(addToCart, <AddToCartContextData>{
+      offerId: parseInt(item.id.toString()),
+      shopId: parseInt(item.shopId.toString()),
+      redirectTo: `#/marketplace/cart`,
+    });
+  } else {
+    window.o.runProcess(getTrustedByShop, {
+      successAction: () => {
+        window.o.runProcess(addToCart, <AddToCartContextData>{
+          offerId: parseInt(item.id.toString()),
+          shopId: parseInt(item.shopId.toString()),
+          redirectTo: `#/marketplace/cart`,
+        });
+      },
+    });
+  }
 }
 
 let now = new Date();
@@ -53,6 +76,15 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
             </div>
           {/each}
         {/if}
+        {#if entry.product.minAge}
+          <div class="absolute right-0 py-2 pl-4 pr-2 mt-2 text-xs rounded-l-full bottom-4 bg-light-lightest">
+            {#if entry.product.minAge < 18}
+              <Icons icon="under16" customClass="inline" size="{10}" />
+            {:else}
+              <Icons icon="under18" customClass="inline" size="{10}" />
+            {/if}
+          </div>
+        {/if}
       </div>
     </header>
     <div
@@ -79,16 +111,22 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
 
       <div class="flex flex-row space-x-4">
         <div class="">
-          <button
-            type="submit"
-            class="relative btn btn-primary btn-square"
-            on:click="{() => addToCart({ ...entry.product, shopId: shopId })}">
-            <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
-          </button>
+          {#if entry.product.currentInventory !== null && entry.product.currentInventory < 1}
+            <button type="submit" class="relative btn btn-disabled">
+              <Label key="dapps.o-marketplace.pages.offerDetail.soldOut" />
+            </button>
+          {:else}
+            <button
+              type="submit"
+              class="relative btn btn-primary btn-square"
+              on:click="{() => _addToCart({ ...entry.product, shopId: shopId })}">
+              <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
+            </button>
+          {/if}
         </div>
         <div class="flex-grow">
           <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => loadDetailPage(shopId)}">
-            {$_("dapps.o-marketplace.atoms.offerCard.details")}
+            <Label key="dapps.o-marketplace.atoms.offerCard.details" />
             <div class="absolute mr-1 right-2">
               <Icon name="eye" class="w-6 h-6 heroicon smallicon" />
             </div>

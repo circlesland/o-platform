@@ -1,10 +1,12 @@
 <script lang="ts">
 import Icons from "./../molecules/Icons.svelte";
 import { media } from "../stores/media";
+import Label from "./Label.svelte";
 
 export let props: {
   icon: string;
   text: string;
+  i18nKey: string;
   link: string;
   extern: boolean;
   isActive: boolean;
@@ -23,6 +25,7 @@ if ($media.small) {
 <a
   href="{props.extern ? props.link : '/#/' + props.link}"
   class="flex content-center justify-start space-x-2"
+  data-i18n-key="{props.i18nKey}"
   target="{props.extern ? '_blank' : '_self'}"
   on:click="{() => {
     if ($media.small) {
@@ -43,8 +46,12 @@ if ($media.small) {
     {#if props.icon}
       <Icons icon="{props.icon}" size="{iconsize}" />
     {/if}
-    {#if props.text}
-      <div>{props.text}</div>
-    {/if}
+    <div>
+      {#if !props.i18nKey && props.text}
+        {props.text}
+      {:else if props.i18nKey}
+        <Label key="{props.i18nKey}" />
+      {/if}
+    </div>
   </div>
 </a>

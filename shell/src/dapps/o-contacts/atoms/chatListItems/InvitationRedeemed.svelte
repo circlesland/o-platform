@@ -8,7 +8,6 @@ import {
 } from "../../../../shared/api/data/types";
 import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { onMount } from "svelte";
-import { _ } from "svelte-i18n";
 
 export let event: ProfileEvent;
 
@@ -33,10 +32,10 @@ function getValues(): {
   icon: string;
   actions: JumplistItem[];
 } {
-  let icon = `${$_("dapps.o-contacts.atoms.chatListItems.invitationRedeemed.getValues.icon")}`;
-    let title = "";
-    let titleClass = "";
-    let text = "";
+  let icon = "trust";
+  let title = "";
+  let titleClass = "";
+  let text = "";
   let actions: JumplistItem[] = [];
 
   const invitationRedeemed = <InvitationRedeemed>event.payload;
