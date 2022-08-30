@@ -2177,6 +2177,16 @@ query getStringsByMaxVersionKeyAndValue($key: String, $value: String) {
   }
 }
 
+query getStringsFromLatestValuesByValue($value: String) {
+  getStringsFromLatestValuesByValue(value: $value) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+
 query getFirst20StringsByMaxVersionKey($key: String) {
   getFirst20StringsByMaxVersionKey(key: $key) {
     lang

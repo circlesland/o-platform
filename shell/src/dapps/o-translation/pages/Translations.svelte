@@ -5,7 +5,7 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import TreeView from "./TreeView.svelte";
 import EditorView from "./EditorView.svelte";
-import { GetPaginatedStringsDocument, I18n, QueryGetPaginatedStringsArgs } from "../../../shared/api/data/types";
+import { GetPaginatedStringsDocument, GetStringsFromLatestValuesByValueDocument, I18n, QueryGetPaginatedStringsArgs, QueryGetStringsFromLatestValuesByValueArgs } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { ApiClient } from "../../../shared/apiConnection";
 
@@ -29,6 +29,13 @@ async function get20Strings(pagination_key: string, searchKey: string) {
     pagination_key: pagination_key,
   });
   i18nData = i18nData.concat(queryResult);
+}
+
+async function getSearchString(searchString: string) {
+  let queryResult = await ApiClient.query<I18n[], QueryGetStringsFromLatestValuesByValueArgs>(GetStringsFromLatestValuesByValueDocument ,{
+    value: searchString,
+  });
+  i18nData = queryResult;
 }
 </script>
 
@@ -57,7 +64,7 @@ async function get20Strings(pagination_key: string, searchKey: string) {
     <EditorView
       i18nData="{i18nData}"
       searchKey="{keyFilter}"
-      on:stringSearch="{(event) => (stringFilter = event.detail.searchString)}"
+      on:stringSearch="{(event) => (getSearchString(event.detail.searchString))}"
       on:loadMoreStrings="{() => {
         pagination_key = i18nData[i18nData.length - 1].pagination_key;
         get20Strings(pagination_key, keyFilter);
