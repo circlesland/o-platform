@@ -124,7 +124,12 @@ const processDefinition = (processId: string) =>
         component: TextareaEditor,
         isSensitive: true,
         params: {
-          view: editorContent.seedPhrase,
+          view: editorContent.seedPhrase = {
+            title: window.o.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.title"),
+            description: window.o.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.description"),
+            placeholder: window.o.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.placeholder"),
+            submitButtonText: window.o.i18n("dapps.o-onboarding.processes.connectSafe.editorContent.seedPhrase.submitButtonText"),
+          },
         },
         navigation: {
           next: "#findSafe",
