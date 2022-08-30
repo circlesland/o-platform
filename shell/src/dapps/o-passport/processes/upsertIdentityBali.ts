@@ -9,7 +9,7 @@ import EmailAddressEditor from "@o-platform/o-editors/src/EmailAddressEditor.sve
 import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import * as yup from "yup";
-import {promptChoice, PromptChoiceSpec} from "./identify/prompts/promptChoice";
+import { promptChoice, PromptChoiceSpec } from "./identify/prompts/promptChoice";
 import ChoiceSelector from "@o-platform/o-editors/src/ChoiceSelector.svelte";
 import { promptFile } from "../../../shared/api/promptFile";
 import { promptCity } from "../../../shared/api/promptCity";
@@ -54,13 +54,17 @@ const editorContent: { [x: string]: EditorViewContext } = {
     title: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.title"),
     description: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.description"),
     placeholder: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.placeholder"),
-    submitButtonText: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.submitButtonText"),
+    submitButtonText: window.o.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.firstName.submitButtonText"
+    ),
   },
   lastName: {
     title: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.lastName.title"),
     description: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.lastName.description"),
     placeholder: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.lastName.placeholder"),
-    submitButtonText: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.lastName.submitButtonText"),
+    submitButtonText: window.o.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.lastName.submitButtonText"
+    ),
   },
   emailAddress: {
     title: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.emailAddress.title"),
@@ -92,7 +96,9 @@ const editorContent: { [x: string]: EditorViewContext } = {
     title: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.title"),
     description: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.description"),
     placeholder: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.placeholder"),
-    submitButtonText: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.submitButtonText"),
+    submitButtonText: window.o.i18n(
+      "dapps.o-passport.processes.upsertIdentity.editorContent.imageView.submitButtonText"
+    ),
   },
   newsletter: {
     title: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.title"),
@@ -171,7 +177,9 @@ const processDefinition = (processId: string) =>
         params: {
           view: (editorContent.newsletter = {
             title: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.title"),
-            description: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.description"),
+            description: window.o.i18n(
+              "dapps.o-passport.processes.upsertIdentity.editorContent.newsletter.description"
+            ),
             placeholder: "",
             submitButtonText: "",
           }),
@@ -208,12 +216,14 @@ const processDefinition = (processId: string) =>
         field: "firstName",
         component: TextEditor,
         params: {
-          view: editorContent.firstName = {
+          view: (editorContent.firstName = {
             title: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.title"),
             description: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.description"),
             placeholder: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.placeholder"),
-            submitButtonText: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.firstName.submitButtonText"),
-          },
+            submitButtonText: window.o.i18n(
+              "dapps.o-passport.processes.upsertIdentity.editorContent.firstName.submitButtonText"
+            ),
+          }),
         },
         dataSchema: yup.string().required(window.o.i18n("dapps.o-passport.processes.upsertIdentity.requiredName")),
         navigation: {
@@ -227,12 +237,14 @@ const processDefinition = (processId: string) =>
         field: "lastName",
         component: TextEditor,
         params: {
-          view: editorContent.lastName = {
+          view: (editorContent.lastName = {
             title: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.lastName.title"),
             description: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.lastName.description"),
             placeholder: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.lastName.placeholder"),
-            submitButtonText: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.lastName.submitButtonText"),
-          },
+            submitButtonText: window.o.i18n(
+              "dapps.o-passport.processes.upsertIdentity.editorContent.lastName.submitButtonText"
+            ),
+          }),
         },
         navigation: {
           next: "#gender",
@@ -243,55 +255,66 @@ const processDefinition = (processId: string) =>
 
       gender: promptChoice(<PromptChoiceSpec<any, any>>{
         id: "gender",
-        options:[{
-          key: "male",
-          target: "#male",
-          label: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.gender.option.male")
-        }, {
-          key: "female",
-          target: "#female",
-          label: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.gender.option.female")
-        }, {
-          key: "divers",
-          target: "#divers",
-          label: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.gender.option.divers")
-        }],
+        options: [
+          {
+            key: "male",
+            target: "#male",
+            label: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.gender.option.male"),
+          },
+          {
+            key: "female",
+            target: "#female",
+            label: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.gender.option.female"),
+          },
+          {
+            key: "divers",
+            target: "#divers",
+            label: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.gender.option.divers"),
+          },
+        ],
         params: {
           view: {
             title: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.gender.title"),
-            description: window.o.i18n("apps.o-passport.processes.upsertIdentity.editorContent.gender.description")
-          }
+            description: window.o.i18n("apps.o-passport.processes.upsertIdentity.editorContent.gender.description"),
+          },
         },
         component: ChoiceSelector,
         navigation: {
           canSkip: () => true,
           canGoBack: () => true,
           next: "#age",
-          previous: "#lastName"
-        }
+          previous: "#lastName",
+        },
       }),
 
       male: {
         id: "male",
-        entry: (ctx) => ctx.data.gender = "MALE",
-        always: "#age"
+        entry: (ctx) => (ctx.data.gender = "MALE"),
+        always: "#age",
       },
       female: {
         id: "female",
-        entry: (ctx) => ctx.data.gender = "FEMALE",
-        always: "#age"
+        entry: (ctx) => (ctx.data.gender = "FEMALE"),
+        always: "#age",
       },
       divers: {
         id: "divers",
-        entry: (ctx) => ctx.data.gender = "DIVERS",
-        always: "#age"
+        entry: (ctx) => (ctx.data.gender = "DIVERS"),
+        always: "#age",
       },
 
       age: prompt<UpsertIdentityContext, any>({
         field: "age",
         component: NumberEditor,
         params: {
-          view: editorContent.age
+          view: (editorContent.age = {
+            title: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.age.title"),
+            description: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.age.description"),
+            placeholder: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.age.placeholder"),
+            submitButtonText: window.o.i18n(
+              "dapps.o-passport.processes.upsertIdentity.editorContent.age.submitButtonText"
+            ),
+          }),
         },
         navigation: {
           next: "#country",
@@ -304,12 +327,14 @@ const processDefinition = (processId: string) =>
         id: "country",
         field: "cityGeonameid",
         params: {
-          view: editorContent.city = {
+          view: (editorContent.city = {
             title: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.city.title"),
             description: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.city.description"),
             placeholder: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.city.placeholder"),
-            submitButtonText: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.city.submitButtonText"),
-          },
+            submitButtonText: window.o.i18n(
+              "dapps.o-passport.processes.upsertIdentity.editorContent.city.submitButtonText"
+            ),
+          }),
         },
         navigation: {
           next: "#avatarUrl",
@@ -325,12 +350,14 @@ const processDefinition = (processId: string) =>
           context.data.avatarMimeType = event.data?.mimeType;
         },
         params: {
-          view: editorContent.imageView = {
+          view: (editorContent.imageView = {
             title: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.title"),
             description: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.description"),
             placeholder: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.placeholder"),
-            submitButtonText: window.o.i18n("dapps.o-passport.processes.upsertIdentity.editorContent.imageView.submitButtonText"),
-          },
+            submitButtonText: window.o.i18n(
+              "dapps.o-passport.processes.upsertIdentity.editorContent.imageView.submitButtonText"
+            ),
+          }),
         },
         navigation: {
           next: "#upsertIdentity",
@@ -373,7 +400,7 @@ const processDefinition = (processId: string) =>
                 status: "",
                 displayCurrency: context.data.displayCurrency,
                 age: context.data.age,
-                gender: context.data.gender
+                gender: context.data.gender,
               },
             });
             sessionStorage.setItem("askedForEmailAddress", "true");
