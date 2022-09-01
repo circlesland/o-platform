@@ -59,15 +59,6 @@ async function writeValueToDb(value: string, lang: string, key: string) {
   });
 }
 
-function calculateNegativeMargin() {
-  keyArray = keyArray.concat(keyArray.push(dataKey.split(".")));
-  let y = 4 * keyArray[0].length;
-  negativeMargin = `-ml-${y}`;
-  console.log("y", y);
-  console.log(keyArray[0].length);
-  console.log("negativMargin", negativeMargin);
-}
-//calculateNegativeMargin();
 </script>
 
 <div class="flex-row min-w-[600px] {editBorder} rounded-box p-5 hover:border-2 hover:border-dark-dark hover:border-dotted">

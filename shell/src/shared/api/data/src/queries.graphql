@@ -2197,8 +2197,8 @@ query getFirst20StringsByMaxVersionKey($key: String) {
   }
 }
 
-query getPaginatedStrings($pagination_key: String, $key: String) {
-  getPaginatedStrings(pagination_key: $pagination_key, key: $key) {
+query getPaginatedStrings($pagination_key: String, $key: String, $lang: String) {
+  getPaginatedStrings(pagination_key: $pagination_key, key: $key, lang: $lang) {
     lang
     key
     createdBy

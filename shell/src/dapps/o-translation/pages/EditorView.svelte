@@ -17,7 +17,6 @@ import StringEditor from "../atoms/StringEditor.svelte";
 import { Environment } from "../../../shared/environment";
 import { createEventDispatcher } from "svelte";
 
-
 let keyFilter: string = "";
 let valueFilter: string = "";
 let allLanguages: string[] = [];
@@ -37,7 +36,7 @@ let filteredItems: I18n[] = [];
 
 let offset: number = 0;
 
-
+let filteredI18nData: I18n[] = [];
 
 async function getAllLanguages() {
   const queryResult = await ApiClient.query<I18n[], GetAllStringsByMaxVersionQuery>(
@@ -75,26 +74,20 @@ function sortByKey(dataToSort: I18n[]) {
 }
 
 async function reload() {
-
-  //console.log(i18nData, "momomomo");
-
-  //console.log("reloaded", items);
   i18nData = i18nData.concat(nextData);
   items = i18nData;
-  console.log("new i18ndata", i18nData)
+  console.log("new i18ndata", i18nData);
+  filteredI18nData = i18nData.filter((o) => isSelected(o.lang))
+  console.log("filtered i18ndata", filteredI18nData)
 }
 
 $: {
-  //reload();
-  //  filterItems(searchKey, valueFilter);
-  //  items;
   i18nData;
   filteredItems;
-  //  console.log("schmogesfinger", i18nData.length);
-  //  loadMore(i18nData.length, searchKey);
+
   stringsAmount;
   nextData;
-  searchKey
+  searchKey;
 }
 
 onMount(async () => {
@@ -102,9 +95,6 @@ onMount(async () => {
   reload();
 
   getAllLanguages();
-
-  //get20Strings(offset, searchKey);
-
 });
 
 function filterItems(keyFilter: string, valueFilter: string) {
@@ -125,28 +115,49 @@ const toggleLanguage = async (data: string) => {
   } else {
     languageList.push(data);
   }
+  //i18nData = i18nData.filter((o) => isSelected(o.lang))
 };
-
-
-
 
 async function getStringCount(searchKey: string) {
   let result = await ApiClient.query<number, QueryCountStringsArgs>(CountStringsDocument, {
     key: searchKey,
   });
-  return result
+  return result;
 }
 </script>
+
+<!--<form
+    class="flex grow justify-center"
+    on:submit|preventDefault="{() => {
+      refreshView();
+      getFilteredI18nDataFromDb(keyFilter, searchString);
+      dispatch('keySearch', { keyFilter: keyFilter, i18nData: displayedI18nData });
+    }}">
+    <input bind:value="{keyFilter}" class="input rounded-r-none" type="text" placeholder="dapps.o-banking..." />
+    {#if keyFilter == ""}
+      <button class="btn-primary btn-disabled btn-md rounded-btn rounded-l-none bg-gray-400 text-white">
+        search
+      </button>
+    {:else}
+      <button class="btn-primary btn-md rounded-btn rounded-l-none">search</button>
+    {/if}
+  </form>-->
 
 <section class="flex flex-col items-center justify-center p-6">
   <div class="w-full flex flex-row flex-wrap items-stretch justify-center">
     <form
-      on:input="{() => {
-        filterItems(searchKey, valueFilter);
+      on:submit|preventDefault="{() => {
         dispatch('stringSearch', { searchString: valueFilter });
       }}">
-      <input bind:value="{valueFilter}" class="input m-1" type="text" placeholder="String" />
+      <input bind:value="{valueFilter}" class="input rounded-r-none" type="text" placeholder="String" />
     </form>
+    {#if valueFilter == ""}
+      <button class="btn-primary btn-disabled btn-md rounded-btn rounded-l-none bg-gray-400 text-white">
+        search
+      </button>
+    {:else}
+      <button class="btn-primary btn-md rounded-btn rounded-l-none">search</button>
+    {/if}
     {#each allLanguages as languageCode}
       <button
         on:click="{() => {
@@ -164,7 +175,6 @@ async function getStringCount(searchKey: string) {
     <div class="w-full">
       <StringEditor
         on:save="{() => reload()}"
-        on:searchKey="{(e) => filterItems(e.detail.keyLink, valueFilter)}"
         dataString="{data.value}"
         dataKey="{data.key}"
         dataLang="{data.lang}"
@@ -176,7 +186,7 @@ async function getStringCount(searchKey: string) {
     on:click="{async () => {
       stringsAmount = await getStringCount(searchKey);
       console.log('string amount', stringsAmount);
-      dispatch("loadMoreStrings")
+      dispatch('loadMoreStrings');
     }}">
     load more
   </button>

@@ -8,6 +8,7 @@ import EditorView from "./EditorView.svelte";
 import { GetPaginatedStringsDocument, GetStringsFromLatestValuesByValueDocument, I18n, QueryGetPaginatedStringsArgs, QueryGetStringsFromLatestValuesByValueArgs } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { ApiClient } from "../../../shared/apiConnection";
+import { Environment } from "../../../shared/environment";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -16,19 +17,23 @@ let keyFilter: string = "";
 let stringFilter: string = "";
 let i18nData: I18n[] = [];
 let pagination_key: string = "";
+let languageList: [] = [];
+let userLanguage = Environment.userLanguage;
 
 onMount(() => {
-  get20Strings(pagination_key, keyFilter);
+  get20Strings(pagination_key, keyFilter, userLanguage);
 });
 
 $: i18nData;
 
-async function get20Strings(pagination_key: string, searchKey: string) {
+async function get20Strings(pagination_key: string, searchKey: string, lang: string) {
   let queryResult = await ApiClient.query<I18n[], QueryGetPaginatedStringsArgs>(GetPaginatedStringsDocument, {
     key: searchKey,
     pagination_key: pagination_key,
+    lang: lang
   });
   i18nData = i18nData.concat(queryResult);
+  console.log("paginated i18ndata", i18nData)
 }
 
 async function getSearchString(searchString: string) {
@@ -64,6 +69,9 @@ async function getSearchString(searchString: string) {
     <EditorView
       i18nData="{i18nData}"
       searchKey="{keyFilter}"
+      on:toggleLanguage="{(event) => {
+        languageList = event.detail.languageList
+      }}"
       on:stringSearch="{(event) => (getSearchString(event.detail.searchString))}"
       on:loadMoreStrings="{() => {
         pagination_key = i18nData[i18nData.length - 1].pagination_key;
