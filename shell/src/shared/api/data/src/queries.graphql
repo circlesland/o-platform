@@ -2208,10 +2208,6 @@ query getPaginatedStrings($pagination_key: String, $key: String, $lang: String) 
   }
 }
 
-query countStrings($key: String) {
-  countStrings(key: $key) 
-}
-
 query getAvailableLanguages {
   getAvailableLanguages {
     lang

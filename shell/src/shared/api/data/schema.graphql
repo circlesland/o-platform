@@ -1327,6 +1327,7 @@ type Query {
   getAllStringsByLanguage(lang: String): [i18n]
   getStringByLanguage(lang: String): [i18n!]
   getStringByMaxVersion(lang: String, key: String): i18n
+  getStringsByMaxVersionKeyAndValue(key: String, value: String): [i18n]
   getAvailableLanguages: [i18n]
   getAllStringsByMaxVersion: [i18n]
   getAllStringsByMaxVersionAndLang(lang: String): [i18n]

@@ -2,14 +2,9 @@
 import { onMount } from "svelte";
 
 import {
-  CountStringsDocument,
   GetAllStringsByMaxVersionDocument,
   GetAllStringsByMaxVersionQuery,
-  GetStringsByMaxVersionKeyAndValueDocument,
-  GetStringsByMaxVersionKeyAndValueQuery,
   I18n,
-  QueryCountStringsArgs,
-  QueryGetStringsByMaxVersionKeyAndValueArgs,
 } from "../../../shared/api/data/types";
 
 import { ApiClient } from "../../../shared/apiConnection";
@@ -118,12 +113,6 @@ const toggleLanguage = async (data: string) => {
   //i18nData = i18nData.filter((o) => isSelected(o.lang))
 };
 
-async function getStringCount(searchKey: string) {
-  let result = await ApiClient.query<number, QueryCountStringsArgs>(CountStringsDocument, {
-    key: searchKey,
-  });
-  return result;
-}
 </script>
 
 <!--<form
@@ -184,8 +173,6 @@ async function getStringCount(searchKey: string) {
   <button
     class="btn-primary rounded-btn"
     on:click="{async () => {
-      stringsAmount = await getStringCount(searchKey);
-      console.log('string amount', stringsAmount);
       dispatch('loadMoreStrings');
     }}">
     load more

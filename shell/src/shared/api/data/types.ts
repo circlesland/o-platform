@@ -3674,10 +3674,6 @@ export type CountStringsQueryVariables = Exact<{
 }>;
 
 
-export type CountStringsQuery = (
-  { __typename?: 'Query' }
-  & Pick<Query, 'countStrings'>
-);
 
 export type GetAvailableLanguagesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -6625,11 +6621,6 @@ export const GetPaginatedStringsDocument = gql`
   }
 }
     `;
-export const CountStringsDocument = gql`
-    query countStrings($key: String) {
-  countStrings(key: $key)
-}
-    `;
 export const GetAvailableLanguagesDocument = gql`
     query getAvailableLanguages {
   getAvailableLanguages {
@@ -7118,9 +7109,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getPaginatedStrings(variables?: GetPaginatedStringsQueryVariables): Promise<GetPaginatedStringsQuery> {
       return withWrapper(() => client.request<GetPaginatedStringsQuery>(print(GetPaginatedStringsDocument), variables));
-    },
-    countStrings(variables?: CountStringsQueryVariables): Promise<CountStringsQuery> {
-      return withWrapper(() => client.request<CountStringsQuery>(print(CountStringsDocument), variables));
     },
     getAvailableLanguages(variables?: GetAvailableLanguagesQueryVariables): Promise<GetAvailableLanguagesQuery> {
       return withWrapper(() => client.request<GetAvailableLanguagesQuery>(print(GetAvailableLanguagesDocument), variables));

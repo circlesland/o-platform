@@ -5,7 +5,13 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import TreeView from "./TreeView.svelte";
 import EditorView from "./EditorView.svelte";
-import { GetPaginatedStringsDocument, GetStringsFromLatestValuesByValueDocument, I18n, QueryGetPaginatedStringsArgs, QueryGetStringsFromLatestValuesByValueArgs } from "../../../shared/api/data/types";
+import {
+  GetPaginatedStringsDocument,
+  GetStringsFromLatestValuesByValueDocument,
+  I18n,
+  QueryGetPaginatedStringsArgs,
+  QueryGetStringsFromLatestValuesByValueArgs,
+} from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { ApiClient } from "../../../shared/apiConnection";
 import { Environment } from "../../../shared/environment";
@@ -30,16 +36,19 @@ async function get20Strings(pagination_key: string, searchKey: string, lang: str
   let queryResult = await ApiClient.query<I18n[], QueryGetPaginatedStringsArgs>(GetPaginatedStringsDocument, {
     key: searchKey,
     pagination_key: pagination_key,
-    lang: lang
+    lang: lang,
   });
   i18nData = i18nData.concat(queryResult);
-  console.log("paginated i18ndata", i18nData)
+  console.log("paginated i18ndata", i18nData);
 }
 
 async function getSearchString(searchString: string) {
-  let queryResult = await ApiClient.query<I18n[], QueryGetStringsFromLatestValuesByValueArgs>(GetStringsFromLatestValuesByValueDocument ,{
-    value: searchString,
-  });
+  let queryResult = await ApiClient.query<I18n[], QueryGetStringsFromLatestValuesByValueArgs>(
+    GetStringsFromLatestValuesByValueDocument,
+    {
+      value: searchString,
+    }
+  );
   i18nData = queryResult;
 }
 </script>
@@ -51,7 +60,7 @@ async function getSearchString(searchString: string) {
     <TreeView
       searchString="{stringFilter}"
       on:showStrings="{(event) => {
-        console.log("mutti")
+        console.log('mutti');
         if (
           !keyFilter.split('.').includes(event.detail.searchKey.split('.')[0]) ||
           keyFilter !== event.detail.searchKey
@@ -59,9 +68,9 @@ async function getSearchString(searchString: string) {
           i18nData = [];
         }
         keyFilter = event.detail.searchKey;
-        console.log("keyfilter", keyFilter)
+        console.log('keyfilter', keyFilter);
 
-        get20Strings(pagination_key, keyFilter);
+        get20Strings(pagination_key, keyFilter, userLanguage);
       }}"
       on:keySearch="{(event) => ((keyFilter = event.detail.keyFilter), (i18nData = event.detail.i18nData))}" />
   </div>
@@ -70,12 +79,12 @@ async function getSearchString(searchString: string) {
       i18nData="{i18nData}"
       searchKey="{keyFilter}"
       on:toggleLanguage="{(event) => {
-        languageList = event.detail.languageList
+        languageList = event.detail.languageList;
       }}"
-      on:stringSearch="{(event) => (getSearchString(event.detail.searchString))}"
+      on:stringSearch="{(event) => getSearchString(event.detail.searchString)}"
       on:loadMoreStrings="{() => {
         pagination_key = i18nData[i18nData.length - 1].pagination_key;
-        get20Strings(pagination_key, keyFilter);
+        get20Strings(pagination_key, keyFilter, userLanguage);
       }}" />
   </div>
 </section>
