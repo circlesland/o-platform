@@ -1,8 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
-import * as Dom from 'graphql-request/dist/types.dom';
+import { print } from 'graphql';
 import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
-export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
@@ -16,52 +15,54 @@ export type Scalars = {
   Date: any;
 };
 
+
+
 export type AcceptMembershipResult = {
   __typename?: 'AcceptMembershipResult';
-  error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+  error?: Maybe<Scalars['String']>;
 };
 
 export enum AccountType {
-  Organisation = 'Organisation',
-  Person = 'Person'
+  Person = 'Person',
+  Organisation = 'Organisation'
 }
 
 export type AddMemberResult = {
   __typename?: 'AddMemberResult';
-  error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+  error?: Maybe<Scalars['String']>;
 };
 
-export type AggregatePayload = Contacts | CrcBalances | Erc20Balances | Erc721Tokens | Members | Memberships | Offers | Purchases | Sales;
+export type AggregatePayload = CrcBalances | Erc20Balances | Contacts | Memberships | Members | Offers | Sales | Purchases | Erc721Tokens;
 
 export enum AggregateType {
-  Contacts = 'Contacts',
   CrcBalances = 'CrcBalances',
   Erc20Balances = 'Erc20Balances',
-  Erc721Tokens = 'Erc721Tokens',
-  Members = 'Members',
+  Contacts = 'Contacts',
   Memberships = 'Memberships',
+  Members = 'Members',
   Offers = 'Offers',
   Purchases = 'Purchases',
-  Sales = 'Sales'
+  Sales = 'Sales',
+  Erc721Tokens = 'Erc721Tokens'
 }
 
 export type AnnouncePaymentResult = {
   __typename?: 'AnnouncePaymentResult';
   invoiceId: Scalars['Int'];
+  transactionHash: Scalars['String'];
   pickupCode: Scalars['String'];
   simplePickupCode?: Maybe<Scalars['String']>;
-  transactionHash: Scalars['String'];
 };
 
 export type AssetBalance = {
   __typename?: 'AssetBalance';
+  token_symbol?: Maybe<Scalars['String']>;
   token_address: Scalars['String'];
-  token_balance: Scalars['String'];
   token_owner_address: Scalars['String'];
   token_owner_profile?: Maybe<Profile>;
-  token_symbol?: Maybe<Scalars['String']>;
+  token_balance: Scalars['String'];
 };
 
 export type Capability = {
@@ -70,23 +71,23 @@ export type Capability = {
 };
 
 export enum CapabilityType {
+  Verify = 'Verify',
   Invite = 'Invite',
+  Translate = 'Translate',
   PreviewFeatures = 'PreviewFeatures',
   Tickets = 'Tickets',
-  Translate = 'Translate',
-  VerifiedByHumanode = 'VerifiedByHumanode',
-  Verify = 'Verify'
+  VerifiedByHumanode = 'VerifiedByHumanode'
 }
 
 export type ChatMessage = IEventPayload & {
   __typename?: 'ChatMessage';
+  id: Scalars['Int'];
+  transaction_hash?: Maybe<Scalars['String']>;
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
-  id: Scalars['Int'];
-  text: Scalars['String'];
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
-  transaction_hash?: Maybe<Scalars['String']>;
+  text: Scalars['String'];
 };
 
 export type ChatMessageEventFilter = {
@@ -95,45 +96,45 @@ export type ChatMessageEventFilter = {
 
 export type City = ICity & {
   __typename?: 'City';
-  country: Scalars['String'];
-  feature_code: Scalars['String'];
   geonameid: Scalars['Int'];
+  name: Scalars['String'];
+  country: Scalars['String'];
+  population: Scalars['Int'];
   latitude: Scalars['Float'];
   longitude: Scalars['Float'];
-  name: Scalars['String'];
-  population: Scalars['Int'];
+  feature_code: Scalars['String'];
 };
 
 export type ClaimInvitationResult = {
   __typename?: 'ClaimInvitationResult';
-  claimedInvitation?: Maybe<ClaimedInvitation>;
   success: Scalars['Boolean'];
+  claimedInvitation?: Maybe<ClaimedInvitation>;
 };
 
 export type ClaimedInvitation = {
   __typename?: 'ClaimedInvitation';
-  claimedAt: Scalars['String'];
-  claimedBy?: Maybe<Profile>;
-  claimedByProfileId: Scalars['Int'];
-  createdAt: Scalars['String'];
   createdBy?: Maybe<Profile>;
   createdByProfileId: Scalars['Int'];
+  createdAt: Scalars['String'];
+  claimedBy?: Maybe<Profile>;
+  claimedByProfileId: Scalars['Int'];
+  claimedAt: Scalars['String'];
 };
 
 export type CommonTrust = {
   __typename?: 'CommonTrust';
-  profile?: Maybe<Profile>;
+  type: Scalars['String'];
   safeAddress1: Scalars['String'];
   safeAddress2: Scalars['String'];
-  type: Scalars['String'];
+  profile?: Maybe<Profile>;
 };
 
 export type Contact = {
   __typename?: 'Contact';
+  metadata: Array<ContactPoint>;
+  lastContactAt: Scalars['String'];
   contactAddress: Scalars['String'];
   contactAddress_Profile?: Maybe<Profile>;
-  lastContactAt: Scalars['String'];
-  metadata: Array<ContactPoint>;
 };
 
 export type ContactAggregateFilter = {
@@ -147,16 +148,16 @@ export enum ContactDirection {
 
 export type ContactPoint = {
   __typename?: 'ContactPoint';
-  directions: Array<ContactDirection>;
   name: Scalars['String'];
-  timestamps: Array<Scalars['String']>;
+  directions: Array<ContactDirection>;
   values: Array<Scalars['String']>;
+  timestamps: Array<Scalars['String']>;
 };
 
 export type Contacts = IAggregatePayload & {
   __typename?: 'Contacts';
-  contacts: Array<Contact>;
   lastUpdatedAt: Scalars['String'];
+  contacts: Array<Contact>;
 };
 
 export type CrcBalanceAggregateFilter = {
@@ -165,102 +166,103 @@ export type CrcBalanceAggregateFilter = {
 
 export type CrcBalances = IAggregatePayload & {
   __typename?: 'CrcBalances';
-  balances: Array<AssetBalance>;
   lastUpdatedAt: Scalars['String'];
   total?: Maybe<Scalars['String']>;
+  balances: Array<AssetBalance>;
 };
 
 export type CrcHubTransfer = IEventPayload & {
   __typename?: 'CrcHubTransfer';
-  flow: Scalars['String'];
+  transaction_hash: Scalars['String'];
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
-  tags: Array<Tag>;
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
-  transaction_hash: Scalars['String'];
+  flow: Scalars['String'];
   transfers: Array<CrcTokenTransfer>;
+  tags: Array<Tag>;
 };
 
 export type CrcMinting = IEventPayload & {
   __typename?: 'CrcMinting';
+  transaction_hash: Scalars['String'];
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
-  token: Scalars['String'];
-  transaction_hash: Scalars['String'];
   value: Scalars['String'];
+  token: Scalars['String'];
 };
 
 export type CrcSignup = IEventPayload & {
   __typename?: 'CrcSignup';
-  token: Scalars['String'];
   transaction_hash: Scalars['String'];
   user: Scalars['String'];
   user_profile?: Maybe<Profile>;
+  token: Scalars['String'];
 };
 
 export type CrcTokenTransfer = IEventPayload & {
   __typename?: 'CrcTokenTransfer';
+  transaction_hash: Scalars['String'];
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
   token: Scalars['String'];
-  transaction_hash: Scalars['String'];
   value: Scalars['String'];
 };
 
 export type CrcTrust = IEventPayload & {
   __typename?: 'CrcTrust';
+  transaction_hash: Scalars['String'];
   address: Scalars['String'];
   address_profile?: Maybe<Profile>;
   can_send_to: Scalars['String'];
   can_send_to_profile?: Maybe<Profile>;
   limit: Scalars['Int'];
-  transaction_hash: Scalars['String'];
 };
 
 export type CreateInvitationResult = {
   __typename?: 'CreateInvitationResult';
-  createdInviteEoas: Array<CreatedInvitation>;
-  error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+  error?: Maybe<Scalars['String']>;
+  createdInviteEoas: Array<CreatedInvitation>;
 };
 
 export type CreateOrganisationResult = {
   __typename?: 'CreateOrganisationResult';
+  success: Scalars['Boolean'];
   error?: Maybe<Scalars['String']>;
   organisation?: Maybe<Organisation>;
-  success: Scalars['Boolean'];
 };
 
 export type CreateTagInput = {
   typeId: Scalars['String'];
-  value?: InputMaybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
 };
 
 export type CreatedInvitation = {
   __typename?: 'CreatedInvitation';
-  address: Scalars['String'];
-  balance: Scalars['String'];
-  claimedAt?: Maybe<Scalars['String']>;
-  claimedBy?: Maybe<Profile>;
-  claimedByProfileId?: Maybe<Scalars['Int']>;
-  code: Scalars['String'];
-  createdAt: Scalars['String'];
   createdBy?: Maybe<Profile>;
   createdByProfileId: Scalars['Int'];
+  createdAt: Scalars['String'];
+  claimedBy?: Maybe<Profile>;
+  claimedByProfileId?: Maybe<Scalars['Int']>;
+  claimedAt?: Maybe<Scalars['String']>;
   name: Scalars['String'];
+  address: Scalars['String'];
+  balance: Scalars['String'];
+  code: Scalars['String'];
 };
 
 export type CreatedInviteEoa = {
   __typename?: 'CreatedInviteEoa';
+  for: Scalars['String'];
   address: Scalars['String'];
   fee: Scalars['String'];
-  for: Scalars['String'];
 };
+
 
 export type DeliveryMethod = {
   __typename?: 'DeliveryMethod';
@@ -275,126 +277,126 @@ export enum Direction {
 
 export enum DisplayCurrency {
   Crc = 'CRC',
-  Eurs = 'EURS',
-  TimeCrc = 'TIME_CRC'
+  TimeCrc = 'TIME_CRC',
+  Eurs = 'EURS'
 }
 
 export type Erc20Balances = IAggregatePayload & {
   __typename?: 'Erc20Balances';
-  balances: Array<AssetBalance>;
   lastUpdatedAt: Scalars['String'];
+  balances: Array<AssetBalance>;
 };
 
 export type Erc20Transfer = IEventPayload & {
   __typename?: 'Erc20Transfer';
+  transaction_hash: Scalars['String'];
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
   token: Scalars['String'];
-  transaction_hash: Scalars['String'];
   value: Scalars['String'];
 };
 
 export type Erc721Token = {
   __typename?: 'Erc721Token';
-  token_address: Scalars['String'];
+  token_symbol?: Maybe<Scalars['String']>;
   token_name?: Maybe<Scalars['String']>;
-  token_no: Scalars['String'];
+  token_address: Scalars['String'];
   token_owner_address: Scalars['String'];
   token_owner_profile?: Maybe<Profile>;
-  token_symbol?: Maybe<Scalars['String']>;
+  token_no: Scalars['String'];
   token_url: Scalars['String'];
 };
 
 export type Erc721Tokens = IAggregatePayload & {
   __typename?: 'Erc721Tokens';
-  balances: Array<Erc721Token>;
   lastUpdatedAt: Scalars['String'];
+  balances: Array<Erc721Token>;
 };
 
 export type EthTransfer = IEventPayload & {
   __typename?: 'EthTransfer';
+  transaction_hash: Scalars['String'];
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
-  tags: Array<Tag>;
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
-  transaction_hash: Scalars['String'];
   value: Scalars['String'];
+  tags: Array<Tag>;
 };
 
-export type EventPayload = ChatMessage | CrcHubTransfer | CrcMinting | CrcSignup | CrcTokenTransfer | CrcTrust | Erc20Transfer | EthTransfer | GnosisSafeEthTransfer | InvitationCreated | InvitationRedeemed | MemberAdded | MembershipAccepted | MembershipOffer | MembershipRejected | NewUser | OrganisationCreated | Purchased | SafeVerified | SaleEvent | WelcomeMessage;
+export type EventPayload = CrcSignup | CrcTrust | CrcTokenTransfer | CrcHubTransfer | CrcMinting | EthTransfer | Erc20Transfer | GnosisSafeEthTransfer | ChatMessage | MembershipOffer | MembershipAccepted | MembershipRejected | WelcomeMessage | InvitationCreated | InvitationRedeemed | OrganisationCreated | MemberAdded | SaleEvent | Purchased | SafeVerified | NewUser;
 
 export enum EventType {
-  ChatMessage = 'ChatMessage',
-  CrcHubTransfer = 'CrcHubTransfer',
-  CrcMinting = 'CrcMinting',
   CrcSignup = 'CrcSignup',
-  CrcTokenTransfer = 'CrcTokenTransfer',
   CrcTrust = 'CrcTrust',
+  CrcTokenTransfer = 'CrcTokenTransfer',
+  CrcHubTransfer = 'CrcHubTransfer',
   Erc20Transfer = 'Erc20Transfer',
+  CrcMinting = 'CrcMinting',
   EthTransfer = 'EthTransfer',
   GnosisSafeEthTransfer = 'GnosisSafeEthTransfer',
+  ChatMessage = 'ChatMessage',
+  MembershipOffer = 'MembershipOffer',
+  MembershipAccepted = 'MembershipAccepted',
+  MembershipRejected = 'MembershipRejected',
+  WelcomeMessage = 'WelcomeMessage',
   InvitationCreated = 'InvitationCreated',
   InvitationRedeemed = 'InvitationRedeemed',
-  MemberAdded = 'MemberAdded',
-  MembershipAccepted = 'MembershipAccepted',
-  MembershipOffer = 'MembershipOffer',
-  MembershipRejected = 'MembershipRejected',
-  NewUser = 'NewUser',
   OrganisationCreated = 'OrganisationCreated',
+  MemberAdded = 'MemberAdded',
+  SaleEvent = 'SaleEvent',
   Purchased = 'Purchased',
   SafeVerified = 'SafeVerified',
-  SaleEvent = 'SaleEvent',
-  WelcomeMessage = 'WelcomeMessage'
+  NewUser = 'NewUser'
 }
 
 export type ExchangeTokenResponse = {
   __typename?: 'ExchangeTokenResponse';
-  errorMessage?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+  errorMessage?: Maybe<Scalars['String']>;
 };
 
 export type ExportProfile = {
   __typename?: 'ExportProfile';
-  avatarUrl?: Maybe<Scalars['String']>;
+  lastChange: Scalars['Date'];
   circlesAddress: Scalars['String'];
   displayName: Scalars['String'];
-  lastChange: Scalars['Date'];
+  avatarUrl?: Maybe<Scalars['String']>;
 };
 
 export type ExportTrustRelation = {
   __typename?: 'ExportTrustRelation';
   lastChange: Scalars['Date'];
-  trustLimit: Scalars['Int'];
-  trusteeAddress: Scalars['String'];
   trusterAddress: Scalars['String'];
+  trusteeAddress: Scalars['String'];
+  trustLimit: Scalars['Int'];
 };
 
 export type FibonacciGoals = {
   __typename?: 'FibonacciGoals';
-  currentValue: Scalars['Int'];
   lastGoal: Scalars['Int'];
+  currentValue: Scalars['Int'];
   nextGoal: Scalars['Int'];
 };
 
 export enum Gender {
-  Divers = 'DIVERS',
+  Male = 'MALE',
   Female = 'FEMALE',
-  Male = 'MALE'
+  Divers = 'DIVERS'
 }
 
 export type GnosisSafeEthTransfer = IEventPayload & {
   __typename?: 'GnosisSafeEthTransfer';
+  transaction_hash: Scalars['String'];
+  initiator: Scalars['String'];
   from: Scalars['String'];
   from_profile?: Maybe<Profile>;
-  initiator: Scalars['String'];
-  tags: Array<Tag>;
   to: Scalars['String'];
   to_profile?: Maybe<Profile>;
-  transaction_hash: Scalars['String'];
   value: Scalars['String'];
+  tags: Array<Tag>;
 };
 
 export type IAggregatePayload = {
@@ -402,13 +404,13 @@ export type IAggregatePayload = {
 };
 
 export type ICity = {
-  country: Scalars['String'];
-  feature_code: Scalars['String'];
   geonameid: Scalars['Int'];
+  name: Scalars['String'];
+  country: Scalars['String'];
+  population: Scalars['Int'];
   latitude: Scalars['Float'];
   longitude: Scalars['Float'];
-  name: Scalars['String'];
-  population: Scalars['Int'];
+  feature_code: Scalars['String'];
 };
 
 export type IEventPayload = {
@@ -417,54 +419,54 @@ export type IEventPayload = {
 
 export type InvitationCreated = IEventPayload & {
   __typename?: 'InvitationCreated';
-  code: Scalars['String'];
-  name: Scalars['String'];
   transaction_hash?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  code: Scalars['String'];
 };
 
 export type InvitationRedeemed = IEventPayload & {
   __typename?: 'InvitationRedeemed';
-  code: Scalars['String'];
+  transaction_hash?: Maybe<Scalars['String']>;
   name: Scalars['String'];
+  code: Scalars['String'];
   redeemedBy?: Maybe<Scalars['String']>;
   redeemedBy_profile?: Maybe<Profile>;
-  transaction_hash?: Maybe<Scalars['String']>;
 };
 
 export type Invoice = {
   __typename?: 'Invoice';
-  buyerAddress: Scalars['String'];
-  buyerProfile?: Maybe<Profile>;
-  buyerSignature?: Maybe<Scalars['Boolean']>;
-  buyerSignedDate?: Maybe<Scalars['String']>;
-  cancelReason?: Maybe<Scalars['String']>;
-  cancelledAt?: Maybe<Scalars['String']>;
-  cancelledBy?: Maybe<Profile>;
-  createdAt?: Maybe<Scalars['String']>;
-  deliveryAddress?: Maybe<PostAddress>;
-  deliveryMethod: DeliveryMethod;
   id: Scalars['Int'];
-  invoiceNo: Scalars['String'];
-  lines?: Maybe<Array<InvoiceLine>>;
-  paymentTransaction?: Maybe<ProfileEvent>;
-  paymentTransactionHash?: Maybe<Scalars['String']>;
-  pickupCode?: Maybe<Scalars['String']>;
-  purchase?: Maybe<Purchase>;
   purchaseId: Scalars['Int'];
+  purchase?: Maybe<Purchase>;
   sellerAddress: Scalars['String'];
   sellerProfile?: Maybe<Profile>;
+  deliveryMethod: DeliveryMethod;
+  buyerAddress: Scalars['String'];
+  buyerProfile?: Maybe<Profile>;
+  createdAt?: Maybe<Scalars['String']>;
+  lines?: Maybe<Array<InvoiceLine>>;
+  invoiceNo: Scalars['String'];
+  pickupCode?: Maybe<Scalars['String']>;
+  simplePickupCode?: Maybe<Scalars['String']>;
+  buyerSignature?: Maybe<Scalars['Boolean']>;
+  buyerSignedDate?: Maybe<Scalars['String']>;
   sellerSignature?: Maybe<Scalars['Boolean']>;
   sellerSignedDate?: Maybe<Scalars['String']>;
-  simplePickupCode?: Maybe<Scalars['String']>;
+  paymentTransactionHash?: Maybe<Scalars['String']>;
+  paymentTransaction?: Maybe<ProfileEvent>;
+  cancelledAt?: Maybe<Scalars['String']>;
+  cancelReason?: Maybe<Scalars['String']>;
+  cancelledBy?: Maybe<Profile>;
+  deliveryAddress?: Maybe<PostAddress>;
 };
 
 export type InvoiceLine = {
   __typename?: 'InvoiceLine';
-  amount: Scalars['Int'];
   id: Scalars['Int'];
-  metadata?: Maybe<Scalars['String']>;
+  amount: Scalars['Int'];
   offer?: Maybe<Offer>;
   shop?: Maybe<Shop>;
+  metadata?: Maybe<Scalars['String']>;
 };
 
 export type LeaderboardEntry = {
@@ -476,20 +478,20 @@ export type LeaderboardEntry = {
 
 export type LogoutResponse = {
   __typename?: 'LogoutResponse';
-  errorMessage?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+  errorMessage?: Maybe<Scalars['String']>;
 };
 
 export type MemberAdded = IEventPayload & {
   __typename?: 'MemberAdded';
+  transaction_hash?: Maybe<Scalars['String']>;
   createdBy: Scalars['String'];
   createdBy_profile?: Maybe<Profile>;
-  isAdmin: Scalars['Boolean'];
   member: Scalars['String'];
   member_profile?: Maybe<Profile>;
+  isAdmin: Scalars['Boolean'];
   organisation: Scalars['String'];
   organisation_profile?: Maybe<Organisation>;
-  transaction_hash?: Maybe<Scalars['String']>;
 };
 
 export type Members = IAggregatePayload & {
@@ -500,44 +502,44 @@ export type Members = IAggregatePayload & {
 
 export type Membership = {
   __typename?: 'Membership';
-  acceptedAt?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
   createdBy?: Maybe<Profile>;
   createdByProfileId: Scalars['Int'];
-  isAdmin: Scalars['Boolean'];
-  organisation: Organisation;
+  acceptedAt?: Maybe<Scalars['String']>;
   rejectedAt?: Maybe<Scalars['String']>;
   validTo?: Maybe<Scalars['String']>;
+  isAdmin: Scalars['Boolean'];
+  organisation: Organisation;
 };
 
 export type MembershipAccepted = IEventPayload & {
   __typename?: 'MembershipAccepted';
+  transaction_hash?: Maybe<Scalars['String']>;
   createdBy: Scalars['String'];
   createdBy_profile?: Maybe<Profile>;
   member: Scalars['String'];
   member_profile?: Maybe<Profile>;
   organisation: Scalars['String'];
   organisation_profile?: Maybe<Organisation>;
-  transaction_hash?: Maybe<Scalars['String']>;
 };
 
 export type MembershipOffer = IEventPayload & {
   __typename?: 'MembershipOffer';
+  transaction_hash?: Maybe<Scalars['String']>;
   createdBy: Scalars['String'];
   createdBy_profile?: Maybe<Profile>;
   isAdmin: Scalars['Boolean'];
   organisation: Scalars['String'];
   organisation_profile?: Maybe<Organisation>;
-  transaction_hash?: Maybe<Scalars['String']>;
 };
 
 export type MembershipRejected = IEventPayload & {
   __typename?: 'MembershipRejected';
+  transaction_hash?: Maybe<Scalars['String']>;
   member: Scalars['String'];
   member_profile?: Maybe<Profile>;
   organisation: Scalars['String'];
   organisation_profile?: Maybe<Organisation>;
-  transaction_hash?: Maybe<Scalars['String']>;
 };
 
 export type Memberships = IAggregatePayload & {
@@ -548,67 +550,51 @@ export type Memberships = IAggregatePayload & {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  acceptMembership?: Maybe<AcceptMembershipResult>;
-  acknowledge: Scalars['Boolean'];
-  addMember?: Maybe<AddMemberResult>;
-  addNewLang?: Maybe<Scalars['Int']>;
+  payWithPath: TransitivePath;
   announcePayment: AnnouncePaymentResult;
-  claimInvitation: ClaimInvitationResult;
+  purchase: Array<Invoice>;
   completePurchase: Invoice;
   completeSale: Invoice;
   confirmLegalAge: Scalars['Boolean'];
-  createNewStringAndKey?: Maybe<I18n>;
-  createTestInvitation: CreateInvitationResult;
-  deleteShippingAddress?: Maybe<PostAddress>;
-  importOrganisationsOfAccount: Array<Organisation>;
   logout: LogoutResponse;
-  payWithPath: TransitivePath;
-  proofUniqueness: ProofUniquenessResult;
-  purchase: Array<Invoice>;
-  redeemClaimedInvitation: RedeemClaimedInvitationResult;
-  rejectMembership?: Maybe<RejectMembershipResult>;
-  removeMember?: Maybe<RemoveMemberResult>;
-  requestSessionChallenge: Scalars['String'];
-  requestUpdateSafe: RequestUpdateSafeResponse;
-  revokeSafeVerification: VerifySafeResult;
-  sendMessage: SendMessageResult;
-  tagTransaction: TagTransactionResult;
-  updateSafe: UpdateSafeResponse;
-  updateValue?: Maybe<I18n>;
-  upsertOffer: Offer;
-  upsertOrganisation: CreateOrganisationResult;
   upsertProfile: Profile;
-  upsertRegion: CreateOrganisationResult;
+  requestUpdateSafe: RequestUpdateSafeResponse;
+  updateSafe: UpdateSafeResponse;
+  upsertTag: Tag;
   upsertShippingAddress?: Maybe<PostAddress>;
+  deleteShippingAddress?: Maybe<PostAddress>;
+  upsertOrganisation: CreateOrganisationResult;
+  upsertRegion: CreateOrganisationResult;
   upsertShop: Shop;
   upsertShopCategories: UpsertShopCategoriesResult;
   upsertShopCategoryEntries: UpsertShopCategoryEntriesResult;
-  upsertTag: Tag;
-  verifySafe: VerifySafeResult;
+  upsertOffer: Offer;
+  addMember?: Maybe<AddMemberResult>;
+  acceptMembership?: Maybe<AcceptMembershipResult>;
+  removeMember?: Maybe<RemoveMemberResult>;
+  rejectMembership?: Maybe<RejectMembershipResult>;
+  acknowledge: Scalars['Boolean'];
+  createTestInvitation: CreateInvitationResult;
+  claimInvitation: ClaimInvitationResult;
+  redeemClaimedInvitation: RedeemClaimedInvitationResult;
+  tagTransaction: TagTransactionResult;
+  sendMessage: SendMessageResult;
+  requestSessionChallenge: Scalars['String'];
   verifySessionChallenge?: Maybe<ExchangeTokenResponse>;
+  importOrganisationsOfAccount: Array<Organisation>;
+  verifySafe: VerifySafeResult;
+  revokeSafeVerification: VerifySafeResult;
+  proofUniqueness: ProofUniquenessResult;
+  updateValue?: Maybe<I18n>;
+  addNewLang?: Maybe<Scalars['Int']>;
+  createNewStringAndKey?: Maybe<I18n>;
 };
 
 
-export type MutationAcceptMembershipArgs = {
-  membershipId: Scalars['Int'];
-};
-
-
-export type MutationAcknowledgeArgs = {
-  safeAddress?: InputMaybe<Scalars['String']>;
-  until: Scalars['Date'];
-};
-
-
-export type MutationAddMemberArgs = {
-  groupId: Scalars['String'];
-  memberAddress: Scalars['String'];
-};
-
-
-export type MutationAddNewLangArgs = {
-  langToCopyFrom?: InputMaybe<Scalars['String']>;
-  langToCreate?: InputMaybe<Scalars['String']>;
+export type MutationPayWithPathArgs = {
+  from: Scalars['String'];
+  to: Scalars['String'];
+  amount: Scalars['String'];
 };
 
 
@@ -618,20 +604,22 @@ export type MutationAnnouncePaymentArgs = {
 };
 
 
-export type MutationClaimInvitationArgs = {
-  code: Scalars['String'];
+export type MutationPurchaseArgs = {
+  lines: Array<PurchaseLineInput>;
+  deliveryMethodId: Scalars['Int'];
+  deliveryAddressId?: Maybe<Scalars['Int']>;
 };
 
 
 export type MutationCompletePurchaseArgs = {
   invoiceId: Scalars['Int'];
-  revoke?: InputMaybe<Scalars['Boolean']>;
+  revoke?: Maybe<Scalars['Boolean']>;
 };
 
 
 export type MutationCompleteSaleArgs = {
   invoiceId: Scalars['Int'];
-  revoke?: InputMaybe<Scalars['Boolean']>;
+  revoke?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -640,52 +628,8 @@ export type MutationConfirmLegalAgeArgs = {
 };
 
 
-export type MutationCreateNewStringAndKeyArgs = {
-  createdBy?: InputMaybe<Scalars['String']>;
-  key?: InputMaybe<Scalars['String']>;
-  lang?: InputMaybe<Scalars['String']>;
-  value?: InputMaybe<Scalars['String']>;
-  version?: InputMaybe<Scalars['Int']>;
-};
-
-
-export type MutationDeleteShippingAddressArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type MutationPayWithPathArgs = {
-  amount: Scalars['String'];
-  from: Scalars['String'];
-  to: Scalars['String'];
-};
-
-
-export type MutationProofUniquenessArgs = {
-  humanodeToken: Scalars['String'];
-};
-
-
-export type MutationPurchaseArgs = {
-  deliveryAddressId?: InputMaybe<Scalars['Int']>;
-  deliveryMethodId: Scalars['Int'];
-  lines: Array<PurchaseLineInput>;
-};
-
-
-export type MutationRejectMembershipArgs = {
-  membershipId: Scalars['Int'];
-};
-
-
-export type MutationRemoveMemberArgs = {
-  groupId: Scalars['String'];
-  memberAddress: Scalars['String'];
-};
-
-
-export type MutationRequestSessionChallengeArgs = {
-  address: Scalars['String'];
+export type MutationUpsertProfileArgs = {
+  data: UpsertProfileInput;
 };
 
 
@@ -694,39 +638,23 @@ export type MutationRequestUpdateSafeArgs = {
 };
 
 
-export type MutationRevokeSafeVerificationArgs = {
-  safeAddress: Scalars['String'];
-};
-
-
-export type MutationSendMessageArgs = {
-  content: Scalars['String'];
-  fromSafeAddress?: InputMaybe<Scalars['String']>;
-  toSafeAddress: Scalars['String'];
-};
-
-
-export type MutationTagTransactionArgs = {
-  tag: CreateTagInput;
-  transactionHash: Scalars['String'];
-};
-
-
 export type MutationUpdateSafeArgs = {
   data: UpdateSafeInput;
 };
 
 
-export type MutationUpdateValueArgs = {
-  createdBy?: InputMaybe<Scalars['String']>;
-  key?: InputMaybe<Scalars['String']>;
-  lang?: InputMaybe<Scalars['String']>;
-  value?: InputMaybe<Scalars['String']>;
+export type MutationUpsertTagArgs = {
+  data: UpsertTagInput;
 };
 
 
-export type MutationUpsertOfferArgs = {
-  offer: OfferInput;
+export type MutationUpsertShippingAddressArgs = {
+  data: PostAddressInput;
+};
+
+
+export type MutationDeleteShippingAddressArgs = {
+  id: Scalars['Int'];
 };
 
 
@@ -735,18 +663,8 @@ export type MutationUpsertOrganisationArgs = {
 };
 
 
-export type MutationUpsertProfileArgs = {
-  data: UpsertProfileInput;
-};
-
-
 export type MutationUpsertRegionArgs = {
   organisation: UpsertOrganisationInput;
-};
-
-
-export type MutationUpsertShippingAddressArgs = {
-  data: PostAddressInput;
 };
 
 
@@ -765,8 +683,65 @@ export type MutationUpsertShopCategoryEntriesArgs = {
 };
 
 
-export type MutationUpsertTagArgs = {
-  data: UpsertTagInput;
+export type MutationUpsertOfferArgs = {
+  offer: OfferInput;
+};
+
+
+export type MutationAddMemberArgs = {
+  groupId: Scalars['String'];
+  memberAddress: Scalars['String'];
+};
+
+
+export type MutationAcceptMembershipArgs = {
+  membershipId: Scalars['Int'];
+};
+
+
+export type MutationRemoveMemberArgs = {
+  groupId: Scalars['String'];
+  memberAddress: Scalars['String'];
+};
+
+
+export type MutationRejectMembershipArgs = {
+  membershipId: Scalars['Int'];
+};
+
+
+export type MutationAcknowledgeArgs = {
+  until: Scalars['Date'];
+  safeAddress?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationClaimInvitationArgs = {
+  code: Scalars['String'];
+};
+
+
+export type MutationTagTransactionArgs = {
+  transactionHash: Scalars['String'];
+  tag: CreateTagInput;
+};
+
+
+export type MutationSendMessageArgs = {
+  fromSafeAddress?: Maybe<Scalars['String']>;
+  toSafeAddress: Scalars['String'];
+  content: Scalars['String'];
+};
+
+
+export type MutationRequestSessionChallengeArgs = {
+  address: Scalars['String'];
+};
+
+
+export type MutationVerifySessionChallengeArgs = {
+  challenge: Scalars['String'];
+  signature: Scalars['String'];
 };
 
 
@@ -775,9 +750,36 @@ export type MutationVerifySafeArgs = {
 };
 
 
-export type MutationVerifySessionChallengeArgs = {
-  challenge: Scalars['String'];
-  signature: Scalars['String'];
+export type MutationRevokeSafeVerificationArgs = {
+  safeAddress: Scalars['String'];
+};
+
+
+export type MutationProofUniquenessArgs = {
+  humanodeToken: Scalars['String'];
+};
+
+
+export type MutationUpdateValueArgs = {
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationAddNewLangArgs = {
+  langToCreate?: Maybe<Scalars['String']>;
+  langToCopyFrom?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationCreateNewStringAndKeyArgs = {
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+  version?: Maybe<Scalars['Int']>;
 };
 
 export type MyInviteRank = {
@@ -788,55 +790,55 @@ export type MyInviteRank = {
 
 export type NewUser = IEventPayload & {
   __typename?: 'NewUser';
-  profile: Profile;
   transaction_hash?: Maybe<Scalars['String']>;
+  profile: Profile;
 };
 
 export type NotificationEvent = {
   __typename?: 'NotificationEvent';
-  from: Scalars['String'];
-  itemId?: Maybe<Scalars['Int']>;
-  to: Scalars['String'];
-  transaction_hash?: Maybe<Scalars['String']>;
   type: Scalars['String'];
+  from: Scalars['String'];
+  to: Scalars['String'];
+  itemId?: Maybe<Scalars['Int']>;
+  transaction_hash?: Maybe<Scalars['String']>;
 };
 
 export type Offer = {
   __typename?: 'Offer';
-  allergens?: Maybe<Scalars['String']>;
-  createdAt: Scalars['String'];
-  createdByAddress: Scalars['String'];
-  createdByProfile?: Maybe<Profile>;
-  currentInventory?: Maybe<Scalars['Int']>;
-  description?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
-  minAge?: Maybe<Scalars['Int']>;
-  pictureMimeType: Scalars['String'];
-  pictureUrl: Scalars['String'];
-  pricePerUnit: Scalars['String'];
-  tags?: Maybe<Array<Tag>>;
-  timeCirclesPriceShare: Scalars['Int'];
-  title: Scalars['String'];
   version: Scalars['Int'];
+  createdByProfile?: Maybe<Profile>;
+  createdByAddress: Scalars['String'];
+  createdAt: Scalars['String'];
+  minAge?: Maybe<Scalars['Int']>;
+  currentInventory?: Maybe<Scalars['Int']>;
+  title: Scalars['String'];
+  pictureUrl: Scalars['String'];
+  pictureMimeType: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  allergens?: Maybe<Scalars['String']>;
+  pricePerUnit: Scalars['String'];
+  timeCirclesPriceShare: Scalars['Int'];
+  tags?: Maybe<Array<Tag>>;
 };
 
 export type OfferByIdAndVersionInput = {
   offerId: Scalars['Int'];
-  offerVersion?: InputMaybe<Scalars['Int']>;
+  offerVersion?: Maybe<Scalars['Int']>;
 };
 
 export type OfferInput = {
-  allergens?: InputMaybe<Scalars['String']>;
+  id?: Maybe<Scalars['Int']>;
   createdByProfileId: Scalars['Int'];
-  currentInventory?: InputMaybe<Scalars['Int']>;
-  description?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Int']>;
-  minAge?: InputMaybe<Scalars['Int']>;
-  pictureMimeType: Scalars['String'];
+  title: Scalars['String'];
   pictureUrl: Scalars['String'];
+  pictureMimeType: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  allergens?: Maybe<Scalars['String']>;
+  minAge?: Maybe<Scalars['Int']>;
+  currentInventory?: Maybe<Scalars['Int']>;
   pricePerUnit: Scalars['String'];
   timeCirclesPriceShare: Scalars['Int'];
-  title: Scalars['String'];
 };
 
 export type Offers = IAggregatePayload & {
@@ -846,138 +848,138 @@ export type Offers = IAggregatePayload & {
 };
 
 export type OffersAggregateFilter = {
-  createdByAddresses?: InputMaybe<Array<Scalars['String']>>;
-  offerIds?: InputMaybe<Array<Scalars['Int']>>;
+  createdByAddresses?: Maybe<Array<Scalars['String']>>;
+  offerIds?: Maybe<Array<Scalars['Int']>>;
 };
 
 export type Organisation = {
   __typename?: 'Organisation';
-  avatarMimeType?: Maybe<Scalars['String']>;
-  avatarUrl?: Maybe<Scalars['String']>;
+  id: Scalars['Int'];
+  createdAt: Scalars['String'];
   circlesAddress?: Maybe<Scalars['String']>;
   circlesSafeOwner?: Maybe<Scalars['String']>;
-  city?: Maybe<City>;
-  cityGeonameid?: Maybe<Scalars['Int']>;
-  createdAt: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  displayCurrency?: Maybe<DisplayCurrency>;
   displayName?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
-  largeBannerUrl?: Maybe<Scalars['String']>;
-  members?: Maybe<Array<ProfileOrOrganisation>>;
   name: Scalars['String'];
-  offers?: Maybe<Array<Offer>>;
-  productListingType?: Maybe<ProductListingType>;
-  shopEnabled?: Maybe<Scalars['Boolean']>;
-  shops?: Maybe<Array<Shop>>;
+  description?: Maybe<Scalars['String']>;
+  avatarUrl?: Maybe<Scalars['String']>;
+  largeBannerUrl?: Maybe<Scalars['String']>;
   smallBannerUrl?: Maybe<Scalars['String']>;
+  productListingType?: Maybe<ProductListingType>;
+  avatarMimeType?: Maybe<Scalars['String']>;
+  cityGeonameid?: Maybe<Scalars['Int']>;
+  displayCurrency?: Maybe<DisplayCurrency>;
+  city?: Maybe<City>;
+  offers?: Maybe<Array<Offer>>;
+  members?: Maybe<Array<ProfileOrOrganisation>>;
+  shopEnabled?: Maybe<Scalars['Boolean']>;
   trustsYou?: Maybe<Scalars['Int']>;
+  shops?: Maybe<Array<Shop>>;
 };
 
 export type OrganisationCreated = IEventPayload & {
   __typename?: 'OrganisationCreated';
+  transaction_hash?: Maybe<Scalars['String']>;
   organisation: Scalars['String'];
   organisation_profile?: Maybe<Organisation>;
-  transaction_hash?: Maybe<Scalars['String']>;
 };
 
 export type PaginationArgs = {
-  continueAt?: InputMaybe<Scalars['String']>;
-  continueAtId?: InputMaybe<Scalars['Int']>;
-  limit: Scalars['Int'];
+  continueAt?: Maybe<Scalars['String']>;
+  continueAtId?: Maybe<Scalars['Int']>;
   order: SortOrder;
+  limit: Scalars['Int'];
 };
 
 export type PostAddress = {
   __typename?: 'PostAddress';
-  city: Scalars['String'];
-  cityGeonameid?: Maybe<Scalars['Int']>;
-  country: Scalars['String'];
-  hereLocationId?: Maybe<Scalars['String']>;
-  house: Scalars['String'];
   id: Scalars['Int'];
   name?: Maybe<Scalars['String']>;
-  osmId?: Maybe<Scalars['String']>;
-  state?: Maybe<Scalars['String']>;
   street: Scalars['String'];
+  house: Scalars['String'];
   zip: Scalars['String'];
+  city: Scalars['String'];
+  state?: Maybe<Scalars['String']>;
+  country: Scalars['String'];
+  osmId?: Maybe<Scalars['String']>;
+  hereLocationId?: Maybe<Scalars['String']>;
+  cityGeonameid?: Maybe<Scalars['Int']>;
 };
 
 export type PostAddressInput = {
-  cityGeonameid: Scalars['Int'];
-  house: Scalars['String'];
-  id?: InputMaybe<Scalars['Int']>;
-  name?: InputMaybe<Scalars['String']>;
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
   street: Scalars['String'];
+  house: Scalars['String'];
   zip: Scalars['String'];
+  cityGeonameid: Scalars['Int'];
 };
 
 export enum ProductListingType {
-  List = 'LIST',
-  Tiles = 'TILES'
+  Tiles = 'TILES',
+  List = 'LIST'
 }
 
 export type Profile = {
   __typename?: 'Profile';
-  age?: Maybe<Scalars['Int']>;
-  askedForEmailAddress: Scalars['Boolean'];
-  avatarCid?: Maybe<Scalars['String']>;
-  avatarMimeType?: Maybe<Scalars['String']>;
-  avatarUrl?: Maybe<Scalars['String']>;
-  balances?: Maybe<ProfileBalances>;
+  id: Scalars['Int'];
+  type?: Maybe<ProfileType>;
+  origin?: Maybe<ProfileOrigin>;
+  status?: Maybe<Scalars['String']>;
   circlesAddress?: Maybe<Scalars['String']>;
+  successorOfCirclesAddress?: Maybe<Scalars['String']>;
   circlesSafeOwner?: Maybe<Scalars['String']>;
   circlesTokenAddress?: Maybe<Scalars['String']>;
-  city?: Maybe<City>;
-  cityGeonameid?: Maybe<Scalars['Int']>;
-  claimedInvitation?: Maybe<ClaimedInvitation>;
-  confirmedLegalAge?: Maybe<Scalars['Int']>;
-  contacts?: Maybe<Array<Contact>>;
-  country?: Maybe<Scalars['String']>;
-  displayCurrency?: Maybe<DisplayCurrency>;
   displayName?: Maybe<Scalars['String']>;
-  displayTimeCircles?: Maybe<Scalars['Boolean']>;
-  dream?: Maybe<Scalars['String']>;
-  emailAddress?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
-  gender?: Maybe<Gender>;
-  id: Scalars['Int'];
-  invitationLink?: Maybe<Scalars['String']>;
-  invitationTransaction?: Maybe<ProfileEvent>;
-  largeBannerUrl?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
-  members?: Maybe<Array<Profile>>;
-  memberships?: Maybe<Array<Membership>>;
-  newsletter?: Maybe<Scalars['Boolean']>;
-  offers?: Maybe<Array<Offer>>;
-  origin?: Maybe<ProfileOrigin>;
+  confirmedLegalAge?: Maybe<Scalars['Int']>;
+  emailAddress?: Maybe<Scalars['String']>;
+  askedForEmailAddress: Scalars['Boolean'];
+  dream?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  avatarUrl?: Maybe<Scalars['String']>;
+  largeBannerUrl?: Maybe<Scalars['String']>;
+  smallBannerUrl?: Maybe<Scalars['String']>;
   productListingType?: Maybe<ProductListingType>;
-  provenUniqueness?: Maybe<Scalars['Boolean']>;
+  avatarCid?: Maybe<Scalars['String']>;
+  avatarMimeType?: Maybe<Scalars['String']>;
+  newsletter?: Maybe<Scalars['Boolean']>;
+  displayTimeCircles?: Maybe<Scalars['Boolean']>;
+  cityGeonameid?: Maybe<Scalars['Int']>;
+  city?: Maybe<City>;
+  claimedInvitation?: Maybe<ClaimedInvitation>;
+  invitationTransaction?: Maybe<ProfileEvent>;
+  invitationLink?: Maybe<Scalars['String']>;
+  memberships?: Maybe<Array<Membership>>;
+  members?: Maybe<Array<Profile>>;
+  displayCurrency?: Maybe<DisplayCurrency>;
+  verifications?: Maybe<Array<Verification>>;
+  offers?: Maybe<Array<Offer>>;
   purchases?: Maybe<Array<Purchase>>;
   sales?: Maybe<Array<Sale>>;
-  shippingAddresses?: Maybe<Array<PostAddress>>;
+  balances?: Maybe<ProfileBalances>;
+  contacts?: Maybe<Array<Contact>>;
   shops?: Maybe<Array<Shop>>;
-  smallBannerUrl?: Maybe<Scalars['String']>;
-  status?: Maybe<Scalars['String']>;
-  successorOfCirclesAddress?: Maybe<Scalars['String']>;
-  type?: Maybe<ProfileType>;
-  verifications?: Maybe<Array<Verification>>;
+  shippingAddresses?: Maybe<Array<PostAddress>>;
+  provenUniqueness?: Maybe<Scalars['Boolean']>;
+  age?: Maybe<Scalars['Int']>;
+  gender?: Maybe<Gender>;
 };
 
 export type ProfileAggregate = {
   __typename?: 'ProfileAggregate';
-  payload: AggregatePayload;
+  type: Scalars['String'];
   safe_address: Scalars['String'];
   safe_address_profile?: Maybe<Profile>;
-  type: Scalars['String'];
+  payload: AggregatePayload;
 };
 
 export type ProfileAggregateFilter = {
-  contacts?: InputMaybe<ContactAggregateFilter>;
-  crcBalance?: InputMaybe<CrcBalanceAggregateFilter>;
-  offers?: InputMaybe<OffersAggregateFilter>;
-  purchases?: InputMaybe<PurchasesAggregateFilter>;
-  sales?: InputMaybe<SalesAggregateFilter>;
+  contacts?: Maybe<ContactAggregateFilter>;
+  crcBalance?: Maybe<CrcBalanceAggregateFilter>;
+  offers?: Maybe<OffersAggregateFilter>;
+  purchases?: Maybe<PurchasesAggregateFilter>;
+  sales?: Maybe<SalesAggregateFilter>;
 };
 
 export type ProfileBalances = {
@@ -988,33 +990,33 @@ export type ProfileBalances = {
 
 export type ProfileEvent = {
   __typename?: 'ProfileEvent';
+  timestamp: Scalars['String'];
   block_number?: Maybe<Scalars['Int']>;
+  transaction_index?: Maybe<Scalars['Int']>;
+  transaction_hash?: Maybe<Scalars['String']>;
+  type: Scalars['String'];
+  safe_address: Scalars['String'];
+  safe_address_profile?: Maybe<Profile>;
   contact_address?: Maybe<Scalars['String']>;
   contact_address_profile?: Maybe<Profile>;
   direction: Scalars['String'];
-  payload?: Maybe<EventPayload>;
-  safe_address: Scalars['String'];
-  safe_address_profile?: Maybe<Profile>;
-  tags?: Maybe<Array<Tag>>;
-  timestamp: Scalars['String'];
-  transaction_hash?: Maybe<Scalars['String']>;
-  transaction_index?: Maybe<Scalars['Int']>;
-  type: Scalars['String'];
   value?: Maybe<Scalars['String']>;
+  payload?: Maybe<EventPayload>;
+  tags?: Maybe<Array<Tag>>;
 };
 
 export type ProfileEventFilter = {
-  chatMessage?: InputMaybe<ChatMessageEventFilter>;
-  direction?: InputMaybe<Direction>;
-  from?: InputMaybe<Scalars['String']>;
-  purchased?: InputMaybe<PurchasedEventFilter>;
-  sale?: InputMaybe<SaleEventFilter>;
-  to?: InputMaybe<Scalars['String']>;
-  transactionHash?: InputMaybe<Scalars['String']>;
-  with?: InputMaybe<Scalars['String']>;
+  direction?: Maybe<Direction>;
+  from?: Maybe<Scalars['String']>;
+  to?: Maybe<Scalars['String']>;
+  with?: Maybe<Scalars['String']>;
+  transactionHash?: Maybe<Scalars['String']>;
+  purchased?: Maybe<PurchasedEventFilter>;
+  sale?: Maybe<SaleEventFilter>;
+  chatMessage?: Maybe<ChatMessageEventFilter>;
 };
 
-export type ProfileOrOrganisation = Organisation | Profile;
+export type ProfileOrOrganisation = Profile | Organisation;
 
 export enum ProfileOrigin {
   CirclesGarden = 'CirclesGarden',
@@ -1023,8 +1025,8 @@ export enum ProfileOrigin {
 }
 
 export enum ProfileType {
-  Organisation = 'ORGANISATION',
   Person = 'PERSON',
+  Organisation = 'ORGANISATION',
   Region = 'REGION'
 }
 
@@ -1040,51 +1042,51 @@ export type ProofUniquenessResult = {
 
 export type PublicEvent = {
   __typename?: 'PublicEvent';
+  timestamp: Scalars['String'];
   block_number?: Maybe<Scalars['Int']>;
+  transaction_index?: Maybe<Scalars['Int']>;
+  transaction_hash?: Maybe<Scalars['String']>;
+  type: Scalars['String'];
   contact_address?: Maybe<Scalars['String']>;
   contact_address_profile?: Maybe<Profile>;
   payload?: Maybe<EventPayload>;
-  timestamp: Scalars['String'];
-  transaction_hash?: Maybe<Scalars['String']>;
-  transaction_index?: Maybe<Scalars['Int']>;
-  type: Scalars['String'];
 };
 
 export type Purchase = {
   __typename?: 'Purchase';
-  createdAt: Scalars['String'];
-  createdByAddress: Scalars['String'];
-  createdByProfile?: Maybe<Profile>;
-  deliveryAddress?: Maybe<PostAddress>;
-  deliveryMethod: DeliveryMethod;
   id: Scalars['Int'];
-  invoices?: Maybe<Array<Invoice>>;
-  lines?: Maybe<Array<PurchaseLine>>;
+  createdByProfile?: Maybe<Profile>;
+  createdByAddress: Scalars['String'];
+  createdAt: Scalars['String'];
+  deliveryMethod: DeliveryMethod;
+  deliveryAddress?: Maybe<PostAddress>;
   total: Scalars['String'];
+  lines?: Maybe<Array<PurchaseLine>>;
+  invoices?: Maybe<Array<Invoice>>;
 };
 
 export type PurchaseLine = {
   __typename?: 'PurchaseLine';
-  amount: Scalars['Int'];
   id: Scalars['Int'];
   metadata?: Maybe<Scalars['String']>;
+  amount: Scalars['Int'];
   offer?: Maybe<Offer>;
   shop?: Maybe<Shop>;
 };
 
 export type PurchaseLineInput = {
-  amount: Scalars['Int'];
-  metadata?: InputMaybe<Scalars['String']>;
   offerId: Scalars['Int'];
   shopId: Scalars['Int'];
+  amount: Scalars['Int'];
+  metadata?: Maybe<Scalars['String']>;
 };
 
 export type Purchased = IEventPayload & {
   __typename?: 'Purchased';
-  purchase: Purchase;
+  transaction_hash?: Maybe<Scalars['String']>;
   seller: Scalars['String'];
   seller_profile?: Maybe<Profile>;
-  transaction_hash?: Maybe<Scalars['String']>;
+  purchase: Purchase;
 };
 
 export type PurchasedEventFilter = {
@@ -1098,85 +1100,125 @@ export type Purchases = IAggregatePayload & {
 };
 
 export type PurchasesAggregateFilter = {
-  createdByAddresses?: InputMaybe<Array<Scalars['String']>>;
-  pickupCode?: InputMaybe<Scalars['String']>;
-  purchaseIds?: InputMaybe<Array<Scalars['Int']>>;
+  createdByAddresses?: Maybe<Array<Scalars['String']>>;
+  purchaseIds?: Maybe<Array<Scalars['Int']>>;
+  pickupCode?: Maybe<Scalars['String']>;
 };
 
 export type Query = {
   __typename?: 'Query';
-  aggregates: Array<ProfileAggregate>;
-  allProfiles: Array<Maybe<ExportProfile>>;
-  allTrusts: Array<ExportTrustRelation>;
-  cities: Array<City>;
-  claimedInvitation?: Maybe<ClaimedInvitation>;
-  clientAssertionJwt: Scalars['String'];
-  commonTrust: Array<CommonTrust>;
-  deliveryMethods?: Maybe<Array<Maybe<DeliveryMethod>>>;
-  directPath: TransitivePath;
-  events: Array<ProfileEvent>;
-  findInvitationCreator?: Maybe<Profile>;
-  findSafesByOwner: Array<SafeInfo>;
-  getAllStrings?: Maybe<Array<Maybe<I18n>>>;
-  getAllStringsByLanguage?: Maybe<Array<Maybe<I18n>>>;
-  getAllStringsByMaxVersion?: Maybe<Array<Maybe<I18n>>>;
-  getAllStringsByMaxVersionAndLang?: Maybe<Array<Maybe<I18n>>>;
-  getAvailableLanguages?: Maybe<Array<Maybe<I18n>>>;
-  getOlderVersionsByKeyAndLang?: Maybe<Array<Maybe<I18n>>>;
-  getRandomAccount?: Maybe<RandomAccount>;
-  getStringByLanguage?: Maybe<Array<I18n>>;
-  getStringByMaxVersion?: Maybe<I18n>;
-  hubSignupTransaction?: Maybe<ProfileEvent>;
-  init: SessionInfo;
-  invitationTransaction?: Maybe<ProfileEvent>;
-  invoice?: Maybe<Scalars['String']>;
-  lastAcknowledgedAt?: Maybe<Scalars['Date']>;
-  myInvitations: Array<CreatedInvitation>;
-  myProfile?: Maybe<Profile>;
-  offerById: Offer;
-  offersByIdAndVersion: Array<Offer>;
-  organisations: Array<Organisation>;
-  organisationsByAddress: Array<Organisation>;
-  paymentPath: TransitivePath;
-  profilesById: Array<Profile>;
-  profilesBySafeAddress: Array<Profile>;
-  recentProfiles: Array<Profile>;
-  regions: Array<Organisation>;
-  safeInfo?: Maybe<SafeInfo>;
-  search: Array<Profile>;
+  version: Version;
   sessionInfo: SessionInfo;
-  shop?: Maybe<Shop>;
+  init: SessionInfo;
+  claimedInvitation?: Maybe<ClaimedInvitation>;
+  invitationTransaction?: Maybe<ProfileEvent>;
+  hubSignupTransaction?: Maybe<ProfileEvent>;
+  safeInfo?: Maybe<SafeInfo>;
+  lastAcknowledgedAt?: Maybe<Scalars['Date']>;
+  verifications: Array<Verification>;
+  events: Array<ProfileEvent>;
+  aggregates: Array<ProfileAggregate>;
   shops: Array<Shop>;
   shopsById: Array<Shop>;
-  signMessage: Scalars['String'];
-  stats: Stats;
-  tagById?: Maybe<Tag>;
-  tags: Array<Tag>;
+  shop?: Maybe<Shop>;
+  organisations: Array<Organisation>;
+  regions: Array<Organisation>;
+  organisationsByAddress: Array<Organisation>;
+  myInvitations: Array<CreatedInvitation>;
+  commonTrust: Array<CommonTrust>;
   trustRelations: Array<TrustRelation>;
-  verifications: Array<Verification>;
-  version: Version;
+  myProfile?: Maybe<Profile>;
+  profilesById: Array<Profile>;
+  recentProfiles: Array<Profile>;
+  profilesBySafeAddress: Array<Profile>;
+  findSafesByOwner: Array<SafeInfo>;
+  search: Array<Profile>;
+  stats: Stats;
+  deliveryMethods?: Maybe<Array<Maybe<DeliveryMethod>>>;
+  cities: Array<City>;
+  tags: Array<Tag>;
+  tagById?: Maybe<Tag>;
+  offerById: Offer;
+  offersByIdAndVersion: Array<Offer>;
+  directPath: TransitivePath;
+  paymentPath: TransitivePath;
+  invoice?: Maybe<Scalars['String']>;
+  findInvitationCreator?: Maybe<Profile>;
+  clientAssertionJwt: Scalars['String'];
+  getAllStrings?: Maybe<Array<Maybe<I18n>>>;
+  getAllStringsByLanguage?: Maybe<Array<Maybe<I18n>>>;
+  getStringByLanguage?: Maybe<Array<I18n>>;
+  getStringByMaxVersion?: Maybe<I18n>;
+  getAvailableLanguages?: Maybe<Array<Maybe<I18n>>>;
+  getAllStringsByMaxVersion?: Maybe<Array<Maybe<I18n>>>;
+  getAllStringsByMaxVersionAndLang?: Maybe<Array<Maybe<I18n>>>;
+  getOlderVersionsByKeyAndLang?: Maybe<Array<Maybe<I18n>>>;
+  allProfiles: Array<Maybe<ExportProfile>>;
+  allTrusts: Array<ExportTrustRelation>;
+  getRandomAccount?: Maybe<RandomAccount>;
+  signMessage: Scalars['String'];
+};
+
+
+export type QuerySafeInfoArgs = {
+  safeAddress?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryLastAcknowledgedAtArgs = {
+  safeAddress: Scalars['String'];
+};
+
+
+export type QueryVerificationsArgs = {
+  pagination?: Maybe<PaginationArgs>;
+  filter?: Maybe<VerifiedSafesFilter>;
+};
+
+
+export type QueryEventsArgs = {
+  types: Array<EventType>;
+  safeAddress: Scalars['String'];
+  pagination: PaginationArgs;
+  filter?: Maybe<ProfileEventFilter>;
 };
 
 
 export type QueryAggregatesArgs = {
-  filter?: InputMaybe<ProfileAggregateFilter>;
-  safeAddress: Scalars['String'];
   types: Array<AggregateType>;
+  safeAddress: Scalars['String'];
+  filter?: Maybe<ProfileAggregateFilter>;
 };
 
 
-export type QueryAllProfilesArgs = {
-  sinceLastChange?: InputMaybe<Scalars['Date']>;
+export type QueryShopsArgs = {
+  ownerId?: Maybe<Scalars['Int']>;
 };
 
 
-export type QueryAllTrustsArgs = {
-  sinceLastChange?: InputMaybe<Scalars['Date']>;
+export type QueryShopsByIdArgs = {
+  ids: Array<Scalars['Int']>;
 };
 
 
-export type QueryCitiesArgs = {
-  query: QueryCitiesInput;
+export type QueryShopArgs = {
+  id: Scalars['Int'];
+  ownerId?: Maybe<Scalars['Int']>;
+};
+
+
+export type QueryOrganisationsArgs = {
+  pagination?: Maybe<PaginationArgs>;
+};
+
+
+export type QueryRegionsArgs = {
+  pagination?: Maybe<PaginationArgs>;
+};
+
+
+export type QueryOrganisationsByAddressArgs = {
+  addresses: Array<Scalars['String']>;
 };
 
 
@@ -1186,23 +1228,23 @@ export type QueryCommonTrustArgs = {
 };
 
 
-export type QueryDirectPathArgs = {
-  amount: Scalars['String'];
-  from: Scalars['String'];
-  to: Scalars['String'];
-};
-
-
-export type QueryEventsArgs = {
-  filter?: InputMaybe<ProfileEventFilter>;
-  pagination: PaginationArgs;
+export type QueryTrustRelationsArgs = {
   safeAddress: Scalars['String'];
-  types: Array<EventType>;
 };
 
 
-export type QueryFindInvitationCreatorArgs = {
-  code: Scalars['String'];
+export type QueryProfilesByIdArgs = {
+  ids: Array<Scalars['Int']>;
+};
+
+
+export type QueryRecentProfilesArgs = {
+  pagination?: Maybe<PaginationArgs>;
+};
+
+
+export type QueryProfilesBySafeAddressArgs = {
+  safeAddresses: Array<Scalars['String']>;
 };
 
 
@@ -1211,40 +1253,23 @@ export type QueryFindSafesByOwnerArgs = {
 };
 
 
-export type QueryGetAllStringsByLanguageArgs = {
-  lang?: InputMaybe<Scalars['String']>;
+export type QuerySearchArgs = {
+  query: SearchInput;
 };
 
 
-export type QueryGetAllStringsByMaxVersionAndLangArgs = {
-  lang?: InputMaybe<Scalars['String']>;
+export type QueryCitiesArgs = {
+  query: QueryCitiesInput;
 };
 
 
-export type QueryGetOlderVersionsByKeyAndLangArgs = {
-  key?: InputMaybe<Scalars['String']>;
-  lang?: InputMaybe<Scalars['String']>;
+export type QueryTagsArgs = {
+  query: QueryTagsInput;
 };
 
 
-export type QueryGetStringByLanguageArgs = {
-  lang?: InputMaybe<Scalars['String']>;
-};
-
-
-export type QueryGetStringByMaxVersionArgs = {
-  key?: InputMaybe<Scalars['String']>;
-  lang?: InputMaybe<Scalars['String']>;
-};
-
-
-export type QueryInvoiceArgs = {
-  invoiceId: Scalars['Int'];
-};
-
-
-export type QueryLastAcknowledgedAtArgs = {
-  safeAddress: Scalars['String'];
+export type QueryTagByIdArgs = {
+  id: Scalars['Int'];
 };
 
 
@@ -1258,93 +1283,70 @@ export type QueryOffersByIdAndVersionArgs = {
 };
 
 
-export type QueryOrganisationsArgs = {
-  pagination?: InputMaybe<PaginationArgs>;
-};
-
-
-export type QueryOrganisationsByAddressArgs = {
-  addresses: Array<Scalars['String']>;
+export type QueryDirectPathArgs = {
+  from: Scalars['String'];
+  to: Scalars['String'];
+  amount: Scalars['String'];
 };
 
 
 export type QueryPaymentPathArgs = {
-  amount: Scalars['String'];
   from: Scalars['String'];
   to: Scalars['String'];
+  amount: Scalars['String'];
 };
 
 
-export type QueryProfilesByIdArgs = {
-  ids: Array<Scalars['Int']>;
+export type QueryInvoiceArgs = {
+  invoiceId: Scalars['Int'];
 };
 
 
-export type QueryProfilesBySafeAddressArgs = {
-  safeAddresses: Array<Scalars['String']>;
+export type QueryFindInvitationCreatorArgs = {
+  code: Scalars['String'];
 };
 
 
-export type QueryRecentProfilesArgs = {
-  pagination?: InputMaybe<PaginationArgs>;
+export type QueryGetAllStringsByLanguageArgs = {
+  lang?: Maybe<Scalars['String']>;
 };
 
 
-export type QueryRegionsArgs = {
-  pagination?: InputMaybe<PaginationArgs>;
+export type QueryGetStringByLanguageArgs = {
+  lang?: Maybe<Scalars['String']>;
 };
 
 
-export type QuerySafeInfoArgs = {
-  safeAddress?: InputMaybe<Scalars['String']>;
+export type QueryGetStringByMaxVersionArgs = {
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
 };
 
 
-export type QuerySearchArgs = {
-  query: SearchInput;
+export type QueryGetAllStringsByMaxVersionAndLangArgs = {
+  lang?: Maybe<Scalars['String']>;
 };
 
 
-export type QueryShopArgs = {
-  id: Scalars['Int'];
-  ownerId?: InputMaybe<Scalars['Int']>;
+export type QueryGetOlderVersionsByKeyAndLangArgs = {
+  key?: Maybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
 };
 
 
-export type QueryShopsArgs = {
-  ownerId?: InputMaybe<Scalars['Int']>;
+export type QueryAllProfilesArgs = {
+  sinceLastChange?: Maybe<Scalars['Date']>;
 };
 
 
-export type QueryShopsByIdArgs = {
-  ids: Array<Scalars['Int']>;
+export type QueryAllTrustsArgs = {
+  sinceLastChange?: Maybe<Scalars['Date']>;
 };
 
 
 export type QuerySignMessageArgs = {
-  key: Scalars['String'];
   message: Scalars['String'];
-};
-
-
-export type QueryTagByIdArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type QueryTagsArgs = {
-  query: QueryTagsInput;
-};
-
-
-export type QueryTrustRelationsArgs = {
-  safeAddress: Scalars['String'];
-};
-
-
-export type QueryVerificationsArgs = {
-  filter?: InputMaybe<VerifiedSafesFilter>;
-  pagination?: InputMaybe<PaginationArgs>;
+  key: Scalars['String'];
 };
 
 export type QueryCitiesByGeonameIdInput = {
@@ -1352,26 +1354,26 @@ export type QueryCitiesByGeonameIdInput = {
 };
 
 export type QueryCitiesByNameInput = {
-  languageCode?: InputMaybe<Scalars['String']>;
   name_like: Scalars['String'];
+  languageCode?: Maybe<Scalars['String']>;
 };
 
 export type QueryCitiesInput = {
-  byId?: InputMaybe<QueryCitiesByGeonameIdInput>;
-  byName?: InputMaybe<QueryCitiesByNameInput>;
+  byName?: Maybe<QueryCitiesByNameInput>;
+  byId?: Maybe<QueryCitiesByGeonameIdInput>;
 };
 
 export type QueryProfileInput = {
-  circlesAddress?: InputMaybe<Array<Scalars['String']>>;
-  country?: InputMaybe<Scalars['String']>;
-  firstName?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Array<Scalars['Int']>>;
-  lastName?: InputMaybe<Scalars['String']>;
+  id?: Maybe<Array<Scalars['Int']>>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  circlesAddress?: Maybe<Array<Scalars['String']>>;
 };
 
 export type QueryTagsInput = {
   typeId_in: Array<Scalars['String']>;
-  value_like?: InputMaybe<Scalars['String']>;
+  value_like?: Maybe<Scalars['String']>;
 };
 
 export type QueryUniqueProfileInput = {
@@ -1380,27 +1382,27 @@ export type QueryUniqueProfileInput = {
 
 export type RandomAccount = {
   __typename?: 'RandomAccount';
-  address?: Maybe<Scalars['String']>;
   privateKey?: Maybe<Scalars['String']>;
+  address?: Maybe<Scalars['String']>;
 };
 
 export type RedeemClaimedInvitationResult = {
   __typename?: 'RedeemClaimedInvitationResult';
-  error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+  error?: Maybe<Scalars['String']>;
   transactionHash?: Maybe<Scalars['String']>;
 };
 
 export type RejectMembershipResult = {
   __typename?: 'RejectMembershipResult';
-  error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+  error?: Maybe<Scalars['String']>;
 };
 
 export type RemoveMemberResult = {
   __typename?: 'RemoveMemberResult';
-  error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+  error?: Maybe<Scalars['String']>;
 };
 
 export type RequestUpdateSafeInput = {
@@ -1409,60 +1411,60 @@ export type RequestUpdateSafeInput = {
 
 export type RequestUpdateSafeResponse = {
   __typename?: 'RequestUpdateSafeResponse';
-  challenge?: Maybe<Scalars['String']>;
-  errorMessage?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+  errorMessage?: Maybe<Scalars['String']>;
+  challenge?: Maybe<Scalars['String']>;
 };
 
 export type SafeAddressByOwnerResult = {
   __typename?: 'SafeAddressByOwnerResult';
-  safeAddress: Scalars['String'];
   type: Scalars['String'];
+  safeAddress: Scalars['String'];
 };
 
 export type SafeInfo = {
   __typename?: 'SafeInfo';
-  lastUbiAt?: Maybe<Scalars['String']>;
-  randomValue?: Maybe<Scalars['String']>;
-  safeAddress: Scalars['String'];
-  safeProfile?: Maybe<Profile>;
-  tokenAddress?: Maybe<Scalars['String']>;
   type: AccountType;
+  safeAddress: Scalars['String'];
+  lastUbiAt?: Maybe<Scalars['String']>;
+  tokenAddress?: Maybe<Scalars['String']>;
+  randomValue?: Maybe<Scalars['String']>;
+  safeProfile?: Maybe<Profile>;
 };
 
 export type SafeVerified = IEventPayload & {
   __typename?: 'SafeVerified';
+  transaction_hash?: Maybe<Scalars['String']>;
   organisation: Scalars['String'];
   organisation_profile?: Maybe<Organisation>;
   safe_address: Scalars['String'];
-  transaction_hash?: Maybe<Scalars['String']>;
 };
 
 export type Sale = {
   __typename?: 'Sale';
+  id: Scalars['Int'];
+  sellerAddress: Scalars['String'];
+  sellerProfile?: Maybe<Profile>;
   buyerAddress: Scalars['String'];
   buyerProfile?: Maybe<Profile>;
   createdAt: Scalars['String'];
-  id: Scalars['Int'];
-  invoices?: Maybe<Array<Invoice>>;
+  total: Scalars['String'];
   lines?: Maybe<Array<SalesLine>>;
   paymentTransaction?: Maybe<ProfileEvent>;
-  sellerAddress: Scalars['String'];
-  sellerProfile?: Maybe<Profile>;
-  total: Scalars['String'];
+  invoices?: Maybe<Array<Invoice>>;
 };
 
 export type SaleEvent = IEventPayload & {
   __typename?: 'SaleEvent';
+  transaction_hash?: Maybe<Scalars['String']>;
   buyer: Scalars['String'];
   buyer_profile?: Maybe<Profile>;
   invoice?: Maybe<Invoice>;
-  transaction_hash?: Maybe<Scalars['String']>;
 };
 
 export type SaleEventFilter = {
-  invoiceId?: InputMaybe<Scalars['Int']>;
-  pickupCode?: InputMaybe<Scalars['String']>;
+  invoiceId?: Maybe<Scalars['Int']>;
+  pickupCode?: Maybe<Scalars['String']>;
 };
 
 export type Sales = IAggregatePayload & {
@@ -1472,16 +1474,16 @@ export type Sales = IAggregatePayload & {
 };
 
 export type SalesAggregateFilter = {
-  createdByAddresses?: InputMaybe<Array<Scalars['String']>>;
-  pickupCode?: InputMaybe<Scalars['String']>;
-  salesIds?: InputMaybe<Array<Scalars['Int']>>;
+  createdByAddresses?: Maybe<Array<Scalars['String']>>;
+  salesIds?: Maybe<Array<Scalars['Int']>>;
+  pickupCode?: Maybe<Scalars['String']>;
 };
 
 export type SalesLine = {
   __typename?: 'SalesLine';
-  amount: Scalars['Int'];
   id: Scalars['Int'];
   metadata?: Maybe<Scalars['String']>;
+  amount: Scalars['Int'];
   offer: Offer;
   shop?: Maybe<Shop>;
 };
@@ -1492,9 +1494,9 @@ export type SearchInput = {
 
 export type SendMessageResult = {
   __typename?: 'SendMessageResult';
+  success: Scalars['Boolean'];
   error?: Maybe<Scalars['String']>;
   event?: Maybe<ProfileEvent>;
-  success: Scalars['Boolean'];
 };
 
 export type Server = {
@@ -1504,120 +1506,120 @@ export type Server = {
 
 export type SessionInfo = {
   __typename?: 'SessionInfo';
-  capabilities: Array<Capability>;
-  hasProfile?: Maybe<Scalars['Boolean']>;
   isLoggedOn: Scalars['Boolean'];
-  profile?: Maybe<Profile>;
+  hasProfile?: Maybe<Scalars['Boolean']>;
   profileId?: Maybe<Scalars['Int']>;
+  profile?: Maybe<Profile>;
+  capabilities: Array<Capability>;
   useShortSignup?: Maybe<Scalars['Boolean']>;
 };
 
 export type Shop = {
   __typename?: 'Shop';
-  adultOnly?: Maybe<Scalars['Boolean']>;
-  categories?: Maybe<Array<ShopCategory>>;
-  createdAt: Scalars['Date'];
-  deliveryMethods?: Maybe<Array<DeliveryMethod>>;
-  description: Scalars['String'];
-  enabled?: Maybe<Scalars['Boolean']>;
-  healthInfosLink?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
-  largeBannerUrl: Scalars['String'];
-  legalText?: Maybe<Scalars['String']>;
-  name: Scalars['String'];
-  openingHours?: Maybe<Scalars['String']>;
-  owner: Organisation;
-  ownerId?: Maybe<Scalars['Int']>;
-  pickupAddress?: Maybe<PostAddress>;
-  privacyPolicyLink?: Maybe<Scalars['String']>;
+  createdAt: Scalars['Date'];
   private?: Maybe<Scalars['Boolean']>;
+  enabled?: Maybe<Scalars['Boolean']>;
+  name: Scalars['String'];
+  description: Scalars['String'];
+  legalText?: Maybe<Scalars['String']>;
+  largeBannerUrl: Scalars['String'];
+  smallBannerUrl: Scalars['String'];
+  shopListingStyle: ShopListingStyle;
+  sortOrder?: Maybe<Scalars['Int']>;
   productListingStyle: ProductListingType;
   purchaseMetaDataKeys?: Maybe<Scalars['String']>;
-  shopListingStyle: ShopListingStyle;
-  smallBannerUrl: Scalars['String'];
-  sortOrder?: Maybe<Scalars['Int']>;
+  ownerId?: Maybe<Scalars['Int']>;
+  owner: Organisation;
+  openingHours?: Maybe<Scalars['String']>;
+  pickupAddress?: Maybe<PostAddress>;
+  categories?: Maybe<Array<ShopCategory>>;
+  deliveryMethods?: Maybe<Array<DeliveryMethod>>;
+  privacyPolicyLink?: Maybe<Scalars['String']>;
   tosLink?: Maybe<Scalars['String']>;
+  healthInfosLink?: Maybe<Scalars['String']>;
+  adultOnly?: Maybe<Scalars['Boolean']>;
 };
 
 export type ShopCategory = {
   __typename?: 'ShopCategory';
-  createdAt?: Maybe<Scalars['Date']>;
-  description?: Maybe<Scalars['String']>;
-  enabled?: Maybe<Scalars['Boolean']>;
-  entries?: Maybe<Array<ShopCategoryEntry>>;
   id: Scalars['Int'];
-  largeBannerUrl?: Maybe<Scalars['String']>;
-  name: Scalars['String'];
-  private?: Maybe<Scalars['Boolean']>;
-  productListingStyle?: Maybe<ProductListingType>;
+  createdAt?: Maybe<Scalars['Date']>;
   shop?: Maybe<Shop>;
   shopId: Scalars['Int'];
+  private?: Maybe<Scalars['Boolean']>;
+  enabled?: Maybe<Scalars['Boolean']>;
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  largeBannerUrl?: Maybe<Scalars['String']>;
   smallBannerUrl?: Maybe<Scalars['String']>;
   sortOrder?: Maybe<Scalars['Int']>;
+  productListingStyle?: Maybe<ProductListingType>;
+  entries?: Maybe<Array<ShopCategoryEntry>>;
 };
 
 export type ShopCategoryEntry = {
   __typename?: 'ShopCategoryEntry';
-  createdAt: Scalars['Date'];
-  enabled?: Maybe<Scalars['Boolean']>;
   id: Scalars['Int'];
+  createdAt: Scalars['Date'];
   private?: Maybe<Scalars['Boolean']>;
+  enabled?: Maybe<Scalars['Boolean']>;
   product?: Maybe<Offer>;
   productId: Scalars['Int'];
   productVersion: Scalars['Int'];
+  sortOrder?: Maybe<Scalars['Int']>;
   shopCategory?: Maybe<ShopCategory>;
   shopCategoryId: Scalars['Int'];
-  sortOrder?: Maybe<Scalars['Int']>;
 };
 
 export type ShopCategoryEntryInput = {
-  enabled?: InputMaybe<Scalars['Boolean']>;
-  id?: InputMaybe<Scalars['Int']>;
-  name?: InputMaybe<Scalars['String']>;
-  private?: InputMaybe<Scalars['Boolean']>;
+  id?: Maybe<Scalars['Int']>;
+  private?: Maybe<Scalars['Boolean']>;
+  enabled?: Maybe<Scalars['Boolean']>;
+  name?: Maybe<Scalars['String']>;
+  shopCategoryId: Scalars['Int'];
   productId: Scalars['Int'];
   productVersion: Scalars['Int'];
-  shopCategoryId: Scalars['Int'];
-  sortOrder?: InputMaybe<Scalars['Int']>;
+  sortOrder?: Maybe<Scalars['Int']>;
 };
 
 export type ShopCategoryInput = {
-  description?: InputMaybe<Scalars['String']>;
-  enabled?: InputMaybe<Scalars['Boolean']>;
-  id?: InputMaybe<Scalars['Int']>;
-  largeBannerUrl?: InputMaybe<Scalars['String']>;
-  name: Scalars['String'];
-  private?: InputMaybe<Scalars['Boolean']>;
-  productListingStyle?: InputMaybe<ProductListingType>;
+  id?: Maybe<Scalars['Int']>;
   shopId: Scalars['Int'];
-  smallBannerUrl?: InputMaybe<Scalars['String']>;
-  sortOrder?: InputMaybe<Scalars['Int']>;
+  private?: Maybe<Scalars['Boolean']>;
+  enabled?: Maybe<Scalars['Boolean']>;
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  largeBannerUrl?: Maybe<Scalars['String']>;
+  smallBannerUrl?: Maybe<Scalars['String']>;
+  sortOrder?: Maybe<Scalars['Int']>;
+  productListingStyle?: Maybe<ProductListingType>;
 };
 
 export type ShopInput = {
-  adultOnly?: InputMaybe<Scalars['Boolean']>;
-  deliveryMethodIds?: InputMaybe<Array<Scalars['Int']>>;
-  description: Scalars['String'];
+  id?: Maybe<Scalars['Int']>;
   enabled: Scalars['Boolean'];
-  healthInfosLink?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Int']>;
-  largeBannerUrl: Scalars['String'];
-  legalText?: InputMaybe<Scalars['String']>;
+  private?: Maybe<Scalars['Boolean']>;
   name: Scalars['String'];
-  openingHours?: InputMaybe<Scalars['String']>;
-  ownerId: Scalars['Int'];
-  privacyPolicyLink?: InputMaybe<Scalars['String']>;
-  private?: InputMaybe<Scalars['Boolean']>;
-  productListingStyle: ProductListingType;
-  shopListingStyle: ShopListingStyle;
+  description: Scalars['String'];
+  legalText?: Maybe<Scalars['String']>;
+  largeBannerUrl: Scalars['String'];
   smallBannerUrl: Scalars['String'];
-  sortOrder?: InputMaybe<Scalars['Int']>;
-  tosLink?: InputMaybe<Scalars['String']>;
+  shopListingStyle: ShopListingStyle;
+  sortOrder?: Maybe<Scalars['Int']>;
+  productListingStyle: ProductListingType;
+  ownerId: Scalars['Int'];
+  openingHours?: Maybe<Scalars['String']>;
+  privacyPolicyLink?: Maybe<Scalars['String']>;
+  tosLink?: Maybe<Scalars['String']>;
+  healthInfosLink?: Maybe<Scalars['String']>;
+  adultOnly?: Maybe<Scalars['Boolean']>;
+  deliveryMethodIds?: Maybe<Array<Scalars['Int']>>;
 };
 
 export enum ShopListingStyle {
-  Featured = 'FEATURED',
-  Regular = 'REGULAR'
+  Regular = 'REGULAR',
+  Featured = 'FEATURED'
 }
 
 export enum SortOrder {
@@ -1627,11 +1629,11 @@ export enum SortOrder {
 
 export type Stats = {
   __typename?: 'Stats';
-  goals: FibonacciGoals;
-  leaderboard: Array<LeaderboardEntry>;
-  myRank: MyInviteRank;
   profilesCount: Scalars['Int'];
   verificationsCount: Scalars['Int'];
+  leaderboard: Array<LeaderboardEntry>;
+  goals: FibonacciGoals;
+  myRank: MyInviteRank;
 };
 
 export type Subscription = {
@@ -1642,30 +1644,30 @@ export type Subscription = {
 export type Tag = {
   __typename?: 'Tag';
   id: Scalars['Int'];
-  order?: Maybe<Scalars['Int']>;
   typeId: Scalars['String'];
   value?: Maybe<Scalars['String']>;
+  order?: Maybe<Scalars['Int']>;
 };
 
 export type TagTransactionResult = {
   __typename?: 'TagTransactionResult';
-  error?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+  error?: Maybe<Scalars['String']>;
   tag?: Maybe<Tag>;
 };
 
 export type TransitivePath = {
   __typename?: 'TransitivePath';
-  flow: Scalars['String'];
   requestedAmount: Scalars['String'];
+  flow: Scalars['String'];
   success: Scalars['Boolean'];
   transfers: Array<TransitiveTransfer>;
 };
 
 export type TransitiveTransfer = {
   __typename?: 'TransitiveTransfer';
-  from: Scalars['String'];
   isHubTransfer?: Maybe<Scalars['Boolean']>;
+  from: Scalars['String'];
   to: Scalars['String'];
   token: Scalars['String'];
   tokenOwner: Scalars['String'];
@@ -1674,17 +1676,17 @@ export type TransitiveTransfer = {
 
 export enum TrustDirection {
   In = 'IN',
-  Mutual = 'MUTUAL',
-  Out = 'OUT'
+  Out = 'OUT',
+  Mutual = 'MUTUAL'
 }
 
 export type TrustRelation = {
   __typename?: 'TrustRelation';
-  direction: TrustDirection;
-  otherSafeAddress: Scalars['String'];
-  otherSafeAddressProfile?: Maybe<Profile>;
   safeAddress: Scalars['String'];
   safeAddressProfile?: Maybe<Profile>;
+  otherSafeAddress: Scalars['String'];
+  otherSafeAddressProfile?: Maybe<Profile>;
+  direction: TrustDirection;
 };
 
 export type UpdateSafeInput = {
@@ -1693,47 +1695,47 @@ export type UpdateSafeInput = {
 
 export type UpdateSafeResponse = {
   __typename?: 'UpdateSafeResponse';
+  success: Scalars['Boolean'];
   errorMessage?: Maybe<Scalars['String']>;
   newSafeAddress?: Maybe<Scalars['String']>;
-  success: Scalars['Boolean'];
 };
 
 export type UpsertOrganisationInput = {
-  avatarMimeType?: InputMaybe<Scalars['String']>;
-  avatarUrl?: InputMaybe<Scalars['String']>;
-  circlesAddress?: InputMaybe<Scalars['String']>;
-  cityGeonameid?: InputMaybe<Scalars['Int']>;
-  description?: InputMaybe<Scalars['String']>;
-  displayCurrency?: InputMaybe<DisplayCurrency>;
-  id?: InputMaybe<Scalars['Int']>;
-  largeBannerUrl?: InputMaybe<Scalars['String']>;
+  id?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
-  productListingType?: InputMaybe<ProductListingType>;
-  smallBannerUrl?: InputMaybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  circlesAddress?: Maybe<Scalars['String']>;
+  avatarUrl?: Maybe<Scalars['String']>;
+  largeBannerUrl?: Maybe<Scalars['String']>;
+  smallBannerUrl?: Maybe<Scalars['String']>;
+  productListingType?: Maybe<ProductListingType>;
+  avatarMimeType?: Maybe<Scalars['String']>;
+  cityGeonameid?: Maybe<Scalars['Int']>;
+  displayCurrency?: Maybe<DisplayCurrency>;
 };
 
 export type UpsertProfileInput = {
-  age?: InputMaybe<Scalars['Int']>;
-  askedForEmailAddress?: InputMaybe<Scalars['Boolean']>;
-  avatarCid?: InputMaybe<Scalars['String']>;
-  avatarMimeType?: InputMaybe<Scalars['String']>;
-  avatarUrl?: InputMaybe<Scalars['String']>;
-  circlesAddress?: InputMaybe<Scalars['String']>;
-  circlesSafeOwner?: InputMaybe<Scalars['String']>;
-  circlesTokenAddress?: InputMaybe<Scalars['String']>;
-  cityGeonameid?: InputMaybe<Scalars['Int']>;
-  country?: InputMaybe<Scalars['String']>;
-  displayCurrency?: InputMaybe<DisplayCurrency>;
-  displayTimeCircles?: InputMaybe<Scalars['Boolean']>;
-  dream?: InputMaybe<Scalars['String']>;
-  emailAddress?: InputMaybe<Scalars['String']>;
-  firstName: Scalars['String'];
-  gender?: InputMaybe<Gender>;
-  id?: InputMaybe<Scalars['Int']>;
-  lastName?: InputMaybe<Scalars['String']>;
-  newsletter?: InputMaybe<Scalars['Boolean']>;
+  id?: Maybe<Scalars['Int']>;
   status: Scalars['String'];
-  successorOfCirclesAddress?: InputMaybe<Scalars['String']>;
+  firstName: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  dream?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  emailAddress?: Maybe<Scalars['String']>;
+  askedForEmailAddress?: Maybe<Scalars['Boolean']>;
+  successorOfCirclesAddress?: Maybe<Scalars['String']>;
+  circlesAddress?: Maybe<Scalars['String']>;
+  circlesSafeOwner?: Maybe<Scalars['String']>;
+  circlesTokenAddress?: Maybe<Scalars['String']>;
+  avatarUrl?: Maybe<Scalars['String']>;
+  avatarCid?: Maybe<Scalars['String']>;
+  avatarMimeType?: Maybe<Scalars['String']>;
+  newsletter?: Maybe<Scalars['Boolean']>;
+  displayTimeCircles?: Maybe<Scalars['Boolean']>;
+  cityGeonameid?: Maybe<Scalars['Int']>;
+  displayCurrency?: Maybe<DisplayCurrency>;
+  age?: Maybe<Scalars['Int']>;
+  gender?: Maybe<Gender>;
 };
 
 export type UpsertShopCategoriesResult = {
@@ -1749,26 +1751,26 @@ export type UpsertShopCategoryEntriesResult = {
 };
 
 export type UpsertTagInput = {
-  id?: InputMaybe<Scalars['Int']>;
+  id?: Maybe<Scalars['Int']>;
   typeId: Scalars['String'];
-  value?: InputMaybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
 };
 
 export type Verification = {
   __typename?: 'Verification';
   createdAt: Scalars['String'];
+  verifierSafeAddress: Scalars['String'];
+  verifierProfile?: Maybe<Organisation>;
+  verifiedSafeAddress: Scalars['String'];
+  verifiedProfile?: Maybe<Profile>;
   revokedAt?: Maybe<Scalars['String']>;
   revokedProfile?: Maybe<Profile>;
-  verificationRewardTransaction?: Maybe<ProfileEvent>;
   verificationRewardTransactionHash: Scalars['String'];
-  verifiedProfile?: Maybe<Profile>;
-  verifiedSafeAddress: Scalars['String'];
-  verifierProfile?: Maybe<Organisation>;
-  verifierSafeAddress: Scalars['String'];
+  verificationRewardTransaction?: Maybe<ProfileEvent>;
 };
 
 export type VerifiedSafesFilter = {
-  addresses?: InputMaybe<Array<Scalars['String']>>;
+  addresses?: Maybe<Array<Scalars['String']>>;
 };
 
 export type VerifySafeResult = {
@@ -1785,18 +1787,18 @@ export type Version = {
 
 export type WelcomeMessage = IEventPayload & {
   __typename?: 'WelcomeMessage';
+  transaction_hash?: Maybe<Scalars['String']>;
   invitedBy: Scalars['String'];
   invitedBy_profile?: Maybe<Profile>;
-  transaction_hash?: Maybe<Scalars['String']>;
 };
 
 export type I18n = {
   __typename?: 'i18n';
-  createdBy?: Maybe<Scalars['String']>;
-  key?: Maybe<Scalars['String']>;
   lang?: Maybe<Scalars['String']>;
-  value?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['String']>;
   version?: Maybe<Scalars['Int']>;
+  value?: Maybe<Scalars['String']>;
 };
 
 export type UpsertShippingAddressMutationVariables = Exact<{
@@ -1804,23 +1806,56 @@ export type UpsertShippingAddressMutationVariables = Exact<{
 }>;
 
 
-export type UpsertShippingAddressMutation = { __typename?: 'Mutation', upsertShippingAddress?: { __typename?: 'PostAddress', id: number, name?: string | null, street: string, house: string, zip: string, cityGeonameid?: number | null, city: string, state?: string | null, country: string } | null };
+export type UpsertShippingAddressMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertShippingAddress?: Maybe<(
+    { __typename?: 'PostAddress' }
+    & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'cityGeonameid' | 'city' | 'state' | 'country'>
+  )> }
+);
 
 export type CreatePurchaseMutationVariables = Exact<{
   lines: Array<PurchaseLineInput> | PurchaseLineInput;
   deliveryMethodId: Scalars['Int'];
-  deliveryAddressId?: InputMaybe<Scalars['Int']>;
+  deliveryAddressId?: Maybe<Scalars['Int']>;
 }>;
 
 
-export type CreatePurchaseMutation = { __typename?: 'Mutation', purchase: Array<{ __typename?: 'Invoice', id: number, buyerAddress: string, sellerAddress: string, purchaseId: number, buyerProfile?: { __typename?: 'Profile', id: number, circlesAddress?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null } | null, sellerProfile?: { __typename?: 'Profile', id: number, circlesAddress?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null } | null, lines?: Array<{ __typename?: 'InvoiceLine', id: number, amount: number, offer?: { __typename?: 'Offer', id: number, version: number, createdByAddress: string, pricePerUnit: string, title: string, description?: string | null, createdByProfile?: { __typename?: 'Profile', id: number, circlesAddress?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null } | null } | null }> | null }> };
+export type CreatePurchaseMutation = (
+  { __typename?: 'Mutation' }
+  & { purchase: Array<(
+    { __typename?: 'Invoice' }
+    & Pick<Invoice, 'id' | 'buyerAddress' | 'sellerAddress' | 'purchaseId'>
+    & { buyerProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+    )>, sellerProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+    )>, lines?: Maybe<Array<(
+      { __typename?: 'InvoiceLine' }
+      & Pick<InvoiceLine, 'id' | 'amount'>
+      & { offer?: Maybe<(
+        { __typename?: 'Offer' }
+        & Pick<Offer, 'id' | 'version' | 'createdByAddress' | 'pricePerUnit' | 'title' | 'description'>
+        & { createdByProfile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+        )> }
+      )> }
+    )>> }
+  )> }
+);
 
 export type RequestSessionChallengeMutationVariables = Exact<{
   address: Scalars['String'];
 }>;
 
 
-export type RequestSessionChallengeMutation = { __typename?: 'Mutation', requestSessionChallenge: string };
+export type RequestSessionChallengeMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'requestSessionChallenge'>
+);
 
 export type VerifySessionChallengeMutationVariables = Exact<{
   challenge: Scalars['String'];
@@ -1828,60 +1863,121 @@ export type VerifySessionChallengeMutationVariables = Exact<{
 }>;
 
 
-export type VerifySessionChallengeMutation = { __typename?: 'Mutation', verifySessionChallenge?: { __typename?: 'ExchangeTokenResponse', success: boolean, errorMessage?: string | null } | null };
+export type VerifySessionChallengeMutation = (
+  { __typename?: 'Mutation' }
+  & { verifySessionChallenge?: Maybe<(
+    { __typename?: 'ExchangeTokenResponse' }
+    & Pick<ExchangeTokenResponse, 'success' | 'errorMessage'>
+  )> }
+);
 
 export type AddNewLangMutationVariables = Exact<{
-  langToCreate?: InputMaybe<Scalars['String']>;
-  langToCopyFrom?: InputMaybe<Scalars['String']>;
+  langToCreate?: Maybe<Scalars['String']>;
+  langToCopyFrom?: Maybe<Scalars['String']>;
 }>;
 
 
-export type AddNewLangMutation = { __typename?: 'Mutation', addNewLang?: number | null };
+export type AddNewLangMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addNewLang'>
+);
 
 export type UpdateValueMutationVariables = Exact<{
-  lang?: InputMaybe<Scalars['String']>;
-  key?: InputMaybe<Scalars['String']>;
-  createdBy?: InputMaybe<Scalars['String']>;
-  value?: InputMaybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
 }>;
 
 
-export type UpdateValueMutation = { __typename?: 'Mutation', updateValue?: { __typename?: 'i18n', lang?: string | null, key?: string | null, createdBy?: string | null, value?: string | null, version?: number | null } | null };
+export type UpdateValueMutation = (
+  { __typename?: 'Mutation' }
+  & { updateValue?: Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'value' | 'version'>
+  )> }
+);
 
 export type CreateNewStringAndKeyMutationVariables = Exact<{
-  lang?: InputMaybe<Scalars['String']>;
-  key?: InputMaybe<Scalars['String']>;
-  createdBy?: InputMaybe<Scalars['String']>;
-  version?: InputMaybe<Scalars['Int']>;
-  value?: InputMaybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['String']>;
+  version?: Maybe<Scalars['Int']>;
+  value?: Maybe<Scalars['String']>;
 }>;
 
 
-export type CreateNewStringAndKeyMutation = { __typename?: 'Mutation', createNewStringAndKey?: { __typename?: 'i18n', lang?: string | null, key?: string | null, createdBy?: string | null, version?: number | null, value?: string | null } | null };
+export type CreateNewStringAndKeyMutation = (
+  { __typename?: 'Mutation' }
+  & { createNewStringAndKey?: Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )> }
+);
 
 export type ClaimInvitationMutationVariables = Exact<{
   code: Scalars['String'];
 }>;
 
 
-export type ClaimInvitationMutation = { __typename?: 'Mutation', claimInvitation: { __typename?: 'ClaimInvitationResult', success: boolean, claimedInvitation?: { __typename?: 'ClaimedInvitation', createdAt: string, createdByProfileId: number, claimedAt: string, claimedByProfileId: number } | null } };
+export type ClaimInvitationMutation = (
+  { __typename?: 'Mutation' }
+  & { claimInvitation: (
+    { __typename?: 'ClaimInvitationResult' }
+    & Pick<ClaimInvitationResult, 'success'>
+    & { claimedInvitation?: Maybe<(
+      { __typename?: 'ClaimedInvitation' }
+      & Pick<ClaimedInvitation, 'createdAt' | 'createdByProfileId' | 'claimedAt' | 'claimedByProfileId'>
+    )> }
+  ) }
+);
 
 export type AcknowledgeMutationVariables = Exact<{
   until: Scalars['Date'];
-  safeAddress?: InputMaybe<Scalars['String']>;
+  safeAddress?: Maybe<Scalars['String']>;
 }>;
 
 
-export type AcknowledgeMutation = { __typename?: 'Mutation', acknowledge: boolean };
+export type AcknowledgeMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'acknowledge'>
+);
 
 export type SendMessageMutationVariables = Exact<{
-  fromSafeAddress?: InputMaybe<Scalars['String']>;
+  fromSafeAddress?: Maybe<Scalars['String']>;
   toSafeAddress: Scalars['String'];
   content: Scalars['String'];
 }>;
 
 
-export type SendMessageMutation = { __typename?: 'Mutation', sendMessage: { __typename?: 'SendMessageResult', success: boolean, error?: string | null, event?: { __typename?: 'ProfileEvent', block_number?: number | null, direction: string, safe_address: string, timestamp: string, transaction_hash?: string | null, transaction_index?: number | null, type: string, value?: string | null, safe_address_profile?: { __typename?: 'Profile', id: number, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null } | null, tags?: Array<{ __typename?: 'Tag', id: number, typeId: string, value?: string | null }> | null, payload?: { __typename?: 'ChatMessage', id: number, from: string, to: string, text: string, from_profile?: { __typename?: 'Profile', id: number, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null } | null, to_profile?: { __typename?: 'Profile', id: number, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null } | null } | { __typename?: 'CrcHubTransfer' } | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup' } | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'Erc20Transfer' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'NewUser' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'Purchased' } | { __typename?: 'SafeVerified' } | { __typename?: 'SaleEvent' } | { __typename?: 'WelcomeMessage' } | null } | null } };
+export type SendMessageMutation = (
+  { __typename?: 'Mutation' }
+  & { sendMessage: (
+    { __typename?: 'SendMessageResult' }
+    & Pick<SendMessageResult, 'success' | 'error'>
+    & { event?: Maybe<(
+      { __typename?: 'ProfileEvent' }
+      & Pick<ProfileEvent, 'block_number' | 'direction' | 'safe_address' | 'timestamp' | 'transaction_hash' | 'transaction_index' | 'type' | 'value'>
+      & { safe_address_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+      )>, tags?: Maybe<Array<(
+        { __typename?: 'Tag' }
+        & Pick<Tag, 'id' | 'typeId' | 'value'>
+      )>>, payload?: Maybe<{ __typename?: 'CrcSignup' } | { __typename?: 'CrcTrust' } | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcHubTransfer' } | { __typename?: 'CrcMinting' } | { __typename?: 'EthTransfer' } | { __typename?: 'Erc20Transfer' } | { __typename?: 'GnosisSafeEthTransfer' } | (
+        { __typename?: 'ChatMessage' }
+        & Pick<ChatMessage, 'id' | 'from' | 'to' | 'text'>
+        & { from_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )>, to_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress'>
+        )> }
+      ) | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipRejected' } | { __typename?: 'WelcomeMessage' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'MemberAdded' } | { __typename?: 'SaleEvent' } | { __typename?: 'Purchased' } | { __typename?: 'SafeVerified' } | { __typename?: 'NewUser' }> }
+    )> }
+  ) }
+);
 
 export type AddMemberMutationVariables = Exact<{
   groupId: Scalars['String'];
@@ -1889,7 +1985,13 @@ export type AddMemberMutationVariables = Exact<{
 }>;
 
 
-export type AddMemberMutation = { __typename?: 'Mutation', addMember?: { __typename?: 'AddMemberResult', error?: string | null, success: boolean } | null };
+export type AddMemberMutation = (
+  { __typename?: 'Mutation' }
+  & { addMember?: Maybe<(
+    { __typename?: 'AddMemberResult' }
+    & Pick<AddMemberResult, 'error' | 'success'>
+  )> }
+);
 
 export type RemoveMemberMutationVariables = Exact<{
   groupId: Scalars['String'];
@@ -1897,17 +1999,35 @@ export type RemoveMemberMutationVariables = Exact<{
 }>;
 
 
-export type RemoveMemberMutation = { __typename?: 'Mutation', removeMember?: { __typename?: 'RemoveMemberResult', error?: string | null, success: boolean } | null };
+export type RemoveMemberMutation = (
+  { __typename?: 'Mutation' }
+  & { removeMember?: Maybe<(
+    { __typename?: 'RemoveMemberResult' }
+    & Pick<RemoveMemberResult, 'error' | 'success'>
+  )> }
+);
 
 export type RedeemClaimedInvitationMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type RedeemClaimedInvitationMutation = { __typename?: 'Mutation', redeemClaimedInvitation: { __typename?: 'RedeemClaimedInvitationResult', success: boolean, error?: string | null, transactionHash?: string | null } };
+export type RedeemClaimedInvitationMutation = (
+  { __typename?: 'Mutation' }
+  & { redeemClaimedInvitation: (
+    { __typename?: 'RedeemClaimedInvitationResult' }
+    & Pick<RedeemClaimedInvitationResult, 'success' | 'error' | 'transactionHash'>
+  ) }
+);
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LogoutMutation = { __typename?: 'Mutation', logout: { __typename?: 'LogoutResponse', success: boolean } };
+export type LogoutMutation = (
+  { __typename?: 'Mutation' }
+  & { logout: (
+    { __typename?: 'LogoutResponse' }
+    & Pick<LogoutResponse, 'success'>
+  ) }
+);
 
 export type TagTransactionMutationVariables = Exact<{
   transactionHash: Scalars['String'];
@@ -1915,82 +2035,193 @@ export type TagTransactionMutationVariables = Exact<{
 }>;
 
 
-export type TagTransactionMutation = { __typename?: 'Mutation', tagTransaction: { __typename?: 'TagTransactionResult', success: boolean, error?: string | null, tag?: { __typename?: 'Tag', id: number, typeId: string, value?: string | null } | null } };
+export type TagTransactionMutation = (
+  { __typename?: 'Mutation' }
+  & { tagTransaction: (
+    { __typename?: 'TagTransactionResult' }
+    & Pick<TagTransactionResult, 'success' | 'error'>
+    & { tag?: Maybe<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'id' | 'typeId' | 'value'>
+    )> }
+  ) }
+);
 
 export type UpsertProfileMutationVariables = Exact<{
-  id?: InputMaybe<Scalars['Int']>;
+  id?: Maybe<Scalars['Int']>;
   firstName: Scalars['String'];
-  lastName?: InputMaybe<Scalars['String']>;
-  emailAddress?: InputMaybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  emailAddress?: Maybe<Scalars['String']>;
   askedForEmailAddress: Scalars['Boolean'];
-  dream?: InputMaybe<Scalars['String']>;
-  country?: InputMaybe<Scalars['String']>;
-  avatarUrl?: InputMaybe<Scalars['String']>;
-  avatarCid?: InputMaybe<Scalars['String']>;
-  avatarMimeType?: InputMaybe<Scalars['String']>;
-  circlesAddress?: InputMaybe<Scalars['String']>;
-  circlesSafeOwner?: InputMaybe<Scalars['String']>;
-  newsletter?: InputMaybe<Scalars['Boolean']>;
-  displayCurrency?: InputMaybe<DisplayCurrency>;
-  displayTimeCircles?: InputMaybe<Scalars['Boolean']>;
-  cityGeonameid?: InputMaybe<Scalars['Int']>;
+  dream?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  avatarUrl?: Maybe<Scalars['String']>;
+  avatarCid?: Maybe<Scalars['String']>;
+  avatarMimeType?: Maybe<Scalars['String']>;
+  circlesAddress?: Maybe<Scalars['String']>;
+  circlesSafeOwner?: Maybe<Scalars['String']>;
+  newsletter?: Maybe<Scalars['Boolean']>;
+  displayCurrency?: Maybe<DisplayCurrency>;
+  displayTimeCircles?: Maybe<Scalars['Boolean']>;
+  cityGeonameid?: Maybe<Scalars['Int']>;
   status: Scalars['String'];
-  successorOfCirclesAddress?: InputMaybe<Scalars['String']>;
-  gender?: InputMaybe<Gender>;
-  age?: InputMaybe<Scalars['Int']>;
+  successorOfCirclesAddress?: Maybe<Scalars['String']>;
+  gender?: Maybe<Gender>;
+  age?: Maybe<Scalars['Int']>;
 }>;
 
 
-export type UpsertProfileMutation = { __typename?: 'Mutation', upsertProfile: { __typename?: 'Profile', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, circlesSafeOwner?: string | null, invitationLink?: string | null, successorOfCirclesAddress?: string | null, displayName?: string | null, firstName: string, lastName?: string | null, emailAddress?: string | null, askedForEmailAddress: boolean, dream?: string | null, country?: string | null, avatarUrl?: string | null, avatarCid?: string | null, avatarMimeType?: string | null, newsletter?: boolean | null, displayTimeCircles?: boolean | null, cityGeonameid?: number | null, age?: number | null, gender?: Gender | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string, latitude: number, longitude: number, population: number } | null, memberships?: Array<{ __typename?: 'Membership', isAdmin: boolean, organisation: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, displayName?: string | null, circlesSafeOwner?: string | null, name: string, description?: string | null, avatarUrl?: string | null, cityGeonameid?: number | null, city?: { __typename?: 'City', geonameid: number, country: string, name: string, population: number } | null } }> | null, verifications?: Array<{ __typename?: 'Verification', createdAt: string, revokedAt?: string | null, verifierSafeAddress: string, verifierProfile?: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, avatarUrl?: string | null, name: string, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null } | null }> | null } };
+export type UpsertProfileMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertProfile: (
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'age' | 'gender'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+    )>, memberships?: Maybe<Array<(
+      { __typename?: 'Membership' }
+      & Pick<Membership, 'isAdmin'>
+      & { organisation: (
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'displayName' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl' | 'cityGeonameid'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'country' | 'name' | 'population'>
+        )> }
+      ) }
+    )>>, verifications?: Maybe<Array<(
+      { __typename?: 'Verification' }
+      & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
+      & { verifierProfile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country'>
+        )> }
+      )> }
+    )>> }
+  ) }
+);
 
 export type UpsertOrganisationMutationVariables = Exact<{
   organisation: UpsertOrganisationInput;
 }>;
 
 
-export type UpsertOrganisationMutation = { __typename?: 'Mutation', upsertOrganisation: { __typename?: 'CreateOrganisationResult', success: boolean, error?: string | null, organisation?: { __typename?: 'Organisation', id: number, avatarMimeType?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, circlesSafeOwner?: string | null, cityGeonameid?: number | null, createdAt: string, description?: string | null, name: string, city?: { __typename?: 'City', geonameid: number, country: string, name: string, latitude: number, longitude: number, population: number, feature_code: string } | null } | null } };
+export type UpsertOrganisationMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertOrganisation: (
+    { __typename?: 'CreateOrganisationResult' }
+    & Pick<CreateOrganisationResult, 'success' | 'error'>
+    & { organisation?: Maybe<(
+      { __typename?: 'Organisation' }
+      & Pick<Organisation, 'id' | 'avatarMimeType' | 'avatarUrl' | 'circlesAddress' | 'circlesSafeOwner' | 'cityGeonameid' | 'createdAt' | 'description' | 'name'>
+      & { city?: Maybe<(
+        { __typename?: 'City' }
+        & Pick<City, 'geonameid' | 'country' | 'name' | 'latitude' | 'longitude' | 'population' | 'feature_code'>
+      )> }
+    )> }
+  ) }
+);
 
 export type UpsertRegionMutationVariables = Exact<{
   organisation: UpsertOrganisationInput;
 }>;
 
 
-export type UpsertRegionMutation = { __typename?: 'Mutation', upsertRegion: { __typename?: 'CreateOrganisationResult', success: boolean, error?: string | null, organisation?: { __typename?: 'Organisation', id: number, avatarMimeType?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, circlesSafeOwner?: string | null, cityGeonameid?: number | null, createdAt: string, description?: string | null, name: string, city?: { __typename?: 'City', geonameid: number, country: string, name: string, latitude: number, longitude: number, population: number, feature_code: string } | null } | null } };
+export type UpsertRegionMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertRegion: (
+    { __typename?: 'CreateOrganisationResult' }
+    & Pick<CreateOrganisationResult, 'success' | 'error'>
+    & { organisation?: Maybe<(
+      { __typename?: 'Organisation' }
+      & Pick<Organisation, 'id' | 'avatarMimeType' | 'avatarUrl' | 'circlesAddress' | 'circlesSafeOwner' | 'cityGeonameid' | 'createdAt' | 'description' | 'name'>
+      & { city?: Maybe<(
+        { __typename?: 'City' }
+        & Pick<City, 'geonameid' | 'country' | 'name' | 'latitude' | 'longitude' | 'population' | 'feature_code'>
+      )> }
+    )> }
+  ) }
+);
 
 export type ImportOrganisationsMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ImportOrganisationsMutation = { __typename?: 'Mutation', importOrganisationsOfAccount: Array<{ __typename?: 'Organisation', id: number, circlesAddress?: string | null, name: string, description?: string | null, avatarUrl?: string | null }> };
+export type ImportOrganisationsMutation = (
+  { __typename?: 'Mutation' }
+  & { importOrganisationsOfAccount: Array<(
+    { __typename?: 'Organisation' }
+    & Pick<Organisation, 'id' | 'circlesAddress' | 'name' | 'description' | 'avatarUrl'>
+  )> }
+);
 
 export type CompletePurchaseMutationVariables = Exact<{
   invoiceId: Scalars['Int'];
-  revoke?: InputMaybe<Scalars['Boolean']>;
+  revoke?: Maybe<Scalars['Boolean']>;
 }>;
 
 
-export type CompletePurchaseMutation = { __typename?: 'Mutation', completePurchase: { __typename?: 'Invoice', id: number, sellerAddress: string, paymentTransactionHash?: string | null, buyerAddress: string, pickupCode?: string | null, buyerSignature?: boolean | null, buyerSignedDate?: string | null, sellerSignature?: boolean | null, sellerSignedDate?: string | null, purchase?: { __typename?: 'Purchase', id: number } | null, sellerProfile?: { __typename?: 'Profile', type?: ProfileType | null, id: number, circlesAddress?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null } | null } };
+export type CompletePurchaseMutation = (
+  { __typename?: 'Mutation' }
+  & { completePurchase: (
+    { __typename?: 'Invoice' }
+    & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate'>
+    & { purchase?: Maybe<(
+      { __typename?: 'Purchase' }
+      & Pick<Purchase, 'id'>
+    )>, sellerProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+    )> }
+  ) }
+);
 
 export type CompleteSaleMutationVariables = Exact<{
   invoiceId: Scalars['Int'];
-  revoke?: InputMaybe<Scalars['Boolean']>;
+  revoke?: Maybe<Scalars['Boolean']>;
 }>;
 
 
-export type CompleteSaleMutation = { __typename?: 'Mutation', completeSale: { __typename?: 'Invoice', id: number, sellerAddress: string, paymentTransactionHash?: string | null, buyerAddress: string, pickupCode?: string | null, buyerSignature?: boolean | null, buyerSignedDate?: string | null, sellerSignature?: boolean | null, sellerSignedDate?: string | null, sellerProfile?: { __typename?: 'Profile', type?: ProfileType | null, id: number, circlesAddress?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null } | null } };
+export type CompleteSaleMutation = (
+  { __typename?: 'Mutation' }
+  & { completeSale: (
+    { __typename?: 'Invoice' }
+    & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate'>
+    & { sellerProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'type' | 'id' | 'circlesAddress' | 'firstName' | 'lastName' | 'avatarUrl'>
+    )> }
+  ) }
+);
 
 export type VerifySafeMutationVariables = Exact<{
   safeAddress: Scalars['String'];
 }>;
 
 
-export type VerifySafeMutation = { __typename?: 'Mutation', verifySafe: { __typename?: 'VerifySafeResult', success: boolean } };
+export type VerifySafeMutation = (
+  { __typename?: 'Mutation' }
+  & { verifySafe: (
+    { __typename?: 'VerifySafeResult' }
+    & Pick<VerifySafeResult, 'success'>
+  ) }
+);
 
 export type RevokeSafeVerificationMutationVariables = Exact<{
   safeAddress: Scalars['String'];
 }>;
 
 
-export type RevokeSafeVerificationMutation = { __typename?: 'Mutation', revokeSafeVerification: { __typename?: 'VerifySafeResult', success: boolean } };
+export type RevokeSafeVerificationMutation = (
+  { __typename?: 'Mutation' }
+  & { revokeSafeVerification: (
+    { __typename?: 'VerifySafeResult' }
+    & Pick<VerifySafeResult, 'success'>
+  ) }
+);
 
 export type AnnouncePaymentMutationVariables = Exact<{
   invoiceId: Scalars['Int'];
@@ -1998,211 +2229,774 @@ export type AnnouncePaymentMutationVariables = Exact<{
 }>;
 
 
-export type AnnouncePaymentMutation = { __typename?: 'Mutation', announcePayment: { __typename?: 'AnnouncePaymentResult', transactionHash: string, invoiceId: number, pickupCode: string, simplePickupCode?: string | null } };
+export type AnnouncePaymentMutation = (
+  { __typename?: 'Mutation' }
+  & { announcePayment: (
+    { __typename?: 'AnnouncePaymentResult' }
+    & Pick<AnnouncePaymentResult, 'transactionHash' | 'invoiceId' | 'pickupCode' | 'simplePickupCode'>
+  ) }
+);
 
 export type UpsertShopMutationVariables = Exact<{
   shop: ShopInput;
 }>;
 
 
-export type UpsertShopMutation = { __typename?: 'Mutation', upsertShop: { __typename?: 'Shop', id: number, name: string, description: string, legalText?: string | null, smallBannerUrl: string, largeBannerUrl: string, openingHours?: string | null, adultOnly?: boolean | null, private?: boolean | null, productListingStyle: ProductListingType, owner: { __typename?: 'Organisation', id: number, name: string, avatarUrl?: string | null, circlesAddress?: string | null }, categories?: Array<{ __typename?: 'ShopCategory', id: number, name: string, description?: string | null, sortOrder?: number | null, enabled?: boolean | null, private?: boolean | null, largeBannerUrl?: string | null, smallBannerUrl?: string | null, productListingStyle?: ProductListingType | null, createdAt?: any | null, entries?: Array<{ __typename?: 'ShopCategoryEntry', id: number, sortOrder?: number | null, product?: { __typename?: 'Offer', id: number, version: number, title: string, description?: string | null, currentInventory?: number | null, pictureUrl: string, pricePerUnit: string, createdByProfile?: { __typename?: 'Profile', id: number, displayName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null } | null } | null }> | null }> | null } };
+export type UpsertShopMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertShop: (
+    { __typename?: 'Shop' }
+    & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'adultOnly' | 'private' | 'productListingStyle'>
+    & { owner: (
+      { __typename?: 'Organisation' }
+      & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
+    ), categories?: Maybe<Array<(
+      { __typename?: 'ShopCategory' }
+      & Pick<ShopCategory, 'id' | 'name' | 'description' | 'sortOrder' | 'enabled' | 'private' | 'largeBannerUrl' | 'smallBannerUrl' | 'productListingStyle' | 'createdAt'>
+      & { entries?: Maybe<Array<(
+        { __typename?: 'ShopCategoryEntry' }
+        & Pick<ShopCategoryEntry, 'id' | 'sortOrder'>
+        & { product?: Maybe<(
+          { __typename?: 'Offer' }
+          & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'currentInventory' | 'pictureUrl' | 'pricePerUnit'>
+          & { createdByProfile?: Maybe<(
+            { __typename?: 'Profile' }
+            & Pick<Profile, 'id' | 'displayName' | 'avatarUrl' | 'circlesAddress'>
+          )> }
+        )> }
+      )>> }
+    )>> }
+  ) }
+);
 
 export type UpsertShopCategoriesMutationVariables = Exact<{
   shopCategories: Array<ShopCategoryInput> | ShopCategoryInput;
 }>;
 
 
-export type UpsertShopCategoriesMutation = { __typename?: 'Mutation', upsertShopCategories: { __typename?: 'UpsertShopCategoriesResult', inserted: number, updated: number } };
+export type UpsertShopCategoriesMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertShopCategories: (
+    { __typename?: 'UpsertShopCategoriesResult' }
+    & Pick<UpsertShopCategoriesResult, 'inserted' | 'updated'>
+  ) }
+);
 
 export type UpsertShopCategoryEntriesMutationVariables = Exact<{
   shopCategoryEntries: Array<ShopCategoryEntryInput> | ShopCategoryEntryInput;
 }>;
 
 
-export type UpsertShopCategoryEntriesMutation = { __typename?: 'Mutation', upsertShopCategoryEntries: { __typename?: 'UpsertShopCategoryEntriesResult', inserted: number, updated: number } };
+export type UpsertShopCategoryEntriesMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertShopCategoryEntries: (
+    { __typename?: 'UpsertShopCategoryEntriesResult' }
+    & Pick<UpsertShopCategoryEntriesResult, 'inserted' | 'updated'>
+  ) }
+);
 
 export type ConfirmLegalAgeMutationVariables = Exact<{
   age: Scalars['Int'];
 }>;
 
 
-export type ConfirmLegalAgeMutation = { __typename?: 'Mutation', confirmLegalAge: boolean };
+export type ConfirmLegalAgeMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'confirmLegalAge'>
+);
 
 export type UpsertOfferMutationVariables = Exact<{
   offer: OfferInput;
 }>;
 
 
-export type UpsertOfferMutation = { __typename?: 'Mutation', upsertOffer: { __typename?: 'Offer', id: number, version: number, createdAt: string, createdByAddress: string, title: string, description?: string | null, pictureUrl: string, pricePerUnit: string, minAge?: number | null, currentInventory?: number | null, timeCirclesPriceShare: number, tags?: Array<{ __typename?: 'Tag', typeId: string, value?: string | null }> | null } };
+export type UpsertOfferMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertOffer: (
+    { __typename?: 'Offer' }
+    & Pick<Offer, 'id' | 'version' | 'createdAt' | 'createdByAddress' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'minAge' | 'currentInventory' | 'timeCirclesPriceShare'>
+    & { tags?: Maybe<Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'typeId' | 'value'>
+    )>> }
+  ) }
+);
 
 export type ProofUniquenessMutationVariables = Exact<{
   humanodeToken: Scalars['String'];
 }>;
 
 
-export type ProofUniquenessMutation = { __typename?: 'Mutation', proofUniqueness: { __typename?: 'ProofUniquenessResult', existingSafe?: string | null } };
+export type ProofUniquenessMutation = (
+  { __typename?: 'Mutation' }
+  & { proofUniqueness: (
+    { __typename?: 'ProofUniquenessResult' }
+    & Pick<ProofUniquenessResult, 'existingSafe'>
+  ) }
+);
 
 export type InitQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type InitQuery = { __typename?: 'Query', init: { __typename?: 'SessionInfo', isLoggedOn: boolean, hasProfile?: boolean | null, profileId?: number | null, useShortSignup?: boolean | null, capabilities: Array<{ __typename?: 'Capability', type?: CapabilityType | null }>, profile?: { __typename?: 'Profile', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, confirmedLegalAge?: number | null, circlesSafeOwner?: string | null, invitationLink?: string | null, successorOfCirclesAddress?: string | null, displayName?: string | null, firstName: string, lastName?: string | null, emailAddress?: string | null, askedForEmailAddress: boolean, dream?: string | null, country?: string | null, avatarUrl?: string | null, avatarCid?: string | null, avatarMimeType?: string | null, newsletter?: boolean | null, displayTimeCircles?: boolean | null, cityGeonameid?: number | null, provenUniqueness?: boolean | null, circlesTokenAddress?: string | null, shippingAddresses?: Array<{ __typename?: 'PostAddress', id: number, name?: string | null, street: string, house: string, zip: string, city: string, state?: string | null, country: string, cityGeonameid?: number | null }> | null, shops?: Array<{ __typename?: 'Shop', id: number }> | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null, memberships?: Array<{ __typename?: 'Membership', isAdmin: boolean, organisation: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, displayName?: string | null, circlesSafeOwner?: string | null, name: string, description?: string | null, avatarUrl?: string | null, cityGeonameid?: number | null, city?: { __typename?: 'City', geonameid: number, country: string, name: string, population: number } | null } }> | null, verifications?: Array<{ __typename?: 'Verification', createdAt: string, revokedAt?: string | null, verifierSafeAddress: string, verifierProfile?: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, avatarUrl?: string | null, name: string, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null } | null }> | null, claimedInvitation?: { __typename?: 'ClaimedInvitation', claimedAt: string } | null, invitationTransaction?: { __typename?: 'ProfileEvent', timestamp: string, transaction_hash?: string | null } | null } | null } };
+export type InitQuery = (
+  { __typename?: 'Query' }
+  & { init: (
+    { __typename?: 'SessionInfo' }
+    & Pick<SessionInfo, 'isLoggedOn' | 'hasProfile' | 'profileId' | 'useShortSignup'>
+    & { capabilities: Array<(
+      { __typename?: 'Capability' }
+      & Pick<Capability, 'type'>
+    )>, profile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'confirmedLegalAge' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'provenUniqueness' | 'circlesTokenAddress'>
+      & { shippingAddresses?: Maybe<Array<(
+        { __typename?: 'PostAddress' }
+        & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
+      )>>, shops?: Maybe<Array<(
+        { __typename?: 'Shop' }
+        & Pick<Shop, 'id'>
+      )>>, city?: Maybe<(
+        { __typename?: 'City' }
+        & Pick<City, 'geonameid' | 'name' | 'country'>
+      )>, memberships?: Maybe<Array<(
+        { __typename?: 'Membership' }
+        & Pick<Membership, 'isAdmin'>
+        & { organisation: (
+          { __typename?: 'Organisation' }
+          & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'displayName' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl' | 'cityGeonameid'>
+          & { city?: Maybe<(
+            { __typename?: 'City' }
+            & Pick<City, 'geonameid' | 'country' | 'name' | 'population'>
+          )> }
+        ) }
+      )>>, verifications?: Maybe<Array<(
+        { __typename?: 'Verification' }
+        & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
+        & { verifierProfile?: Maybe<(
+          { __typename?: 'Organisation' }
+          & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
+          & { city?: Maybe<(
+            { __typename?: 'City' }
+            & Pick<City, 'geonameid' | 'name' | 'country'>
+          )> }
+        )> }
+      )>>, claimedInvitation?: Maybe<(
+        { __typename?: 'ClaimedInvitation' }
+        & Pick<ClaimedInvitation, 'claimedAt'>
+      )>, invitationTransaction?: Maybe<(
+        { __typename?: 'ProfileEvent' }
+        & Pick<ProfileEvent, 'timestamp' | 'transaction_hash'>
+      )> }
+    )> }
+  ) }
+);
 
 export type DeliveryMethodsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type DeliveryMethodsQuery = { __typename?: 'Query', deliveryMethods?: Array<{ __typename?: 'DeliveryMethod', id: number, name: string } | null> | null };
+export type DeliveryMethodsQuery = (
+  { __typename?: 'Query' }
+  & { deliveryMethods?: Maybe<Array<Maybe<(
+    { __typename?: 'DeliveryMethod' }
+    & Pick<DeliveryMethod, 'id' | 'name'>
+  )>>> }
+);
 
 export type LastAcknowledgedAtQueryVariables = Exact<{
   safeAddress: Scalars['String'];
 }>;
 
 
-export type LastAcknowledgedAtQuery = { __typename?: 'Query', lastAcknowledgedAt?: any | null };
+export type LastAcknowledgedAtQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'lastAcknowledgedAt'>
+);
 
 export type SessionInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SessionInfoQuery = { __typename?: 'Query', sessionInfo: { __typename?: 'SessionInfo', isLoggedOn: boolean, hasProfile?: boolean | null, profileId?: number | null, useShortSignup?: boolean | null, capabilities: Array<{ __typename?: 'Capability', type?: CapabilityType | null }> } };
+export type SessionInfoQuery = (
+  { __typename?: 'Query' }
+  & { sessionInfo: (
+    { __typename?: 'SessionInfo' }
+    & Pick<SessionInfo, 'isLoggedOn' | 'hasProfile' | 'profileId' | 'useShortSignup'>
+    & { capabilities: Array<(
+      { __typename?: 'Capability' }
+      & Pick<Capability, 'type'>
+    )> }
+  ) }
+);
 
 export type ClaimedInvitationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ClaimedInvitationQuery = { __typename?: 'Query', claimedInvitation?: { __typename?: 'ClaimedInvitation', createdAt: string, createdByProfileId: number, claimedAt: string, claimedByProfileId: number } | null };
+export type ClaimedInvitationQuery = (
+  { __typename?: 'Query' }
+  & { claimedInvitation?: Maybe<(
+    { __typename?: 'ClaimedInvitation' }
+    & Pick<ClaimedInvitation, 'createdAt' | 'createdByProfileId' | 'claimedAt' | 'claimedByProfileId'>
+  )> }
+);
 
 export type InvitationTransactionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type InvitationTransactionQuery = { __typename?: 'Query', invitationTransaction?: { __typename?: 'ProfileEvent', transaction_hash?: string | null } | null };
+export type InvitationTransactionQuery = (
+  { __typename?: 'Query' }
+  & { invitationTransaction?: Maybe<(
+    { __typename?: 'ProfileEvent' }
+    & Pick<ProfileEvent, 'transaction_hash'>
+  )> }
+);
 
 export type HubSignupTransactionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type HubSignupTransactionQuery = { __typename?: 'Query', hubSignupTransaction?: { __typename?: 'ProfileEvent', transaction_hash?: string | null, payload?: { __typename?: 'ChatMessage' } | { __typename?: 'CrcHubTransfer' } | { __typename?: 'CrcMinting' } | { __typename?: 'CrcSignup', token: string } | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust' } | { __typename?: 'Erc20Transfer' } | { __typename?: 'EthTransfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'MemberAdded' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipRejected' } | { __typename?: 'NewUser' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'Purchased' } | { __typename?: 'SafeVerified' } | { __typename?: 'SaleEvent' } | { __typename?: 'WelcomeMessage' } | null } | null };
+export type HubSignupTransactionQuery = (
+  { __typename?: 'Query' }
+  & { hubSignupTransaction?: Maybe<(
+    { __typename?: 'ProfileEvent' }
+    & Pick<ProfileEvent, 'transaction_hash'>
+    & { payload?: Maybe<(
+      { __typename?: 'CrcSignup' }
+      & Pick<CrcSignup, 'token'>
+    ) | { __typename?: 'CrcTrust' } | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcHubTransfer' } | { __typename?: 'CrcMinting' } | { __typename?: 'EthTransfer' } | { __typename?: 'Erc20Transfer' } | { __typename?: 'GnosisSafeEthTransfer' } | { __typename?: 'ChatMessage' } | { __typename?: 'MembershipOffer' } | { __typename?: 'MembershipAccepted' } | { __typename?: 'MembershipRejected' } | { __typename?: 'WelcomeMessage' } | { __typename?: 'InvitationCreated' } | { __typename?: 'InvitationRedeemed' } | { __typename?: 'OrganisationCreated' } | { __typename?: 'MemberAdded' } | { __typename?: 'SaleEvent' } | { __typename?: 'Purchased' } | { __typename?: 'SafeVerified' } | { __typename?: 'NewUser' }> }
+  )> }
+);
 
 export type SafeInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SafeInfoQuery = { __typename?: 'Query', safeInfo?: { __typename?: 'SafeInfo', lastUbiAt?: string | null, safeAddress: string, tokenAddress?: string | null, randomValue?: string | null } | null };
+export type SafeInfoQuery = (
+  { __typename?: 'Query' }
+  & { safeInfo?: Maybe<(
+    { __typename?: 'SafeInfo' }
+    & Pick<SafeInfo, 'lastUbiAt' | 'safeAddress' | 'tokenAddress' | 'randomValue'>
+  )> }
+);
 
 export type StatsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type StatsQuery = { __typename?: 'Query', stats: { __typename?: 'Stats', profilesCount: number, verificationsCount: number, goals: { __typename?: 'FibonacciGoals', lastGoal: number, currentValue: number, nextGoal: number }, myRank: { __typename?: 'MyInviteRank', rank: number, redeemedInvitationsCount: number }, leaderboard: Array<{ __typename?: 'LeaderboardEntry', createdByCirclesAddress: string, inviteCount: number, createdByProfile?: { __typename?: 'Profile', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, circlesSafeOwner?: string | null, displayName?: string | null, firstName: string, lastName?: string | null, dream?: string | null, avatarUrl?: string | null, cityGeonameid?: number | null, provenUniqueness?: boolean | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string, latitude: number, longitude: number, population: number } | null } | null }> } };
+export type StatsQuery = (
+  { __typename?: 'Query' }
+  & { stats: (
+    { __typename?: 'Stats' }
+    & Pick<Stats, 'profilesCount' | 'verificationsCount'>
+    & { goals: (
+      { __typename?: 'FibonacciGoals' }
+      & Pick<FibonacciGoals, 'lastGoal' | 'currentValue' | 'nextGoal'>
+    ), myRank: (
+      { __typename?: 'MyInviteRank' }
+      & Pick<MyInviteRank, 'rank' | 'redeemedInvitationsCount'>
+    ), leaderboard: Array<(
+      { __typename?: 'LeaderboardEntry' }
+      & Pick<LeaderboardEntry, 'createdByCirclesAddress' | 'inviteCount'>
+      & { createdByProfile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl' | 'cityGeonameid' | 'provenUniqueness'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+        )> }
+      )> }
+    )> }
+  ) }
+);
 
 export type FindSafesByOwnerQueryVariables = Exact<{
   owner: Scalars['String'];
 }>;
 
 
-export type FindSafesByOwnerQuery = { __typename?: 'Query', findSafesByOwner: Array<{ __typename?: 'SafeInfo', type: AccountType, safeAddress: string, lastUbiAt?: string | null, randomValue?: string | null, tokenAddress?: string | null, safeProfile?: { __typename?: 'Profile', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, circlesSafeOwner?: string | null, displayName?: string | null, firstName: string, lastName?: string | null, dream?: string | null, avatarUrl?: string | null, cityGeonameid?: number | null, provenUniqueness?: boolean | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string, latitude: number, longitude: number, population: number } | null } | null }> };
+export type FindSafesByOwnerQuery = (
+  { __typename?: 'Query' }
+  & { findSafesByOwner: Array<(
+    { __typename?: 'SafeInfo' }
+    & Pick<SafeInfo, 'type' | 'safeAddress' | 'lastUbiAt' | 'randomValue' | 'tokenAddress'>
+    & { safeProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl' | 'cityGeonameid' | 'provenUniqueness'>
+      & { city?: Maybe<(
+        { __typename?: 'City' }
+        & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+      )> }
+    )> }
+  )> }
+);
 
 export type MyInvitationsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MyInvitationsQuery = { __typename?: 'Query', myInvitations: Array<{ __typename?: 'CreatedInvitation', createdAt: string, claimedAt?: string | null, name: string, address: string, balance: string, code: string, claimedBy?: { __typename?: 'Profile', circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, circlesSafeOwner?: string | null, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null } | null }> };
+export type MyInvitationsQuery = (
+  { __typename?: 'Query' }
+  & { myInvitations: Array<(
+    { __typename?: 'CreatedInvitation' }
+    & Pick<CreatedInvitation, 'createdAt' | 'claimedAt' | 'name' | 'address' | 'balance' | 'code'>
+    & { claimedBy?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl'>
+    )> }
+  )> }
+);
 
 export type MyProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MyProfileQuery = { __typename?: 'Query', myProfile?: { __typename?: 'Profile', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, circlesSafeOwner?: string | null, invitationLink?: string | null, successorOfCirclesAddress?: string | null, displayName?: string | null, firstName: string, lastName?: string | null, emailAddress?: string | null, askedForEmailAddress: boolean, dream?: string | null, country?: string | null, avatarUrl?: string | null, avatarCid?: string | null, avatarMimeType?: string | null, newsletter?: boolean | null, displayTimeCircles?: boolean | null, cityGeonameid?: number | null, provenUniqueness?: boolean | null, shops?: Array<{ __typename?: 'Shop', id: number }> | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string, latitude: number, longitude: number, population: number } | null, shippingAddresses?: Array<{ __typename?: 'PostAddress', id: number, name?: string | null, street: string, house: string, zip: string, city: string, state?: string | null, country: string }> | null, memberships?: Array<{ __typename?: 'Membership', isAdmin: boolean, organisation: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, displayName?: string | null, circlesSafeOwner?: string | null, name: string, description?: string | null, avatarUrl?: string | null, cityGeonameid?: number | null, shops?: Array<{ __typename?: 'Shop', id: number }> | null, city?: { __typename?: 'City', geonameid: number, country: string, name: string, population: number } | null } }> | null, verifications?: Array<{ __typename?: 'Verification', createdAt: string, revokedAt?: string | null, verifierSafeAddress: string, verifierProfile?: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, avatarUrl?: string | null, name: string, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null } | null }> | null } | null };
+export type MyProfileQuery = (
+  { __typename?: 'Query' }
+  & { myProfile?: Maybe<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'provenUniqueness'>
+    & { shops?: Maybe<Array<(
+      { __typename?: 'Shop' }
+      & Pick<Shop, 'id'>
+    )>>, city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
+    )>, shippingAddresses?: Maybe<Array<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+    )>>, memberships?: Maybe<Array<(
+      { __typename?: 'Membership' }
+      & Pick<Membership, 'isAdmin'>
+      & { organisation: (
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'displayName' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl' | 'cityGeonameid'>
+        & { shops?: Maybe<Array<(
+          { __typename?: 'Shop' }
+          & Pick<Shop, 'id'>
+        )>>, city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'country' | 'name' | 'population'>
+        )> }
+      ) }
+    )>>, verifications?: Maybe<Array<(
+      { __typename?: 'Verification' }
+      & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
+      & { verifierProfile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country'>
+        )> }
+      )> }
+    )>> }
+  )> }
+);
 
 export type ProfilesQueryVariables = Exact<{
   id: Array<Scalars['Int']> | Scalars['Int'];
 }>;
 
 
-export type ProfilesQuery = { __typename?: 'Query', profilesById: Array<{ __typename?: 'Profile', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, circlesSafeOwner?: string | null, successorOfCirclesAddress?: string | null, displayName?: string | null, firstName: string, lastName?: string | null, dream?: string | null, avatarUrl?: string | null, provenUniqueness?: boolean | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null, shippingAddresses?: Array<{ __typename?: 'PostAddress', id: number, name?: string | null, street: string, house: string, zip: string, city: string, state?: string | null, country: string }> | null, memberships?: Array<{ __typename?: 'Membership', isAdmin: boolean, organisation: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, displayName?: string | null, circlesSafeOwner?: string | null, name: string, description?: string | null, avatarUrl?: string | null, cityGeonameid?: number | null, city?: { __typename?: 'City', geonameid: number, country: string, name: string, population: number } | null } }> | null, verifications?: Array<{ __typename?: 'Verification', createdAt: string, revokedAt?: string | null, verifierSafeAddress: string, verifierProfile?: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, avatarUrl?: string | null, name: string, displayName?: string | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null } | null }> | null }> };
+export type ProfilesQuery = (
+  { __typename?: 'Query' }
+  & { profilesById: Array<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl' | 'provenUniqueness'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'name' | 'country'>
+    )>, shippingAddresses?: Maybe<Array<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+    )>>, memberships?: Maybe<Array<(
+      { __typename?: 'Membership' }
+      & Pick<Membership, 'isAdmin'>
+      & { organisation: (
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'displayName' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl' | 'cityGeonameid'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'country' | 'name' | 'population'>
+        )> }
+      ) }
+    )>>, verifications?: Maybe<Array<(
+      { __typename?: 'Verification' }
+      & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
+      & { verifierProfile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name' | 'displayName'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country'>
+        )> }
+      )> }
+    )>> }
+  )> }
+);
 
 export type CitiesByNameQueryVariables = Exact<{
   name: Scalars['String'];
-  languageCode?: InputMaybe<Scalars['String']>;
+  languageCode?: Maybe<Scalars['String']>;
 }>;
 
 
-export type CitiesByNameQuery = { __typename?: 'Query', cities: Array<{ __typename?: 'City', geonameid: number, name: string, country: string, population: number, latitude: number, longitude: number, feature_code: string }> };
+export type CitiesByNameQuery = (
+  { __typename?: 'Query' }
+  & { cities: Array<(
+    { __typename?: 'City' }
+    & Pick<City, 'geonameid' | 'name' | 'country' | 'population' | 'latitude' | 'longitude' | 'feature_code'>
+  )> }
+);
 
 export type CitiesByIdQueryVariables = Exact<{
   ids: Array<Scalars['Int']> | Scalars['Int'];
 }>;
 
 
-export type CitiesByIdQuery = { __typename?: 'Query', cities: Array<{ __typename?: 'City', geonameid: number, name: string, country: string, population: number, latitude: number, longitude: number, feature_code: string }> };
+export type CitiesByIdQuery = (
+  { __typename?: 'Query' }
+  & { cities: Array<(
+    { __typename?: 'City' }
+    & Pick<City, 'geonameid' | 'name' | 'country' | 'population' | 'latitude' | 'longitude' | 'feature_code'>
+  )> }
+);
 
 export type ProfilesByNameQueryVariables = Exact<{
   searchString: Scalars['String'];
 }>;
 
 
-export type ProfilesByNameQuery = { __typename?: 'Query', search: Array<{ __typename?: 'Profile', id: number, origin?: ProfileOrigin | null, circlesSafeOwner?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, successorOfCirclesAddress?: string | null, avatarUrl?: string | null, displayName?: string | null, firstName: string, lastName?: string | null, dream?: string | null, country?: string | null, provenUniqueness?: boolean | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null, shippingAddresses?: Array<{ __typename?: 'PostAddress', id: number, name?: string | null, street: string, house: string, zip: string, city: string, state?: string | null, country: string }> | null, verifications?: Array<{ __typename?: 'Verification', createdAt: string, revokedAt?: string | null, verifierSafeAddress: string, verifierProfile?: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, avatarUrl?: string | null, name: string, displayName?: string | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null } | null }> | null }> };
+export type ProfilesByNameQuery = (
+  { __typename?: 'Query' }
+  & { search: Array<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'origin' | 'circlesSafeOwner' | 'circlesAddress' | 'displayCurrency' | 'successorOfCirclesAddress' | 'avatarUrl' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'country' | 'provenUniqueness'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'name' | 'country'>
+    )>, shippingAddresses?: Maybe<Array<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+    )>>, verifications?: Maybe<Array<(
+      { __typename?: 'Verification' }
+      & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
+      & { verifierProfile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name' | 'displayName'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country'>
+        )> }
+      )> }
+    )>> }
+  )> }
+);
 
 export type GetRecentProfilesQueryVariables = Exact<{
-  pagination?: InputMaybe<PaginationArgs>;
+  pagination?: Maybe<PaginationArgs>;
 }>;
 
 
-export type GetRecentProfilesQuery = { __typename?: 'Query', recentProfiles: Array<{ __typename?: 'Profile', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, origin?: ProfileOrigin | null, successorOfCirclesAddress?: string | null, displayName?: string | null, firstName: string, lastName?: string | null, dream?: string | null, country?: string | null, avatarUrl?: string | null, provenUniqueness?: boolean | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null, verifications?: Array<{ __typename?: 'Verification', createdAt: string, revokedAt?: string | null, verifierSafeAddress: string, verifierProfile?: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, avatarUrl?: string | null, name: string, displayName?: string | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null } | null }> | null }> };
+export type GetRecentProfilesQuery = (
+  { __typename?: 'Query' }
+  & { recentProfiles: Array<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'origin' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'country' | 'avatarUrl' | 'provenUniqueness'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'name' | 'country'>
+    )>, verifications?: Maybe<Array<(
+      { __typename?: 'Verification' }
+      & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
+      & { verifierProfile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name' | 'displayName'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country'>
+        )> }
+      )> }
+    )>> }
+  )> }
+);
 
 export type ProfilesByCirclesAddressQueryVariables = Exact<{
   circlesAddresses: Array<Scalars['String']> | Scalars['String'];
 }>;
 
 
-export type ProfilesByCirclesAddressQuery = { __typename?: 'Query', profilesBySafeAddress: Array<{ __typename?: 'Profile', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, origin?: ProfileOrigin | null, successorOfCirclesAddress?: string | null, displayName?: string | null, firstName: string, lastName?: string | null, dream?: string | null, avatarUrl?: string | null, provenUniqueness?: boolean | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null, shippingAddresses?: Array<{ __typename?: 'PostAddress', id: number, name?: string | null, street: string, house: string, zip: string, city: string, state?: string | null, country: string }> | null, memberships?: Array<{ __typename?: 'Membership', isAdmin: boolean, organisation: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, displayName?: string | null, circlesSafeOwner?: string | null, name: string, description?: string | null, avatarUrl?: string | null, cityGeonameid?: number | null, city?: { __typename?: 'City', geonameid: number, country: string, name: string, population: number } | null } }> | null, verifications?: Array<{ __typename?: 'Verification', createdAt: string, revokedAt?: string | null, verifierSafeAddress: string, verifierProfile?: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, avatarUrl?: string | null, name: string, displayName?: string | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null } | null }> | null }> };
+export type ProfilesByCirclesAddressQuery = (
+  { __typename?: 'Query' }
+  & { profilesBySafeAddress: Array<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'origin' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl' | 'provenUniqueness'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'name' | 'country'>
+    )>, shippingAddresses?: Maybe<Array<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+    )>>, memberships?: Maybe<Array<(
+      { __typename?: 'Membership' }
+      & Pick<Membership, 'isAdmin'>
+      & { organisation: (
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'displayName' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl' | 'cityGeonameid'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'country' | 'name' | 'population'>
+        )> }
+      ) }
+    )>>, verifications?: Maybe<Array<(
+      { __typename?: 'Verification' }
+      & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
+      & { verifierProfile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name' | 'displayName'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country'>
+        )> }
+      )> }
+    )>> }
+  )> }
+);
 
 export type ProfilesByIdsQueryVariables = Exact<{
   id: Array<Scalars['Int']> | Scalars['Int'];
 }>;
 
 
-export type ProfilesByIdsQuery = { __typename?: 'Query', profilesById: Array<{ __typename?: 'Profile', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, origin?: ProfileOrigin | null, successorOfCirclesAddress?: string | null, displayName?: string | null, firstName: string, lastName?: string | null, dream?: string | null, avatarUrl?: string | null, provenUniqueness?: boolean | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null, shippingAddresses?: Array<{ __typename?: 'PostAddress', id: number, name?: string | null, street: string, house: string, zip: string, city: string, state?: string | null, country: string }> | null, verifications?: Array<{ __typename?: 'Verification', createdAt: string, revokedAt?: string | null, verifierSafeAddress: string, verifierProfile?: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, avatarUrl?: string | null, name: string, displayName?: string | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null } | null }> | null }> };
+export type ProfilesByIdsQuery = (
+  { __typename?: 'Query' }
+  & { profilesById: Array<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'origin' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl' | 'provenUniqueness'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'name' | 'country'>
+    )>, shippingAddresses?: Maybe<Array<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+    )>>, verifications?: Maybe<Array<(
+      { __typename?: 'Verification' }
+      & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
+      & { verifierProfile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name' | 'displayName'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country'>
+        )> }
+      )> }
+    )>> }
+  )> }
+);
 
 export type TrustRelationsQueryVariables = Exact<{
   safeAddress: Scalars['String'];
 }>;
 
 
-export type TrustRelationsQuery = { __typename?: 'Query', trustRelations: Array<{ __typename?: 'TrustRelation', safeAddress: string, direction: TrustDirection, otherSafeAddress: string, safeAddressProfile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, origin?: ProfileOrigin | null, avatarUrl?: string | null, successorOfCirclesAddress?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null, otherSafeAddressProfile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, successorOfCirclesAddress?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null, verifications?: Array<{ __typename?: 'Verification', createdAt: string, revokedAt?: string | null, verifierSafeAddress: string, verifierProfile?: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, avatarUrl?: string | null, name: string, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null } | null }> | null } | null }> };
+export type TrustRelationsQuery = (
+  { __typename?: 'Query' }
+  & { trustRelations: Array<(
+    { __typename?: 'TrustRelation' }
+    & Pick<TrustRelation, 'safeAddress' | 'direction' | 'otherSafeAddress'>
+    & { safeAddressProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'origin' | 'avatarUrl' | 'successorOfCirclesAddress' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+    )>, otherSafeAddressProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'successorOfCirclesAddress' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      & { verifications?: Maybe<Array<(
+        { __typename?: 'Verification' }
+        & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
+        & { verifierProfile?: Maybe<(
+          { __typename?: 'Organisation' }
+          & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
+          & { city?: Maybe<(
+            { __typename?: 'City' }
+            & Pick<City, 'geonameid' | 'name' | 'country'>
+          )> }
+        )> }
+      )>> }
+    )> }
+  )> }
+);
 
 export type ProfileByIdQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
 
-export type ProfileByIdQuery = { __typename?: 'Query', profilesById: Array<{ __typename?: 'Profile', id: number, successorOfCirclesAddress?: string | null, circlesSafeOwner?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, avatarUrl?: string | null, displayName?: string | null, firstName: string, lastName?: string | null, dream?: string | null, provenUniqueness?: boolean | null, city?: { __typename?: 'City', geonameid: number, country: string, name: string } | null, shippingAddresses?: Array<{ __typename?: 'PostAddress', id: number, name?: string | null, street: string, house: string, zip: string, city: string, state?: string | null, country: string }> | null, verifications?: Array<{ __typename?: 'Verification', createdAt: string, revokedAt?: string | null, verifierSafeAddress: string, verifierProfile?: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, avatarUrl?: string | null, name: string, displayName?: string | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null } | null }> | null }> };
+export type ProfileByIdQuery = (
+  { __typename?: 'Query' }
+  & { profilesById: Array<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'successorOfCirclesAddress' | 'circlesSafeOwner' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'provenUniqueness'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'country' | 'name'>
+    )>, shippingAddresses?: Maybe<Array<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+    )>>, verifications?: Maybe<Array<(
+      { __typename?: 'Verification' }
+      & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
+      & { verifierProfile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name' | 'displayName'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country'>
+        )> }
+      )> }
+    )>> }
+  )> }
+);
 
 export type ProfileBySafeAddressQueryVariables = Exact<{
   safeAddress: Scalars['String'];
 }>;
 
 
-export type ProfileBySafeAddressQuery = { __typename?: 'Query', profilesBySafeAddress: Array<{ __typename?: 'Profile', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, circlesSafeOwner?: string | null, invitationLink?: string | null, successorOfCirclesAddress?: string | null, displayName?: string | null, firstName: string, lastName?: string | null, emailAddress?: string | null, askedForEmailAddress: boolean, dream?: string | null, country?: string | null, avatarUrl?: string | null, avatarCid?: string | null, avatarMimeType?: string | null, newsletter?: boolean | null, displayTimeCircles?: boolean | null, cityGeonameid?: number | null, provenUniqueness?: boolean | null, circlesTokenAddress?: string | null, shippingAddresses?: Array<{ __typename?: 'PostAddress', id: number, name?: string | null, street: string, house: string, zip: string, city: string, state?: string | null, country: string, cityGeonameid?: number | null }> | null, shops?: Array<{ __typename?: 'Shop', id: number }> | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null, memberships?: Array<{ __typename?: 'Membership', isAdmin: boolean, organisation: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, displayName?: string | null, circlesSafeOwner?: string | null, name: string, description?: string | null, avatarUrl?: string | null, cityGeonameid?: number | null, city?: { __typename?: 'City', geonameid: number, country: string, name: string, population: number } | null } }> | null, verifications?: Array<{ __typename?: 'Verification', createdAt: string, revokedAt?: string | null, verifierSafeAddress: string, verifierProfile?: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, avatarUrl?: string | null, name: string, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null } | null }> | null, claimedInvitation?: { __typename?: 'ClaimedInvitation', claimedAt: string } | null, invitationTransaction?: { __typename?: 'ProfileEvent', timestamp: string, transaction_hash?: string | null } | null }> };
+export type ProfileBySafeAddressQuery = (
+  { __typename?: 'Query' }
+  & { profilesBySafeAddress: Array<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'provenUniqueness' | 'circlesTokenAddress'>
+    & { shippingAddresses?: Maybe<Array<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
+    )>>, shops?: Maybe<Array<(
+      { __typename?: 'Shop' }
+      & Pick<Shop, 'id'>
+    )>>, city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'name' | 'country'>
+    )>, memberships?: Maybe<Array<(
+      { __typename?: 'Membership' }
+      & Pick<Membership, 'isAdmin'>
+      & { organisation: (
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'displayName' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl' | 'cityGeonameid'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'country' | 'name' | 'population'>
+        )> }
+      ) }
+    )>>, verifications?: Maybe<Array<(
+      { __typename?: 'Verification' }
+      & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
+      & { verifierProfile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'name' | 'country'>
+        )> }
+      )> }
+    )>>, claimedInvitation?: Maybe<(
+      { __typename?: 'ClaimedInvitation' }
+      & Pick<ClaimedInvitation, 'claimedAt'>
+    )>, invitationTransaction?: Maybe<(
+      { __typename?: 'ProfileEvent' }
+      & Pick<ProfileEvent, 'timestamp' | 'transaction_hash'>
+    )> }
+  )> }
+);
 
 export type TagsQueryVariables = Exact<{
   typeId_in: Array<Scalars['String']> | Scalars['String'];
-  value_like?: InputMaybe<Scalars['String']>;
+  value_like?: Maybe<Scalars['String']>;
 }>;
 
 
-export type TagsQuery = { __typename?: 'Query', tags: Array<{ __typename?: 'Tag', typeId: string, id: number, value?: string | null, order?: number | null }> };
+export type TagsQuery = (
+  { __typename?: 'Query' }
+  & { tags: Array<(
+    { __typename?: 'Tag' }
+    & Pick<Tag, 'typeId' | 'id' | 'value' | 'order'>
+  )> }
+);
 
 export type OrganisationsQueryVariables = Exact<{
-  pagination?: InputMaybe<PaginationArgs>;
+  pagination?: Maybe<PaginationArgs>;
 }>;
 
 
-export type OrganisationsQuery = { __typename?: 'Query', organisations: Array<{ __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, createdAt: string, name: string, avatarUrl?: string | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null, shops?: Array<{ __typename?: 'Shop', id: number, name: string, description: string, legalText?: string | null, largeBannerUrl: string, smallBannerUrl: string }> | null }> };
+export type OrganisationsQuery = (
+  { __typename?: 'Query' }
+  & { organisations: Array<(
+    { __typename?: 'Organisation' }
+    & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'createdAt' | 'name' | 'avatarUrl'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'name' | 'country'>
+    )>, shops?: Maybe<Array<(
+      { __typename?: 'Shop' }
+      & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'largeBannerUrl' | 'smallBannerUrl'>
+    )>> }
+  )> }
+);
 
 export type RegionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type RegionsQuery = { __typename?: 'Query', regions: Array<{ __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, createdAt: string, name: string, avatarUrl?: string | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null }> };
+export type RegionsQuery = (
+  { __typename?: 'Query' }
+  & { regions: Array<(
+    { __typename?: 'Organisation' }
+    & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'createdAt' | 'name' | 'avatarUrl'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'name' | 'country'>
+    )> }
+  )> }
+);
 
 export type OrganisationsByAddressQueryVariables = Exact<{
   addresses: Array<Scalars['String']> | Scalars['String'];
 }>;
 
 
-export type OrganisationsByAddressQuery = { __typename?: 'Query', organisationsByAddress: Array<{ __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, createdAt: string, name: string, avatarUrl?: string | null, displayName?: string | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null, shops?: Array<{ __typename?: 'Shop', id: number, name: string, description: string, legalText?: string | null, smallBannerUrl: string, largeBannerUrl: string }> | null, members?: Array<{ __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, createdAt: string, name: string, displayName?: string | null, avatarUrl?: string | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null } | { __typename?: 'Profile', id: number, successorOfCirclesAddress?: string | null, circlesSafeOwner?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, avatarUrl?: string | null, displayName?: string | null, firstName: string, lastName?: string | null, dream?: string | null, provenUniqueness?: boolean | null, city?: { __typename?: 'City', geonameid: number, country: string, name: string } | null, shippingAddresses?: Array<{ __typename?: 'PostAddress', id: number, name?: string | null, street: string, house: string, zip: string, city: string, state?: string | null, country: string }> | null, verifications?: Array<{ __typename?: 'Verification', createdAt: string, revokedAt?: string | null, verifierSafeAddress: string, verifierProfile?: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, avatarUrl?: string | null, name: string, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null } | null }> | null }> | null }> };
+export type OrganisationsByAddressQuery = (
+  { __typename?: 'Query' }
+  & { organisationsByAddress: Array<(
+    { __typename?: 'Organisation' }
+    & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'createdAt' | 'name' | 'avatarUrl' | 'displayName'>
+    & { city?: Maybe<(
+      { __typename?: 'City' }
+      & Pick<City, 'geonameid' | 'name' | 'country'>
+    )>, shops?: Maybe<Array<(
+      { __typename?: 'Shop' }
+      & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl'>
+    )>>, members?: Maybe<Array<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'successorOfCirclesAddress' | 'circlesSafeOwner' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'provenUniqueness'>
+      & { city?: Maybe<(
+        { __typename?: 'City' }
+        & Pick<City, 'geonameid' | 'country' | 'name'>
+      )>, shippingAddresses?: Maybe<Array<(
+        { __typename?: 'PostAddress' }
+        & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+      )>>, verifications?: Maybe<Array<(
+        { __typename?: 'Verification' }
+        & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
+        & { verifierProfile?: Maybe<(
+          { __typename?: 'Organisation' }
+          & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
+          & { city?: Maybe<(
+            { __typename?: 'City' }
+            & Pick<City, 'geonameid' | 'name' | 'country'>
+          )> }
+        )> }
+      )>> }
+    ) | (
+      { __typename?: 'Organisation' }
+      & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'createdAt' | 'name' | 'displayName' | 'avatarUrl'>
+      & { city?: Maybe<(
+        { __typename?: 'City' }
+        & Pick<City, 'geonameid' | 'name' | 'country'>
+      )> }
+    )>> }
+  )> }
+);
 
 export type CommonTrustQueryVariables = Exact<{
   safeAddress1: Scalars['String'];
@@ -2210,85 +3004,641 @@ export type CommonTrustQueryVariables = Exact<{
 }>;
 
 
-export type CommonTrustQuery = { __typename?: 'Query', commonTrust: Array<{ __typename?: 'CommonTrust', type: string, safeAddress1: string, safeAddress2: string, profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, successorOfCirclesAddress?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null }> };
+export type CommonTrustQuery = (
+  { __typename?: 'Query' }
+  & { commonTrust: Array<(
+    { __typename?: 'CommonTrust' }
+    & Pick<CommonTrust, 'type' | 'safeAddress1' | 'safeAddress2'>
+    & { profile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'successorOfCirclesAddress' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+    )> }
+  )> }
+);
 
 export type TagByIdQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
 
-export type TagByIdQuery = { __typename?: 'Query', tagById?: { __typename?: 'Tag', id: number, typeId: string, value?: string | null } | null };
+export type TagByIdQuery = (
+  { __typename?: 'Query' }
+  & { tagById?: Maybe<(
+    { __typename?: 'Tag' }
+    & Pick<Tag, 'id' | 'typeId' | 'value'>
+  )> }
+);
 
 export type StreamQueryVariables = Exact<{
   types: Array<EventType> | EventType;
   safeAddress: Scalars['String'];
   pagination: PaginationArgs;
-  filter?: InputMaybe<ProfileEventFilter>;
+  filter?: Maybe<ProfileEventFilter>;
 }>;
 
 
-export type StreamQuery = { __typename?: 'Query', events: Array<{ __typename?: 'ProfileEvent', timestamp: string, transaction_hash?: string | null, block_number?: number | null, safe_address: string, contact_address?: string | null, direction: string, type: string, contact_address_profile?: { __typename?: 'Profile', type?: ProfileType | null, successorOfCirclesAddress?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, provenUniqueness?: boolean | null } | null, payload?: { __typename?: 'ChatMessage', id: number, from: string, to: string, text: string, from_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null, to_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null } | { __typename?: 'CrcHubTransfer', transaction_hash: string, from: string, to: string, flow: string, from_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null, to_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null, transfers: Array<{ __typename?: 'CrcTokenTransfer', token: string, from: string, to: string, value: string, from_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null, to_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null }>, tags: Array<{ __typename?: 'Tag', id: number, typeId: string, value?: string | null }> } | { __typename?: 'CrcMinting', transaction_hash: string, token: string, from: string, to: string, value: string, from_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null, to_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null } | { __typename?: 'CrcSignup', transaction_hash: string, user: string, token: string } | { __typename?: 'CrcTokenTransfer' } | { __typename?: 'CrcTrust', transaction_hash: string, address: string, can_send_to: string, limit: number, can_send_to_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null } | { __typename?: 'Erc20Transfer', transaction_hash: string, from: string, to: string, value: string, from_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null, to_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null } | { __typename?: 'EthTransfer', transaction_hash: string, from: string, to: string, value: string } | { __typename?: 'GnosisSafeEthTransfer', transaction_hash: string, initiator: string, from: string, to: string, value: string } | { __typename?: 'InvitationCreated', name: string, code: string } | { __typename?: 'InvitationRedeemed', name: string, code: string, redeemedBy?: string | null, redeemedBy_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null } | { __typename?: 'MemberAdded', createdBy: string, isAdmin: boolean, member: string, organisation: string, organisation_profile?: { __typename?: 'Organisation', name: string, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null } | null } | { __typename?: 'MembershipAccepted', createdBy: string, member: string, organisation: string, member_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null, organisation_profile?: { __typename?: 'Organisation', name: string, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null } | null } | { __typename?: 'MembershipOffer', createdBy: string, organisation: string, isAdmin: boolean, createdBy_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null, organisation_profile?: { __typename?: 'Organisation', name: string, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null } | null } | { __typename?: 'MembershipRejected', member: string, organisation: string, member_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null, organisation_profile?: { __typename?: 'Organisation', name: string, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null } | null } | { __typename?: 'NewUser', profile: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, dream?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } } | { __typename?: 'OrganisationCreated', organisation: string, organisation_profile?: { __typename?: 'Organisation', name: string, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null } | null } | { __typename?: 'Purchased', seller_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null, purchase: { __typename?: 'Purchase', id: number, createdAt: string, createdByAddress: string, total: string, deliveryMethod: { __typename?: 'DeliveryMethod', id: number, name: string }, deliveryAddress?: { __typename?: 'PostAddress', name?: string | null, id: number, street: string, house: string, zip: string, city: string, state?: string | null, country: string, cityGeonameid?: number | null } | null, lines?: Array<{ __typename?: 'PurchaseLine', id: number, amount: number, metadata?: string | null, shop?: { __typename?: 'Shop', id: number, name: string, description: string, legalText?: string | null, smallBannerUrl: string, largeBannerUrl: string, openingHours?: string | null, private?: boolean | null, enabled?: boolean | null, productListingStyle: ProductListingType, shopListingStyle: ShopListingStyle, purchaseMetaDataKeys?: string | null, tosLink?: string | null, privacyPolicyLink?: string | null, healthInfosLink?: string | null, adultOnly?: boolean | null, ownerId?: number | null, pickupAddress?: { __typename?: 'PostAddress', name?: string | null, street: string, house: string, zip: string, city: string, state?: string | null, country: string } | null, owner: { __typename?: 'Organisation', id: number, name: string, avatarUrl?: string | null, circlesAddress?: string | null }, deliveryMethods?: Array<{ __typename?: 'DeliveryMethod', id: number, name: string }> | null } | null, offer?: { __typename?: 'Offer', id: number, pictureUrl: string, title: string, description?: string | null, pricePerUnit: string, minAge?: number | null, tags?: Array<{ __typename?: 'Tag', typeId: string, value?: string | null }> | null } | null }> | null, invoices?: Array<{ __typename?: 'Invoice', id: number, pickupCode?: string | null, simplePickupCode?: string | null, paymentTransactionHash?: string | null, createdAt?: string | null, cancelledAt?: string | null, invoiceNo: string, sellerSignature?: boolean | null, buyerSignature?: boolean | null, deliveryMethod: { __typename?: 'DeliveryMethod', id: number, name: string }, buyerProfile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null, sellerProfile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null }> | null } } | { __typename?: 'SafeVerified', safe_address: string, organisation_profile?: { __typename?: 'Organisation', name: string, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null } | null } | { __typename?: 'SaleEvent', buyer: string, buyer_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null, invoice?: { __typename?: 'Invoice', id: number, buyerSignature?: boolean | null, buyerSignedDate?: string | null, sellerSignature?: boolean | null, sellerSignedDate?: string | null, createdAt?: string | null, cancelledAt?: string | null, cancelReason?: string | null, simplePickupCode?: string | null, paymentTransactionHash?: string | null, deliveryMethod: { __typename?: 'DeliveryMethod', id: number, name: string }, deliveryAddress?: { __typename?: 'PostAddress', name?: string | null, id: number, street: string, house: string, zip: string, city: string, state?: string | null, country: string, cityGeonameid?: number | null } | null, lines?: Array<{ __typename?: 'InvoiceLine', amount: number, metadata?: string | null, shop?: { __typename?: 'Shop', id: number, name: string, description: string, legalText?: string | null, smallBannerUrl: string, largeBannerUrl: string, openingHours?: string | null, private?: boolean | null, enabled?: boolean | null, productListingStyle: ProductListingType, shopListingStyle: ShopListingStyle, purchaseMetaDataKeys?: string | null, tosLink?: string | null, privacyPolicyLink?: string | null, healthInfosLink?: string | null, adultOnly?: boolean | null, ownerId?: number | null, owner: { __typename?: 'Organisation', id: number, name: string, avatarUrl?: string | null, circlesAddress?: string | null }, deliveryMethods?: Array<{ __typename?: 'DeliveryMethod', id: number, name: string }> | null } | null, offer?: { __typename?: 'Offer', id: number, title: string, pictureUrl: string, pricePerUnit: string, minAge?: number | null, tags?: Array<{ __typename?: 'Tag', typeId: string, value?: string | null }> | null } | null }> | null } | null } | { __typename?: 'WelcomeMessage', invitedBy: string, invitedBy_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null } | null }> };
+export type StreamQuery = (
+  { __typename?: 'Query' }
+  & { events: Array<(
+    { __typename?: 'ProfileEvent' }
+    & Pick<ProfileEvent, 'timestamp' | 'transaction_hash' | 'block_number' | 'safe_address' | 'contact_address' | 'direction' | 'type'>
+    & { contact_address_profile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'type' | 'successorOfCirclesAddress' | 'circlesAddress' | 'displayCurrency' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'provenUniqueness'>
+    )>, payload?: Maybe<(
+      { __typename?: 'CrcSignup' }
+      & Pick<CrcSignup, 'transaction_hash' | 'user' | 'token'>
+    ) | (
+      { __typename?: 'CrcTrust' }
+      & Pick<CrcTrust, 'transaction_hash' | 'address' | 'can_send_to' | 'limit'>
+      & { can_send_to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      )> }
+    ) | { __typename?: 'CrcTokenTransfer' } | (
+      { __typename?: 'CrcHubTransfer' }
+      & Pick<CrcHubTransfer, 'transaction_hash' | 'from' | 'to' | 'flow'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      )>, transfers: Array<(
+        { __typename?: 'CrcTokenTransfer' }
+        & Pick<CrcTokenTransfer, 'token' | 'from' | 'to' | 'value'>
+        & { from_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+        )>, to_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+        )> }
+      )>, tags: Array<(
+        { __typename?: 'Tag' }
+        & Pick<Tag, 'id' | 'typeId' | 'value'>
+      )> }
+    ) | (
+      { __typename?: 'CrcMinting' }
+      & Pick<CrcMinting, 'transaction_hash' | 'token' | 'from' | 'to' | 'value'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      )> }
+    ) | (
+      { __typename?: 'EthTransfer' }
+      & Pick<EthTransfer, 'transaction_hash' | 'from' | 'to' | 'value'>
+    ) | (
+      { __typename?: 'Erc20Transfer' }
+      & Pick<Erc20Transfer, 'transaction_hash' | 'from' | 'to' | 'value'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      )> }
+    ) | (
+      { __typename?: 'GnosisSafeEthTransfer' }
+      & Pick<GnosisSafeEthTransfer, 'transaction_hash' | 'initiator' | 'from' | 'to' | 'value'>
+    ) | (
+      { __typename?: 'ChatMessage' }
+      & Pick<ChatMessage, 'id' | 'from' | 'to' | 'text'>
+      & { from_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      )>, to_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      )> }
+    ) | (
+      { __typename?: 'MembershipOffer' }
+      & Pick<MembershipOffer, 'createdBy' | 'organisation' | 'isAdmin'>
+      & { createdBy_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      )>, organisation_profile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+      )> }
+    ) | (
+      { __typename?: 'MembershipAccepted' }
+      & Pick<MembershipAccepted, 'createdBy' | 'member' | 'organisation'>
+      & { member_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      )>, organisation_profile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+      )> }
+    ) | (
+      { __typename?: 'MembershipRejected' }
+      & Pick<MembershipRejected, 'member' | 'organisation'>
+      & { member_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      )>, organisation_profile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+      )> }
+    ) | (
+      { __typename?: 'WelcomeMessage' }
+      & Pick<WelcomeMessage, 'invitedBy'>
+      & { invitedBy_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      )> }
+    ) | (
+      { __typename?: 'InvitationCreated' }
+      & Pick<InvitationCreated, 'name' | 'code'>
+    ) | (
+      { __typename?: 'InvitationRedeemed' }
+      & Pick<InvitationRedeemed, 'name' | 'code' | 'redeemedBy'>
+      & { redeemedBy_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      )> }
+    ) | (
+      { __typename?: 'OrganisationCreated' }
+      & Pick<OrganisationCreated, 'organisation'>
+      & { organisation_profile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+      )> }
+    ) | (
+      { __typename?: 'MemberAdded' }
+      & Pick<MemberAdded, 'createdBy' | 'isAdmin' | 'member' | 'organisation'>
+      & { organisation_profile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+      )> }
+    ) | (
+      { __typename?: 'SaleEvent' }
+      & Pick<SaleEvent, 'buyer'>
+      & { buyer_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      )>, invoice?: Maybe<(
+        { __typename?: 'Invoice' }
+        & Pick<Invoice, 'id' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate' | 'createdAt' | 'cancelledAt' | 'cancelReason' | 'simplePickupCode' | 'paymentTransactionHash'>
+        & { deliveryMethod: (
+          { __typename?: 'DeliveryMethod' }
+          & Pick<DeliveryMethod, 'id' | 'name'>
+        ), deliveryAddress?: Maybe<(
+          { __typename?: 'PostAddress' }
+          & Pick<PostAddress, 'name' | 'id' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
+        )>, lines?: Maybe<Array<(
+          { __typename?: 'InvoiceLine' }
+          & Pick<InvoiceLine, 'amount' | 'metadata'>
+          & { shop?: Maybe<(
+            { __typename?: 'Shop' }
+            & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'productListingStyle' | 'shopListingStyle' | 'purchaseMetaDataKeys' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink' | 'adultOnly' | 'ownerId'>
+            & { owner: (
+              { __typename?: 'Organisation' }
+              & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
+            ), deliveryMethods?: Maybe<Array<(
+              { __typename?: 'DeliveryMethod' }
+              & Pick<DeliveryMethod, 'id' | 'name'>
+            )>> }
+          )>, offer?: Maybe<(
+            { __typename?: 'Offer' }
+            & Pick<Offer, 'id' | 'title' | 'pictureUrl' | 'pricePerUnit' | 'minAge'>
+            & { tags?: Maybe<Array<(
+              { __typename?: 'Tag' }
+              & Pick<Tag, 'typeId' | 'value'>
+            )>> }
+          )> }
+        )>> }
+      )> }
+    ) | (
+      { __typename?: 'Purchased' }
+      & { seller_profile?: Maybe<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      )>, purchase: (
+        { __typename?: 'Purchase' }
+        & Pick<Purchase, 'id' | 'createdAt' | 'createdByAddress' | 'total'>
+        & { deliveryMethod: (
+          { __typename?: 'DeliveryMethod' }
+          & Pick<DeliveryMethod, 'id' | 'name'>
+        ), deliveryAddress?: Maybe<(
+          { __typename?: 'PostAddress' }
+          & Pick<PostAddress, 'name' | 'id' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
+        )>, lines?: Maybe<Array<(
+          { __typename?: 'PurchaseLine' }
+          & Pick<PurchaseLine, 'id' | 'amount' | 'metadata'>
+          & { shop?: Maybe<(
+            { __typename?: 'Shop' }
+            & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'productListingStyle' | 'shopListingStyle' | 'purchaseMetaDataKeys' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink' | 'adultOnly' | 'ownerId'>
+            & { pickupAddress?: Maybe<(
+              { __typename?: 'PostAddress' }
+              & Pick<PostAddress, 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+            )>, owner: (
+              { __typename?: 'Organisation' }
+              & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
+            ), deliveryMethods?: Maybe<Array<(
+              { __typename?: 'DeliveryMethod' }
+              & Pick<DeliveryMethod, 'id' | 'name'>
+            )>> }
+          )>, offer?: Maybe<(
+            { __typename?: 'Offer' }
+            & Pick<Offer, 'id' | 'pictureUrl' | 'title' | 'description' | 'pricePerUnit' | 'minAge'>
+            & { tags?: Maybe<Array<(
+              { __typename?: 'Tag' }
+              & Pick<Tag, 'typeId' | 'value'>
+            )>> }
+          )> }
+        )>>, invoices?: Maybe<Array<(
+          { __typename?: 'Invoice' }
+          & Pick<Invoice, 'id' | 'pickupCode' | 'simplePickupCode' | 'paymentTransactionHash' | 'createdAt' | 'cancelledAt' | 'invoiceNo' | 'sellerSignature' | 'buyerSignature'>
+          & { deliveryMethod: (
+            { __typename?: 'DeliveryMethod' }
+            & Pick<DeliveryMethod, 'id' | 'name'>
+          ), buyerProfile?: Maybe<(
+            { __typename?: 'Profile' }
+            & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+          )>, sellerProfile?: Maybe<(
+            { __typename?: 'Profile' }
+            & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+          )> }
+        )>> }
+      ) }
+    ) | (
+      { __typename?: 'SafeVerified' }
+      & Pick<SafeVerified, 'safe_address'>
+      & { organisation_profile?: Maybe<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'name' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+      )> }
+    ) | (
+      { __typename?: 'NewUser' }
+      & { profile: (
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'dream' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      ) }
+    )> }
+  )> }
+);
 
 export type AggregatesQueryVariables = Exact<{
   types: Array<AggregateType> | AggregateType;
   safeAddress: Scalars['String'];
-  filter?: InputMaybe<ProfileAggregateFilter>;
+  filter?: Maybe<ProfileAggregateFilter>;
 }>;
 
 
-export type AggregatesQuery = { __typename?: 'Query', aggregates: Array<{ __typename?: 'ProfileAggregate', type: string, safe_address: string, safe_address_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null, payload: { __typename?: 'Contacts', lastUpdatedAt: string, contacts: Array<{ __typename?: 'Contact', lastContactAt: string, contactAddress: string, metadata: Array<{ __typename?: 'ContactPoint', name: string, directions: Array<ContactDirection>, values: Array<string>, timestamps: Array<string> }>, contactAddress_Profile?: { __typename?: 'Profile', type?: ProfileType | null, id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null, memberships?: Array<{ __typename?: 'Membership', isAdmin: boolean, organisation: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, displayName?: string | null, circlesSafeOwner?: string | null, name: string, description?: string | null, avatarUrl?: string | null, cityGeonameid?: number | null, city?: { __typename?: 'City', geonameid: number, country: string, name: string, population: number } | null } }> | null, members?: Array<{ __typename?: 'Profile', type?: ProfileType | null, id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null }> | null, verifications?: Array<{ __typename?: 'Verification', createdAt: string, revokedAt?: string | null, verifierSafeAddress: string, verifierProfile?: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, avatarUrl?: string | null, name: string, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null } | null }> | null } | null }> } | { __typename?: 'CrcBalances', lastUpdatedAt: string, balances: Array<{ __typename?: 'AssetBalance', token_address: string, token_owner_address: string, token_balance: string, token_owner_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null }> } | { __typename?: 'Erc20Balances', lastUpdatedAt: string, balances: Array<{ __typename?: 'AssetBalance', token_address: string, token_owner_address: string, token_balance: string, token_owner_profile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null }> } | { __typename?: 'Erc721Tokens', lastUpdatedAt: string, balances: Array<{ __typename?: 'Erc721Token', token_no: string, token_symbol?: string | null, token_name?: string | null, token_address: string, token_url: string, token_owner_profile?: { __typename?: 'Profile', id: number, circlesAddress?: string | null, displayName?: string | null, avatarUrl?: string | null, firstName: string, lastName?: string | null, provenUniqueness?: boolean | null } | null }> } | { __typename?: 'Members', lastUpdatedAt: string, members: Array<{ __typename?: 'Organisation', circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null } | { __typename?: 'Profile', successorOfCirclesAddress?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null }> } | { __typename?: 'Memberships', lastUpdatedAt: string, organisations: Array<{ __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, displayName?: string | null, circlesSafeOwner?: string | null, name: string, description?: string | null, avatarUrl?: string | null, cityGeonameid?: number | null, city?: { __typename?: 'City', geonameid: number, country: string, name: string, population: number } | null }> } | { __typename?: 'Offers', lastUpdatedAt: string, offers: Array<{ __typename?: 'Offer', id: number, version: number, createdByAddress: string, createdAt: string, title: string, minAge?: number | null, pictureUrl: string, pictureMimeType: string, description?: string | null, pricePerUnit: string, timeCirclesPriceShare: number, createdByProfile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, smallBannerUrl?: string | null, provenUniqueness?: boolean | null } | null, tags?: Array<{ __typename?: 'Tag', typeId: string, value?: string | null, order?: number | null }> | null }> } | { __typename?: 'Purchases', lastUpdatedAt: string, purchases: Array<{ __typename?: 'Purchase', id: number, createdAt: string, createdByAddress: string, total: string, createdByProfile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null, deliveryMethod: { __typename?: 'DeliveryMethod', id: number, name: string }, lines?: Array<{ __typename?: 'PurchaseLine', id: number, amount: number, metadata?: string | null, shop?: { __typename?: 'Shop', id: number, name: string, description: string, legalText?: string | null, smallBannerUrl: string, largeBannerUrl: string, openingHours?: string | null, private?: boolean | null, enabled?: boolean | null, productListingStyle: ProductListingType, shopListingStyle: ShopListingStyle, purchaseMetaDataKeys?: string | null, tosLink?: string | null, privacyPolicyLink?: string | null, healthInfosLink?: string | null, adultOnly?: boolean | null, ownerId?: number | null, owner: { __typename?: 'Organisation', id: number, name: string, avatarUrl?: string | null, circlesAddress?: string | null }, deliveryMethods?: Array<{ __typename?: 'DeliveryMethod', id: number, name: string }> | null } | null, offer?: { __typename?: 'Offer', id: number, version: number, title: string, description?: string | null, pictureUrl: string, pricePerUnit: string, minAge?: number | null, timeCirclesPriceShare: number, createdByProfile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null, tags?: Array<{ __typename?: 'Tag', typeId: string, value?: string | null }> | null } | null }> | null, invoices?: Array<{ __typename?: 'Invoice', id: number, sellerAddress: string, paymentTransactionHash?: string | null, buyerAddress: string, pickupCode?: string | null, simplePickupCode?: string | null, buyerSignature?: boolean | null, buyerSignedDate?: string | null, sellerSignature?: boolean | null, sellerSignedDate?: string | null, createdAt?: string | null, cancelledAt?: string | null, cancelReason?: string | null, deliveryMethod: { __typename?: 'DeliveryMethod', id: number, name: string }, sellerProfile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null }> | null }> } | { __typename?: 'Sales', lastUpdatedAt: string, sales: Array<{ __typename?: 'Sale', id: number, createdAt: string, total: string, sellerProfile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null, buyerProfile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, verifications?: Array<{ __typename?: 'Verification', createdAt: string, revokedAt?: string | null, verifierSafeAddress: string, verifierProfile?: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, avatarUrl?: string | null, name: string, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null } | null }> | null } | null, lines?: Array<{ __typename?: 'SalesLine', id: number, amount: number, metadata?: string | null, shop?: { __typename?: 'Shop', id: number, name: string, description: string, legalText?: string | null, smallBannerUrl: string, largeBannerUrl: string, openingHours?: string | null, private?: boolean | null, enabled?: boolean | null, productListingStyle: ProductListingType, shopListingStyle: ShopListingStyle, purchaseMetaDataKeys?: string | null, tosLink?: string | null, privacyPolicyLink?: string | null, healthInfosLink?: string | null, adultOnly?: boolean | null, ownerId?: number | null, owner: { __typename?: 'Organisation', id: number, name: string, avatarUrl?: string | null, circlesAddress?: string | null }, deliveryMethods?: Array<{ __typename?: 'DeliveryMethod', id: number, name: string }> | null } | null, offer: { __typename?: 'Offer', id: number, version: number, title: string, description?: string | null, pictureUrl: string, pricePerUnit: string, minAge?: number | null, timeCirclesPriceShare: number, createdByProfile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null, tags?: Array<{ __typename?: 'Tag', typeId: string, value?: string | null }> | null } }> | null, invoices?: Array<{ __typename?: 'Invoice', id: number, sellerAddress: string, paymentTransactionHash?: string | null, buyerAddress: string, pickupCode?: string | null, simplePickupCode?: string | null, buyerSignature?: boolean | null, buyerSignedDate?: string | null, sellerSignature?: boolean | null, sellerSignedDate?: string | null, createdAt?: string | null, cancelledAt?: string | null, cancelReason?: string | null, deliveryMethod: { __typename?: 'DeliveryMethod', id: number, name: string }, deliveryAddress?: { __typename?: 'PostAddress', name?: string | null, id: number, street: string, house: string, zip: string, city: string, state?: string | null, country: string, cityGeonameid?: number | null } | null, buyerProfile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null, verifications?: Array<{ __typename?: 'Verification', createdAt: string, revokedAt?: string | null, verifierSafeAddress: string, verifierProfile?: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, avatarUrl?: string | null, name: string, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null } | null }> | null } | null }> | null }> } }> };
+export type AggregatesQuery = (
+  { __typename?: 'Query' }
+  & { aggregates: Array<(
+    { __typename?: 'ProfileAggregate' }
+    & Pick<ProfileAggregate, 'type' | 'safe_address'>
+    & { safe_address_profile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+    )>, payload: (
+      { __typename?: 'CrcBalances' }
+      & Pick<CrcBalances, 'lastUpdatedAt'>
+      & { balances: Array<(
+        { __typename?: 'AssetBalance' }
+        & Pick<AssetBalance, 'token_address' | 'token_owner_address' | 'token_balance'>
+        & { token_owner_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+        )> }
+      )> }
+    ) | (
+      { __typename?: 'Erc20Balances' }
+      & Pick<Erc20Balances, 'lastUpdatedAt'>
+      & { balances: Array<(
+        { __typename?: 'AssetBalance' }
+        & Pick<AssetBalance, 'token_address' | 'token_owner_address' | 'token_balance'>
+        & { token_owner_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+        )> }
+      )> }
+    ) | (
+      { __typename?: 'Contacts' }
+      & Pick<Contacts, 'lastUpdatedAt'>
+      & { contacts: Array<(
+        { __typename?: 'Contact' }
+        & Pick<Contact, 'lastContactAt' | 'contactAddress'>
+        & { metadata: Array<(
+          { __typename?: 'ContactPoint' }
+          & Pick<ContactPoint, 'name' | 'directions' | 'values' | 'timestamps'>
+        )>, contactAddress_Profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'type' | 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+          & { city?: Maybe<(
+            { __typename?: 'City' }
+            & Pick<City, 'geonameid' | 'name' | 'country'>
+          )>, memberships?: Maybe<Array<(
+            { __typename?: 'Membership' }
+            & Pick<Membership, 'isAdmin'>
+            & { organisation: (
+              { __typename?: 'Organisation' }
+              & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'displayName' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl' | 'cityGeonameid'>
+              & { city?: Maybe<(
+                { __typename?: 'City' }
+                & Pick<City, 'geonameid' | 'country' | 'name' | 'population'>
+              )> }
+            ) }
+          )>>, members?: Maybe<Array<(
+            { __typename?: 'Profile' }
+            & Pick<Profile, 'type' | 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+            & { city?: Maybe<(
+              { __typename?: 'City' }
+              & Pick<City, 'geonameid' | 'name' | 'country'>
+            )> }
+          )>>, verifications?: Maybe<Array<(
+            { __typename?: 'Verification' }
+            & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
+            & { verifierProfile?: Maybe<(
+              { __typename?: 'Organisation' }
+              & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
+              & { city?: Maybe<(
+                { __typename?: 'City' }
+                & Pick<City, 'geonameid' | 'name' | 'country'>
+              )> }
+            )> }
+          )>> }
+        )> }
+      )> }
+    ) | (
+      { __typename?: 'Memberships' }
+      & Pick<Memberships, 'lastUpdatedAt'>
+      & { organisations: Array<(
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'displayName' | 'circlesSafeOwner' | 'name' | 'description' | 'avatarUrl' | 'cityGeonameid'>
+        & { city?: Maybe<(
+          { __typename?: 'City' }
+          & Pick<City, 'geonameid' | 'country' | 'name' | 'population'>
+        )> }
+      )> }
+    ) | (
+      { __typename?: 'Members' }
+      & Pick<Members, 'lastUpdatedAt'>
+      & { members: Array<(
+        { __typename?: 'Profile' }
+        & Pick<Profile, 'successorOfCirclesAddress' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+      ) | (
+        { __typename?: 'Organisation' }
+        & Pick<Organisation, 'circlesAddress' | 'displayCurrency'>
+      )> }
+    ) | (
+      { __typename?: 'Offers' }
+      & Pick<Offers, 'lastUpdatedAt'>
+      & { offers: Array<(
+        { __typename?: 'Offer' }
+        & Pick<Offer, 'id' | 'version' | 'createdByAddress' | 'createdAt' | 'title' | 'minAge' | 'pictureUrl' | 'pictureMimeType' | 'description' | 'pricePerUnit' | 'timeCirclesPriceShare'>
+        & { createdByProfile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'smallBannerUrl' | 'provenUniqueness'>
+        )>, tags?: Maybe<Array<(
+          { __typename?: 'Tag' }
+          & Pick<Tag, 'typeId' | 'value' | 'order'>
+        )>> }
+      )> }
+    ) | (
+      { __typename?: 'Sales' }
+      & Pick<Sales, 'lastUpdatedAt'>
+      & { sales: Array<(
+        { __typename?: 'Sale' }
+        & Pick<Sale, 'id' | 'createdAt' | 'total'>
+        & { sellerProfile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+        )>, buyerProfile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency'>
+          & { verifications?: Maybe<Array<(
+            { __typename?: 'Verification' }
+            & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
+            & { verifierProfile?: Maybe<(
+              { __typename?: 'Organisation' }
+              & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
+              & { city?: Maybe<(
+                { __typename?: 'City' }
+                & Pick<City, 'geonameid' | 'name' | 'country'>
+              )> }
+            )> }
+          )>> }
+        )>, lines?: Maybe<Array<(
+          { __typename?: 'SalesLine' }
+          & Pick<SalesLine, 'id' | 'amount' | 'metadata'>
+          & { shop?: Maybe<(
+            { __typename?: 'Shop' }
+            & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'productListingStyle' | 'shopListingStyle' | 'purchaseMetaDataKeys' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink' | 'adultOnly' | 'ownerId'>
+            & { owner: (
+              { __typename?: 'Organisation' }
+              & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
+            ), deliveryMethods?: Maybe<Array<(
+              { __typename?: 'DeliveryMethod' }
+              & Pick<DeliveryMethod, 'id' | 'name'>
+            )>> }
+          )>, offer: (
+            { __typename?: 'Offer' }
+            & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'minAge' | 'timeCirclesPriceShare'>
+            & { createdByProfile?: Maybe<(
+              { __typename?: 'Profile' }
+              & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+            )>, tags?: Maybe<Array<(
+              { __typename?: 'Tag' }
+              & Pick<Tag, 'typeId' | 'value'>
+            )>> }
+          ) }
+        )>>, invoices?: Maybe<Array<(
+          { __typename?: 'Invoice' }
+          & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode' | 'simplePickupCode' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate' | 'createdAt' | 'cancelledAt' | 'cancelReason'>
+          & { deliveryMethod: (
+            { __typename?: 'DeliveryMethod' }
+            & Pick<DeliveryMethod, 'id' | 'name'>
+          ), deliveryAddress?: Maybe<(
+            { __typename?: 'PostAddress' }
+            & Pick<PostAddress, 'name' | 'id' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
+          )>, buyerProfile?: Maybe<(
+            { __typename?: 'Profile' }
+            & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+            & { verifications?: Maybe<Array<(
+              { __typename?: 'Verification' }
+              & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
+              & { verifierProfile?: Maybe<(
+                { __typename?: 'Organisation' }
+                & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
+                & { city?: Maybe<(
+                  { __typename?: 'City' }
+                  & Pick<City, 'geonameid' | 'name' | 'country'>
+                )> }
+              )> }
+            )>> }
+          )> }
+        )>> }
+      )> }
+    ) | (
+      { __typename?: 'Purchases' }
+      & Pick<Purchases, 'lastUpdatedAt'>
+      & { purchases: Array<(
+        { __typename?: 'Purchase' }
+        & Pick<Purchase, 'id' | 'createdAt' | 'createdByAddress' | 'total'>
+        & { createdByProfile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+        )>, deliveryMethod: (
+          { __typename?: 'DeliveryMethod' }
+          & Pick<DeliveryMethod, 'id' | 'name'>
+        ), lines?: Maybe<Array<(
+          { __typename?: 'PurchaseLine' }
+          & Pick<PurchaseLine, 'id' | 'amount' | 'metadata'>
+          & { shop?: Maybe<(
+            { __typename?: 'Shop' }
+            & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'productListingStyle' | 'shopListingStyle' | 'purchaseMetaDataKeys' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink' | 'adultOnly' | 'ownerId'>
+            & { owner: (
+              { __typename?: 'Organisation' }
+              & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
+            ), deliveryMethods?: Maybe<Array<(
+              { __typename?: 'DeliveryMethod' }
+              & Pick<DeliveryMethod, 'id' | 'name'>
+            )>> }
+          )>, offer?: Maybe<(
+            { __typename?: 'Offer' }
+            & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'minAge' | 'timeCirclesPriceShare'>
+            & { createdByProfile?: Maybe<(
+              { __typename?: 'Profile' }
+              & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+            )>, tags?: Maybe<Array<(
+              { __typename?: 'Tag' }
+              & Pick<Tag, 'typeId' | 'value'>
+            )>> }
+          )> }
+        )>>, invoices?: Maybe<Array<(
+          { __typename?: 'Invoice' }
+          & Pick<Invoice, 'id' | 'sellerAddress' | 'paymentTransactionHash' | 'buyerAddress' | 'pickupCode' | 'simplePickupCode' | 'buyerSignature' | 'buyerSignedDate' | 'sellerSignature' | 'sellerSignedDate' | 'createdAt' | 'cancelledAt' | 'cancelReason'>
+          & { deliveryMethod: (
+            { __typename?: 'DeliveryMethod' }
+            & Pick<DeliveryMethod, 'id' | 'name'>
+          ), sellerProfile?: Maybe<(
+            { __typename?: 'Profile' }
+            & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+          )> }
+        )>> }
+      )> }
+    ) | (
+      { __typename?: 'Erc721Tokens' }
+      & Pick<Erc721Tokens, 'lastUpdatedAt'>
+      & { balances: Array<(
+        { __typename?: 'Erc721Token' }
+        & Pick<Erc721Token, 'token_no' | 'token_symbol' | 'token_name' | 'token_address' | 'token_url'>
+        & { token_owner_profile?: Maybe<(
+          { __typename?: 'Profile' }
+          & Pick<Profile, 'id' | 'circlesAddress' | 'displayName' | 'avatarUrl' | 'firstName' | 'lastName' | 'provenUniqueness'>
+        )> }
+      )> }
+    ) }
+  )> }
+);
 
 export type GetAllStringsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllStringsQuery = { __typename?: 'Query', getAllStrings?: Array<{ __typename?: 'i18n', lang?: string | null, key?: string | null, version?: number | null, value?: string | null } | null> | null };
+export type GetAllStringsQuery = (
+  { __typename?: 'Query' }
+  & { getAllStrings?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'version' | 'value'>
+  )>>> }
+);
 
 export type GetAllStringsByLanguageQueryVariables = Exact<{
-  lang?: InputMaybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
 }>;
 
 
-export type GetAllStringsByLanguageQuery = { __typename?: 'Query', getAllStringsByLanguage?: Array<{ __typename?: 'i18n', lang?: string | null, key?: string | null, createdBy?: string | null, version?: number | null, value?: string | null } | null> | null };
+export type GetAllStringsByLanguageQuery = (
+  { __typename?: 'Query' }
+  & { getAllStringsByLanguage?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )>>> }
+);
 
 export type GetAllStringsByMaxVersionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllStringsByMaxVersionQuery = { __typename?: 'Query', getAllStringsByMaxVersion?: Array<{ __typename?: 'i18n', lang?: string | null, key?: string | null, createdBy?: string | null, version?: number | null, value?: string | null } | null> | null };
+export type GetAllStringsByMaxVersionQuery = (
+  { __typename?: 'Query' }
+  & { getAllStringsByMaxVersion?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )>>> }
+);
 
 export type GetAllStringsByMaxVersionAndLangQueryVariables = Exact<{
-  lang?: InputMaybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
 }>;
 
 
-export type GetAllStringsByMaxVersionAndLangQuery = { __typename?: 'Query', getAllStringsByMaxVersionAndLang?: Array<{ __typename?: 'i18n', lang?: string | null, key?: string | null, createdBy?: string | null, version?: number | null, value?: string | null } | null> | null };
+export type GetAllStringsByMaxVersionAndLangQuery = (
+  { __typename?: 'Query' }
+  & { getAllStringsByMaxVersionAndLang?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )>>> }
+);
 
 export type GetStringByMaxVersionQueryVariables = Exact<{
-  lang?: InputMaybe<Scalars['String']>;
-  key?: InputMaybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
 }>;
 
 
-export type GetStringByMaxVersionQuery = { __typename?: 'Query', getStringByMaxVersion?: { __typename?: 'i18n', lang?: string | null, key?: string | null, createdBy?: string | null, version?: number | null, value?: string | null } | null };
+export type GetStringByMaxVersionQuery = (
+  { __typename?: 'Query' }
+  & { getStringByMaxVersion?: Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )> }
+);
 
 export type GetOlderVersionsByKeyAndLangQueryVariables = Exact<{
-  key?: InputMaybe<Scalars['String']>;
-  lang?: InputMaybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
 }>;
 
 
-export type GetOlderVersionsByKeyAndLangQuery = { __typename?: 'Query', getOlderVersionsByKeyAndLang?: Array<{ __typename?: 'i18n', lang?: string | null, key?: string | null, createdBy?: string | null, version?: number | null, value?: string | null } | null> | null };
+export type GetOlderVersionsByKeyAndLangQuery = (
+  { __typename?: 'Query' }
+  & { getOlderVersionsByKeyAndLang?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )>>> }
+);
 
 export type GetStringByLanguageQueryVariables = Exact<{
-  lang?: InputMaybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
 }>;
 
 
-export type GetStringByLanguageQuery = { __typename?: 'Query', getStringByLanguage?: Array<{ __typename?: 'i18n', lang?: string | null, key?: string | null, createdBy?: string | null, version?: number | null, value?: string | null }> | null };
+export type GetStringByLanguageQuery = (
+  { __typename?: 'Query' }
+  & { getStringByLanguage?: Maybe<Array<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+  )>> }
+);
 
 export type GetAvailableLanguagesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAvailableLanguagesQuery = { __typename?: 'Query', getAvailableLanguages?: Array<{ __typename?: 'i18n', lang?: string | null } | null> | null };
+export type GetAvailableLanguagesQuery = (
+  { __typename?: 'Query' }
+  & { getAvailableLanguages?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang'>
+  )>>> }
+);
 
 export type DirectPathQueryVariables = Exact<{
   from: Scalars['String'];
@@ -2297,67 +3647,185 @@ export type DirectPathQueryVariables = Exact<{
 }>;
 
 
-export type DirectPathQuery = { __typename?: 'Query', directPath: { __typename?: 'TransitivePath', flow: string, transfers: Array<{ __typename?: 'TransitiveTransfer', from: string, to: string, token: string, tokenOwner: string, value: string }> } };
+export type DirectPathQuery = (
+  { __typename?: 'Query' }
+  & { directPath: (
+    { __typename?: 'TransitivePath' }
+    & Pick<TransitivePath, 'flow'>
+    & { transfers: Array<(
+      { __typename?: 'TransitiveTransfer' }
+      & Pick<TransitiveTransfer, 'from' | 'to' | 'token' | 'tokenOwner' | 'value'>
+    )> }
+  ) }
+);
 
 export type InvoiceQueryVariables = Exact<{
   invoiceId: Scalars['Int'];
 }>;
 
 
-export type InvoiceQuery = { __typename?: 'Query', invoice?: string | null };
+export type InvoiceQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'invoice'>
+);
 
 export type VerificationsQueryVariables = Exact<{
-  pagination?: InputMaybe<PaginationArgs>;
-  filter?: InputMaybe<VerifiedSafesFilter>;
+  pagination?: Maybe<PaginationArgs>;
+  filter?: Maybe<VerifiedSafesFilter>;
 }>;
 
 
-export type VerificationsQuery = { __typename?: 'Query', verifications: Array<{ __typename?: 'Verification', createdAt: string, revokedAt?: string | null, verifierSafeAddress: string, verifiedSafeAddress: string, verifierProfile?: { __typename?: 'Organisation', id: number, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, avatarUrl?: string | null, name: string, city?: { __typename?: 'City', geonameid: number, name: string, country: string } | null } | null, verifiedProfile?: { __typename?: 'Profile', id: number, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, provenUniqueness?: boolean | null } | null }> };
+export type VerificationsQuery = (
+  { __typename?: 'Query' }
+  & { verifications: Array<(
+    { __typename?: 'Verification' }
+    & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress' | 'verifiedSafeAddress'>
+    & { verifierProfile?: Maybe<(
+      { __typename?: 'Organisation' }
+      & Pick<Organisation, 'id' | 'circlesAddress' | 'displayCurrency' | 'avatarUrl' | 'name'>
+      & { city?: Maybe<(
+        { __typename?: 'City' }
+        & Pick<City, 'geonameid' | 'name' | 'country'>
+      )> }
+    )>, verifiedProfile?: Maybe<(
+      { __typename?: 'Profile' }
+      & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
+    )> }
+  )> }
+);
 
 export type FindInvitationCreatorQueryVariables = Exact<{
   code: Scalars['String'];
 }>;
 
 
-export type FindInvitationCreatorQuery = { __typename?: 'Query', findInvitationCreator?: { __typename?: 'Profile', circlesAddress?: string | null, displayCurrency?: DisplayCurrency | null, displayName?: string | null, firstName: string, lastName?: string | null, avatarUrl?: string | null } | null };
+export type FindInvitationCreatorQuery = (
+  { __typename?: 'Query' }
+  & { findInvitationCreator?: Maybe<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'circlesAddress' | 'displayCurrency' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl'>
+  )> }
+);
 
 export type ShopQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
 
-export type ShopQuery = { __typename?: 'Query', shop?: { __typename?: 'Shop', id: number, name: string, description: string, legalText?: string | null, smallBannerUrl: string, largeBannerUrl: string, openingHours?: string | null, private?: boolean | null, enabled?: boolean | null, productListingStyle: ProductListingType, shopListingStyle: ShopListingStyle, purchaseMetaDataKeys?: string | null, tosLink?: string | null, privacyPolicyLink?: string | null, healthInfosLink?: string | null, adultOnly?: boolean | null, ownerId?: number | null, owner: { __typename?: 'Organisation', id: number, name: string, avatarUrl?: string | null, circlesAddress?: string | null }, deliveryMethods?: Array<{ __typename?: 'DeliveryMethod', id: number, name: string }> | null, pickupAddress?: { __typename?: 'PostAddress', name?: string | null, street: string, house: string, zip: string, city: string, state?: string | null, country: string } | null, categories?: Array<{ __typename?: 'ShopCategory', id: number, name: string, description?: string | null, sortOrder?: number | null, shopId: number, smallBannerUrl?: string | null, largeBannerUrl?: string | null, private?: boolean | null, enabled?: boolean | null, createdAt?: any | null, productListingStyle?: ProductListingType | null, entries?: Array<{ __typename?: 'ShopCategoryEntry', id: number, sortOrder?: number | null, private?: boolean | null, productId: number, productVersion: number, shopCategoryId: number, enabled?: boolean | null, product?: { __typename?: 'Offer', id: number, version: number, title: string, description?: string | null, pictureUrl: string, pricePerUnit: string, minAge?: number | null, currentInventory?: number | null, createdByProfile?: { __typename?: 'Profile', id: number, displayName?: string | null, avatarUrl?: string | null, circlesAddress?: string | null, provenUniqueness?: boolean | null } | null } | null }> | null }> | null } | null };
+export type ShopQuery = (
+  { __typename?: 'Query' }
+  & { shop?: Maybe<(
+    { __typename?: 'Shop' }
+    & Pick<Shop, 'id' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'productListingStyle' | 'shopListingStyle' | 'purchaseMetaDataKeys' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink' | 'adultOnly' | 'ownerId'>
+    & { owner: (
+      { __typename?: 'Organisation' }
+      & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
+    ), deliveryMethods?: Maybe<Array<(
+      { __typename?: 'DeliveryMethod' }
+      & Pick<DeliveryMethod, 'id' | 'name'>
+    )>>, pickupAddress?: Maybe<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+    )>, categories?: Maybe<Array<(
+      { __typename?: 'ShopCategory' }
+      & Pick<ShopCategory, 'id' | 'name' | 'description' | 'sortOrder' | 'shopId' | 'smallBannerUrl' | 'largeBannerUrl' | 'private' | 'enabled' | 'createdAt' | 'productListingStyle'>
+      & { entries?: Maybe<Array<(
+        { __typename?: 'ShopCategoryEntry' }
+        & Pick<ShopCategoryEntry, 'id' | 'sortOrder' | 'private' | 'productId' | 'productVersion' | 'shopCategoryId' | 'enabled'>
+        & { product?: Maybe<(
+          { __typename?: 'Offer' }
+          & Pick<Offer, 'id' | 'version' | 'title' | 'description' | 'pictureUrl' | 'pricePerUnit' | 'minAge' | 'currentInventory'>
+          & { createdByProfile?: Maybe<(
+            { __typename?: 'Profile' }
+            & Pick<Profile, 'id' | 'displayName' | 'avatarUrl' | 'circlesAddress' | 'provenUniqueness'>
+          )> }
+        )> }
+      )>> }
+    )>> }
+  )> }
+);
 
 export type ShopsQueryVariables = Exact<{
-  ownerId?: InputMaybe<Scalars['Int']>;
+  ownerId?: Maybe<Scalars['Int']>;
 }>;
 
 
-export type ShopsQuery = { __typename?: 'Query', shops: Array<{ __typename?: 'Shop', id: number, createdAt: any, name: string, description: string, legalText?: string | null, smallBannerUrl: string, largeBannerUrl: string, openingHours?: string | null, private?: boolean | null, enabled?: boolean | null, shopListingStyle: ShopListingStyle, productListingStyle: ProductListingType, sortOrder?: number | null, ownerId?: number | null, adultOnly?: boolean | null, tosLink?: string | null, privacyPolicyLink?: string | null, healthInfosLink?: string | null, deliveryMethods?: Array<{ __typename?: 'DeliveryMethod', id: number, name: string }> | null, owner: { __typename?: 'Organisation', id: number, name: string, avatarUrl?: string | null, circlesAddress?: string | null }, pickupAddress?: { __typename?: 'PostAddress', name?: string | null, street: string, house: string, zip: string, city: string, state?: string | null, country: string } | null }> };
+export type ShopsQuery = (
+  { __typename?: 'Query' }
+  & { shops: Array<(
+    { __typename?: 'Shop' }
+    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId' | 'adultOnly' | 'tosLink' | 'privacyPolicyLink' | 'healthInfosLink'>
+    & { deliveryMethods?: Maybe<Array<(
+      { __typename?: 'DeliveryMethod' }
+      & Pick<DeliveryMethod, 'id' | 'name'>
+    )>>, owner: (
+      { __typename?: 'Organisation' }
+      & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
+    ), pickupAddress?: Maybe<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+    )> }
+  )> }
+);
 
 export type ShopsByIdQueryVariables = Exact<{
   ids: Array<Scalars['Int']> | Scalars['Int'];
 }>;
 
 
-export type ShopsByIdQuery = { __typename?: 'Query', shopsById: Array<{ __typename?: 'Shop', id: number, createdAt: any, name: string, description: string, legalText?: string | null, smallBannerUrl: string, largeBannerUrl: string, openingHours?: string | null, private?: boolean | null, enabled?: boolean | null, shopListingStyle: ShopListingStyle, productListingStyle: ProductListingType, sortOrder?: number | null, ownerId?: number | null, tosLink?: string | null, adultOnly?: boolean | null, privacyPolicyLink?: string | null, healthInfosLink?: string | null, deliveryMethods?: Array<{ __typename?: 'DeliveryMethod', id: number, name: string }> | null, owner: { __typename?: 'Organisation', id: number, name: string, avatarUrl?: string | null, circlesAddress?: string | null }, pickupAddress?: { __typename?: 'PostAddress', name?: string | null, street: string, house: string, zip: string, city: string, state?: string | null, country: string } | null }> };
+export type ShopsByIdQuery = (
+  { __typename?: 'Query' }
+  & { shopsById: Array<(
+    { __typename?: 'Shop' }
+    & Pick<Shop, 'id' | 'createdAt' | 'name' | 'description' | 'legalText' | 'smallBannerUrl' | 'largeBannerUrl' | 'openingHours' | 'private' | 'enabled' | 'shopListingStyle' | 'productListingStyle' | 'sortOrder' | 'ownerId' | 'tosLink' | 'adultOnly' | 'privacyPolicyLink' | 'healthInfosLink'>
+    & { deliveryMethods?: Maybe<Array<(
+      { __typename?: 'DeliveryMethod' }
+      & Pick<DeliveryMethod, 'id' | 'name'>
+    )>>, owner: (
+      { __typename?: 'Organisation' }
+      & Pick<Organisation, 'id' | 'name' | 'avatarUrl' | 'circlesAddress'>
+    ), pickupAddress?: Maybe<(
+      { __typename?: 'PostAddress' }
+      & Pick<PostAddress, 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+    )> }
+  )> }
+);
 
 export type ClientAssertionJwtQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ClientAssertionJwtQuery = { __typename?: 'Query', clientAssertionJwt: string };
+export type ClientAssertionJwtQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'clientAssertionJwt'>
+);
 
 export type OffersByIdAndVersionQueryVariables = Exact<{
   query: Array<OfferByIdAndVersionInput> | OfferByIdAndVersionInput;
 }>;
 
 
-export type OffersByIdAndVersionQuery = { __typename?: 'Query', offersByIdAndVersion: Array<{ __typename?: 'Offer', id: number, title: string, pictureUrl: string, pricePerUnit: string, currentInventory?: number | null, version: number, tags?: Array<{ __typename?: 'Tag', typeId: string, value?: string | null }> | null }> };
+export type OffersByIdAndVersionQuery = (
+  { __typename?: 'Query' }
+  & { offersByIdAndVersion: Array<(
+    { __typename?: 'Offer' }
+    & Pick<Offer, 'id' | 'title' | 'pictureUrl' | 'pricePerUnit' | 'currentInventory' | 'version'>
+    & { tags?: Maybe<Array<(
+      { __typename?: 'Tag' }
+      & Pick<Tag, 'typeId' | 'value'>
+    )>> }
+  )> }
+);
 
 export type EventsSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type EventsSubscription = { __typename?: 'Subscription', events: { __typename?: 'NotificationEvent', type: string, from: string, to: string, itemId?: number | null, transaction_hash?: string | null } };
+export type EventsSubscription = (
+  { __typename?: 'Subscription' }
+  & { events: (
+    { __typename?: 'NotificationEvent' }
+    & Pick<NotificationEvent, 'type' | 'from' | 'to' | 'itemId' | 'transaction_hash'>
+  ) }
+);
 
 
 export const UpsertShippingAddressDocument = gql`
@@ -2946,6 +4414,7 @@ export const InitDocument = gql`
         city
         state
         country
+        cityGeonameid
       }
       shops {
         id
@@ -3706,6 +5175,7 @@ export const ProfileBySafeAddressDocument = gql`
       city
       state
       country
+      cityGeonameid
     }
     shops {
       id
@@ -5330,246 +6800,245 @@ export const EventsDocument = gql`
 }
     `;
 
-export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
+export type SdkFunctionWrapper = <T>(action: () => Promise<T>) => Promise<T>;
 
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
-
+const defaultWrapper: SdkFunctionWrapper = sdkFunction => sdkFunction();
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    upsertShippingAddress(variables: UpsertShippingAddressMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertShippingAddressMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UpsertShippingAddressMutation>(UpsertShippingAddressDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'upsertShippingAddress', 'mutation');
+    upsertShippingAddress(variables: UpsertShippingAddressMutationVariables): Promise<UpsertShippingAddressMutation> {
+      return withWrapper(() => client.request<UpsertShippingAddressMutation>(print(UpsertShippingAddressDocument), variables));
     },
-    createPurchase(variables: CreatePurchaseMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreatePurchaseMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CreatePurchaseMutation>(CreatePurchaseDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createPurchase', 'mutation');
+    createPurchase(variables: CreatePurchaseMutationVariables): Promise<CreatePurchaseMutation> {
+      return withWrapper(() => client.request<CreatePurchaseMutation>(print(CreatePurchaseDocument), variables));
     },
-    requestSessionChallenge(variables: RequestSessionChallengeMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<RequestSessionChallengeMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<RequestSessionChallengeMutation>(RequestSessionChallengeDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'requestSessionChallenge', 'mutation');
+    requestSessionChallenge(variables: RequestSessionChallengeMutationVariables): Promise<RequestSessionChallengeMutation> {
+      return withWrapper(() => client.request<RequestSessionChallengeMutation>(print(RequestSessionChallengeDocument), variables));
     },
-    verifySessionChallenge(variables: VerifySessionChallengeMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<VerifySessionChallengeMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<VerifySessionChallengeMutation>(VerifySessionChallengeDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'verifySessionChallenge', 'mutation');
+    verifySessionChallenge(variables: VerifySessionChallengeMutationVariables): Promise<VerifySessionChallengeMutation> {
+      return withWrapper(() => client.request<VerifySessionChallengeMutation>(print(VerifySessionChallengeDocument), variables));
     },
-    addNewLang(variables?: AddNewLangMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddNewLangMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<AddNewLangMutation>(AddNewLangDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'addNewLang', 'mutation');
+    addNewLang(variables?: AddNewLangMutationVariables): Promise<AddNewLangMutation> {
+      return withWrapper(() => client.request<AddNewLangMutation>(print(AddNewLangDocument), variables));
     },
-    updateValue(variables?: UpdateValueMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateValueMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UpdateValueMutation>(UpdateValueDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateValue', 'mutation');
+    updateValue(variables?: UpdateValueMutationVariables): Promise<UpdateValueMutation> {
+      return withWrapper(() => client.request<UpdateValueMutation>(print(UpdateValueDocument), variables));
     },
-    createNewStringAndKey(variables?: CreateNewStringAndKeyMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateNewStringAndKeyMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CreateNewStringAndKeyMutation>(CreateNewStringAndKeyDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createNewStringAndKey', 'mutation');
+    createNewStringAndKey(variables?: CreateNewStringAndKeyMutationVariables): Promise<CreateNewStringAndKeyMutation> {
+      return withWrapper(() => client.request<CreateNewStringAndKeyMutation>(print(CreateNewStringAndKeyDocument), variables));
     },
-    claimInvitation(variables: ClaimInvitationMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ClaimInvitationMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ClaimInvitationMutation>(ClaimInvitationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'claimInvitation', 'mutation');
+    claimInvitation(variables: ClaimInvitationMutationVariables): Promise<ClaimInvitationMutation> {
+      return withWrapper(() => client.request<ClaimInvitationMutation>(print(ClaimInvitationDocument), variables));
     },
-    acknowledge(variables: AcknowledgeMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AcknowledgeMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<AcknowledgeMutation>(AcknowledgeDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'acknowledge', 'mutation');
+    acknowledge(variables: AcknowledgeMutationVariables): Promise<AcknowledgeMutation> {
+      return withWrapper(() => client.request<AcknowledgeMutation>(print(AcknowledgeDocument), variables));
     },
-    sendMessage(variables: SendMessageMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SendMessageMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<SendMessageMutation>(SendMessageDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'sendMessage', 'mutation');
+    sendMessage(variables: SendMessageMutationVariables): Promise<SendMessageMutation> {
+      return withWrapper(() => client.request<SendMessageMutation>(print(SendMessageDocument), variables));
     },
-    addMember(variables: AddMemberMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddMemberMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<AddMemberMutation>(AddMemberDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'addMember', 'mutation');
+    addMember(variables: AddMemberMutationVariables): Promise<AddMemberMutation> {
+      return withWrapper(() => client.request<AddMemberMutation>(print(AddMemberDocument), variables));
     },
-    removeMember(variables: RemoveMemberMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<RemoveMemberMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<RemoveMemberMutation>(RemoveMemberDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'removeMember', 'mutation');
+    removeMember(variables: RemoveMemberMutationVariables): Promise<RemoveMemberMutation> {
+      return withWrapper(() => client.request<RemoveMemberMutation>(print(RemoveMemberDocument), variables));
     },
-    redeemClaimedInvitation(variables?: RedeemClaimedInvitationMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<RedeemClaimedInvitationMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<RedeemClaimedInvitationMutation>(RedeemClaimedInvitationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'redeemClaimedInvitation', 'mutation');
+    redeemClaimedInvitation(variables?: RedeemClaimedInvitationMutationVariables): Promise<RedeemClaimedInvitationMutation> {
+      return withWrapper(() => client.request<RedeemClaimedInvitationMutation>(print(RedeemClaimedInvitationDocument), variables));
     },
-    logout(variables?: LogoutMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<LogoutMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<LogoutMutation>(LogoutDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'logout', 'mutation');
+    logout(variables?: LogoutMutationVariables): Promise<LogoutMutation> {
+      return withWrapper(() => client.request<LogoutMutation>(print(LogoutDocument), variables));
     },
-    tagTransaction(variables: TagTransactionMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<TagTransactionMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<TagTransactionMutation>(TagTransactionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'tagTransaction', 'mutation');
+    tagTransaction(variables: TagTransactionMutationVariables): Promise<TagTransactionMutation> {
+      return withWrapper(() => client.request<TagTransactionMutation>(print(TagTransactionDocument), variables));
     },
-    upsertProfile(variables: UpsertProfileMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertProfileMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UpsertProfileMutation>(UpsertProfileDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'upsertProfile', 'mutation');
+    upsertProfile(variables: UpsertProfileMutationVariables): Promise<UpsertProfileMutation> {
+      return withWrapper(() => client.request<UpsertProfileMutation>(print(UpsertProfileDocument), variables));
     },
-    upsertOrganisation(variables: UpsertOrganisationMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertOrganisationMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UpsertOrganisationMutation>(UpsertOrganisationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'upsertOrganisation', 'mutation');
+    upsertOrganisation(variables: UpsertOrganisationMutationVariables): Promise<UpsertOrganisationMutation> {
+      return withWrapper(() => client.request<UpsertOrganisationMutation>(print(UpsertOrganisationDocument), variables));
     },
-    upsertRegion(variables: UpsertRegionMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertRegionMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UpsertRegionMutation>(UpsertRegionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'upsertRegion', 'mutation');
+    upsertRegion(variables: UpsertRegionMutationVariables): Promise<UpsertRegionMutation> {
+      return withWrapper(() => client.request<UpsertRegionMutation>(print(UpsertRegionDocument), variables));
     },
-    importOrganisations(variables?: ImportOrganisationsMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ImportOrganisationsMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ImportOrganisationsMutation>(ImportOrganisationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'importOrganisations', 'mutation');
+    importOrganisations(variables?: ImportOrganisationsMutationVariables): Promise<ImportOrganisationsMutation> {
+      return withWrapper(() => client.request<ImportOrganisationsMutation>(print(ImportOrganisationsDocument), variables));
     },
-    completePurchase(variables: CompletePurchaseMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CompletePurchaseMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CompletePurchaseMutation>(CompletePurchaseDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'completePurchase', 'mutation');
+    completePurchase(variables: CompletePurchaseMutationVariables): Promise<CompletePurchaseMutation> {
+      return withWrapper(() => client.request<CompletePurchaseMutation>(print(CompletePurchaseDocument), variables));
     },
-    completeSale(variables: CompleteSaleMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CompleteSaleMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CompleteSaleMutation>(CompleteSaleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'completeSale', 'mutation');
+    completeSale(variables: CompleteSaleMutationVariables): Promise<CompleteSaleMutation> {
+      return withWrapper(() => client.request<CompleteSaleMutation>(print(CompleteSaleDocument), variables));
     },
-    verifySafe(variables: VerifySafeMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<VerifySafeMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<VerifySafeMutation>(VerifySafeDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'verifySafe', 'mutation');
+    verifySafe(variables: VerifySafeMutationVariables): Promise<VerifySafeMutation> {
+      return withWrapper(() => client.request<VerifySafeMutation>(print(VerifySafeDocument), variables));
     },
-    revokeSafeVerification(variables: RevokeSafeVerificationMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<RevokeSafeVerificationMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<RevokeSafeVerificationMutation>(RevokeSafeVerificationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'revokeSafeVerification', 'mutation');
+    revokeSafeVerification(variables: RevokeSafeVerificationMutationVariables): Promise<RevokeSafeVerificationMutation> {
+      return withWrapper(() => client.request<RevokeSafeVerificationMutation>(print(RevokeSafeVerificationDocument), variables));
     },
-    announcePayment(variables: AnnouncePaymentMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AnnouncePaymentMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<AnnouncePaymentMutation>(AnnouncePaymentDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'announcePayment', 'mutation');
+    announcePayment(variables: AnnouncePaymentMutationVariables): Promise<AnnouncePaymentMutation> {
+      return withWrapper(() => client.request<AnnouncePaymentMutation>(print(AnnouncePaymentDocument), variables));
     },
-    upsertShop(variables: UpsertShopMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertShopMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UpsertShopMutation>(UpsertShopDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'upsertShop', 'mutation');
+    upsertShop(variables: UpsertShopMutationVariables): Promise<UpsertShopMutation> {
+      return withWrapper(() => client.request<UpsertShopMutation>(print(UpsertShopDocument), variables));
     },
-    upsertShopCategories(variables: UpsertShopCategoriesMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertShopCategoriesMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UpsertShopCategoriesMutation>(UpsertShopCategoriesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'upsertShopCategories', 'mutation');
+    upsertShopCategories(variables: UpsertShopCategoriesMutationVariables): Promise<UpsertShopCategoriesMutation> {
+      return withWrapper(() => client.request<UpsertShopCategoriesMutation>(print(UpsertShopCategoriesDocument), variables));
     },
-    upsertShopCategoryEntries(variables: UpsertShopCategoryEntriesMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertShopCategoryEntriesMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UpsertShopCategoryEntriesMutation>(UpsertShopCategoryEntriesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'upsertShopCategoryEntries', 'mutation');
+    upsertShopCategoryEntries(variables: UpsertShopCategoryEntriesMutationVariables): Promise<UpsertShopCategoryEntriesMutation> {
+      return withWrapper(() => client.request<UpsertShopCategoryEntriesMutation>(print(UpsertShopCategoryEntriesDocument), variables));
     },
-    confirmLegalAge(variables: ConfirmLegalAgeMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ConfirmLegalAgeMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ConfirmLegalAgeMutation>(ConfirmLegalAgeDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'confirmLegalAge', 'mutation');
+    confirmLegalAge(variables: ConfirmLegalAgeMutationVariables): Promise<ConfirmLegalAgeMutation> {
+      return withWrapper(() => client.request<ConfirmLegalAgeMutation>(print(ConfirmLegalAgeDocument), variables));
     },
-    upsertOffer(variables: UpsertOfferMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertOfferMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UpsertOfferMutation>(UpsertOfferDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'upsertOffer', 'mutation');
+    upsertOffer(variables: UpsertOfferMutationVariables): Promise<UpsertOfferMutation> {
+      return withWrapper(() => client.request<UpsertOfferMutation>(print(UpsertOfferDocument), variables));
     },
-    proofUniqueness(variables: ProofUniquenessMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ProofUniquenessMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ProofUniquenessMutation>(ProofUniquenessDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'proofUniqueness', 'mutation');
+    proofUniqueness(variables: ProofUniquenessMutationVariables): Promise<ProofUniquenessMutation> {
+      return withWrapper(() => client.request<ProofUniquenessMutation>(print(ProofUniquenessDocument), variables));
     },
-    init(variables?: InitQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InitQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<InitQuery>(InitDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'init', 'query');
+    init(variables?: InitQueryVariables): Promise<InitQuery> {
+      return withWrapper(() => client.request<InitQuery>(print(InitDocument), variables));
     },
-    deliveryMethods(variables?: DeliveryMethodsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeliveryMethodsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<DeliveryMethodsQuery>(DeliveryMethodsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deliveryMethods', 'query');
+    deliveryMethods(variables?: DeliveryMethodsQueryVariables): Promise<DeliveryMethodsQuery> {
+      return withWrapper(() => client.request<DeliveryMethodsQuery>(print(DeliveryMethodsDocument), variables));
     },
-    lastAcknowledgedAt(variables: LastAcknowledgedAtQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<LastAcknowledgedAtQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<LastAcknowledgedAtQuery>(LastAcknowledgedAtDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'lastAcknowledgedAt', 'query');
+    lastAcknowledgedAt(variables: LastAcknowledgedAtQueryVariables): Promise<LastAcknowledgedAtQuery> {
+      return withWrapper(() => client.request<LastAcknowledgedAtQuery>(print(LastAcknowledgedAtDocument), variables));
     },
-    sessionInfo(variables?: SessionInfoQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SessionInfoQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<SessionInfoQuery>(SessionInfoDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'sessionInfo', 'query');
+    sessionInfo(variables?: SessionInfoQueryVariables): Promise<SessionInfoQuery> {
+      return withWrapper(() => client.request<SessionInfoQuery>(print(SessionInfoDocument), variables));
     },
-    claimedInvitation(variables?: ClaimedInvitationQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ClaimedInvitationQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ClaimedInvitationQuery>(ClaimedInvitationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'claimedInvitation', 'query');
+    claimedInvitation(variables?: ClaimedInvitationQueryVariables): Promise<ClaimedInvitationQuery> {
+      return withWrapper(() => client.request<ClaimedInvitationQuery>(print(ClaimedInvitationDocument), variables));
     },
-    invitationTransaction(variables?: InvitationTransactionQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InvitationTransactionQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<InvitationTransactionQuery>(InvitationTransactionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'invitationTransaction', 'query');
+    invitationTransaction(variables?: InvitationTransactionQueryVariables): Promise<InvitationTransactionQuery> {
+      return withWrapper(() => client.request<InvitationTransactionQuery>(print(InvitationTransactionDocument), variables));
     },
-    hubSignupTransaction(variables?: HubSignupTransactionQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<HubSignupTransactionQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<HubSignupTransactionQuery>(HubSignupTransactionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'hubSignupTransaction', 'query');
+    hubSignupTransaction(variables?: HubSignupTransactionQueryVariables): Promise<HubSignupTransactionQuery> {
+      return withWrapper(() => client.request<HubSignupTransactionQuery>(print(HubSignupTransactionDocument), variables));
     },
-    safeInfo(variables?: SafeInfoQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SafeInfoQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<SafeInfoQuery>(SafeInfoDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'safeInfo', 'query');
+    safeInfo(variables?: SafeInfoQueryVariables): Promise<SafeInfoQuery> {
+      return withWrapper(() => client.request<SafeInfoQuery>(print(SafeInfoDocument), variables));
     },
-    stats(variables?: StatsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<StatsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<StatsQuery>(StatsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'stats', 'query');
+    stats(variables?: StatsQueryVariables): Promise<StatsQuery> {
+      return withWrapper(() => client.request<StatsQuery>(print(StatsDocument), variables));
     },
-    findSafesByOwner(variables: FindSafesByOwnerQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<FindSafesByOwnerQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<FindSafesByOwnerQuery>(FindSafesByOwnerDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'findSafesByOwner', 'query');
+    findSafesByOwner(variables: FindSafesByOwnerQueryVariables): Promise<FindSafesByOwnerQuery> {
+      return withWrapper(() => client.request<FindSafesByOwnerQuery>(print(FindSafesByOwnerDocument), variables));
     },
-    myInvitations(variables?: MyInvitationsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MyInvitationsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<MyInvitationsQuery>(MyInvitationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'myInvitations', 'query');
+    myInvitations(variables?: MyInvitationsQueryVariables): Promise<MyInvitationsQuery> {
+      return withWrapper(() => client.request<MyInvitationsQuery>(print(MyInvitationsDocument), variables));
     },
-    myProfile(variables?: MyProfileQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MyProfileQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<MyProfileQuery>(MyProfileDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'myProfile', 'query');
+    myProfile(variables?: MyProfileQueryVariables): Promise<MyProfileQuery> {
+      return withWrapper(() => client.request<MyProfileQuery>(print(MyProfileDocument), variables));
     },
-    profiles(variables: ProfilesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ProfilesQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ProfilesQuery>(ProfilesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'profiles', 'query');
+    profiles(variables: ProfilesQueryVariables): Promise<ProfilesQuery> {
+      return withWrapper(() => client.request<ProfilesQuery>(print(ProfilesDocument), variables));
     },
-    citiesByName(variables: CitiesByNameQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CitiesByNameQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CitiesByNameQuery>(CitiesByNameDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'citiesByName', 'query');
+    citiesByName(variables: CitiesByNameQueryVariables): Promise<CitiesByNameQuery> {
+      return withWrapper(() => client.request<CitiesByNameQuery>(print(CitiesByNameDocument), variables));
     },
-    citiesById(variables: CitiesByIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CitiesByIdQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CitiesByIdQuery>(CitiesByIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'citiesById', 'query');
+    citiesById(variables: CitiesByIdQueryVariables): Promise<CitiesByIdQuery> {
+      return withWrapper(() => client.request<CitiesByIdQuery>(print(CitiesByIdDocument), variables));
     },
-    profilesByName(variables: ProfilesByNameQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ProfilesByNameQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ProfilesByNameQuery>(ProfilesByNameDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'profilesByName', 'query');
+    profilesByName(variables: ProfilesByNameQueryVariables): Promise<ProfilesByNameQuery> {
+      return withWrapper(() => client.request<ProfilesByNameQuery>(print(ProfilesByNameDocument), variables));
     },
-    getRecentProfiles(variables?: GetRecentProfilesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetRecentProfilesQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetRecentProfilesQuery>(GetRecentProfilesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getRecentProfiles', 'query');
+    getRecentProfiles(variables?: GetRecentProfilesQueryVariables): Promise<GetRecentProfilesQuery> {
+      return withWrapper(() => client.request<GetRecentProfilesQuery>(print(GetRecentProfilesDocument), variables));
     },
-    profilesByCirclesAddress(variables: ProfilesByCirclesAddressQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ProfilesByCirclesAddressQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ProfilesByCirclesAddressQuery>(ProfilesByCirclesAddressDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'profilesByCirclesAddress', 'query');
+    profilesByCirclesAddress(variables: ProfilesByCirclesAddressQueryVariables): Promise<ProfilesByCirclesAddressQuery> {
+      return withWrapper(() => client.request<ProfilesByCirclesAddressQuery>(print(ProfilesByCirclesAddressDocument), variables));
     },
-    profilesByIds(variables: ProfilesByIdsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ProfilesByIdsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ProfilesByIdsQuery>(ProfilesByIdsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'profilesByIds', 'query');
+    profilesByIds(variables: ProfilesByIdsQueryVariables): Promise<ProfilesByIdsQuery> {
+      return withWrapper(() => client.request<ProfilesByIdsQuery>(print(ProfilesByIdsDocument), variables));
     },
-    trustRelations(variables: TrustRelationsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<TrustRelationsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<TrustRelationsQuery>(TrustRelationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'trustRelations', 'query');
+    trustRelations(variables: TrustRelationsQueryVariables): Promise<TrustRelationsQuery> {
+      return withWrapper(() => client.request<TrustRelationsQuery>(print(TrustRelationsDocument), variables));
     },
-    profileById(variables: ProfileByIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ProfileByIdQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ProfileByIdQuery>(ProfileByIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'profileById', 'query');
+    profileById(variables: ProfileByIdQueryVariables): Promise<ProfileByIdQuery> {
+      return withWrapper(() => client.request<ProfileByIdQuery>(print(ProfileByIdDocument), variables));
     },
-    profileBySafeAddress(variables: ProfileBySafeAddressQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ProfileBySafeAddressQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ProfileBySafeAddressQuery>(ProfileBySafeAddressDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'profileBySafeAddress', 'query');
+    profileBySafeAddress(variables: ProfileBySafeAddressQueryVariables): Promise<ProfileBySafeAddressQuery> {
+      return withWrapper(() => client.request<ProfileBySafeAddressQuery>(print(ProfileBySafeAddressDocument), variables));
     },
-    tags(variables: TagsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<TagsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<TagsQuery>(TagsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'tags', 'query');
+    tags(variables: TagsQueryVariables): Promise<TagsQuery> {
+      return withWrapper(() => client.request<TagsQuery>(print(TagsDocument), variables));
     },
-    organisations(variables?: OrganisationsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<OrganisationsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<OrganisationsQuery>(OrganisationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'organisations', 'query');
+    organisations(variables?: OrganisationsQueryVariables): Promise<OrganisationsQuery> {
+      return withWrapper(() => client.request<OrganisationsQuery>(print(OrganisationsDocument), variables));
     },
-    regions(variables?: RegionsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<RegionsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<RegionsQuery>(RegionsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'regions', 'query');
+    regions(variables?: RegionsQueryVariables): Promise<RegionsQuery> {
+      return withWrapper(() => client.request<RegionsQuery>(print(RegionsDocument), variables));
     },
-    organisationsByAddress(variables: OrganisationsByAddressQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<OrganisationsByAddressQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<OrganisationsByAddressQuery>(OrganisationsByAddressDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'organisationsByAddress', 'query');
+    organisationsByAddress(variables: OrganisationsByAddressQueryVariables): Promise<OrganisationsByAddressQuery> {
+      return withWrapper(() => client.request<OrganisationsByAddressQuery>(print(OrganisationsByAddressDocument), variables));
     },
-    commonTrust(variables: CommonTrustQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CommonTrustQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CommonTrustQuery>(CommonTrustDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'commonTrust', 'query');
+    commonTrust(variables: CommonTrustQueryVariables): Promise<CommonTrustQuery> {
+      return withWrapper(() => client.request<CommonTrustQuery>(print(CommonTrustDocument), variables));
     },
-    tagById(variables: TagByIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<TagByIdQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<TagByIdQuery>(TagByIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'tagById', 'query');
+    tagById(variables: TagByIdQueryVariables): Promise<TagByIdQuery> {
+      return withWrapper(() => client.request<TagByIdQuery>(print(TagByIdDocument), variables));
     },
-    stream(variables: StreamQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<StreamQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<StreamQuery>(StreamDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'stream', 'query');
+    stream(variables: StreamQueryVariables): Promise<StreamQuery> {
+      return withWrapper(() => client.request<StreamQuery>(print(StreamDocument), variables));
     },
-    aggregates(variables: AggregatesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AggregatesQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<AggregatesQuery>(AggregatesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'aggregates', 'query');
+    aggregates(variables: AggregatesQueryVariables): Promise<AggregatesQuery> {
+      return withWrapper(() => client.request<AggregatesQuery>(print(AggregatesDocument), variables));
     },
-    getAllStrings(variables?: GetAllStringsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAllStringsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetAllStringsQuery>(GetAllStringsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAllStrings', 'query');
+    getAllStrings(variables?: GetAllStringsQueryVariables): Promise<GetAllStringsQuery> {
+      return withWrapper(() => client.request<GetAllStringsQuery>(print(GetAllStringsDocument), variables));
     },
-    getAllStringsByLanguage(variables?: GetAllStringsByLanguageQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAllStringsByLanguageQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetAllStringsByLanguageQuery>(GetAllStringsByLanguageDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAllStringsByLanguage', 'query');
+    getAllStringsByLanguage(variables?: GetAllStringsByLanguageQueryVariables): Promise<GetAllStringsByLanguageQuery> {
+      return withWrapper(() => client.request<GetAllStringsByLanguageQuery>(print(GetAllStringsByLanguageDocument), variables));
     },
-    getAllStringsByMaxVersion(variables?: GetAllStringsByMaxVersionQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAllStringsByMaxVersionQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetAllStringsByMaxVersionQuery>(GetAllStringsByMaxVersionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAllStringsByMaxVersion', 'query');
+    getAllStringsByMaxVersion(variables?: GetAllStringsByMaxVersionQueryVariables): Promise<GetAllStringsByMaxVersionQuery> {
+      return withWrapper(() => client.request<GetAllStringsByMaxVersionQuery>(print(GetAllStringsByMaxVersionDocument), variables));
     },
-    getAllStringsByMaxVersionAndLang(variables?: GetAllStringsByMaxVersionAndLangQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAllStringsByMaxVersionAndLangQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetAllStringsByMaxVersionAndLangQuery>(GetAllStringsByMaxVersionAndLangDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAllStringsByMaxVersionAndLang', 'query');
+    getAllStringsByMaxVersionAndLang(variables?: GetAllStringsByMaxVersionAndLangQueryVariables): Promise<GetAllStringsByMaxVersionAndLangQuery> {
+      return withWrapper(() => client.request<GetAllStringsByMaxVersionAndLangQuery>(print(GetAllStringsByMaxVersionAndLangDocument), variables));
     },
-    getStringByMaxVersion(variables?: GetStringByMaxVersionQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetStringByMaxVersionQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetStringByMaxVersionQuery>(GetStringByMaxVersionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getStringByMaxVersion', 'query');
+    getStringByMaxVersion(variables?: GetStringByMaxVersionQueryVariables): Promise<GetStringByMaxVersionQuery> {
+      return withWrapper(() => client.request<GetStringByMaxVersionQuery>(print(GetStringByMaxVersionDocument), variables));
     },
-    getOlderVersionsByKeyAndLang(variables?: GetOlderVersionsByKeyAndLangQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetOlderVersionsByKeyAndLangQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetOlderVersionsByKeyAndLangQuery>(GetOlderVersionsByKeyAndLangDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getOlderVersionsByKeyAndLang', 'query');
+    getOlderVersionsByKeyAndLang(variables?: GetOlderVersionsByKeyAndLangQueryVariables): Promise<GetOlderVersionsByKeyAndLangQuery> {
+      return withWrapper(() => client.request<GetOlderVersionsByKeyAndLangQuery>(print(GetOlderVersionsByKeyAndLangDocument), variables));
     },
-    getStringByLanguage(variables?: GetStringByLanguageQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetStringByLanguageQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetStringByLanguageQuery>(GetStringByLanguageDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getStringByLanguage', 'query');
+    getStringByLanguage(variables?: GetStringByLanguageQueryVariables): Promise<GetStringByLanguageQuery> {
+      return withWrapper(() => client.request<GetStringByLanguageQuery>(print(GetStringByLanguageDocument), variables));
     },
-    getAvailableLanguages(variables?: GetAvailableLanguagesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetAvailableLanguagesQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetAvailableLanguagesQuery>(GetAvailableLanguagesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getAvailableLanguages', 'query');
+    getAvailableLanguages(variables?: GetAvailableLanguagesQueryVariables): Promise<GetAvailableLanguagesQuery> {
+      return withWrapper(() => client.request<GetAvailableLanguagesQuery>(print(GetAvailableLanguagesDocument), variables));
     },
-    directPath(variables: DirectPathQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DirectPathQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<DirectPathQuery>(DirectPathDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'directPath', 'query');
+    directPath(variables: DirectPathQueryVariables): Promise<DirectPathQuery> {
+      return withWrapper(() => client.request<DirectPathQuery>(print(DirectPathDocument), variables));
     },
-    invoice(variables: InvoiceQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<InvoiceQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<InvoiceQuery>(InvoiceDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'invoice', 'query');
+    invoice(variables: InvoiceQueryVariables): Promise<InvoiceQuery> {
+      return withWrapper(() => client.request<InvoiceQuery>(print(InvoiceDocument), variables));
     },
-    verifications(variables?: VerificationsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<VerificationsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<VerificationsQuery>(VerificationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'verifications', 'query');
+    verifications(variables?: VerificationsQueryVariables): Promise<VerificationsQuery> {
+      return withWrapper(() => client.request<VerificationsQuery>(print(VerificationsDocument), variables));
     },
-    findInvitationCreator(variables: FindInvitationCreatorQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<FindInvitationCreatorQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<FindInvitationCreatorQuery>(FindInvitationCreatorDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'findInvitationCreator', 'query');
+    findInvitationCreator(variables: FindInvitationCreatorQueryVariables): Promise<FindInvitationCreatorQuery> {
+      return withWrapper(() => client.request<FindInvitationCreatorQuery>(print(FindInvitationCreatorDocument), variables));
     },
-    shop(variables: ShopQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ShopQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ShopQuery>(ShopDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'shop', 'query');
+    shop(variables: ShopQueryVariables): Promise<ShopQuery> {
+      return withWrapper(() => client.request<ShopQuery>(print(ShopDocument), variables));
     },
-    shops(variables?: ShopsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ShopsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ShopsQuery>(ShopsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'shops', 'query');
+    shops(variables?: ShopsQueryVariables): Promise<ShopsQuery> {
+      return withWrapper(() => client.request<ShopsQuery>(print(ShopsDocument), variables));
     },
-    shopsById(variables: ShopsByIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ShopsByIdQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ShopsByIdQuery>(ShopsByIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'shopsById', 'query');
+    shopsById(variables: ShopsByIdQueryVariables): Promise<ShopsByIdQuery> {
+      return withWrapper(() => client.request<ShopsByIdQuery>(print(ShopsByIdDocument), variables));
     },
-    clientAssertionJwt(variables?: ClientAssertionJwtQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ClientAssertionJwtQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ClientAssertionJwtQuery>(ClientAssertionJwtDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'clientAssertionJwt', 'query');
+    clientAssertionJwt(variables?: ClientAssertionJwtQueryVariables): Promise<ClientAssertionJwtQuery> {
+      return withWrapper(() => client.request<ClientAssertionJwtQuery>(print(ClientAssertionJwtDocument), variables));
     },
-    offersByIdAndVersion(variables: OffersByIdAndVersionQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<OffersByIdAndVersionQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<OffersByIdAndVersionQuery>(OffersByIdAndVersionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'offersByIdAndVersion', 'query');
+    offersByIdAndVersion(variables: OffersByIdAndVersionQueryVariables): Promise<OffersByIdAndVersionQuery> {
+      return withWrapper(() => client.request<OffersByIdAndVersionQuery>(print(OffersByIdAndVersionDocument), variables));
     },
-    events(variables?: EventsSubscriptionVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<EventsSubscription> {
-      return withWrapper((wrappedRequestHeaders) => client.request<EventsSubscription>(EventsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'events', 'subscription');
+    events(variables?: EventsSubscriptionVariables): Promise<EventsSubscription> {
+      return withWrapper(() => client.request<EventsSubscription>(print(EventsDocument), variables));
     }
   };
 }
