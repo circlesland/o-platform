@@ -5,11 +5,7 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import TreeView from "./TreeView.svelte";
 import EditorView from "./EditorView.svelte";
-import {
-  GetPaginatedStringsDocument,
-  I18n,
-  QueryGetPaginatedStringsArgs,
-} from "../../../shared/api/data/types";
+import { GetPaginatedStringsDocument, I18n, QueryGetPaginatedStringsArgs } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { ApiClient } from "../../../shared/apiConnection";
 import { Environment } from "../../../shared/environment";
@@ -76,20 +72,12 @@ async function getPaginatedStrings(pagination_key: string, searchKey: string, la
       on:toggleLanguage="{(event) => {
         i18nData = [];
         userLanguage = event.detail.languageCode;
-        if (keyFilter != "") {
-          getPaginatedStrings("", keyFilter, userLanguage, "");
-        }
-        if (searchValue != "") {
-          getPaginatedStrings("", "", userLanguage, searchValue);
-        }
-        if (searchValue == "" && keyFilter == "") {
-          getPaginatedStrings("", keyFilter, userLanguage, searchValue);
-        }
+        getPaginatedStrings('', keyFilter, userLanguage, '');
       }}"
       on:stringSearch="{(event) => {
         i18nData = [];
         searchValue = event.detail.searchString;
-        getPaginatedStrings('', '', '', searchValue);
+        getPaginatedStrings('', '', userLanguage, searchValue);
       }}"
       on:loadMoreStrings="{() => {
         pagination_key = i18nData[i18nData.length - 1].pagination_key;
