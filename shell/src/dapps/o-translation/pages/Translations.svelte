@@ -77,13 +77,13 @@ async function getPaginatedStrings(pagination_key: string, searchKey: string, la
         i18nData = [];
         userLanguage = event.detail.languageCode;
         if (keyFilter != "") {
-          getPaginatedStrings(pagination_key, keyFilter, userLanguage, "");
+          getPaginatedStrings("", keyFilter, userLanguage, "");
         }
         if (searchValue != "") {
-          getPaginatedStrings(pagination_key, "", userLanguage, searchValue);
+          getPaginatedStrings("", "", userLanguage, searchValue);
         }
         if (searchValue == "" && keyFilter == "") {
-          getPaginatedStrings(pagination_key, keyFilter, userLanguage, searchValue);
+          getPaginatedStrings("", keyFilter, userLanguage, searchValue);
         }
       }}"
       on:stringSearch="{(event) => {
