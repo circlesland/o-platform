@@ -7,10 +7,8 @@ import TreeView from "./TreeView.svelte";
 import EditorView from "./EditorView.svelte";
 import {
   GetPaginatedStringsDocument,
-  GetStringsFromLatestValuesByValueDocument,
   I18n,
   QueryGetPaginatedStringsArgs,
-  QueryGetStringsFromLatestValuesByValueArgs,
 } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { ApiClient } from "../../../shared/apiConnection";
