@@ -17,7 +17,6 @@ export let dataVersion: number;
 
 let editMode: boolean = false;
 let inputMode: boolean = false;
-let editBorder: string = "";
 
 let keyArray = [];
 
@@ -96,21 +95,18 @@ async function writeValueToDb(value: string, lang: string, key: string) {
               selectedVersion = updatedObject.version;
               inputValue = '';
               editMode = false;
-              editBorder = '';
             }}">Save</button>
         {/if}
         <button
           class="bg-red-200 rounded-lg m-1 p-1 hover:bg-red-500"
           on:click="{() => {
             editMode = false;
-            editBorder = '';
           }}"><p class="ml-2 mr-2">X</p></button>
       {:else}
         <button
           class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
           on:click="{() => {
             editMode = true;
-            editBorder = 'border-2 border-dark-dark border-dotted';
           }}">Edit</button>
       {/if}
     </div>

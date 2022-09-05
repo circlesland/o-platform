@@ -13,6 +13,7 @@ import {
 import { onMount } from "svelte";
 import { ApiClient } from "../../../shared/apiConnection";
 import { Environment } from "../../../shared/environment";
+import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -63,7 +64,7 @@ async function getPaginatedStrings(pagination_key: string, searchKey: string, la
       on:keySearch="{(event) => {
         i18nData = [];
         keyFilter = event.detail.keyFilter;
-        getPaginatedStrings('', keyFilter, userLanguage, '');
+        getPaginatedStrings('', event.detail.keyFilter, userLanguage, '');
       }}" />
   </div>
   <div class="col-span-3 bg-gray-200 rounded">
@@ -76,7 +77,15 @@ async function getPaginatedStrings(pagination_key: string, searchKey: string, la
       on:toggleLanguage="{(event) => {
         i18nData = [];
         userLanguage = event.detail.languageCode;
-        getPaginatedStrings(pagination_key, keyFilter, userLanguage, searchValue);
+        if (keyFilter != "") {
+          getPaginatedStrings(pagination_key, keyFilter, userLanguage, "");
+        }
+        if (searchValue != "") {
+          getPaginatedStrings(pagination_key, "", userLanguage, searchValue);
+        }
+        if (searchValue == "" && keyFilter == "") {
+          getPaginatedStrings(pagination_key, keyFilter, userLanguage, searchValue);
+        }
       }}"
       on:stringSearch="{(event) => {
         i18nData = [];
