@@ -9,19 +9,9 @@ let dispatch = createEventDispatcher();
 let snapshot: StateSnapshot = {};
 let expand: boolean;
 let searchKey: String = "";
-let arrowState: boolean = true;
 
 $: {
   searchKey;
-}
-
-function needsArrow(node: CTreeNode) {
-  for (let i = 0; i < node.children.length; i++) {
-    for (let y = 0; y < node.children[i].children.length; y++)
-      if (node.children[i].children[y].isLeaf) {
-        return (arrowState = false);
-      }
-  }
 }
 </script>
 
@@ -29,20 +19,16 @@ function needsArrow(node: CTreeNode) {
   <span class="flex hover:cursor-pointer items-center">
     <div
       on:click="{() => {
-        console.log('expanded node', rootNode);
-
         rootNode.toggleExpanded();
-        expand = rootNode.expandState;
         snapshot[rootNode.snapId] = rootNode.expandState;
         rootNode = rootNode;
-        console.log('rootnode');
         dispatch('expand', {
           newSnapshot: snapshot,
           nodeToUpdate: rootNode,
         });
       }}">
-      {#if rootNode.values.length == 0}
-        {#if expand}
+      {#if !rootNode.values.length}
+        {#if rootNode.expandState}
           <span class="flex items-center"
             ><svg class="mr-5" width="15" height="15" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"
               ><!--! Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
@@ -73,7 +59,6 @@ function needsArrow(node: CTreeNode) {
         dispatch('showStrings', {
           searchKey: searchKey,
         });
-        console.log(rootNode.children);
       }}">
       {rootNode.key}
     </p>

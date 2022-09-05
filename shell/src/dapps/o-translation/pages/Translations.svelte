@@ -23,23 +23,25 @@ let keyFilter: string = "";
 let stringFilter: string = "";
 let i18nData: I18n[] = [];
 let pagination_key: string = "";
-let languageList: [] = [];
 let userLanguage = Environment.userLanguage;
+let searchValue: string = "";
 
 onMount(() => {
-  get20Strings(pagination_key, keyFilter, userLanguage);
+  getPaginatedStrings(pagination_key, keyFilter, userLanguage, searchValue);
 });
 
-$: i18nData;
+$: {
+  i18nData;
+}
 
-async function get20Strings(pagination_key: string, searchKey: string, lang: string) {
+async function getPaginatedStrings(pagination_key: string, searchKey: string, lang: string, searchString: string) {
   let queryResult = await ApiClient.query<I18n[], QueryGetPaginatedStringsArgs>(GetPaginatedStringsDocument, {
     key: searchKey,
     pagination_key: pagination_key,
     lang: lang,
+    value: searchString,
   });
   i18nData = i18nData.concat(queryResult);
-  console.log("paginated i18ndata", i18nData);
 }
 
 async function getSearchString(searchString: string) {
@@ -56,11 +58,10 @@ async function getSearchString(searchString: string) {
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <section class="p-6 inline-grid grid-cols-4 w-full min-h-[85vh] mb-[10vh]">
-  <div class="h-full bg-blue-900 col-span-1">
+  <div class="h-full bg-blue-900 bg-opacity-50 col-span-1">
     <TreeView
       searchString="{stringFilter}"
       on:showStrings="{(event) => {
-        console.log('mutti');
         if (
           !keyFilter.split('.').includes(event.detail.searchKey.split('.')[0]) ||
           keyFilter !== event.detail.searchKey
@@ -68,23 +69,35 @@ async function getSearchString(searchString: string) {
           i18nData = [];
         }
         keyFilter = event.detail.searchKey;
-        console.log('keyfilter', keyFilter);
-
-        get20Strings(pagination_key, keyFilter, userLanguage);
+        i18nData = [];
+        getPaginatedStrings('', keyFilter, userLanguage, '');
       }}"
-      on:keySearch="{(event) => ((keyFilter = event.detail.keyFilter), (i18nData = event.detail.i18nData))}" />
+      on:keySearch="{(event) => {
+        i18nData = [];
+        keyFilter = event.detail.keyFilter;
+        getPaginatedStrings('', keyFilter, userLanguage, '');
+      }}" />
   </div>
-  <div class="col-span-3 bg-gray-300 rounded">
+  <div class="col-span-3 bg-gray-200 rounded">
     <EditorView
       i18nData="{i18nData}"
       searchKey="{keyFilter}"
-      on:toggleLanguage="{(event) => {
-        languageList = event.detail.languageList;
+      on:newString="{() => {
+        getPaginatedStrings('', '', userLanguage, '');
       }}"
-      on:stringSearch="{(event) => getSearchString(event.detail.searchString)}"
+      on:toggleLanguage="{(event) => {
+        i18nData = [];
+        userLanguage = event.detail.languageCode;
+        getPaginatedStrings(pagination_key, keyFilter, userLanguage, searchValue);
+      }}"
+      on:stringSearch="{(event) => {
+        i18nData = [];
+        searchValue = event.detail.searchString;
+        getPaginatedStrings('', '', '', searchValue);
+      }}"
       on:loadMoreStrings="{() => {
         pagination_key = i18nData[i18nData.length - 1].pagination_key;
-        get20Strings(pagination_key, keyFilter, userLanguage);
+        getPaginatedStrings(pagination_key, keyFilter, userLanguage, searchValue);
       }}" />
   </div>
 </section>

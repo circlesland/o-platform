@@ -25,7 +25,6 @@ let selectedVersion: number = dataVersion;
 let inputValue: string;
 let olderVersionData = [];
 
-let negativeMargin: string = "";
 
 keyArray.concat(keyArray.push(dataKey.split(".")));
 
@@ -61,13 +60,12 @@ async function writeValueToDb(value: string, lang: string, key: string) {
 
 </script>
 
-<div class="flex-row min-w-[600px] {editBorder} rounded-box p-5 hover:border-2 hover:border-dark-dark hover:border-dotted">
+<div class="flex-row min-w-[600px] border-t-8 border-t-white p-5">
   <div class="flex justify-between w-full">
-    <p class="text-gray-400 w-40">{dataKey}</p>
+    <p class="text-gray-400 w-full">{dataKey}</p>
     <div class="flex">
-      <p>{dataLang}</p>
       {#if dataVersion > 1}
-        <p>Version:</p>
+        <p class="pr-4">Version:</p>
 
         <div class="items-center w-full">
           <select name="" id="" bind:value="{selectedVersion}" on:change="{() => selectChange()}">
@@ -77,13 +75,13 @@ async function writeValueToDb(value: string, lang: string, key: string) {
           </select>
         </div>
       {:else}
-        <p>Version:</p>
+        <p class="pr-4">Version:</p>
         <p class="items-center w-full">{dataVersion}</p>
       {/if}
     </div>
   </div>
   <div class="flex justify-between items-center w-full">
-    <p class="w-56 text-red-600 ml-6 text-xl">{dataString}</p>
+    <p class="text-red-600 ml-6 text-xl w-full">{dataString}</p>
 
     <div class="flex">
       {#if editMode}
@@ -127,7 +125,7 @@ async function writeValueToDb(value: string, lang: string, key: string) {
           inputMode = true;
         }}"
         class="border-black border-2 rounded p-5"
-        cols="30"
+        cols="60"
         rows="2"></textarea>
     </div>
   {/if}

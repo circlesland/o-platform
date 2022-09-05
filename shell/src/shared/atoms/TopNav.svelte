@@ -34,7 +34,7 @@ $: {
     </div>
 
 
-    <div class="col-start-4 pr-1 place-self-center justify-self-end">
+    <div class="col-start-3 pr-1 place-self-center justify-self-end">
       {#if runtimeDapp && runtimeDapp.dappId !== "homepage:1" && !runtimeDapp.anonymous}
         <div class="relative mr-4 cursor-pointer justify-self-center" on:click="{() => push(`#/marketplace/cart`)}">
           {#if $cartContents && $cartContents.length > 0}

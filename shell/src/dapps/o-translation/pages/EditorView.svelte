@@ -2,9 +2,13 @@
 import { onMount } from "svelte";
 
 import {
+  CreateNewStringAndKeyDocument,
   GetAllStringsByMaxVersionDocument,
   GetAllStringsByMaxVersionQuery,
+  GetAvailableLanguagesDocument,
+  GetAvailableLanguagesQuery,
   I18n,
+  MutationCreateNewStringAndKeyArgs,
 } from "../../../shared/api/data/types";
 
 import { ApiClient } from "../../../shared/apiConnection";
@@ -12,26 +16,19 @@ import StringEditor from "../atoms/StringEditor.svelte";
 import { Environment } from "../../../shared/environment";
 import { createEventDispatcher } from "svelte";
 
-let keyFilter: string = "";
-let valueFilter: string = "";
-let allLanguages: string[] = [];
-let languageList: string[] = [];
-let stringsAmount: number;
-
-const dispatch = createEventDispatcher();
-
 export let searchKey: string = "";
 export let i18nData: I18n[] = [];
 
+let valueFilter: string = "";
+let allLanguages: string[] = [];
 let nextData: I18n[] = [];
+let selectedLanguage: string = "";
+let createNewStringMode: boolean = false;
+let keyToCreate: string = "";
+let stringToCreate: string = "";
+let availableLanguages: I18n[] = [];
 
-let items: I18n[] = i18nData;
-
-let filteredItems: I18n[] = [];
-
-let offset: number = 0;
-
-let filteredI18nData: I18n[] = [];
+const dispatch = createEventDispatcher();
 
 async function getAllLanguages() {
   const queryResult = await ApiClient.query<I18n[], GetAllStringsByMaxVersionQuery>(
@@ -51,130 +48,165 @@ async function getAllLanguages() {
   });
 }
 
-function isSelected(languageCode: string) {
-  return languageList.indexOf(languageCode) > -1;
-}
-
-function sortByKey(dataToSort: I18n[]) {
-  dataToSort.sort((a, b) => {
-    if (a.key < b.key) {
-      return -1;
-    }
-    if (a.key > b.key) {
-      return 1;
-    }
-    return 0;
-  });
-  return dataToSort;
-}
-
 async function reload() {
   i18nData = i18nData.concat(nextData);
-  items = i18nData;
-  console.log("new i18ndata", i18nData);
-  filteredI18nData = i18nData.filter((o) => isSelected(o.lang))
-  console.log("filtered i18ndata", filteredI18nData)
 }
 
 $: {
   i18nData;
-  filteredItems;
-
-  stringsAmount;
   nextData;
   searchKey;
+  selectedLanguage;
 }
 
 onMount(async () => {
-  languageList.push(Environment.userLanguage);
+  selectedLanguage = Environment.userLanguage;
   reload();
-
   getAllLanguages();
+  const i18nResult = await ApiClient.query<I18n[], GetAvailableLanguagesQuery>(GetAvailableLanguagesDocument, {});
+  availableLanguages = i18nResult;
+  availableLanguages.sort((a, b) => {
+    if (a.lang < b.lang) {
+      return -1;
+    }
+    if (a.lang > b.lang) {
+      return 1;
+    }
+    return 0;
+  });
 });
 
-function filterItems(keyFilter: string, valueFilter: string) {
-  const filteredByKey = items.filter((item) => item.key.includes(keyFilter));
-  const filteredByValue = filteredByKey.filter((item) =>
-    item.value.toLowerCase().startsWith(valueFilter.toLocaleLowerCase())
-  );
-  console.log(filteredByValue);
-  filteredItems = filteredByValue;
+function loadMorenWhenInViewport(e) {
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      dispatch("loadMoreStrings");
+    }
+  });
+  observer.observe(e);
 }
 
-const toggleLanguage = async (data: string) => {
-  if (languageList.includes(data)) {
-    const index = languageList.indexOf(data);
-    if (index > -1) {
-      languageList.splice(index, 1);
-    }
-  } else {
-    languageList.push(data);
-  }
-  //i18nData = i18nData.filter((o) => isSelected(o.lang))
-};
-
+async function writeNewKeyToDb(lang: string, key: string, version: number, value: string) {
+  return await ApiClient.query<I18n, MutationCreateNewStringAndKeyArgs>(CreateNewStringAndKeyDocument, {
+    lang: lang,
+    key: key,
+    version: version,
+    value: value,
+  });
+}
 </script>
 
-<!--<form
-    class="flex grow justify-center"
-    on:submit|preventDefault="{() => {
-      refreshView();
-      getFilteredI18nDataFromDb(keyFilter, searchString);
-      dispatch('keySearch', { keyFilter: keyFilter, i18nData: displayedI18nData });
-    }}">
-    <input bind:value="{keyFilter}" class="input rounded-r-none" type="text" placeholder="dapps.o-banking..." />
-    {#if keyFilter == ""}
-      <button class="btn-primary btn-disabled btn-md rounded-btn rounded-l-none bg-gray-400 text-white">
-        search
-      </button>
-    {:else}
-      <button class="btn-primary btn-md rounded-btn rounded-l-none">search</button>
-    {/if}
-  </form>-->
-
 <section class="flex flex-col items-center justify-center p-6">
-  <div class="w-full flex flex-row flex-wrap items-stretch justify-center">
-    <form
-      on:submit|preventDefault="{() => {
-        dispatch('stringSearch', { searchString: valueFilter });
-      }}">
-      <input bind:value="{valueFilter}" class="input rounded-r-none" type="text" placeholder="String" />
-    </form>
-    {#if valueFilter == ""}
-      <button class="btn-primary btn-disabled btn-md rounded-btn rounded-l-none bg-gray-400 text-white">
-        search
-      </button>
-    {:else}
-      <button class="btn-primary btn-md rounded-btn rounded-l-none">search</button>
+  <div class="w-full flex flex-row flex-wrap items-stretch justify-between">
+    <div class="inline-flex">
+      {#each allLanguages as languageCode}
+        <span
+          on:click="{() => {
+            dispatch('toggleLanguage', { languageCode: languageCode });
+            selectedLanguage = languageCode;
+          }}"
+          class="p-1 w-20 h-20 align-middle"
+          class:w-32="{selectedLanguage == languageCode}">
+          {#if languageCode == "en"}
+            <img
+              src="{'/country-flags/svg/gb.svg'}"
+              alt="{languageCode}"
+              class=" hover:cursor-pointer mr-auto ml-auto" />
+          {:else}
+            <img
+              src="{'/country-flags/svg/' + languageCode + '.svg'}"
+              alt="{languageCode}"
+              class=" hover:cursor-pointer mr-auto ml-auto" />
+          {/if}
+        </span>
+      {/each}
+    </div>
+    <div class="inline-flex">
+      <form
+        on:submit|preventDefault="{() => {
+          dispatch('stringSearch', { searchString: valueFilter });
+          valueFilter = '';
+        }}">
+        <input bind:value="{valueFilter}" class="input rounded-r-none" type="text" placeholder="String" />
+      </form>
+      {#if valueFilter == ""}
+        <button class="btn-primary btn-disabled btn-md rounded-btn rounded-l-none bg-gray-400 text-white">
+          search
+        </button>
+      {:else}
+        <button class="btn-primary btn-md rounded-btn rounded-l-none">search</button>
+      {/if}
+    </div>
+    {#if !createNewStringMode}
+      <div class="flex grow">
+        <button
+          class="bg-blue-200 rounded-md btn-md hover:bg-blue-500"
+          on:click="{() => {
+            createNewStringMode = true;
+          }}">
+          add a new string
+        </button>
+      </div>
     {/if}
-    {#each allLanguages as languageCode}
-      <button
-        on:click="{() => {
-          toggleLanguage(languageCode);
-          reload();
-        }}"
-        class="p-1 m-1 bg-blue-200 hover:bg-blue-500"
-        class:bg-red-200="{isSelected(languageCode)}">
-        {languageCode}
-      </button>
-    {/each}
+
+    {#if createNewStringMode}
+      <div class="flex grow">
+        <button
+          class="bg-blue-100 rounded-md btn-md hover:cursor-not-allowed"
+          on:click="{() => {
+            createNewStringMode = true;
+          }}">
+          add a new string
+        </button>
+      </div>
+      <div class="flex justify-between w-full">
+        <div class="flex">
+          <form class="justify-start">
+            <input bind:value="{keyToCreate}" class="input m-1" type="text" placeholder="key goes here" />
+          </form>
+          <form class="justify-start">
+            <input bind:value="{stringToCreate}" class="input m-1" type="text" placeholder="string goes here" />
+          </form>
+        </div>
+        <div class="flex">
+          <button
+            class="bg-blue-200 rounded-md btn-md hover:bg-blue-500"
+            on:click="{async () => {
+              for (let i = 0; i < availableLanguages.length; i++) {
+                await writeNewKeyToDb(availableLanguages[i].lang, keyToCreate, 1, stringToCreate);
+                dispatch('newString');
+              }
+              createNewStringMode = false;
+            }}">create</button>
+          <button
+            class="bg-red-200 rounded-md btn-md hover:bg-red-500"
+            on:click="{() => {
+              createNewStringMode = false;
+            }}">
+            cancel
+          </button>
+        </div>
+      </div>
+    {/if}
   </div>
 
-  {#each i18nData as data (data.key + data.lang + data.version)}
-    <div class="w-full">
-      <StringEditor
-        on:save="{() => reload()}"
-        dataString="{data.value}"
-        dataKey="{data.key}"
-        dataLang="{data.lang}"
-        dataVersion="{data.version}" />
-    </div>
-  {/each}
-  <button
-    class="btn-primary rounded-btn"
-    on:click="{async () => {
-      dispatch('loadMoreStrings');
-    }}">
-    load more
-  </button>
+  <div class="pt-20 w-full">
+    {#if !i18nData.length}
+      <h1 class="flex justify-center align-middle text-alert pt-20">No matching result</h1>
+    {:else}
+      {#each i18nData as data (data.key + data.lang + data.version)}
+        <div class="w-full">
+          <StringEditor
+            on:save="{() => reload()}"
+            dataString="{data.value}"
+            dataKey="{data.key}"
+            dataLang="{data.lang}"
+            dataVersion="{data.version}" />
+        </div>
+      {/each}
+    {/if}
+
+    {#if i18nData.length}
+      <div use:loadMorenWhenInViewport class="btn-primary rounded-btn"></div>
+    {/if}
+  </div>
 </section>

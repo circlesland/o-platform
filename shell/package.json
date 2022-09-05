@@ -17,8 +17,7 @@
     "deploy": "npm run clean && npm i && npm run build && fission app publish --verbose",
     "validate": "svelte-check",
     "test": "jest src",
-    "test:watch": "jest src --watch",
-    "fdgnl": "graphql-codegen --config codegen.yml"
+    "test:watch": "jest src --watch"
   },
   "dependencies": {
     "@apollo/client": "^3.4.16",
