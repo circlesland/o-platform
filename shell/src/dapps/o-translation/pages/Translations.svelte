@@ -13,7 +13,6 @@ import {
 import { onMount } from "svelte";
 import { ApiClient } from "../../../shared/apiConnection";
 import { Environment } from "../../../shared/environment";
-import DetailActionBar from "../../../shared/molecules/DetailActionBar.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
