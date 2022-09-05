@@ -9,6 +9,7 @@ import {onMount} from "svelte";
 import {Contact} from "../../../shared/api/data/types";
 import {trustFromContactMetadata} from "../../../shared/functions/trustFromContactMetadata";
 import { _ } from "svelte-i18n";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
