@@ -16,7 +16,7 @@ $: {
 </script>
 
 <div class="ml-4 mb-4">
-  <span class="flex hover:cursor-pointer items-center">
+  <span class="flex items-center">
     <div
       on:click="{() => {
         rootNode.toggleExpanded();
@@ -29,7 +29,7 @@ $: {
       }}">
       {#if !rootNode.values.length}
         {#if rootNode.expandState}
-          <span class="flex items-center"
+          <span class="flex items-center hover:cursor-pointer"
             ><svg class="mr-5" width="15" height="15" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"
               ><!--! Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
                 fill="white"
@@ -38,7 +38,7 @@ $: {
               ></svg>
           </span>
         {:else}
-          <span class="flex items-center"
+          <span class="flex items-center hover:cursor-pointer"
             ><svg clasS="mr-5" width="15" height="15" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"
               ><!--! Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path
                 fill="white"
@@ -50,7 +50,7 @@ $: {
       {/if}
     </div>
     <p
-      class="hover:bg-blue-500 hover:rounded"
+      class="hover:bg-blue-500 hover:rounded hover:cursor-pointer"
       on:click="{() => {
         searchKey = rootNode.snapId.replace('root.', '');
         if (searchKey == 'root') {
