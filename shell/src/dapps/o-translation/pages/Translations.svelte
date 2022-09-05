@@ -43,16 +43,6 @@ async function getPaginatedStrings(pagination_key: string, searchKey: string, la
   });
   i18nData = i18nData.concat(queryResult);
 }
-
-async function getSearchString(searchString: string) {
-  let queryResult = await ApiClient.query<I18n[], QueryGetStringsFromLatestValuesByValueArgs>(
-    GetStringsFromLatestValuesByValueDocument,
-    {
-      value: searchString,
-    }
-  );
-  i18nData = queryResult;
-}
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
