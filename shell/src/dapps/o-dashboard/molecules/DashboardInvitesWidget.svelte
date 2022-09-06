@@ -58,8 +58,8 @@ $: {
         <div class="w-auto -mt-1 leading-0">
           {Math.floor((100 * _stats.profilesCount) / _stats.goals.nextGoal)}%
         </div>
-        <div class="-ml-2 text-sm text-right inline-flex flex-nowrap justify-end">
-          <div class="pr-1">+{_stats.goals.nextGoal - _stats.profilesCount > 0 ? _stats.goals.nextGoal - _stats.profilesCount : 0}</div> <Label key="dapps.o-dashboard.molecules.dashboardInvitesWidget.tillNextParty" />
+        <div class="-ml-2 text-sm text-right whitespace-nowrap">
+          +{_stats.goals.nextGoal - _stats.profilesCount > 0 ? _stats.goals.nextGoal - _stats.profilesCount : 0} <Label key="dapps.o-dashboard.molecules.dashboardInvitesWidget.tillNextParty" />
         </div>
       {/if}
     </div>

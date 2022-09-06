@@ -7,6 +7,7 @@ import { me } from "../../../shared/stores/me";
 import { truncateString } from "../../../shared/functions/truncateString";
 import Label from "../../../shared/atoms/Label.svelte";
 import {addToCart, AddToCartContextData} from "../processes/addToCart";
+import Label from "../../../shared/atoms/Label.svelte";
 
 export let param: Offer = <any>{
   categoryTag: {

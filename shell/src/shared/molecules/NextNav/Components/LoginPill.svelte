@@ -1,6 +1,7 @@
 <script lang="ts">
   import Label from "../../../atoms/Label.svelte";
   import {onMount} from "svelte";
+  import {_} from "svelte-i18n"; 
 
   export let props;
 

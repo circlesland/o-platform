@@ -3,6 +3,7 @@ import NotificationProfile from "./NotificationProfile.svelte";
 import NotificationCard from "src/dapps/o-contacts/atoms/NotificationCard.svelte";
 import NotificationViewMutualFriends from "./NotificationViewMutualFriends.svelte";
 import { ChatMessage, ProfileEvent } from "../../api/data/types";
+import {_} from "svelte-i18n";
 import Label from "../../atoms/Label.svelte";
 
 export let event: ProfileEvent;

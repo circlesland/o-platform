@@ -1425,6 +1425,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
               pictureUrl
               pricePerUnit
               minAge
+              currentInventory
               tags {
                 typeId
                 value
@@ -2164,6 +2165,47 @@ query getStringByLanguage($lang: String) {
     createdBy
     version
     value
+  }
+}
+
+query getStringsByMaxVersionKeyAndValue($key: String, $value: String) {
+  getStringsByMaxVersionKeyAndValue(key: $key, value: $value) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+
+query getStringsFromLatestValuesByValue($value: String) {
+  getStringsFromLatestValuesByValue(value: $value) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+
+query getFirst20StringsByMaxVersionKey($key: String) {
+  getFirst20StringsByMaxVersionKey(key: $key) {
+    lang
+    key
+    createdBy
+    version
+    value
+  }
+}
+
+query getPaginatedStrings($pagination_key: String, $key: String, $lang: String, $value: String) {
+  getPaginatedStrings(pagination_key: $pagination_key, key: $key, lang: $lang, value: $value) {
+    lang
+    key
+    createdBy
+    version
+    value
+    pagination_key
   }
 }
 

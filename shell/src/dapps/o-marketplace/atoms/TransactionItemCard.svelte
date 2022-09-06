@@ -7,6 +7,7 @@ import ItemCard from "src/shared/atoms/ItemCard.svelte";
 
 import { truncateString } from "../../../shared/functions/truncateString";
 
+import { _ } from "svelte-i18n";
 import Label from "../../../shared/atoms/Label.svelte";
 
 export let offer: Offer;

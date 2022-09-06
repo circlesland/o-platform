@@ -64,7 +64,9 @@ async function load() {
           ? "mark order shipped"
           : window.o.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"),
       action: async () => {
-        const action = actions.find((o) => o.title == window.o.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut"));
+        const action = actions.find(
+          (o) => o.title == window.o.i18n("dapps.o-marketplace.pages.mySaleDetail.iHandedOut")
+        );
         actions = actions.splice(actions.indexOf(action) - 1, 1);
         await mySales.completeSale(invoice.id);
       },
@@ -289,11 +291,15 @@ onMount(async () => {
         <br />
         {buyerProfile.displayName}
         <br />
-        {`${invoice.deliveryAddress.street} ${invoice.deliveryAddress.house}`}
-        <br />
-        {`${invoice.deliveryAddress.zip} ${invoice.deliveryAddress.city}`}
-        <br />
-        {invoice.deliveryAddress.country}
+        {#if invoice.deliveryAddress}
+          {`${invoice.deliveryAddress.street} ${invoice.deliveryAddress.house}`}
+          <br />
+          {`${invoice.deliveryAddress.zip} ${invoice.deliveryAddress.city}`}
+          <br />
+          {invoice.deliveryAddress.country}
+          <br />
+        {/if}
+        {buyerProfile.emailAddress ? buyerProfile.emailAddress : "no email address set"}
       </div>
     {/if}
 

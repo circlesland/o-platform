@@ -1,5 +1,6 @@
 <script lang="ts">
 import { isMobile } from "src/shared/functions/isMobile";
+import {_} from "svelte-i18n";
 import Label from "../atoms/Label.svelte";
 </script>
 

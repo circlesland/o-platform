@@ -17,7 +17,6 @@ export let dataVersion: number;
 
 let editMode: boolean = false;
 let inputMode: boolean = false;
-let editBorder: string = "";
 
 let keyArray = [];
 
@@ -25,7 +24,6 @@ let selectedVersion: number = dataVersion;
 let inputValue: string;
 let olderVersionData = [];
 
-let negativeMargin: string = "";
 
 keyArray.concat(keyArray.push(dataKey.split(".")));
 
@@ -59,23 +57,14 @@ async function writeValueToDb(value: string, lang: string, key: string) {
   });
 }
 
-function calculateNegativeMargin() {
-  keyArray = keyArray.concat(keyArray.push(dataKey.split(".")));
-  let y = 4 * keyArray[0].length;
-  negativeMargin = `-ml-${y}`;
-  console.log("y", y);
-  console.log(keyArray[0].length);
-  console.log("negativMargin", negativeMargin);
-}
-//calculateNegativeMargin();
 </script>
 
-<div class="flex-row w-full {editBorder} rounded-box p-5 hover:border-2 hover:border-dark-dark hover:border-dotted">
+<div class="flex-row min-w-[600px] border-t-8 border-t-white p-5">
   <div class="flex justify-between w-full">
-    <p class="text-gray-400 w-40">{dataKey}</p>
+    <p class="text-gray-400 w-full">{dataKey}</p>
     <div class="flex">
       {#if dataVersion > 1}
-        <p>Version:</p>
+        <p class="pr-4">Version:</p>
 
         <div class="items-center w-full">
           <select name="" id="" bind:value="{selectedVersion}" on:change="{() => selectChange()}">
@@ -85,13 +74,13 @@ function calculateNegativeMargin() {
           </select>
         </div>
       {:else}
-        <p>Version:</p>
+        <p class="pr-4">Version:</p>
         <p class="items-center w-full">{dataVersion}</p>
       {/if}
     </div>
   </div>
   <div class="flex justify-between items-center w-full">
-    <p class="w-56 text-red-600 ml-6 text-xl">{dataString}</p>
+    <p class="text-red-600 ml-6 text-xl w-full">{dataString}</p>
 
     <div class="flex">
       {#if editMode}
@@ -106,21 +95,18 @@ function calculateNegativeMargin() {
               selectedVersion = updatedObject.version;
               inputValue = '';
               editMode = false;
-              editBorder = '';
             }}">Save</button>
         {/if}
         <button
           class="bg-red-200 rounded-lg m-1 p-1 hover:bg-red-500"
           on:click="{() => {
             editMode = false;
-            editBorder = '';
           }}"><p class="ml-2 mr-2">X</p></button>
       {:else}
         <button
           class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
           on:click="{() => {
             editMode = true;
-            editBorder = 'border-2 border-dark-dark border-dotted';
           }}">Edit</button>
       {/if}
     </div>
@@ -135,7 +121,7 @@ function calculateNegativeMargin() {
           inputMode = true;
         }}"
         class="border-black border-2 rounded p-5"
-        cols="30"
+        cols="60"
         rows="2"></textarea>
     </div>
   {/if}

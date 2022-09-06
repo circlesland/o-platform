@@ -1,6 +1,7 @@
 <script lang="ts">
 import { onMount } from "svelte";
 import { inview } from "svelte-inview/dist/index";
+import {_} from "svelte-i18n";
 import Label from "../../atoms/Label.svelte";
 
 export let listItemComponent;
