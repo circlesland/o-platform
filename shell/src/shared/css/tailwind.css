@@ -562,3 +562,8 @@ input[type="checkbox"] {
 .navbarHomeElement {
   border-radius: 0px 0px 500px 0px;
 }
+.largeHeader {
+  border-radius: 0 0 77% 88% / 75% 50% 95% 79%;
+  /* width: 110%; */
+  margin-left: -30px;
+}

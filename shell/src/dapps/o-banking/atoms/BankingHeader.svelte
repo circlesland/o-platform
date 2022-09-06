@@ -16,33 +16,24 @@ export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
 
 $: {
-  const sum = $assetBalances.crcBalances
-    .reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0"))
-    .toString();
-  balanceEuro = Currency.instance()
-    .displayAmount(sum, null, "EURS", null)
-    .toString();
-  balanceTime = Currency.instance()
-    .displayAmount(sum, null, "TIME_CRC", null)
-    .toString();
+  const sum = $assetBalances.crcBalances.reduce((p, c) => p.add(new BN(c.token_balance)), new BN("0")).toString();
+  balanceEuro = Currency.instance().displayAmount(sum, null, "EURS", null).toString();
+  balanceTime = Currency.instance().displayAmount(sum, null, "TIME_CRC", null).toString();
 }
 </script>
 
 <TopNav runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<PageHeader heightClass="h-60">
-  <div class="self-center block text-center">
-    <span class="inline-block tracking-wide text-7xl font-enso">
-      {balanceEuro}
-    </span>
-    <span class="text-7xl font-enso">{Currency.currencySymbol["EURS"]}</span>
-  </div>
-  <div class="self-end m-auto mt-2 space-y-1 text-center max-w-max">
-    {balanceTime}
+<PageHeader heightClass="h-80" color="bg-banking" largeHeader="{true}">
+  <div class="w-4/5 blob bg-banking-light h-72" style="border-radius: 32% 1% 118% 46% / 99% 69% 103% 73%">
+    <div class="flex items-center h-full pt-2 pl-10 text-white">
+      <span class="inline-block tracking-wide text-7xl font-enso">
+        {balanceEuro} <span class="text-7xl font-enso">{Currency.currencySymbol["EURS"]}</span>
+        <br />
+        {balanceTime}<Icons icon="timeCircle" size="{16}" customClass="inline inline-icon" />
+      </span>
 
-    <Icons icon="timeCircle" size="{4}" customClass="inline inline-icon" />
-
-    <!--
+      <!--
     {#if !$mySafe.ui.loadingText || $mySafe.ui.loadingText === ''}
       <small class="block whitespace-nowrap">
         {$mySafe.transfers && $mySafe.transfers.rows ? $mySafe.transfers.rows.length : ''}
@@ -58,5 +49,14 @@ $: {
       max="100"
     />
     -->
+    </div>
   </div>
 </PageHeader>
+
+<style>
+.blob {
+  position: absolute;
+  right: -30px;
+  top: -30px;
+}
+</style>
