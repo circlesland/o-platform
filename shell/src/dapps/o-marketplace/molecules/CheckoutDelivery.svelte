@@ -37,10 +37,6 @@ onMount(() => {
   } else {
     deliveryType = 1;
   }
-
-  console.log("AVA", availableDeliveryMethods);
-  console.log("context", context.data);
-  console.log("DELT", deliveryType);
 });
 
 function submit() {
@@ -152,11 +148,6 @@ async function restartPurchase(shippingAddressId: number, oldContext: EditorCont
           <div><Label key="dapps.o-marketplace.molecules.checkoutDelivery.youCanPickupAt" /></div>
 
           <div class="font-bold">{@html formatShippingAddress(context.data.shop.pickupAddress, true)}</div>
-        {/if}
-        {#if context.data.shop.openingHours}
-          <div class="pt-2"><Label key="dapps.o-marketplace.molecules.checkoutDelivery.openingHours" /></div>
-
-          <div>{@html context.data.shop.openingHours}</div>
         {/if}
       </div>
     {/if}
