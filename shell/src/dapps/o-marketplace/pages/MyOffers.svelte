@@ -412,6 +412,7 @@ function handleEdit(event) {
                     </div>
                     <div class="xs:justify-self-center">
                       <h4 class="w-full mt-2 text-left label">Inventory</h4>
+                      {#if entry.product.currentInventory === 0}<small class="text-alert-dark">SOLD OUT</small>{/if}
                       <input
                         type="number"
                         class="w-20 input"
