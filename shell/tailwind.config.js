@@ -2,10 +2,10 @@ const colors = require("tailwindcss/colors");
 const production = !process.env.NODE_ENV;
 
 module.exports = {
-  // future: {
-  //   purgeLayersByDefault: true,
-  //   removeDeprecatedGapUtilities: true,
-  // },
+  future: {
+    purgeLayersByDefault: true,
+    removeDeprecatedGapUtilities: true,
+  },
   darkMode: false,
   mode: "jit",
   purge: [
@@ -105,7 +105,7 @@ module.exports = {
         darkgrey: "#E2E7EB",
         background: "#F5F8FF",
         newbackground: "#EFF1F7",
-        pagebackground: "#EDEDED",
+        pagebackground: "#FFFFFF",
 
         gradient1: "#1DD6A4",
         gradient2: "#41C7F1",

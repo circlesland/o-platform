@@ -21,7 +21,7 @@ function loadLink(alink, external = false) {
 <section
   class="relative items-center justify-center h-48 overflow-hidden rounded-lg shadow-md cursor-pointer bg-{color} dashboard-card"
   on:click="{() => loadLink(link)}">
-  <div class="blob bg-{color}-light" style="border-radius: {blobshape}">
+  <div class="blob  bg-{color}-light" style="border-radius: {blobshape}">
     <div class="pt-2 text-white">
       <!-- <Icons icon="dashpassport" /> -->
       <Icon name="{icon}" class="relative w-20 h-20 left-32 heroicon top-10" solid="{true}" />

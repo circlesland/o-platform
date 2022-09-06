@@ -81,6 +81,7 @@ async function fetchStats() {
 <div class="mx-auto md:w-2/3 xl:w-1/2">
   <div class="m-4 mb-40 ">
     <!--<LangSwitcher />-->
+    <!-- bg-identity-light bg-identity bg-banking bg-banking-light bg-market bg-market-light bg-contact bg-contact-light -->
     <DashboardInvitesWidget />
     <div class="flex flex-col space-y-4">
       <DashboardColorCard
@@ -94,7 +95,7 @@ async function fetchStats() {
         color="banking"
         link="/banking/transactions"
         blobshape="137% 1% 119% 38% / 99% 60% 86% 73%"
-        icon="identification"
+        icon="cash"
         title="dapps.o-dashboard.pages.home.banking" />
 
       <DashboardColorCard

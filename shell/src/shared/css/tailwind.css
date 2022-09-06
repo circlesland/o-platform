@@ -17,6 +17,9 @@
   line-height: 1.375 /* 22px */;
   @apply font-normal;
 }
+.font-heading {
+  @apply tracking-wider;
+}
 
 .text-2xs {
   line-height: 0.7rem;
@@ -552,4 +555,10 @@ svg.heroicon.smallicon path {
 input[type="radio"],
 input[type="checkbox"] {
   vertical-align: sub;
+}
+.navbar {
+  padding: 0;
+}
+.navbarHomeElement {
+  border-radius: 0px 0px 500px 0px;
 }
