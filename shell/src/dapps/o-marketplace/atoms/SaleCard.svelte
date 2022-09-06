@@ -9,8 +9,6 @@ import Button from "../../../shared/atoms/button/Button.svelte";
 import ButtonContext from "../../../shared/atoms/button/buttonContext";
 import { mySales } from "../../../shared/stores/mySales";
 
-
-
 export let event: ProfileEvent;
 export let sale: SaleEvent;
 
@@ -23,6 +21,8 @@ $: {
     const saleEvent = event.payload as SaleEvent;
     sale = saleEvent;
     invoice = sale.invoice;
+
+    console.log("SALEEVENT", sale);
   }
 
   const pickUpAction = {
@@ -121,6 +121,9 @@ function getTableNoFromMetadata(metadataJson: string | undefined) {
                   <td>
                     <h2 class="mb-2 overflow-hidden text-sm overflow-ellipsis">
                       {item.offer.title}
+                      {#if item.offer.currentInventory !== null}
+                        <small class="text-alert-light">iv: {item.offer.currentInventory}</small>
+                      {/if}
                     </h2>
                   </td>
                 </tr>
