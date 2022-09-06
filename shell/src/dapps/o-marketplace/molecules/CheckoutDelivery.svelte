@@ -24,15 +24,23 @@ onMount(() => {
   availableDeliveryMethods = context.data.shop.deliveryMethods;
 
   if (availableDeliveryMethods) {
-    if (!context.data[context.field]) {
-      deliveryType = 1;
+    if (availableDeliveryMethods.length == 1) {
+      deliveryType = availableDeliveryMethods[0].id;
     } else {
-      deliveryType = context.data[context.field].deliveryMethodId;
-      shippingAddressId = context.data[context.field].shippingAddressId;
+      if (!context.data[context.field]) {
+        deliveryType = 1;
+      } else {
+        deliveryType = context.data[context.field].deliveryMethodId;
+        shippingAddressId = context.data[context.field].shippingAddressId;
+      }
     }
   } else {
     deliveryType = 1;
   }
+
+  console.log("AVA", availableDeliveryMethods);
+  console.log("context", context.data);
+  console.log("DELT", deliveryType);
 });
 
 function submit() {
