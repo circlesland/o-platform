@@ -24,11 +24,15 @@ onMount(() => {
   availableDeliveryMethods = context.data.shop.deliveryMethods;
 
   if (availableDeliveryMethods) {
-    if (!context.data[context.field]) {
-      deliveryType = 1;
+    if (availableDeliveryMethods.length == 1) {
+      deliveryType = availableDeliveryMethods[0].id;
     } else {
-      deliveryType = context.data[context.field].deliveryMethodId;
-      shippingAddressId = context.data[context.field].shippingAddressId;
+      if (!context.data[context.field]) {
+        deliveryType = 1;
+      } else {
+        deliveryType = context.data[context.field].deliveryMethodId;
+        shippingAddressId = context.data[context.field].shippingAddressId;
+      }
     }
   } else {
     deliveryType = 1;
@@ -144,11 +148,6 @@ async function restartPurchase(shippingAddressId: number, oldContext: EditorCont
           <div><Label key="dapps.o-marketplace.molecules.checkoutDelivery.youCanPickupAt" /></div>
 
           <div class="font-bold">{@html formatShippingAddress(context.data.shop.pickupAddress, true)}</div>
-        {/if}
-        {#if context.data.shop.openingHours}
-          <div class="pt-2"><Label key="dapps.o-marketplace.molecules.checkoutDelivery.openingHours" /></div>
-
-          <div>{@html context.data.shop.openingHours}</div>
         {/if}
       </div>
     {/if}

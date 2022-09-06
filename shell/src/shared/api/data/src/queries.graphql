@@ -1425,6 +1425,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
               pictureUrl
               pricePerUnit
               minAge
+              currentInventory
               tags {
                 typeId
                 value
