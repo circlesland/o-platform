@@ -371,9 +371,9 @@ body {
 }
 
 .navlogo {
-  margin-top: -1.25rem;
-  @apply w-16;
-  @apply h-16;
+  margin-top: -1.1rem;
+  @apply w-14;
+  @apply h-14;
 }
 
 .processPill .navlogo {
@@ -466,6 +466,12 @@ button:focus {
   border: 1px solid transparent;
   border-radius: 180px;
   background: #fff;
+}
+.rounded-corners-gray-borders {
+  padding: 4px;
+  border: 1px solid transparent;
+  border-radius: 180px;
+  background: gray;
 }
 .rounded-corners-gradient-borders {
   padding: 4px;

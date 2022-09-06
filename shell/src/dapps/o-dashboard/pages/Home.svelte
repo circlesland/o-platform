@@ -98,7 +98,7 @@ async function fetchStats() {
         </header>
       </div>
     </section> -->
-    <div class="grid grid-cols-2 gap-4 mt-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
+    <div class="flex flex-col space-y-4">
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
         on:click="{() => loadLink('/passport/profile')}">

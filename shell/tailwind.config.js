@@ -58,6 +58,18 @@ module.exports = {
           lightest: "#8597C6",
           dark: "#081B4A",
         },
+        pink: { DEFAULT: "#D82D74" },
+        orange: { DEFAULT: "#F26240" },
+        green: { DEFAULT: "#70BD9E" },
+        aqua: { DEFAULT: "#3CC1CA" },
+        purple: {
+          DEFAULT: "#5B1E63",
+          light: "#785A8A",
+        },
+        yellow: {
+          DEFAULT: "#F7AB28",
+        },
+        circlesgray: { DEFAULT: "#C1C1C1" },
         light: {
           DEFAULT: "#EDDFD2",
           light: "#F8EFE7",
@@ -122,7 +134,7 @@ module.exports = {
         transactionpositive: "#0BE09D",
         transactionnegative: "#F14E47",
 
-        lightgrey: "#D9E2EE",
+        lightgrey: "#C1C1C1",
 
         warning: "#FF9900",
 

@@ -12,12 +12,9 @@ export let width: string = "w-full";
   grid-cols-3 pb-3 auto-cols-max place-content-center text-dark">
   {#if navigation.leftSlot}
     <div
-      class="flex items-center justify-center w-12 h-12 ml-4 bg-white rounded-full cursor-pointer"
+      class="flex items-center justify-center w-12 h-12 ml-4 rounded-full cursor-pointer bg-purple"
       on:click="{navigation.leftSlot.props.action}">
-      <svelte:component
-        this="{navigation.leftSlot.component}"
-        {...navigation.leftSlot.props}
-        on:menuButton />
+      <svelte:component this="{navigation.leftSlot.component}" {...navigation.leftSlot.props} on:menuButton />
     </div>
   {/if}
   {#if navigation.navPill}
@@ -42,10 +39,6 @@ export let width: string = "w-full";
 <style>
 #nextnav {
   --tw-text-opacity: 1;
-  background-image: linear-gradient(
-    180deg,
-    rgba(149, 183, 202, 0) 0%,
-    rgba(13, 43, 102, 0.3) 100%
-  );
+  background-image: linear-gradient(180deg, rgba(149, 183, 202, 0) 0%, rgba(13, 43, 102, 0.3) 100%);
 }
 </style>
