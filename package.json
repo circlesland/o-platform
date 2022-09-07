@@ -32,7 +32,6 @@
     "core-util-is": "^1.0.2",
     "npm": "^8.0.0",
     "prettier": "^2.5.1",
-    "pug": "^3.0.2",
     "rxjs": "^6.6.3",
     "svelte": "^3.47.0",
     "svelte-preprocess": "^4.9.8",

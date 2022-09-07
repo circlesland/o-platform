@@ -81,11 +81,11 @@ async function fetchStats() {
 <div class="mx-auto md:w-2/3 xl:w-1/2">
   <div class="m-4 mb-40 ">
     <!--<LangSwitcher />-->
-    <!-- bg-identity-light bg-identity bg-banking bg-banking-light bg-market bg-market-light bg-contact bg-contact-light -->
+    <!-- bg-passport-light bg-passport bg-banking bg-banking-light bg-marketplace bg-marketplace-light bg-contacts bg-contacts-light -->
     <DashboardInvitesWidget />
     <div class="flex flex-col space-y-4">
       <DashboardColorCard
-        color="identity"
+        color="passport"
         link="/passport/profile"
         blobshape="60% 40% 56% 38% / 99% 50% 90% 57%"
         icon="identification"
@@ -99,14 +99,14 @@ async function fetchStats() {
         title="dapps.o-dashboard.pages.home.banking" />
 
       <DashboardColorCard
-        color="market"
+        color="marketplace"
         link="/marketplace/locations"
         blobshape="60% 4% 83% 88% / 99% 50% 90% 81%"
         icon="shopping-cart"
         title="dapps.o-dashboard.pages.home.market" />
 
       <DashboardColorCard
-        color="contact"
+        color="contacts"
         link="/contacts/chat"
         blobshape="175% 0% 92% 93% / 110% 32% 110% 81%"
         icon="users"

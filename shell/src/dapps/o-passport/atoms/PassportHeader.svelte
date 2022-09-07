@@ -62,40 +62,44 @@ function editProfileField(onlyThesePages: string[]) {
 
 <TopNav runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<PageHeader heightClass="h-80" color="bg-identity" largeHeader="{true}">
+<PageHeader heightClass="h-60 sm:h-80" color="bg-passport" largeHeader="{true}">
   <div
-    style="position: absolute; left: 41%; border-radius: 32% 26% 118% 46% / 99% 69% 103% 73%"
-    class="bg-identity-light h-72">
-    <div
-      class="flex items-center pl-40 bg-identity-light h-72"
-      style="position: relative; left: -41%;  border-radius: 32% 1% 51% 46% / 99% 69% 103% 73%">
-      <div class="self-center block mt-2 text-center">
-        <div class="mb-4" on:click="{() => editProfileField(['file', 'avatarUrl'])}">
-          <UserImage profile="{profile}" size="{36}" profileLink="{false}" />
-        </div>
+    class="flex items-center px-10 h-52 sm:h-96 bg-passport-light"
+    style="border-radius: 60% 96% 98% 91% / 115% 94% 104% 81%">
+    <div class="pt-2 text-white">
+      <span class="inline-block tracking-wide font-heading">
+        <div class="self-center block mt-2 text-center">
+          <div class="mb-2 sm:mb-4" on:click="{() => editProfileField(['file', 'avatarUrl'])}">
+            <UserImage profile="{profile}" size="{36}" profileLink="{false}" />
+          </div>
 
-        <div
-          on:click="{() =>
-            profile.__typename === 'Organisation'
-              ? editProfileField(['name'])
-              : editProfileField(['firstName', 'lastName'])}">
-          <h2 class="text-4xl cursor-pointer font-heading">
-            {displayName}
-          </h2>
-        </div>
-        {#if profile}
-          {#if profile.city}
-            <div class="mt-1 text-sm text-center cursor-pointer" on:click="{() => editProfileField(['cityGeonameid'])}">
-              {profile.city ? profile.city.name : ""}
-              {profile.city ? ", " + profile.city.country : ", " + getCountryName(profile)}
-            </div>
-          {:else}
-            <div class="mt-1 text-sm text-center cursor-pointer" on:click="{() => editProfileField(['cityGeonameid'])}">
-              Where do you live?
-            </div>
+          <div
+            on:click="{() =>
+              profile.__typename === 'Organisation'
+                ? editProfileField(['name'])
+                : editProfileField(['firstName', 'lastName'])}">
+            <h2 class="text-2xl cursor-pointer sm:text-4xl font-heading">
+              {displayName}
+            </h2>
+          </div>
+          {#if profile}
+            {#if profile.city}
+              <div
+                class="mt-1 text-sm text-center cursor-pointer"
+                on:click="{() => editProfileField(['cityGeonameid'])}">
+                {profile.city ? profile.city.name : ""}
+                {profile.city ? ", " + profile.city.country : ", " + getCountryName(profile)}
+              </div>
+            {:else}
+              <div
+                class="mt-1 text-sm text-center cursor-pointer"
+                on:click="{() => editProfileField(['cityGeonameid'])}">
+                Where do you live?
+              </div>
+            {/if}
           {/if}
-        {/if}
-      </div>
+        </div>
+      </span>
     </div>
   </div>
 </PageHeader>

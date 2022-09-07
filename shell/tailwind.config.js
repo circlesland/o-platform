@@ -130,7 +130,7 @@ module.exports = {
 
         white: "#ffffff",
 
-        identity: {
+        passport: {
           DEFAULT: "#D82D74",
           light: "#F75F9E",
         },
@@ -138,11 +138,11 @@ module.exports = {
           DEFAULT: "#F26240",
           light: "#FF8874",
         },
-        market: {
+        marketplace: {
           DEFAULT: "#70BD9E",
           light: "#89D4BA",
         },
-        contact: {
+        contacts: {
           DEFAULT: "#3CC1CA",
           light: "#49D7DC",
         },
