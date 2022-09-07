@@ -146,6 +146,10 @@ module.exports = {
           DEFAULT: "#3CC1CA",
           light: "#49D7DC",
         },
+        home: {
+          DEFAULT: "#5B1E63",
+          light: "#785A8A",
+        },
         cpurple: {
           DEFAULT: "#5B1E63",
           light: "#785A8A",
@@ -155,6 +159,18 @@ module.exports = {
         },
         circlesgray: {
           DEFAULT: "#C1C1C1",
+        },
+        bordergray: {
+          DEFAULT: "#ECECEC",
+        },
+        positive: {
+          DEFAULT: "#70BD9E",
+        },
+        negative: {
+          DEFAULT: "#D82D74",
+        },
+        dappbackground: {
+          DEFAULT: "#F9F9FB",
         },
       },
       fontFamily: {

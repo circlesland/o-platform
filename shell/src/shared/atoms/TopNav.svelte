@@ -18,11 +18,16 @@ $: {
     profile = undefined;
   }
 }
+console.log("RU", runtimeDapp.routeParts[0]);
 </script>
 
+<!-- bg-home bg-cpurple bg-market bg-contact bg-identity -->
 <div class="fixed top-0 left-0 z-50 w-full">
   <div class="grid w-full grid-cols-2 mx-auto text-white navbar justify-items-stretch">
-    <div class="p-3 pr-12 -mt-2 justify-self-start whitespace-nowrap bg-cpurple navbarHomeElement">
+    <div
+      class="p-3 pr-12 -mt-2 justify-self-start whitespace-nowrap {runtimeDapp.routeParts[0]
+        ? 'bg-' + runtimeDapp.routeParts[0]
+        : 'bg-cpurple'} navbarHomeElement">
       <img src="/logos/circles.svg" class="w-8 h-8" alt="Circles Land" />
       <span class="ml-2 text-4xl uppercase font-heading text-light">
         {runtimeDapp ? runtimeDapp.title : "<<No dapp>>"}

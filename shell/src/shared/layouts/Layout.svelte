@@ -62,7 +62,7 @@ function onkeydown(e: KeyboardEvent) {
   <div class="absolute flex flex-row w-full overflow-auto">
     <main id="main" class="relative w-full overflow-auto overflow-hidden">
       <div
-        class="flex flex-row w-full bg-pagebackground mainContent"
+        class="flex flex-row w-full bg-dappbackground mainContent"
         class:mb-16="{layout.dialogs.center && !layout.dialogs.center.isOpen && dapp === 'homepage:1'}"
         class:blur="{layout.dialogs.center && layout.dialogs.center.isOpen}">
         <div class="z-50">
