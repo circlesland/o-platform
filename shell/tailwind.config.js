@@ -66,11 +66,11 @@ module.exports = {
           dark: "#DDCBBB",
         },
         primary: {
-          DEFAULT: "#41C7F1",
-          light: "#58DBF8",
-          lighter: "#91EDFA",
-          lightest: "#C2FBFF",
-          dark: "#2BADEB",
+          DEFAULT: "#F7AB28",
+          light: "#F7AB28",
+          lighter: "#F7AB28",
+          lightest: "#F7AB28",
+          dark: "#F7AB28",
         },
         secondary: {
           DEFAULT: "#CF1E64",

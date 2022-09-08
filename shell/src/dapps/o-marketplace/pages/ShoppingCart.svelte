@@ -4,21 +4,15 @@ import { purchase } from "../processes/purchase";
 import Label from "../../../shared/atoms/Label.svelte";
 
 import { onMount } from "svelte";
+import ModalHeader from "../../../shared/atoms/ModalHeader.svelte";
 
 let shippingAddressId: number;
 
 let deliveryType: number = 2;
 </script>
 
+<ModalHeader heading="dapps.o-marketplace.pages.shoppingCart.cart" />
 <div class="p-5">
-  <header>
-    <div class="w-full text-center">
-      <h1 class="text-3xl uppercase font-heading">
-        <Label key="dapps.o-marketplace.pages.shoppingCart.cart" />
-      </h1>
-    </div>
-  </header>
-
   <!--
   {#if deliveryType == 1}
     <div class="form-control">

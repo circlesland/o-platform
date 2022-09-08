@@ -68,6 +68,7 @@ function onkeydown(e: KeyboardEvent) {
         <div class="z-50">
           {#if layout.dialogs.left && layout.dialogs.left.isOpen}
             {#if $media.small}
+              {console.log(layout.dialogs.left.component)}
               <LeftMobile>
                 <svelte:component
                   this="{layout.dialogs.left.component}"
