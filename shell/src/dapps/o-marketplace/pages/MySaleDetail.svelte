@@ -289,7 +289,7 @@ onMount(async () => {
       <div class="mt-6">
         <strong>Ship to:</strong>
         <br />
-        {buyerProfile.displayName}
+        {invoice.deliveryAddress.name}
         <br />
         {#if invoice.deliveryAddress}
           {`${invoice.deliveryAddress.street} ${invoice.deliveryAddress.house}`}
