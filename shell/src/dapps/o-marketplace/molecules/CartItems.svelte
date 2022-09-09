@@ -287,7 +287,7 @@ function handleClickOutside(event) {
             <span class="font-enso">EUR</span>
           </span>
         </div>
-        {#if displayShop.total.toFixed(2) > 50}
+        {#if displayShop.total.toFixed(2) > 30}
           <div class="mb-4 text-right text-error">
             <Label key="dapps.o-marketplace.pages.shoppingCart.max50" />
           </div>
@@ -298,7 +298,7 @@ function handleClickOutside(event) {
             <Label key="dapps.o-marketplace.pages.shoppingCart.checkOut" />
           </button>
         {:else if payableStatusBySeller[displayShop.shop.owner.circlesAddress].payable}
-          {#if displayShop.total.toFixed(2) > 50}
+          {#if displayShop.total.toFixed(2) > 30}
             <button class="h-auto btn-block btn btn-disabled disabled">
               <Label key="dapps.o-marketplace.pages.shoppingCart.checkOut" />
             </button>
