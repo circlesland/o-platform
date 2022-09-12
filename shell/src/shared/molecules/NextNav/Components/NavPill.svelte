@@ -34,9 +34,9 @@ function clickHandler() {
       on:click="{clickHandler}">
       {#if props && props.left}
         {#if $inbox.length && $inbox.length && props.center.props.icon !== "close"}
-          <div class="relative self-center mr-2 text-secondary" on:click="{clickHandler}">
+          <div class="relative self-center mr-2 text-primary" on:click="{clickHandler}">
             <Icons icon="notificationbubble" />
-            <div class="absolute top-0 w-full text-center text-white font-heading">
+            <div class="absolute top-0 w-full text-base text-center font-heading">
               {$inbox.length}
             </div>
           </div>
@@ -55,7 +55,7 @@ function clickHandler() {
     </div>
 
     <div
-      class="flex justify-center flex-shrink-0 -ml-4 rounded-r-full cursor-pointer w-14 h-11 "
+      class="flex justify-center flex-shrink-0 -ml-5 rounded-r-full cursor-pointer w-14 h-11 "
       class:bg-cpurple="{props && props.right}"
       on:click="{props.right ? props.right.props.action : null}">
       {#if props && props.right}

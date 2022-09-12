@@ -1,4 +1,4 @@
-const colors = require("tailwindcss/colors");
+// const colors = require("tailwindcss/colors");
 const production = !process.env.NODE_ENV;
 
 module.exports = {
@@ -6,9 +6,9 @@ module.exports = {
     purgeLayersByDefault: true,
     removeDeprecatedGapUtilities: true,
   },
-  darkMode: false,
+
   mode: "jit",
-  purge: [
+  content: [
     "./src/**/*.svelte",
     "../packages/o-editors/src/**/*.svelte",
     "./public/**/*.html",
@@ -18,36 +18,20 @@ module.exports = {
 
   daisyui: {
     styled: true,
-    themes: false,
+    themes: [
+      {
+        light: {
+          ...require("daisyui/src/colors/themes")["[data-theme=light]"],
+          primary: "#F7AB28",
+          secondary: "#5B1E63",
+        },
+      },
+    ],
     logs: false,
   },
 
   theme: {
     extend: {
-      fontSize: {
-        "4rem": "4rem",
-        "5rem": "5rem",
-        "10xl": "9rem",
-        "11xl": "10rem",
-        "12xl": "14rem",
-        "13xl": "15rem",
-      },
-      borderColor: ["dark-lightest"],
-      typography: {
-        "text-base": {
-          css: {
-            fontSize: "1rem",
-            lineHeight: "1rem",
-          },
-        },
-      },
-      screens: {
-        xs: "500px",
-      },
-
-      borderRadius: {
-        xl: "16px",
-      },
       colors: {
         DEFAULT: "#0A2262",
         base: "#0A2262",
@@ -73,7 +57,7 @@ module.exports = {
           dark: "#F7AB28",
         },
         secondary: {
-          DEFAULT: "#CF1E64",
+          DEFAULT: "#5B1E63",
           light: "#EA6197",
           lighter: "#FEA0C8",
           lightest: "#FDC1DA",
@@ -87,14 +71,14 @@ module.exports = {
           dark: "#DD3A33",
         },
         success: {
-          DEFAULT: "#0BE09D",
+          DEFAULT: "#70BD9E",
           light: "#57F5A9",
           lighter: "#99FBC6",
           lightest: "#C5FFD8",
           dark: "#14C892",
         },
         info: {
-          DEFAULT: "#FAAD26",
+          DEFAULT: "#41C7F1",
           light: "#FFCA62",
           lighter: "#FFDE88",
           lightest: "#FFF6D7",
@@ -173,6 +157,31 @@ module.exports = {
           DEFAULT: "#F9F9FB",
         },
       },
+      fontSize: {
+        "4rem": "4rem",
+        "5rem": "5rem",
+        "10xl": "9rem",
+        "11xl": "10rem",
+        "12xl": "14rem",
+        "13xl": "15rem",
+      },
+      borderColor: ["dark-lightest"],
+      typography: {
+        "text-base": {
+          css: {
+            fontSize: "1rem",
+            lineHeight: "1rem",
+          },
+        },
+      },
+      screens: {
+        xs: "500px",
+      },
+
+      borderRadius: {
+        xl: "16px",
+      },
+
       fontFamily: {
         primary: ["Poppins", "sans"],
         enso: ["Enso", "sans"],

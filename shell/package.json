@@ -40,7 +40,6 @@
     "apollo-link": "^1.2.14",
     "apollo-link-http": "^1.5.17",
     "bip39": "^3.0.3",
-    "daisyui": "^1.16.2",
     "dayjs": "^1.9.6",
     "ethereumjs-util": "^7.0.10",
     "ethers-multisend": "^2.1.1",
@@ -60,6 +59,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "daisyui": "^2.27.0",
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.4",
     "@graphql-codegen/cli": "^1.17.10",

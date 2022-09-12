@@ -70,7 +70,7 @@ const onBlur = () => window.o.publishEvent({ type: "shell.inputBlurred" });
     <slot name="EditorDescription">
       {#if prompt.params.view && prompt.params.view.description}
         <div class="w-full text-center">
-          <span class="text-dark-lightest">
+          <span class="text-secondary">
             {@html prompt.params.view ? prompt.params.view.description : ""}
           </span>
         </div>

@@ -140,7 +140,7 @@ export function generateNavManifest(args: GenerateNavManifestArgs, prompt: Promp
     if (args.leftIsOpen) {
       // Remove right too
       delete newManifest.rightSlot;
-      newManifest.leftSlot.props.icon = "menu-alt-1";
+      newManifest.leftSlot.props.icon = "x";
       newManifest.leftSlot.props.action = () => window.o.publishEvent({ type: "shell.closeNavigation" });
       // if (small) {
       //   // Remove the left button on mobile, as we have a special button for closing.

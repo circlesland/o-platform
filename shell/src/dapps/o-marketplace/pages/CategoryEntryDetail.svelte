@@ -169,7 +169,7 @@ function _addToCart(item: Offer & { shopId: number }) {
       <div class="flex flex-row space-x-4">
         <div>
           <button
-            class="btn btn-square btn-light"
+            class="btn btn-square btn-primary btn-outline"
             on:click="{() => push(`#/contacts/chat/${offer.createdByProfile.circlesAddress}`)}">
             <Icon name="chat" class="w-6 h-6 heroicon smallicon" />
           </button>

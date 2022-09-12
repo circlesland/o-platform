@@ -40,9 +40,7 @@ function cardAction() {
 </script>
 
 <section on:click="{() => cardAction()}" class:mb-3="{!params.inline}" class="{params.class ? params.class : ''}">
-  <div
-    class="flex items-center w-full space-x-2 bg-white border rounded-xl border-bordergray"
-    class:p-3="{!params.edgeless}">
+  <div class="flex items-center w-full space-x-2 bg-white border cardborder" class:p-3="{!params.edgeless}">
     <slot name="itemCardStart">
       <div class="">
         {#if params.imageProfile}
@@ -102,13 +100,3 @@ function cardAction() {
     </slot>
   </div>
 </section>
-
-<style>
-.status.sending {
-  @apply bg-primary;
-}
-.status.received,
-.status.delivered {
-  @apply bg-success;
-}
-</style>

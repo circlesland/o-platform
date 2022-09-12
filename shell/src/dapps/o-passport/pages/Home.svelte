@@ -54,7 +54,7 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
           <div class="text-left text-2xs text-dark-lightest">
             <Label key="dapps.o-passport.pages.home.qrcode" />
           </div>
-          <div class="container p-8">
+          <div class="container p-1 pt-2 xs:p-4">
             <center>
               {#if profile}
                 <QrCode value="{profile.circlesAddress}" />

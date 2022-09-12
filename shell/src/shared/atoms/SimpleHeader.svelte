@@ -11,4 +11,4 @@ export let headerString: string = null;
 
 <TopNav runtimeDapp="{runtimeDapp}" routable="{routable}" headerString="{headerString}" />
 
-<PageHeader heightClass="h-8 mt-8" />
+<PageHeader heightClass="h-8 mt-8 mb-8" />
