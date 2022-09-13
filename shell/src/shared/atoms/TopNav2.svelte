@@ -5,7 +5,7 @@ import { cartContents } from "../../dapps/o-marketplace/stores/shoppingCartStore
 import { me } from "../stores/me";
 import { Profile } from "../api/data/types";
 import { push } from "svelte-spa-router";
-import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import Icons from "../../../shell/src/shared/molecules/Icons.svelte";
 import LangSwitcher from "./LangSwitcher.svelte";
 export let runtimeDapp: RuntimeDapp<any>;
 let profile: Profile;
@@ -41,13 +41,13 @@ $: {
               {$cartContents.length}
             </div>
           {/if}
-          <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
+          <Icons icon="shopping-cart" class="w-6 h-6 heroicon smallicon" />
         </div>
       {/if}
       {#if profile}
         {#if profile.__typename === "Organisation"}
           <div class="mr-4 text-white cursor-pointer" on:click="{() => push(`#/marketplace/scan-purchase`)}">
-            <Icon name="qrcode" class="w-6 h-6 heroicon smallicon" />
+            <Icons icon="qrcode" class="w-6 h-6 heroicon smallicon" />
           </div>
         {/if}
       {/if}

@@ -1,5 +1,5 @@
 <script lang="ts">
-import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import Icons from "../../Icons.svelte";
 
 import { createEventDispatcher } from "svelte";
 import UserImage from "../../../atoms/UserImage.svelte";
@@ -29,7 +29,7 @@ const dispatcher = createEventDispatcher();
               class="self-center text-center rounded-full justify-self-center rounded-corners-lightgray-borders"
               style="padding: 1px;">
               <div class="pt-2 pl-1 m-auto bg-white rounded-full w-14 h-14 text-lightgrey">
-                <Icon name="user" class="inline w-10 h-10 heroicon " solid="{true}" />
+                <Icons icon="user" customClass="inline w-10 h-10 heroicon " solid="{true}" />
               </div>
             </div>
           </span>

@@ -5,7 +5,7 @@ import Icons from "../../../shared/molecules/Icons.svelte";
 import { truncateString } from "../../../shared/functions/truncateString";
 import { addToCart, AddToCartContextData } from "../processes/addToCart";
 import { createEventDispatcher } from "svelte";
-import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+
 const dispatch = createEventDispatcher();
 
 export let entry: ShopCategoryEntry;
@@ -64,7 +64,7 @@ function _addToCart(item: Offer & { shopId: number }) {
             on:click="{() => dispatch('edit', id)}">
             <span>
               <span class="table-cell w-10 h-10 align-middle bg-black rounded-full text-primary bg-opacity-60">
-                <Icon name="pencil" class="inline w-6 h-6 heroicon smallicon" />
+                <Icons icon="pencil" customClass="inline w-6 h-6 heroicon smallicon" />
               </span>
             </span>
           </div>

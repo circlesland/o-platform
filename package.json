@@ -20,6 +20,7 @@
     "test": "lerna run test --stream"
   },
   "devDependencies": {
+    "@krowten/svelte-heroicons": "^0.0.6",
     "lerna": "^4.0.0",
     "prisma": "2.18.0",
     "svelte-check": "^2.8.0",

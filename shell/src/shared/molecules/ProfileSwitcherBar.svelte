@@ -3,7 +3,6 @@ import { me } from "../stores/me";
 import Icons from "./Icons.svelte";
 import { createEventDispatcher } from "svelte";
 import { Environment } from "../environment";
-import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 
 export let actions: {
   icon: string;

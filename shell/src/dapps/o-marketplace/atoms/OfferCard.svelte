@@ -2,7 +2,6 @@
 import { push } from "svelte-spa-router";
 import { Offer, ShopCategoryEntry } from "../../../shared/api/data/types";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
-import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import { truncateString } from "../../../shared/functions/truncateString";
 import Label from "../../../shared/atoms/Label.svelte";
@@ -120,7 +119,7 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
               type="submit"
               class="relative btn btn-primary btn-square"
               on:click="{() => _addToCart({ ...entry.product, shopId: shopId })}">
-              <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
+              <Icons icon="shopping-cart" class="w-6 h-6 heroicon smallicon" />
             </button>
           {/if}
         </div>
@@ -128,7 +127,7 @@ displayName = displayName.length >= 22 ? displayName.substr(0, 22) + "..." : dis
           <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => loadDetailPage(shopId)}">
             <Label key="dapps.o-marketplace.atoms.offerCard.details" />
             <div class="absolute mr-1 right-2">
-              <Icon name="eye" class="w-6 h-6 heroicon smallicon" />
+              <Icons icon="eye" customClass="w-6 h-6 heroicon smallicon" />
             </div>
           </button>
         </div>

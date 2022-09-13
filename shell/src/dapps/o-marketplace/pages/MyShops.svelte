@@ -36,7 +36,7 @@ import { showToast } from "../../../shared/toast";
 import ImageUpload from "../../../shared/molecules/ImageUpload/ImageUpload.svelte";
 import { useMachine } from "@xstate/svelte";
 
-import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import Icons from "../../../shared/molecules/Icons.svelte";
 
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import RichTextEditor from "@o-platform/o-editors/RichTextEditor.svelte";
@@ -242,7 +242,7 @@ async function createNewShop() {
                   on:click="{() => imageEditor(index, 'largeBannerUrl', false)}">
                   <span>
                     <span class="table-cell w-10 h-10 align-middle bg-black rounded-full text-primary bg-opacity-60">
-                      <Icon name="camera" class="inline w-6 h-6 heroicon smallicon" />
+                      <Icons icon="camera" customClass="inline w-6 h-6 heroicon smallicon" />
                     </span>
                   </span>
                 </div>
@@ -266,7 +266,7 @@ async function createNewShop() {
                   on:click="{() => imageEditor(index, 'smallBannerUrl', false)}">
                   <span>
                     <span class="table-cell w-10 h-10 align-middle bg-black rounded-full text-primary bg-opacity-60">
-                      <Icon name="camera" class="inline w-6 h-6 heroicon smallicon" />
+                      <Icons icon="camera" customClass="inline w-6 h-6 heroicon smallicon" />
                     </span>
                   </span>
                 </div>
@@ -320,7 +320,7 @@ async function createNewShop() {
                     class:text-base="{editShopId == shop.id}"
                     class:bg-black="{editShopId != shop.id}"
                     class:text-primary="{editShopId != shop.id}">
-                    <Icon name="pencil" class="inline w-6 h-6 heroicon smallicon" />
+                    <Icons icon="pencil" class="inline w-6 h-6 heroicon smallicon" />
                   </span>
                 </span>
               </div>

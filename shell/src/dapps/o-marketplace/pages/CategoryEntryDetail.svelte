@@ -2,7 +2,7 @@
 import { Offer, Shop, ShopDocument, ShopQueryVariables } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { Subscription } from "rxjs";
-import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+
 import { push } from "svelte-spa-router";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import Label from "../../../shared/atoms/Label.svelte";
@@ -139,10 +139,10 @@ function _addToCart(item: Offer & { shopId: number }) {
                     <span class="text-xs"
                       >Available for {deliveryMethod.name}
                       {#if deliveryMethod.id == 1}
-                        <Icon name="home" class="inline w-5 h-5 heroicon smallicon" />
+                        <Icons icon="home" customClass="inline w-5 h-5 heroicon smallicon" />
                       {/if}
                       {#if deliveryMethod.id == 2}
-                        <Icon name="truck" class="inline w-5 h-5 heroicon smallicon" />
+                        <Icons icon="truck" customClass="inline w-5 h-5 heroicon smallicon" />
                       {/if}
                     </span>
                     {#if deliveryMethod.id == 1}
@@ -171,7 +171,7 @@ function _addToCart(item: Offer & { shopId: number }) {
           <button
             class="btn btn-square btn-primary btn-outline"
             on:click="{() => push(`#/contacts/chat/${offer.createdByProfile.circlesAddress}`)}">
-            <Icon name="chat" class="w-6 h-6 heroicon smallicon" />
+            <Icons icon="chat" customClass="w-6 h-6 heroicon smallicon" />
           </button>
         </div>
         <div class="flex-grow">
@@ -190,7 +190,7 @@ function _addToCart(item: Offer & { shopId: number }) {
                     <Icons icon="under18" customClass="inline" size="{6}" />
                   {/if}
                 {:else}
-                  <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
+                  <Icons icon="shopping-cart" customClass="w-6 h-6 heroicon smallicon" />
                 {/if}
               </div>
             </button>

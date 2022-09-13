@@ -3,7 +3,8 @@ import NavPill from "./Components/NavPill.svelte";
 import LoginPill from "./Components/LoginPill.svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { cartContents } from "../../../dapps/o-marketplace/stores/shoppingCartStore";
-import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import Icons from "../Icons.svelte";
+// import { icons as Icon } from "@iconify/icons-heroicons";
 import { push } from "svelte-spa-router";
 
 export let runtimeDapp: RuntimeDapp<any>;
@@ -48,7 +49,7 @@ export let width: string = "w-full";
             {$cartContents.length}
           </div>
         {/if}
-        <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
+        <Icons icon="shopping-cart" customClass="w-6 h-6 heroicon smallicon" />
       </div>
     </div>
     <!-- {/if} -->

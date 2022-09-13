@@ -1,6 +1,8 @@
 <script lang="ts">
 export let size: number = 6;
 export let customClass: string = "";
+export let solid: boolean = false;
+
 import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 
 const icons = {
@@ -531,7 +533,7 @@ export let icon: string = null;
 
 {#if icon}
   {#if !icons[icon]}
-    <Icon name="{icon}" class="w-{size} h-{size} heroicon smallicon inline" />
+    <Icon name="{icon}" solid="{solid ? true : false}" class="{customClass}" />
   {:else}
     {@html icons[icon]}
   {/if}

@@ -18,7 +18,7 @@ import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import { Environment } from "../../../shared/environment";
 import Label from "../../../shared/atoms/Label.svelte";
 import DashboardInvitesWidget from "../molecules/DashboardInvitesWidget.svelte";
-import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import Icons from "../../../shared/molecules/Icons.svelte";
 import LangSwitcher from "../../../shared/atoms/LangSwitcher.svelte";
 import { ApiClient } from "../../../shared/apiConnection";
 import DashboardColorCard from "../atoms/DashboardColorCard.svelte";
@@ -117,7 +117,7 @@ async function fetchStats() {
         on:click="{() => loadLink('/contacts')}">
         <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
           <div class="pt-2 text-primary">
-            <Icon name="users" class="w-20 h-20 heroicon" />
+            <Icons icon="users" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
             <Label key="dapps.o-dashboard.pages.home.contacts" />
@@ -133,7 +133,7 @@ async function fetchStats() {
           on:click="{() => loadLink('/verification/verifications')}">
           <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
             <div class="pt-2 text-primary">
-              <Icon name="badge-check" class="w-20 h-20 heroicon" />
+              <Icons icon="badge-check" class="w-20 h-20 heroicon" />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
               <Label key="dapps.o-dashboard.pages.home.verified" />
@@ -147,7 +147,7 @@ async function fetchStats() {
           on:click="{() => loadLink('/marketplace/my-tickets')}">
           <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
             <div class="pt-2 text-primary">
-              <Icon name="ticket" class="w-20 h-20 heroicon" />
+              <Icons icon="ticket" class="w-20 h-20 heroicon" />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
               <Label key="dapps.o-dashboard.pages.home.tickets" />
@@ -161,7 +161,7 @@ async function fetchStats() {
           on:click="{() => loadLink('/gallery/nfts')}">
           <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
             <div class="pt-2 text-primary">
-              <Icon name="photograph" class="w-20 h-20 heroicon" />
+              <Icons icon="photograph" class="w-20 h-20 heroicon" />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
               <Label key="dapps.o-dashboard.pages.home.gallery" />

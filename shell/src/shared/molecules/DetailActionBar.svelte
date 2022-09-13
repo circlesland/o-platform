@@ -1,5 +1,5 @@
 <script lang="ts">
-import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import Icons from "./Icons.svelte";
 
 /*
  * Edge Case: if the very first items are both super long, it will break into a new line even before clicking on 'more'
@@ -47,7 +47,7 @@ $: {
         on:click="{() => dispatch('siwtchEvent')}">
         <span>
           <span class="table-cell w-12 h-12 align-middle rounded-full bg-light-light">
-            <Icon solid="{true}" name="switch-horizontal" class="inline w-6 h-6 heroicon " />
+            <Icons solid="{true}" name="switch-horizontal" class="inline w-6 h-6 heroicon " />
           </span>
 
           <span class="block w-24 mt-1 text-xs text-center break-normal sm:text-sm ">Change Language</span>
