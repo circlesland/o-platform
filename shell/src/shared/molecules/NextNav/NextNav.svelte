@@ -22,18 +22,6 @@ export let width: string = "w-full";
         on:click="{navigation.leftSlot.props.action}">
         <svelte:component this="{navigation.leftSlot.component}" {...navigation.leftSlot.props} on:menuButton />
       </div>
-      <!-- {#if runtimeDapp && runtimeDapp.dappId !== "homepage:1" && !runtimeDapp.anonymous} -->
-      <div class="flex items-center justify-center w-12 h-12 ml-4 bg-white rounded-full cursor-pointer">
-        <div class="relative cursor-pointer justify-self-center" on:click="{() => push(`#/marketplace/cart`)}">
-          {#if $cartContents && $cartContents.length > 0}
-            <div class="absolute left-0 w-full text-center text-secondary -top-4 font-heading">
-              {$cartContents.length}
-            </div>
-          {/if}
-          <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
-        </div>
-      </div>
-      <!-- {/if} -->
     </div>
   {/if}
   {#if navigation.navPill}
@@ -50,8 +38,20 @@ export let width: string = "w-full";
       }}"
       props="{navigation.loginPill}" />
   {/if}
-  <div class="absolute bottom-0 right-0">
-    <a href="/" class="w-2 h-2">&nbsp;</a>
+  <div class="flex flex-row justify-end mr-4">
+    <!-- {#if runtimeDapp && runtimeDapp.dappId !== "homepage:1" && !runtimeDapp.anonymous} -->
+
+    <div class="flex items-center justify-center w-12 h-12 bg-white rounded-full cursor-pointer">
+      <div class="relative cursor-pointer justify-self-center" on:click="{() => push(`#/marketplace/cart`)}">
+        {#if $cartContents && $cartContents.length > 0}
+          <div class="absolute left-0 w-full text-center text-secondary -top-4 font-heading">
+            {$cartContents.length}
+          </div>
+        {/if}
+        <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
+      </div>
+    </div>
+    <!-- {/if} -->
   </div>
 </footer>
 

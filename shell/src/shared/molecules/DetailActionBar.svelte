@@ -1,8 +1,11 @@
 <script lang="ts">
+import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+
 /*
  * Edge Case: if the very first items are both super long, it will break into a new line even before clicking on 'more'
  */
 import ActionListItem from "src/shared/atoms/ActionListItem.svelte";
+import { Environment } from "../environment";
 export let actions: {
   icon: string;
   title: string;
@@ -27,8 +30,6 @@ $: {
 }
 </script>
 
-
-
 {#if actions}
   <div class="flex flex-row flex-wrap items-stretch justify-around mt-2 -mr-2 text-dark">
     <!-- <ul class="inline-block space-x-8 align-top list-none"> -->
@@ -40,6 +41,19 @@ $: {
         on:click="{() => handleClick(action)}" />
     {/each}
     <!-- </ul> -->
+    {#if Environment.showLanguageSwitcher}
+      <div
+        class="text-center align-top list-none cursor-pointer inline-table"
+        on:click="{() => dispatch('siwtchEvent')}">
+        <span>
+          <span class="table-cell w-12 h-12 align-middle rounded-full bg-light-light">
+            <Icon solid="{true}" name="switch-horizontal" class="inline w-6 h-6 heroicon " />
+          </span>
+
+          <span class="block w-24 mt-1 text-xs text-center break-normal sm:text-sm ">Change Language</span>
+        </span>
+      </div>
+    {/if}
   </div>
 {/if}
 
