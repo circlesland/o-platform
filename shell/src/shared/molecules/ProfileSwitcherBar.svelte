@@ -58,7 +58,7 @@ function handleClick(action) {
               </span>
             {:else}
               <span class="table-cell w-12 h-12 align-middle rounded-full bg-light-light">
-                <Icons icon="{action.icon}" size="{6}" customClass="inline" />
+                <Icons icon="{action.icon}" size="{6}" customClass="inline heroicon smallicon" />
               </span>
             {/if}
             <span class="block w-24 mt-1 text-xs text-center break-normal sm:text-sm ">
