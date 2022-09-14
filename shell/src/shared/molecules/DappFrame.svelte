@@ -500,7 +500,10 @@ function initSession(session: SessionInfo) {
 
 async function init() {
   // log(`init()`);
+  const leftSlotOverride = routable?.type === "page" ? routable.navigation.leftSlot : undefined;
+
   setNav({
+    leftSlotOverride: leftSlotOverride,
     centerContainsProcess: false,
     centerIsOpen: false,
     rightIsOpen: false,
@@ -561,7 +564,9 @@ function onOpenNavigation() {
       },
     },
   };
+  const leftSlotOverride = routable?.type === "page" ? routable.navigation.leftSlot : undefined;
   setNav({
+    leftSlotOverride: leftSlotOverride,
     leftIsOpen: true,
     rightIsOpen: false,
     notificationCount: $inbox ? $inbox.length : 0,
@@ -576,7 +581,9 @@ function onCloseNavigation() {
     ...layout.dialogs.left,
     isOpen: false,
   };
+  const leftSlotOverride = routable?.type === "page" ? routable.navigation.leftSlot : undefined;
   setNav({
+    leftSlotOverride: leftSlotOverride,
     leftIsOpen: false,
     rightIsOpen: false,
     notificationCount: $inbox ? $inbox.length : 0,
@@ -711,7 +718,9 @@ async function onProcessStopped(event:Stopped) {
 
 function onProcessContinued() {
   // log("onProcessContinued()");
+  const leftSlotOverride = routable?.type === "page" ? routable.navigation.leftSlot : undefined;
   setNav({
+    leftSlotOverride: leftSlotOverride,
     notificationCount: $inbox ? $inbox.length : 0,
     centerIsOpen: true,
     centerContainsProcess: true,
@@ -722,7 +731,9 @@ function onProcessContinued() {
 
 function onProcessCanGoBack() {
   // log("onProcessCanGoBack()");
+  const leftSlotOverride = routable?.type === "page" ? routable.navigation.leftSlot : undefined;
   setNav({
+    leftSlotOverride: leftSlotOverride,
     notificationCount: $inbox ? $inbox.length : 0,
     centerIsOpen: true,
     centerContainsProcess: true,
@@ -735,7 +746,9 @@ function onProcessCanGoBack() {
 
 function onProcessCanSkip() {
   // log("onProcessCanSkip()");
+  const leftSlotOverride = routable?.type === "page" ? routable.navigation.leftSlot : undefined;
   setNav({
+    leftSlotOverride: leftSlotOverride,
     notificationCount: $inbox ? $inbox.length : 0,
     centerIsOpen: true,
     centerContainsProcess: true,
@@ -1096,6 +1109,10 @@ async function handleUrlChanged() {
   }
 
   routable = findRouteResult.routable;
+
+  if (routable.type == "page" && routable.navigation?.leftSlot) {
+    navArgs.leftSlotOverride = routable.navigation.leftSlot;
+  }
   // log(
   //   `handleUrlChanged() - Found routable: ${routable.title} (type: ${routable.type})`
   // );
@@ -1189,7 +1206,9 @@ function showModalProcess(processId?: string) {
     },
     { process }
   );
+  const leftSlotOverride = routable?.type === "page" ? routable.navigation.leftSlot : undefined;
   setNav({
+    leftSlotOverride: leftSlotOverride,
     centerIsOpen: true,
     centerContainsProcess: true,
     leftIsOpen: false,
@@ -1294,7 +1313,9 @@ function showMainPage(
       routable: routable,
     },
   };
+  const leftSlotOverride = routable?.type === "page" ? routable.navigation.leftSlot : undefined;
   setNav({
+    leftSlotOverride: leftSlotOverride,
     ...currentNavArgs,
     centerIsOpen: false,
     centerContainsProcess: false,
