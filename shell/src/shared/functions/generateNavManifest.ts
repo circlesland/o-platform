@@ -3,10 +3,10 @@ import ListComponent from "../molecules/NextNav/Components/List.svelte";
 import ActionButtonComponent from "../molecules/NextNav/Components/ActionButton.svelte";
 import { NavigationElement, NavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
 import { Prompt } from "@o-platform/o-process/dist/events/prompt";
-import { isMobile } from "./isMobile";
 import { media } from "../stores/media";
 
 export type GenerateNavManifestArgs = {
+  leftSlotOverride?: NavigationElement;
   leftIsOpen: boolean;
   centerIsOpen: boolean;
   centerContainsProcess: boolean;
@@ -17,19 +17,30 @@ export type GenerateNavManifestArgs = {
   showLogin?: boolean;
 };
 
-const homeNavManifest = () => {
-  return {
-    leftSlot: {
-      component: LinkComponent,
+function applyOverrides(leftStatic:any, leftSlotOverride: NavigationElement) {
+  const left = leftStatic;
+  if (leftSlotOverride && leftSlotOverride.props) {
+    left.props = {
+      ...left.props,
+      ...leftSlotOverride.props
+    }
+  }
+  return left;
+}
 
-      props: {
-        icon: "menu",
-        action: () =>
-          window.o.publishEvent({
-            type: "shell.openNavigation",
-          }),
-      },
-    },
+const homeNavManifest = (leftSlotOverride?: NavigationElement) => {
+  const left = applyOverrides({
+    component: LinkComponent,
+    props: {
+      icon: "menu",
+      action: () =>
+        window.o.publishEvent({
+          type: "shell.openNavigation",
+        }),
+    }
+  }, leftSlotOverride);
+  return {
+    leftSlot: left,
     loginPill: {
       component: ActionButtonComponent,
       props: {
@@ -44,18 +55,20 @@ const homeNavManifest = () => {
   };
 };
 
-const defaultNavManifest: () => NavigationManifest = () => {
-  return {
-    leftSlot: {
-      component: LinkComponent,
-      props: {
-        icon: "menu",
-        action: () =>
-          window.o.publishEvent({
-            type: "shell.openNavigation",
-          }),
-      },
+const defaultNavManifest: (leftSlotOverride?: NavigationElement) => NavigationManifest = (leftSlotOverride?: NavigationElement) => {
+  const left = applyOverrides({
+    component: LinkComponent,
+    props: {
+      icon: "menu",
+      action: () =>
+        window.o.publishEvent({
+          type: "shell.openNavigation",
+        }),
     },
+  }, leftSlotOverride);
+
+  return {
+    leftSlot: left,
     navPill: {
       left: {
         component: ListComponent,
@@ -127,9 +140,9 @@ export function generateNavManifest(args: GenerateNavManifestArgs, prompt: Promp
   unsub();
 
   if (args.showLogin) {
-    newManifest = homeNavManifest();
+    newManifest = homeNavManifest(args.leftSlotOverride);
   } else {
-    newManifest = defaultNavManifest();
+    newManifest = defaultNavManifest(args.leftSlotOverride);
   }
   if (args.leftIsOpen || args.rightIsOpen) {
     if (small) {

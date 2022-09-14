@@ -24,4 +24,5 @@ export interface Page<
   jumplist?: Jumplist<TParams, TDappState>;
   isFullWidth?: boolean;
   hideFooter?: boolean;
+
 }
