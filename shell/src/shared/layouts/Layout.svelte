@@ -152,7 +152,7 @@ function onkeydown(e: KeyboardEvent) {
     {/await}
   {/if}
   {#if navigation}
-    <NextNav navigation="{navigation}" />
+    <NextNav navigation="{navigation}" runtimeDapp="{layout.main.runtimeDapp}" />
   {/if}
 
   {#if layout.dialogs.center && layout.dialogs.center.isOpen}

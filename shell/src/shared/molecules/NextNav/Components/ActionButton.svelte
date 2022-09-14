@@ -22,19 +22,21 @@ const dispatcher = createEventDispatcher();
     <img src="/logos/circles.png" alt="circlesLand" class="bg-white rounded-full navlogo" />
   {:else if $me}
     <div class="navlogo">
-      <div class="text-center align-top list-none cursor-pointer inline-table">
+      <UserImage profile="{$me}" size="{15}" gradientRing="{true}" profileLink="{false}" />
+
+      <!-- <div class="text-center align-top list-none cursor-pointer inline-table">
         <span>
           <span class="table-cell align-middle bg-white rounded-full h-14">
             <div
               class="self-center text-center rounded-full justify-self-center rounded-corners-lightgray-borders"
               style="padding: 1px;">
-              <div class="pt-2 pl-1 m-auto bg-white rounded-full w-14 h-14 text-lightgrey">
-                <Icons icon="user" customClass="inline w-10 h-10 heroicon " solid="{true}" />
+              <div class="m-auto bg-white rounded-full w-14 h-14 text-lightgrey">
+                <Icons icon="circles" customClass="-ml-1 inline w-14 h-14 heroicon " solid="{true}" />
               </div>
             </div>
           </span>
         </span>
-      </div>
+      </div> -->
     </div>
   {:else}
     <img src="/logos/actionbutton.svg" alt="circlesLand" class="bg-white rounded-full navlogo" />

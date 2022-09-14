@@ -241,7 +241,8 @@ async function createNewShop() {
                   class="absolute z-10 text-center align-top list-none cursor-pointer top-1 left-2 inline-table "
                   on:click="{() => imageEditor(index, 'largeBannerUrl', false)}">
                   <span>
-                    <span class="table-cell w-10 h-10 align-middle bg-black rounded-full text-primary bg-opacity-60">
+                    <span
+                      class="table-cell w-10 h-10 align-middle bg-black border rounded-full text-primary border-primary bg-opacity-60">
                       <Icons icon="camera" customClass="inline w-6 h-6 heroicon smallicon" />
                     </span>
                   </span>
@@ -265,7 +266,8 @@ async function createNewShop() {
                   class="absolute z-10 text-center align-top list-none cursor-pointer top-1 left-2 inline-table "
                   on:click="{() => imageEditor(index, 'smallBannerUrl', false)}">
                   <span>
-                    <span class="table-cell w-10 h-10 align-middle bg-black rounded-full text-primary bg-opacity-60">
+                    <span
+                      class="table-cell w-10 h-10 align-middle bg-black border rounded-full text-primary border-primary bg-opacity-60">
                       <Icons icon="camera" customClass="inline w-6 h-6 heroicon smallicon" />
                     </span>
                   </span>
@@ -320,7 +322,7 @@ async function createNewShop() {
                     class:text-base="{editShopId == shop.id}"
                     class:bg-black="{editShopId != shop.id}"
                     class:text-primary="{editShopId != shop.id}">
-                    <Icons icon="pencil" class="inline w-6 h-6 heroicon smallicon" />
+                    <Icons icon="pencil" customClass="inline w-6 h-6 heroicon smallicon" />
                   </span>
                 </span>
               </div>

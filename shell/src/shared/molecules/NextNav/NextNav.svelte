@@ -10,6 +10,8 @@ import { push } from "svelte-spa-router";
 export let runtimeDapp: RuntimeDapp<any>;
 export let navigation: any;
 export let width: string = "w-full";
+
+console.log(runtimeDapp);
 </script>
 
 <footer
@@ -40,19 +42,18 @@ export let width: string = "w-full";
       props="{navigation.loginPill}" />
   {/if}
   <div class="flex flex-row justify-end mr-4">
-    <!-- {#if runtimeDapp && runtimeDapp.dappId !== "homepage:1" && !runtimeDapp.anonymous} -->
-
-    <div class="flex items-center justify-center w-12 h-12 bg-white rounded-full cursor-pointer">
-      <div class="relative cursor-pointer justify-self-center" on:click="{() => push(`#/marketplace/cart`)}">
-        {#if $cartContents && $cartContents.length > 0}
-          <div class="absolute left-0 w-full text-center text-secondary -top-4 font-heading">
-            {$cartContents.length}
-          </div>
-        {/if}
-        <Icons icon="shopping-cart" customClass="w-6 h-6 heroicon smallicon" />
+    {#if runtimeDapp && runtimeDapp.dappId !== "homepage:1" && !runtimeDapp.anonymous}
+      <div class="flex items-center justify-center w-12 h-12 bg-white rounded-full cursor-pointer">
+        <div class="relative cursor-pointer justify-self-center" on:click="{() => push(`#/marketplace/cart`)}">
+          {#if $cartContents && $cartContents.length > 0}
+            <div class="absolute left-0 w-full text-center text-secondary -top-4 font-heading">
+              {$cartContents.length}
+            </div>
+          {/if}
+          <Icons icon="shopping-cart" customClass="w-6 h-6 heroicon smallicon" />
+        </div>
       </div>
-    </div>
-    <!-- {/if} -->
+    {/if}
   </div>
 </footer>
 

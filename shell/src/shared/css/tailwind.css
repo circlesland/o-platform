@@ -336,30 +336,30 @@ body {
     padding: 4px;
     border: 1px solid transparent;
     border-radius: 180px;
-    background-image: linear-gradient(to bottom, #20d9a2 0%, #2be0dc 25%, #2cb1eb 52%, #1472bb 77%, #003399 99%);
+    background-image: linear-gradient(to bottom, #f58c33 0%, #6dc6ce 25%, #6ab498 52%, #de1f75 77%, #50093d 99%);
     background: -moz-linear-gradient(
       top,
-      #20d9a2 0%,
-      #2be0dc 25%,
-      #2cb1eb 52%,
-      #1472bb 77%,
-      #003399 99%
+      #f58c33 0%,
+      #6dc6ce 25%,
+      #6ab498 52%,
+      #de1f75 77%,
+      #50093d 99%
     ); /* FF3.6-15 */
     background: -webkit-linear-gradient(
       top,
-      #20d9a2 0%,
-      #2be0dc 25%,
-      #2cb1eb 52%,
-      #1472bb 77%,
-      #003399 99%
+      #f58c33 0%,
+      #6dc6ce 25%,
+      #6ab498 52%,
+      #de1f75 77%,
+      #50093d 99%
     ); /* Chrome10-25,Safari5.1-6 */
     background: linear-gradient(
       to bottom,
-      #20d9a2 0%,
-      #2be0dc 25%,
-      #2cb1eb 52%,
-      #1472bb 77%,
-      #003399 99%
+      #f58c33 0%,
+      #6dc6ce 25%,
+      #6ab498 52%,
+      #de1f75 77%,
+      #50093d 99%
     ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 
     background-origin: border-box;
