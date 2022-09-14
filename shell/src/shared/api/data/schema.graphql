@@ -977,6 +977,7 @@ type i18n {
   version: Int
   value: String
   pagination_key: String
+  needsUpdate: Boolean
 }
 
 enum SortOrder {
@@ -1258,6 +1259,7 @@ type Mutation {
   updateValue(lang: String, key: String, createdBy: String, value: String): i18n
   addNewLang(langToCreate: String, langToCopyFrom: String): Int
   createNewStringAndKey(lang: String, key: String, createdBy: String, value: String, version: Int): i18n
+  setStringUpdateState(key: String): [i18n]
 }
 
 type ExportProfile {
@@ -1341,6 +1343,7 @@ type Query {
   allTrusts(sinceLastChange: Date): [ExportTrustRelation!]!
   getRandomAccount: RandomAccount
   signMessage(message: String!, key: String!): String!
+  getStringsToBeUpdated(lang: String, key: String): Int
 }
 
 type Subscription {

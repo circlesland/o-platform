@@ -9,6 +9,8 @@ import {
   GetAvailableLanguagesQuery,
   I18n,
   MutationCreateNewStringAndKeyArgs,
+  MutationSetStringUpdateStateArgs,
+  SetStringUpdateStateDocument,
 } from "../../../shared/api/data/types";
 
 import { ApiClient } from "../../../shared/apiConnection";
@@ -93,6 +95,12 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
     value: value,
   });
 }
+
+async function setStringUpdateState(key: string) {
+  return await ApiClient.query<I18n, MutationSetStringUpdateStateArgs>(SetStringUpdateStateDocument, {
+    key: key
+  });
+}
 </script>
 
 <section class="flex flex-col items-center justify-center p-6">
@@ -173,9 +181,10 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
             on:click="{async () => {
               for (let i = 0; i < availableLanguages.length; i++) {
                 await writeNewKeyToDb(availableLanguages[i].lang, keyToCreate, 1, stringToCreate);
-                dispatch('newString');
               }
+              await setStringUpdateState(keyToCreate);
               createNewStringMode = false;
+              dispatch('newString');
             }}">create</button>
           <button
             class="bg-red-200 rounded-md btn-md hover:bg-red-500"

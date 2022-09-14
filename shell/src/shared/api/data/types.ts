@@ -588,6 +588,7 @@ export type Mutation = {
   updateValue?: Maybe<I18n>;
   addNewLang?: Maybe<Scalars['Int']>;
   createNewStringAndKey?: Maybe<I18n>;
+  setStringUpdateState?: Maybe<Array<Maybe<I18n>>>;
 };
 
 
@@ -780,6 +781,11 @@ export type MutationCreateNewStringAndKeyArgs = {
   createdBy?: Maybe<Scalars['String']>;
   value?: Maybe<Scalars['String']>;
   version?: Maybe<Scalars['Int']>;
+};
+
+
+export type MutationSetStringUpdateStateArgs = {
+  key?: Maybe<Scalars['String']>;
 };
 
 export type MyInviteRank = {
@@ -1161,6 +1167,7 @@ export type Query = {
   allTrusts: Array<ExportTrustRelation>;
   getRandomAccount?: Maybe<RandomAccount>;
   signMessage: Scalars['String'];
+  getStringsToBeUpdated?: Maybe<Scalars['Int']>;
 };
 
 
@@ -1375,6 +1382,12 @@ export type QueryAllTrustsArgs = {
 export type QuerySignMessageArgs = {
   message: Scalars['String'];
   key: Scalars['String'];
+};
+
+
+export type QueryGetStringsToBeUpdatedArgs = {
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
 };
 
 export type QueryCitiesByGeonameIdInput = {
@@ -1828,6 +1841,7 @@ export type I18n = {
   version?: Maybe<Scalars['Int']>;
   value?: Maybe<Scalars['String']>;
   pagination_key?: Maybe<Scalars['String']>;
+  needsUpdate?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpsertShippingAddressMutationVariables = Exact<{
@@ -1940,8 +1954,21 @@ export type CreateNewStringAndKeyMutation = (
   { __typename?: 'Mutation' }
   & { createNewStringAndKey?: Maybe<(
     { __typename?: 'i18n' }
-    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value' | 'needsUpdate'>
   )> }
+);
+
+export type SetStringUpdateStateMutationVariables = Exact<{
+  key?: Maybe<Scalars['String']>;
+}>;
+
+
+export type SetStringUpdateStateMutation = (
+  { __typename?: 'Mutation' }
+  & { setStringUpdateState?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value' | 'needsUpdate'>
+  )>>> }
 );
 
 export type ClaimInvitationMutationVariables = Exact<{
@@ -3613,8 +3640,19 @@ export type GetAllStringsByMaxVersionAndLangQuery = (
   { __typename?: 'Query' }
   & { getAllStringsByMaxVersionAndLang?: Maybe<Array<Maybe<(
     { __typename?: 'i18n' }
-    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value'>
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value' | 'needsUpdate'>
   )>>> }
+);
+
+export type GetStringsToBeUpdatedQueryVariables = Exact<{
+  lang?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetStringsToBeUpdatedQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'getStringsToBeUpdated'>
 );
 
 export type GetStringByMaxVersionQueryVariables = Exact<{
@@ -4018,6 +4056,19 @@ export const CreateNewStringAndKeyDocument = gql`
     createdBy
     version
     value
+    needsUpdate
+  }
+}
+    `;
+export const SetStringUpdateStateDocument = gql`
+    mutation setStringUpdateState($key: String) {
+  setStringUpdateState(key: $key) {
+    lang
+    key
+    createdBy
+    version
+    value
+    needsUpdate
   }
 }
     `;
@@ -6580,7 +6631,13 @@ export const GetAllStringsByMaxVersionAndLangDocument = gql`
     createdBy
     version
     value
+    needsUpdate
   }
+}
+    `;
+export const GetStringsToBeUpdatedDocument = gql`
+    query getStringsToBeUpdated($lang: String, $key: String) {
+  getStringsToBeUpdated(lang: $lang, key: $key)
 }
     `;
 export const GetStringByMaxVersionDocument = gql`
@@ -6963,6 +7020,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     createNewStringAndKey(variables?: CreateNewStringAndKeyMutationVariables): Promise<CreateNewStringAndKeyMutation> {
       return withWrapper(() => client.request<CreateNewStringAndKeyMutation>(print(CreateNewStringAndKeyDocument), variables));
     },
+    setStringUpdateState(variables?: SetStringUpdateStateMutationVariables): Promise<SetStringUpdateStateMutation> {
+      return withWrapper(() => client.request<SetStringUpdateStateMutation>(print(SetStringUpdateStateDocument), variables));
+    },
     claimInvitation(variables: ClaimInvitationMutationVariables): Promise<ClaimInvitationMutation> {
       return withWrapper(() => client.request<ClaimInvitationMutation>(print(ClaimInvitationDocument), variables));
     },
@@ -7133,6 +7193,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getAllStringsByMaxVersionAndLang(variables?: GetAllStringsByMaxVersionAndLangQueryVariables): Promise<GetAllStringsByMaxVersionAndLangQuery> {
       return withWrapper(() => client.request<GetAllStringsByMaxVersionAndLangQuery>(print(GetAllStringsByMaxVersionAndLangDocument), variables));
+    },
+    getStringsToBeUpdated(variables?: GetStringsToBeUpdatedQueryVariables): Promise<GetStringsToBeUpdatedQuery> {
+      return withWrapper(() => client.request<GetStringsToBeUpdatedQuery>(print(GetStringsToBeUpdatedDocument), variables));
     },
     getStringByMaxVersion(variables?: GetStringByMaxVersionQueryVariables): Promise<GetStringByMaxVersionQuery> {
       return withWrapper(() => client.request<GetStringByMaxVersionQuery>(print(GetStringByMaxVersionDocument), variables));

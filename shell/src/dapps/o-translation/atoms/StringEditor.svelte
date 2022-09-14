@@ -4,8 +4,10 @@ import { onMount } from "svelte";
 import {
   GetOlderVersionsByKeyAndLangDocument,
   I18n,
+  MutationSetStringUpdateStateArgs,
   MutationUpdateValueArgs,
   QueryGetOlderVersionsByKeyAndLangArgs,
+  SetStringUpdateStateDocument,
   UpdateValueDocument,
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
@@ -57,6 +59,12 @@ async function writeValueToDb(value: string, lang: string, key: string) {
   });
 }
 
+async function setStringUpdateState(key: string) {
+  return await ApiClient.query<I18n, MutationSetStringUpdateStateArgs>(SetStringUpdateStateDocument, {
+    key: key
+  });
+}
+
 </script>
 
 <div class="flex-row min-w-[600px] border-t-8 border-t-white p-5">
@@ -89,6 +97,7 @@ async function writeValueToDb(value: string, lang: string, key: string) {
             class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
             on:click="{async () => {
               let updatedObject = await writeValueToDb(inputValue, dataLang, dataKey);
+              await setStringUpdateState(dataKey)
               await loadOlderVersions(dataLang, dataKey);
               dataVersion = updatedObject.version;
               dataString = updatedObject.value;

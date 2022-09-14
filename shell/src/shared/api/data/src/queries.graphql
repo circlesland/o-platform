@@ -2135,7 +2135,12 @@ query getAllStringsByMaxVersionAndLang($lang: String) {
     createdBy
     version
     value
+    needsUpdate
   }
+}
+
+query getStringsToBeUpdated($lang: String, $key: String) {
+  getStringsToBeUpdated(lang: $lang, key: $key)
 }
 
 query getStringByMaxVersion($lang: String, $key: String) {

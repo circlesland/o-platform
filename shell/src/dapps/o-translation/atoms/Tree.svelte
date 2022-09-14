@@ -1,17 +1,42 @@
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
+import { onMount } from "svelte";
+import { replace } from "svelte-spa-router";
+import { string } from "yup/lib/locale";
+import { GetStringsToBeUpdatedDocument, I18n, QueryGetStringsToBeUpdatedArgs } from "../../../shared/api/data/types";
+import { ApiClient } from "../../../shared/apiConnection";
 
 import { CTreeNode, StateSnapshot } from "../classes/treenode";
 
 export let rootNode: CTreeNode;
+export let language: string;
 
 let dispatch = createEventDispatcher();
 let snapshot: StateSnapshot = {};
 let expand: boolean;
-let searchKey: String = "";
+let searchKey: string = "";
+let stringsToBeUpdated: number;
 
 $: {
   searchKey;
+  language;
+  rootNode;
+  stringsToBeUpdated;
+}
+
+onMount(async () => {
+  stringsToBeUpdated = await getStringsToBeUpdated(language, rootNode.snapId.replace("root.", ""));
+  console.log(language, "blablablabl")
+});
+
+async function getStringsToBeUpdated(lang: string, key: string) {
+  return (stringsToBeUpdated = await ApiClient.query<number, QueryGetStringsToBeUpdatedArgs>(
+    GetStringsToBeUpdatedDocument,
+    {
+      lang: lang,
+      key: key,
+    }
+  ));
 }
 </script>
 
@@ -62,6 +87,12 @@ $: {
       }}">
       {rootNode.key}
     </p>
+    {#if stringsToBeUpdated > 0 && stringsToBeUpdated != undefined}
+    <span class="ml-4 text-warning">
+      {stringsToBeUpdated}
+    </span>
+      
+    {/if}
   </span>
 </div>
 
@@ -70,7 +101,7 @@ $: {
     {#each rootNode.children as childNode}
       <ul class="ml-4 mb-4">
         {#if !childNode.isLeaf}
-          <svelte:self rootNode="{childNode}" on:expand on:showStrings />
+          <svelte:self rootNode="{childNode}" language="{language}" on:expand on:showStrings />
         {/if}
       </ul>
     {/each}
