@@ -127,9 +127,6 @@ module.exports = {
   entry: {
     bundle: ["./src/main.ts"],
   },
-  // node: {
-  //   fs: "empty",
-  // },
   resolve: {
     alias: {
       svelte: sveltePath,
@@ -455,7 +452,6 @@ module.exports = {
     minimizer: [new CssMinimizerPlugin(), new TerserPlugin()],
   },
   devServer: {
-    // watchContentBase: true,
     compress: false,
     static: {
       directory: path.join(__dirname, "public"),
