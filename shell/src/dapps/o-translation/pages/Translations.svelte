@@ -9,10 +9,10 @@ import {
   GetPaginatedStringsToUpdateDocument,
   QueryGetPaginatedStringsToUpdateArgs,
   GetAllStringsByMaxVersionAndLangDocument,
-  GetAllStringsByMaxVersionAndLangQuery,
   GetPaginatedStringsDocument,
   I18n,
   QueryGetPaginatedStringsArgs,
+  QueryGetAllStringsByMaxVersionAndLangArgs,
 } from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { ApiClient } from "../../../shared/apiConnection";
@@ -81,7 +81,7 @@ async function getPaginatedStringsToUpdate(
 }
 
 async function getTreeData(userLanguage: string) {
-  const queryResult = await ApiClient.query<I18n[], GetAllStringsByMaxVersionAndLangQuery>(
+  const queryResult = await ApiClient.query<I18n[], QueryGetAllStringsByMaxVersionAndLangArgs>(
     GetAllStringsByMaxVersionAndLangDocument,
     {
       lang: userLanguage,
