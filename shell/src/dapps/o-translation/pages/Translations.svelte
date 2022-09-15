@@ -47,12 +47,17 @@ $: {
   userLanguage;
 }
 
+function generateSearchPattern(searchString: string) {
+  const words = searchString.split(" ");
+  return "%" + words.join("%") + "%";
+}
+
 async function getPaginatedStrings(pagination_key: string, searchKey: string, lang: string, searchString: string) {
   let queryResult = await ApiClient.query<I18n[], QueryGetPaginatedStringsArgs>(GetPaginatedStringsDocument, {
     key: searchKey,
     pagination_key: pagination_key,
     lang: lang,
-    value: searchString,
+    value: generateSearchPattern(searchString),
   });
   i18nData = i18nData.concat(queryResult);
 }
@@ -69,7 +74,7 @@ async function getPaginatedStringsToUpdate(
       key: searchKey,
       pagination_key: pagination_key,
       lang: lang,
-      value: searchString,
+      value: generateSearchPattern(searchString),
     }
   );
   i18nData = i18nData.concat(queryResult);
@@ -128,7 +133,7 @@ async function createTree(rootData: I18n[]): Promise<CTreeNode> {
         }
         keyFilter = event.detail.searchKey;
         i18nData = [];
-        updateMode = event.detail.updateMode
+        updateMode = event.detail.updateMode;
         getPaginatedStringsToUpdate('', keyFilter, userLanguage, '');
       }}" />
   </div>
@@ -138,13 +143,9 @@ async function createTree(rootData: I18n[]): Promise<CTreeNode> {
       i18nData="{i18nData}"
       searchKey="{keyFilter}"
       updateMode="{updateMode}"
-      on:newString="{() => {
-        getPaginatedStrings('', '', userLanguage, '');
-      }}"
-      on:toggleLanguage="{async (event) => {
+      on:save="{async () => {
         i18nData = [];
-        userLanguage = event.detail.languageCode;
-        getPaginatedStrings('', keyFilter, userLanguage, '');
+        await getPaginatedStrings('', keyFilter, userLanguage, '');
         snapshot = displayedTree.createStateSnapshot();
         treeData = [];
         displayedTree = await createTree(treeData);
@@ -152,18 +153,45 @@ async function createTree(rootData: I18n[]): Promise<CTreeNode> {
         displayedTree = await createTree(treeData);
         displayedTree.restoreStateSnapshot(snapshot);
       }}"
-      on:stringSearch="{(event) => {
+      on:newString="{async () => {
+        i18nData = [];
+        await getPaginatedStrings('', keyFilter, userLanguage, '');
+        snapshot = displayedTree.createStateSnapshot();
+        treeData = [];
+        displayedTree = await createTree(treeData);
+        treeData = await getTreeData(userLanguage);
+        displayedTree = await createTree(treeData);
+        displayedTree.restoreStateSnapshot(snapshot);
+      }}"
+      on:toggleLanguage="{async (event) => {
+        i18nData = [];
+        userLanguage = event.detail.languageCode;
+        await getPaginatedStrings('', keyFilter, userLanguage, '');
+        snapshot = displayedTree.createStateSnapshot();
+        treeData = [];
+        displayedTree = await createTree(treeData);
+        treeData = await getTreeData(userLanguage);
+        displayedTree = await createTree(treeData);
+        displayedTree.restoreStateSnapshot(snapshot);
+      }}"
+      on:stringSearch="{async (event) => {
         i18nData = [];
         searchValue = event.detail.searchString;
-        getPaginatedStrings('', '', userLanguage, searchValue);
+        await getPaginatedStrings('', '', userLanguage, searchValue);
       }}"
-      on:loadMoreStrings="{() => {
+      on:loadMoreStrings="{async () => {
+        if (i18nData[i18nData.length - 1] == undefined) {
+          pagination_key = '';
+        } else {
+          pagination_key = i18nData[i18nData.length - 1].pagination_key;
+        }
+        console.log('paginationKey: ', pagination_key);
+        await getPaginatedStrings(pagination_key, keyFilter, userLanguage, searchValue);
+      }}"
+      on:loadMoreStringsToUpdate="{async () => {
         pagination_key = i18nData[i18nData.length - 1].pagination_key;
-        getPaginatedStrings(pagination_key, keyFilter, userLanguage, searchValue);
-      }}" 
-      on:loadMoreStringsToUpdate="{() => {
-        pagination_key = i18nData[i18nData.length - 1].pagination_key;
-        getPaginatedStringsToUpdate(pagination_key, keyFilter, userLanguage, searchValue);
-      }}"/>
+        console.log('paginationKey: ', pagination_key);
+        await getPaginatedStringsToUpdate(pagination_key, keyFilter, userLanguage, searchValue);
+      }}" />
   </div>
 </section>

@@ -1,18 +1,11 @@
 <script lang="ts">
 import { onMount } from "svelte";
 import {
-  GetAllStringsByMaxVersionAndLangDocument,
-  GetAllStringsByMaxVersionAndLangQuery,
-  GetAllStringsByMaxVersionDocument,
-  GetAllStringsByMaxVersionQuery,
-  GetStringByLanguageQuery,
   I18n,
 } from "../../../shared/api/data/types";
-import { ApiClient } from "../../../shared/apiConnection";
 import Tree from "../atoms/Tree.svelte";
 import { CTreeNode } from "../classes/treenode";
 import { createEventDispatcher } from "svelte";
-import { Environment } from "../../../shared/environment";
 
 let keyFilter: string = "";
 

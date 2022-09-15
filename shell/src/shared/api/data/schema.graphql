@@ -1325,19 +1325,11 @@ type Query {
   invoice(invoiceId: Int!): String
   findInvitationCreator(code: String!): Profile
   clientAssertionJwt: String!
-  getAllStrings: [i18n]
-  getAllStringsByLanguage(lang: String): [i18n]
-  getStringByLanguage(lang: String): [i18n!]
   getStringByMaxVersion(lang: String, key: String): i18n
-  getStringsByMaxVersionKeyAndValue(key: String, value: String): [i18n]
-  getStringsFromLatestValuesByValue(value: String): [i18n]
-  getFirst20StringsByMaxVersionKey(key: String): [i18n]
   getAvailableLanguages: [i18n]
   getAllStringsByMaxVersion: [i18n]
   getAllStringsByMaxVersionAndLang(lang: String): [i18n]
   getOlderVersionsByKeyAndLang(key: String, lang: String): [i18n]
-  getStringsByMaxVersionKeyAndValue(key: String, value: String): [i18n]
-  getFirst20StringsByMaxVersionKey(key: String): [i18n]
   getPaginatedStrings(pagination_key: String, key: String, lang: String, value: String): [i18n]
   getPaginatedStringsToUpdate(pagination_key: String, key: String, lang: String, value: String): [i18n]
   allProfiles(sinceLastChange: Date): [ExportProfile]!

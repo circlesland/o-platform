@@ -1,21 +1,17 @@
 <script lang="ts">
+import { createEventDispatcher } from "svelte";
 import { onMount } from "svelte";
-import { data } from "vis-network";
 
 import {
   GetOlderVersionsByKeyAndLangDocument,
-  GetStringByLanguageDocument,
   GetStringByMaxVersionDocument,
   I18n,
-  MutationSetStringUpdateStateArgs,
   MutationUpdateValueArgs,
   QueryGetOlderVersionsByKeyAndLangArgs,
   QueryGetStringByMaxVersionArgs,
-  SetStringUpdateStateDocument,
   UpdateValueDocument,
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
-import Icons from "../../../shared/molecules/Icons.svelte";
 
 export let dataKey: string;
 export let dataLang: string;
@@ -33,6 +29,7 @@ let inputValue: string;
 let olderVersionData = [];
 let compareMode: boolean = false;
 let englishData: I18n = {};
+let dispatch = createEventDispatcher()
 
 keyArray.concat(keyArray.push(dataKey.split(".")));
 
@@ -63,12 +60,6 @@ async function writeValueToDb(value: string, lang: string, key: string) {
     lang: lang,
     key: key,
     value: value,
-  });
-}
-
-async function setStringUpdateState(key: string) {
-  return await ApiClient.query<I18n, MutationSetStringUpdateStateArgs>(SetStringUpdateStateDocument, {
-    key: key,
   });
 }
 
@@ -113,13 +104,13 @@ async function getEnglishVersion(lang: string, key: string) {
             class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
             on:click="{async () => {
               let updatedObject = await writeValueToDb(inputValue, dataLang, dataKey);
-              await setStringUpdateState(dataKey);
               await loadOlderVersions(dataLang, dataKey);
               dataVersion = updatedObject.version;
               dataString = updatedObject.value;
               selectedVersion = updatedObject.version;
               inputValue = '';
               editMode = false;
+              dispatch("save")
             }}">Save</button>
         {/if}
         <button

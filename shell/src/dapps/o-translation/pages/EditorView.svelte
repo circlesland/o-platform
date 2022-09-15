@@ -25,7 +25,6 @@ export let userLanguage: string;
 
 let valueFilter: string = "";
 let allLanguages: string[] = [];
-let nextData: I18n[] = [];
 let selectedLanguage: string = "";
 let createNewStringMode: boolean = false;
 let keyToCreate: string = "";
@@ -53,20 +52,15 @@ async function getAllLanguages() {
   });
 }
 
-async function reload() {
-  i18nData = i18nData.concat(nextData);
-}
-
 $: {
   i18nData;
-  nextData;
   searchKey;
   selectedLanguage;
 }
 
 onMount(async () => {
   selectedLanguage = Environment.userLanguage;
-  reload();
+  // reload();
   getAllLanguages();
   const i18nResult = await ApiClient.query<I18n[], GetAvailableLanguagesQuery>(GetAvailableLanguagesDocument, {});
   availableLanguages = i18nResult;
@@ -108,11 +102,6 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
   });
 }
 
-async function setStringUpdateState(key: string) {
-  return await ApiClient.query<I18n, MutationSetStringUpdateStateArgs>(SetStringUpdateStateDocument, {
-    key: key
-  });
-}
 </script>
 
 <section class="flex flex-col items-center justify-center p-6">
@@ -194,7 +183,6 @@ async function setStringUpdateState(key: string) {
               for (let i = 0; i < availableLanguages.length; i++) {
                 await writeNewKeyToDb(availableLanguages[i].lang, keyToCreate, 1, stringToCreate);
               }
-              await setStringUpdateState(keyToCreate);
               createNewStringMode = false;
               dispatch('newString');
             }}">create</button>
@@ -213,20 +201,20 @@ async function setStringUpdateState(key: string) {
   <div class="pt-20 w-full">
     {#if !i18nData.length}
       <h1 class="flex justify-center align-middle text-alert pt-20">No matching result</h1>
-    {:else}
-      {#each i18nData as data (data.key + data.lang + data.version)}
-        <div class="w-full">
-          <StringEditor
-            on:save="{() => reload()}"
-            userLanguage="{userLanguage}"
-            dataString="{data.value}"
-            dataKey="{data.key}"
-            dataLang="{data.lang}"
-            dataVersion="{data.version}" />
-        </div>
-      {/each}
     {/if}
-
+    
+    {#each i18nData as data (data.key + data.lang + data.version)}
+      <div class="w-full">
+        <StringEditor
+          on:save
+          userLanguage="{userLanguage}"
+          dataString="{data.value}"
+          dataKey="{data.key}"
+          dataLang="{data.lang}"
+          dataVersion="{data.version}" />
+      </div>
+    {/each}
+  
     {#if i18nData.length && !updateMode}
       <div use:loadMoreWhenInViewport class="btn-primary rounded-btn"></div>
     {:else if i18nData.length && updateMode}

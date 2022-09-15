@@ -1,49 +1,53 @@
 <script lang="ts">
-  import {onMount} from "svelte";
-  import {ProcessStarted} from "@o-platform/o-process/dist/events/processStarted";
-  import {Generate} from "@o-platform/o-utils/dist/generate";
-  import {shellProcess} from "../processes/shellProcess";
-  import {RunProcess} from "@o-platform/o-process/dist/events/runProcess";
-  import {ProcessDefinition} from "@o-platform/o-process/dist/interfaces/processManifest";
-  import Layout from "../../shared/layouts/Layout.svelte";
-  import ProcessContainer from "../../shared/molecules/ProcessContainer.svelte";
-  import {RuntimeLayout} from "../layouts/layout";
-  import QuickActions from "../../shared/molecules/QuickActions.svelte";
-  import {NavigationManifest} from "@o-platform/o-interfaces/dist/navigationManifest";
-  import {Page} from "@o-platform/o-interfaces/dist/routables/page";
-  import {RuntimeDapp} from "@o-platform/o-interfaces/dist/runtimeDapp";
-  import {findDappById} from "../functions/findDappById";
-  import {RuntimeDapps} from "../../runtimeDapps";
-  import {findRoutableByParams, FindRouteResult,} from "../functions/findRoutableByParams";
-  import {push} from "svelte-spa-router";
-  import {Routable} from "@o-platform/o-interfaces/dist/routable";
-  import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
-  import {generateNavManifest, GenerateNavManifestArgs,} from "../functions/generateNavManifest";
-  import {inbox} from "../stores/inbox";
-  import NavigationList from "../../shared/molecules/NavigationList.svelte";
-  import {Process} from "@o-platform/o-process/dist/interfaces/process";
-  import {media} from "../stores/media";
-  import {me} from "../stores/me";
-  import {Capability, EventsDocument, EventType, GetAllStringsByMaxVersionAndLangDocument, I18n, NotificationEvent, Purchased, QueryGetAllStringsByMaxVersionAndLangArgs, SessionInfo,} from "../api/data/types";
-  import {contacts} from "../stores/contacts";
-  import {performOauth} from "../../dapps/o-humanode/processes/performOauth";
-  import {clearScrollPosition, popScrollPosition, pushScrollPosition,} from "../layouts/Center.svelte";
-  import {myChats} from "../stores/myChat";
-  import {myTransactions} from "../stores/myTransactions";
-  import {assetBalances} from "../stores/assetsBalances";
-  import {myPurchases} from "../stores/myPurchases";
-  import {upsertIdentity} from "../../dapps/o-passport/processes/upsertIdentity";
-  import {goToPreviouslyDesiredRouteIfExisting} from "../../dapps/o-onboarding/processes/init";
-  import {Trigger} from "@o-platform/o-interfaces/dist/routables/trigger";
-  import {mySales} from "../stores/mySales";
-  import {Stopped} from "@o-platform/o-process/dist/events/stopped";
-import { ApiClient } from "../apiConnection";
+import { onMount } from "svelte";
+import { ProcessStarted } from "@o-platform/o-process/dist/events/processStarted";
+import { Generate } from "@o-platform/o-utils/dist/generate";
+import { shellProcess } from "../processes/shellProcess";
+import { RunProcess } from "@o-platform/o-process/dist/events/runProcess";
+import { ProcessDefinition } from "@o-platform/o-process/dist/interfaces/processManifest";
+import Layout from "../../shared/layouts/Layout.svelte";
+import ProcessContainer from "../../shared/molecules/ProcessContainer.svelte";
+import { RuntimeLayout } from "../layouts/layout";
+import QuickActions from "../../shared/molecules/QuickActions.svelte";
+import { NavigationManifest } from "@o-platform/o-interfaces/dist/navigationManifest";
+import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
+import { findDappById } from "../functions/findDappById";
+import { RuntimeDapps } from "../../runtimeDapps";
+import { findRoutableByParams, FindRouteResult } from "../functions/findRoutableByParams";
+import { push } from "svelte-spa-router";
+import { Routable } from "@o-platform/o-interfaces/dist/routable";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
+import { generateNavManifest, GenerateNavManifestArgs } from "../functions/generateNavManifest";
+import { inbox } from "../stores/inbox";
+import NavigationList from "../../shared/molecules/NavigationList.svelte";
+import { Process } from "@o-platform/o-process/dist/interfaces/process";
+import { media } from "../stores/media";
+import { me } from "../stores/me";
+import {
+  Capability,
+  EventsDocument,
+  EventType,
+  I18n,
+  NotificationEvent,
+  Purchased,
+  SessionInfo,
+} from "../api/data/types";
+import { contacts } from "../stores/contacts";
+import { performOauth } from "../../dapps/o-humanode/processes/performOauth";
+import { clearScrollPosition, popScrollPosition, pushScrollPosition } from "../layouts/Center.svelte";
+import { myChats } from "../stores/myChat";
+import { myTransactions } from "../stores/myTransactions";
+import { assetBalances } from "../stores/assetsBalances";
+import { myPurchases } from "../stores/myPurchases";
+import { upsertIdentity } from "../../dapps/o-passport/processes/upsertIdentity";
+import { goToPreviouslyDesiredRouteIfExisting } from "../../dapps/o-onboarding/processes/init";
+import { Trigger } from "@o-platform/o-interfaces/dist/routables/trigger";
+import { mySales } from "../stores/mySales";
+import { Stopped } from "@o-platform/o-process/dist/events/stopped";
 import { Environment } from "../environment";
-import { addMessages } from "svelte-i18n";
-import { init as i18nInit, getLocaleFromNavigator } from 'svelte-i18n';
-import { I18nDictionary} from "../../i18n/i18nDictionary";
 
-  export let params: {
+export let params: {
   dappId: string;
   "1": string | null;
   "2": string | null;
@@ -102,28 +106,21 @@ async function onBack() {
   } = {};
 
   const previousDapp = findDappById(previous.dappId);
-  previousContext.runtimeDapp = previousDapp
-    ? await RuntimeDapps.instance().getRuntimeDapp(previousDapp)
-    : null;
+  previousContext.runtimeDapp = previousDapp ? await RuntimeDapps.instance().getRuntimeDapp(previousDapp) : null;
 
-  const routable = findRoutableByParams(
-    previousContext.runtimeDapp,
-    previous.params
-  );
+  const routable = findRoutableByParams(previousContext.runtimeDapp, previous.params);
   if (!routable.found) {
     throw new Error(
-      window.o.i18n(
-        "shared.molecules.dappFrame.errors.pageFromBackStackNotFound",
-        { values: { error: JSON.stringify(previous) } }
-      )
+      window.o.i18n("shared.molecules.dappFrame.errors.pageFromBackStackNotFound", {
+        values: { error: JSON.stringify(previous) },
+      })
     );
   }
   if (routable.routable.type != "page") {
     throw new Error(
-      window.o.i18n(
-        "shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage",
-        { values: { error: JSON.stringify(previous) } }
-      )
+      window.o.i18n("shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage", {
+        values: { error: JSON.stringify(previous) },
+      })
     );
   }
   previousContext.routable = <Page<any, any>>routable;
@@ -158,28 +155,21 @@ async function onStay() {
   } = {};
 
   const previousDapp = findDappById(previous.dappId);
-  previousContext.runtimeDapp = previousDapp
-    ? await RuntimeDapps.instance().getRuntimeDapp(previousDapp)
-    : null;
+  previousContext.runtimeDapp = previousDapp ? await RuntimeDapps.instance().getRuntimeDapp(previousDapp) : null;
 
-  const routable = findRoutableByParams(
-    previousContext.runtimeDapp,
-    previous.params
-  );
+  const routable = findRoutableByParams(previousContext.runtimeDapp, previous.params);
   if (!routable.found) {
     throw new Error(
-      window.o.i18n(
-        "shared.molecules.dappFrame.errors.pageFromBackStackNotFound",
-        { values: { error: JSON.stringify(previous) } }
-      )
+      window.o.i18n("shared.molecules.dappFrame.errors.pageFromBackStackNotFound", {
+        values: { error: JSON.stringify(previous) },
+      })
     );
   }
   if (routable.routable.type != "page") {
     throw new Error(
-      window.o.i18n(
-        "shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage",
-        { values: { error: JSON.stringify(previous) } }
-      )
+      window.o.i18n("shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage", {
+        values: { error: JSON.stringify(previous) },
+      })
     );
   }
   previousContext.routable = <Page<any, any>>routable;
@@ -202,8 +192,8 @@ async function onRoot() {
   if (runningProcess) {
     const m = window.o.stateMachines.findById(runningProcess.processId);
     if (m) {
-     m.sendEvent({
-        type: "process.cancel"
+      m.sendEvent({
+        type: "process.cancel",
       });
       return;
     } else {
@@ -224,39 +214,26 @@ async function onRoot() {
   if (baseParams) {
     // Go back to the page that's specified by "baseParams"
     const previousDapp = findDappById(baseParams.dappId);
-    previousRuntimeDapp = previousDapp
-      ? await RuntimeDapps.instance().getRuntimeDapp(previousDapp)
-      : null;
+    previousRuntimeDapp = previousDapp ? await RuntimeDapps.instance().getRuntimeDapp(previousDapp) : null;
 
     nextRoute = findRoutableByParams(previousRuntimeDapp, baseParams);
     if (nextRoute && nextRoute.found) {
       const routePartsWithReplacedVariables = nextRoute.routable.routeParts.map((o, i) => {
-        if (!o.startsWith(":"))
-          return o;
+        if (!o.startsWith(":")) return o;
 
         if (baseParams[(i + 1).toString()]) {
           return baseParams[(i + 1).toString()];
         }
       });
-      path = routePartsWithReplacedVariables
-        .map((o) => o.replace("=", ""))
-        .join("/");
+      path = routePartsWithReplacedVariables.map((o) => o.replace("=", "")).join("/");
     }
   } else {
     const previousDapp = findDappById(root.dappId);
-    previousRuntimeDapp = previousDapp
-      ? await RuntimeDapps.instance().getRuntimeDapp(previousDapp)
-      : null;
+    previousRuntimeDapp = previousDapp ? await RuntimeDapps.instance().getRuntimeDapp(previousDapp) : null;
     // no baseParams. Find the base page of the last route
     const lastRoute = findRoutableByParams(previousRuntimeDapp, root.params);
-    if (
-      lastRoute &&
-      lastRoute.found &&
-      (<Page<any, any>>lastRoute.routable).basePage
-    ) {
-      path = (<Page<any, any>>lastRoute.routable).basePage
-        .map((o) => o.replace("=", ""))
-        .join("/");
+    if (lastRoute && lastRoute.found && (<Page<any, any>>lastRoute.routable).basePage) {
+      path = (<Page<any, any>>lastRoute.routable).basePage.map((o) => o.replace("=", "")).join("/");
     }
     if (lastRoute && lastRoute.found && !path) {
       const defaultRoute = findRoutableByParams(previousRuntimeDapp, {
@@ -268,9 +245,7 @@ async function onRoot() {
       });
 
       if (defaultRoute && defaultRoute.found) {
-        path = (<Page<any, any>>defaultRoute.routable).routeParts
-          .map((o) => o.replace("=", ""))
-          .join("/");
+        path = (<Page<any, any>>defaultRoute.routable).routeParts.map((o) => o.replace("=", "")).join("/");
       }
     }
   }
@@ -287,20 +262,14 @@ async function onRoot() {
   onCloseModal();
 
   const dc = previousRuntimeDapp.dappId.indexOf(":");
-  const dappIdForRoute = previousRuntimeDapp.dappId.substr(
-    0,
-    dc > -1 ? dc : previousRuntimeDapp.dappId.length
-  );
+  const dappIdForRoute = previousRuntimeDapp.dappId.substr(0, dc > -1 ? dc : previousRuntimeDapp.dappId.length);
   console.log("DappFrame.onRoot() is pushing to:", `#/${dappIdForRoute}/${path}`);
   await push(`#/${dappIdForRoute}/${path}`);
 
   window.scrollTo(0, root.scrollY);
 }
 
-function findNextRoute(
-  previousRuntimeDapp: RuntimeDapp<any>,
-  root: { params: { [p: string]: any }; scrollY: number }
-) {
+function findNextRoute(previousRuntimeDapp: RuntimeDapp<any>, root: { params: { [p: string]: any }; scrollY: number }) {
   let nextRoute: Routable | null = null;
 
   const findRouteResult = findRoutableByParams(
@@ -322,10 +291,7 @@ function findNextRoute(
       "6": basePage.length > 5 ? basePage[5] : null,
       dappId: root.params.dappId,
     };
-    const basePageReslt = findRoutableByParams(
-      previousRuntimeDapp,
-      basePageParams
-    );
+    const basePageReslt = findRoutableByParams(previousRuntimeDapp, basePageParams);
     if (basePageReslt.found) {
       nextRoute = basePageReslt.routable;
     }
@@ -335,18 +301,16 @@ function findNextRoute(
     const defaultRoute = _findDefaultRoute(previousRuntimeDapp);
     if (!defaultRoute.found) {
       throw new Error(
-        window.o.i18n(
-          "shared.molecules.dappFrame.errors.pageFromBackStackNotFound",
-          { values: { error: JSON.stringify(root) } }
-        )
+        window.o.i18n("shared.molecules.dappFrame.errors.pageFromBackStackNotFound", {
+          values: { error: JSON.stringify(root) },
+        })
       );
     }
     if (defaultRoute.routable.type != "page") {
       throw new Error(
-        window.o.i18n(
-          "shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage",
-          { values: { error: JSON.stringify(root) } }
-        )
+        window.o.i18n("shared.molecules.dappFrame.errors.pageFromBackStackIsNoPage", {
+          values: { error: JSON.stringify(root) },
+        })
       );
     }
     nextRoute = defaultRoute.routable;
@@ -370,7 +334,7 @@ function setNav(navArgs: GenerateNavManifestArgs) {
   }
   let args = {
     ...navArgs,
-    showLogin: (dapp.anonymous) && !layout.dialogs.center,
+    showLogin: dapp.anonymous && !layout.dialogs.center,
   };
   navigation = generateNavManifest(args, null);
   if (dapp.dappId == "events:1") {
@@ -402,17 +366,15 @@ function initSession(session: SessionInfo) {
 
           if (event.type == "new_message") {
             const chatStore = myChats.with(event.from);
-            const message = await chatStore.findSingleItemFallback(
-              [EventType.ChatMessage],
-              event.itemId.toString()
-            );
+            const message = await chatStore.findSingleItemFallback([EventType.ChatMessage], event.itemId.toString());
             chatStore.refresh(true);
             await contacts.findBySafeAddress(event.from, true);
             playBlblblbl = true;
-          } else if (event.type == EventType.CrcHubTransfer
-              || event.type == EventType.CrcMinting
-              || event.type == EventType.Erc20Transfer) {
-
+          } else if (
+            event.type == EventType.CrcHubTransfer ||
+            event.type == EventType.CrcMinting ||
+            event.type == EventType.Erc20Transfer
+          ) {
             const transaction = await myTransactions.findSingleItemFallback(
               myTransactions.eventTypes,
               event.transaction_hash
@@ -444,39 +406,26 @@ function initSession(session: SessionInfo) {
               const contact = await contacts.findBySafeAddress(event.to, true);
               console.log("CrcTrust update to:", contact);
             } else {
-              const contact = await contacts.findBySafeAddress(
-                event.from,
-                true
-              );
+              const contact = await contacts.findBySafeAddress(event.from, true);
               console.log("CrcTrust update from:", contact);
               const chatStore = myChats.with(contact.contactAddress);
-              const message = await chatStore.findSingleItemFallback(
-                [EventType.CrcTrust],
-                event.transaction_hash
-              );
+              const message = await chatStore.findSingleItemFallback([EventType.CrcTrust], event.transaction_hash);
               chatStore.refresh(true);
               playBlblblbl = true;
             }
           } else if (event.type == EventType.Purchased) {
-            const purchase = await myPurchases.findSingleItemFallback(
-              [EventType.Purchased],
-              event.itemId.toString()
-            );
+            const purchase = await myPurchases.findSingleItemFallback([EventType.Purchased], event.itemId.toString());
             myPurchases.refresh();
 
             const invoices = (<Purchased>purchase.payload).purchase?.invoices ?? [];
-            await Promise.all(invoices.map(async o => {
-              const sale = await mySales.findSingleItemFallback(
-                [EventType.SaleEvent],
-                o.id.toString()
-              );
-            }));
+            await Promise.all(
+              invoices.map(async (o) => {
+                const sale = await mySales.findSingleItemFallback([EventType.SaleEvent], o.id.toString());
+              })
+            );
             mySales.refresh();
           } else if (event.type == EventType.SaleEvent) {
-            const sale = await mySales.findSingleItemFallback(
-              [EventType.SaleEvent],
-              event.itemId.toString()
-            );
+            const sale = await mySales.findSingleItemFallback([EventType.SaleEvent], event.itemId.toString());
             mySales.refresh();
           }
 
@@ -516,10 +465,7 @@ async function init() {
     // TODO: Stash the current URL away and redirect the user to it after authentication
     if (!routable.anonymous) {
       const path = Object.keys(params)
-        .filter(
-          (o) =>
-            parseInt(o) != Number.NaN && parseInt(o) >= 0 && parseInt(o) <= 6
-        )
+        .filter((o) => parseInt(o) != Number.NaN && parseInt(o) >= 0 && parseInt(o) <= 6)
         .map((o) => params[o])
         .filter((o) => !!o && o != "")
         .reduce((p, c) => p + "/" + c, "");
@@ -596,9 +542,9 @@ function onOpenModal() {
     runtimeDapp,
     <Page<any, any>>{
       position: "modal",
-      component: QuickActions
+      component: QuickActions,
     },
-    { }
+    {}
   );
   setNav({
     leftIsOpen: false,
@@ -633,9 +579,7 @@ function onRequestCloseModal() {
     onBack();
     return;
   }
-  const process: Process = window.o.stateMachines.findById(
-    runningProcess.processId
-  );
+  const process: Process = window.o.stateMachines.findById(runningProcess.processId);
   if (!process) {
     onBack();
     return;
@@ -649,9 +593,7 @@ function onProcessCancelRequest() {
   if (!runningProcess) {
     return;
   }
-  const process: Process = window.o.stateMachines.findById(
-    runningProcess.processId
-  );
+  const process: Process = window.o.stateMachines.findById(runningProcess.processId);
   if (!process) {
     return;
   }
@@ -662,18 +604,14 @@ function onProcessCancelRequest() {
 async function onRunProcess(event: any) {
   // log("onRunProcess(event: any)", event);
   const runProcessEvent = <RunProcess<any>>event;
-  const runningProcess = await window.o.stateMachines.run(
-    runProcessEvent.definition,
-    runProcessEvent.contextModifier
-  );
+  const runningProcess = await window.o.stateMachines.run(runProcessEvent.definition, runProcessEvent.contextModifier);
   // If not, send an event with the process id.
   const startedEvent = new ProcessStarted(runningProcess.id);
   startedEvent.responseToId = runProcessEvent.id;
   window.o.publishEvent(startedEvent);
 }
 
-async function onProcessStopped(event:Stopped) {
-
+async function onProcessStopped(event: Stopped) {
   // TODO: Hack: If the returned data contains a 'redirectTo' go to this url instead
   if (event.result?.redirectTo) {
     while (stack.length) {
@@ -751,9 +689,7 @@ function onProcessBack() {
   if (!runningProcess) {
     return;
   }
-  const process: Process = window.o.stateMachines.findById(
-    runningProcess.processId
-  );
+  const process: Process = window.o.stateMachines.findById(runningProcess.processId);
   if (!process) {
     return;
   }
@@ -766,9 +702,7 @@ function onProcessSkip() {
   if (!runningProcess) {
     return;
   }
-  const process: Process = window.o.stateMachines.findById(
-    runningProcess.processId
-  );
+  const process: Process = window.o.stateMachines.findById(runningProcess.processId);
   if (!process) {
     return;
   }
@@ -795,9 +729,7 @@ function onInputBlurred() {
 function armOauthListener() {
   function parseQuery(queryString) {
     var query = {};
-    var pairs = (
-      queryString[0] === "?" ? queryString.substr(1) : queryString
-    ).split("&");
+    var pairs = (queryString[0] === "?" ? queryString.substr(1) : queryString).split("&");
     for (var i = 0; i < pairs.length; i++) {
       var pair = pairs[i].split("=");
       query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || "");
@@ -963,8 +895,7 @@ onMount(async () => {
     };
     const requestEvent: any = new RunProcess(shellProcess, true, modifier);
     requestEvent.id = Generate.randomHexString(8);
-    const processStarted: ProcessStarted =
-      await window.o.requestEvent<ProcessStarted>(requestEvent);
+    const processStarted: ProcessStarted = await window.o.requestEvent<ProcessStarted>(requestEvent);
     showModalProcess(processStarted.processId);
   };
 });
@@ -997,18 +928,12 @@ function _findDefaultRoute(runtimeDapp: RuntimeDapp<any>) {
   // If no nextRoutable could be found then look for a default in the dapp
   const defaultRoutable = findRoutableByParams(runtimeDapp, {
     dappId: runtimeDapp.dappId,
-    "1":
-      runtimeDapp.defaultRoute.length > 0 ? runtimeDapp.defaultRoute[0] : null,
-    "2":
-      runtimeDapp.defaultRoute.length > 1 ? runtimeDapp.defaultRoute[1] : null,
-    "3":
-      runtimeDapp.defaultRoute.length > 2 ? runtimeDapp.defaultRoute[2] : null,
-    "4":
-      runtimeDapp.defaultRoute.length > 3 ? runtimeDapp.defaultRoute[3] : null,
-    "5":
-      runtimeDapp.defaultRoute.length > 4 ? runtimeDapp.defaultRoute[4] : null,
-    "6":
-      runtimeDapp.defaultRoute.length > 5 ? runtimeDapp.defaultRoute[5] : null,
+    "1": runtimeDapp.defaultRoute.length > 0 ? runtimeDapp.defaultRoute[0] : null,
+    "2": runtimeDapp.defaultRoute.length > 1 ? runtimeDapp.defaultRoute[1] : null,
+    "3": runtimeDapp.defaultRoute.length > 2 ? runtimeDapp.defaultRoute[2] : null,
+    "4": runtimeDapp.defaultRoute.length > 3 ? runtimeDapp.defaultRoute[3] : null,
+    "5": runtimeDapp.defaultRoute.length > 4 ? runtimeDapp.defaultRoute[4] : null,
+    "6": runtimeDapp.defaultRoute.length > 5 ? runtimeDapp.defaultRoute[5] : null,
   });
   if (defaultRoutable) {
     const result = <FindRouteResult>{
@@ -1055,19 +980,11 @@ let firstUrlChangedCall = true;
 let i18nStrings: I18n;
 let language = Environment.userLanguage;
 
-
-
 async function handleUrlChanged() {
-  if (!i18nStrings || language != Environment.userLanguage) {
-      await I18nDictionary.instance.waitHandle
-  }
-
   // log(`handleUrlChanged()`);
   const navArgs = <GenerateNavManifestArgs>{};
   dapp = findDappById(params.dappId);
-  runtimeDapp = dapp
-    ? await RuntimeDapps.instance().getRuntimeDapp(dapp)
-    : null;
+  runtimeDapp = dapp ? await RuntimeDapps.instance().getRuntimeDapp(dapp) : null;
 
   if (!runtimeDapp) {
     // throw new Error(`Couldn't find a dapp with the id: ${params.dappId}`);
@@ -1088,10 +1005,7 @@ async function handleUrlChanged() {
     );
   }
   if (findRouteResult.routable.type == "trigger") {
-    (<Trigger<any, any>>findRouteResult.routable).action(
-      findRouteResult.params,
-      runtimeDapp
-    );
+    (<Trigger<any, any>>findRouteResult.routable).action(findRouteResult.params, runtimeDapp);
     return;
   }
 
@@ -1143,7 +1057,7 @@ async function handleUrlChanged() {
     }
   }
 
-  if (!navigation && (dapp.dappId != "events:1")) {
+  if (!navigation && dapp.dappId != "events:1") {
     navigation = generateNavManifest(navArgs, null);
   }
 
@@ -1216,10 +1130,7 @@ function showModalPage(
   // );
   if (stack.length > 0) {
     const last = stack[stack.length - 1];
-    pushToStack = !(
-      last.dappId == runtimeDapp.dappId &&
-      JSON.stringify(currentParams) == JSON.stringify(last.params)
-    );
+    pushToStack = !(last.dappId == runtimeDapp.dappId && JSON.stringify(currentParams) == JSON.stringify(last.params));
   }
   if (pushToStack) {
     stack.push({
@@ -1270,11 +1181,7 @@ function showModalPage(
   });
 }
 
-function showMainPage(
-  runtimeDapp: RuntimeDapp<any>,
-  routable: Page<any, any>,
-  params: { [x: string]: any }
-) {
+function showMainPage(runtimeDapp: RuntimeDapp<any>, routable: Page<any, any>, params: { [x: string]: any }) {
   // log(
   //   `showMainPage(runtimeDapp: ${runtimeDapp.dappId}, routable: ${routable.title} (type: ${routable.type}), params: object)`,
   //   params
