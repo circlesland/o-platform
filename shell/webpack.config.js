@@ -126,10 +126,15 @@ module.exports = {
   entry: {
     bundle: ["./src/main.ts"],
   },
-  node: {
-    fs: "empty",
-  },
+  // node: {
+  //   fs: "empty",
+  // },
   resolve: {
+    fallback: {
+      net: false,
+      tls: false,
+      /// ....
+    },
     alias: {
       svelte: sveltePath,
       src: path.resolve(__dirname, "src"),
@@ -444,9 +449,11 @@ module.exports = {
     minimizer: [new CssMinimizerPlugin(), new TerserPlugin()],
   },
   devServer: {
-    watchContentBase: true,
+    // watchContentBase: true,
     compress: false,
-    contentBase: [path.join(__dirname, "public")],
+    static: {
+      directory: path.join(__dirname, "public"),
+    },
     port: process.env.DEPLOY_ENVIRONMENT !== "docker" ? 5000 : 8080,
     host: "localhost",
     open: true,
