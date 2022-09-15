@@ -500,7 +500,7 @@ function initSession(session: SessionInfo) {
 
 async function init() {
   // log(`init()`);
-  const leftSlotOverride = routable?.type === "page" ? routable.navigation.leftSlot : undefined;
+  const leftSlotOverride = routable?.type === "page" ? routable.navigation?.leftSlot : undefined;
 
   setNav({
     leftSlotOverride: leftSlotOverride,
@@ -564,7 +564,7 @@ function onOpenNavigation() {
       },
     },
   };
-  const leftSlotOverride = routable?.type === "page" ? routable.navigation.leftSlot : undefined;
+  const leftSlotOverride = routable?.type === "page" ? routable.navigation?.leftSlot : undefined;
   setNav({
     leftSlotOverride: leftSlotOverride,
     leftIsOpen: true,
@@ -581,7 +581,7 @@ function onCloseNavigation() {
     ...layout.dialogs.left,
     isOpen: false,
   };
-  const leftSlotOverride = routable?.type === "page" ? routable.navigation.leftSlot : undefined;
+  const leftSlotOverride = routable?.type === "page" ? routable.navigation?.leftSlot : undefined;
   setNav({
     leftSlotOverride: leftSlotOverride,
     leftIsOpen: false,
@@ -718,7 +718,7 @@ async function onProcessStopped(event:Stopped) {
 
 function onProcessContinued() {
   // log("onProcessContinued()");
-  const leftSlotOverride = routable?.type === "page" ? routable.navigation.leftSlot : undefined;
+  const leftSlotOverride = routable?.type === "page" ? routable.navigation?.leftSlot : undefined;
   setNav({
     leftSlotOverride: leftSlotOverride,
     notificationCount: $inbox ? $inbox.length : 0,
@@ -731,7 +731,7 @@ function onProcessContinued() {
 
 function onProcessCanGoBack() {
   // log("onProcessCanGoBack()");
-  const leftSlotOverride = routable?.type === "page" ? routable.navigation.leftSlot : undefined;
+  const leftSlotOverride = routable?.type === "page" ? routable.navigation?.leftSlot : undefined;
   setNav({
     leftSlotOverride: leftSlotOverride,
     notificationCount: $inbox ? $inbox.length : 0,
@@ -746,7 +746,7 @@ function onProcessCanGoBack() {
 
 function onProcessCanSkip() {
   // log("onProcessCanSkip()");
-  const leftSlotOverride = routable?.type === "page" ? routable.navigation.leftSlot : undefined;
+  const leftSlotOverride = routable?.type === "page" ? routable.navigation?.leftSlot : undefined;
   setNav({
     leftSlotOverride: leftSlotOverride,
     notificationCount: $inbox ? $inbox.length : 0,
@@ -1206,7 +1206,7 @@ function showModalProcess(processId?: string) {
     },
     { process }
   );
-  const leftSlotOverride = routable?.type === "page" ? routable.navigation.leftSlot : undefined;
+  const leftSlotOverride = routable?.type === "page" ? routable.navigation?.leftSlot : undefined;
   setNav({
     leftSlotOverride: leftSlotOverride,
     centerIsOpen: true,
