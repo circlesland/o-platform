@@ -5,6 +5,7 @@ const path = require("path");
 const sveltePreprocess = require("svelte-preprocess");
 const webpack = require("webpack");
 const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 const mode = process.env.NODE_ENV || "development";
 let prod = mode === "production";
@@ -130,11 +131,6 @@ module.exports = {
   //   fs: "empty",
   // },
   resolve: {
-    fallback: {
-      net: false,
-      tls: false,
-      /// ....
-    },
     alias: {
       svelte: sveltePath,
       src: path.resolve(__dirname, "src"),
@@ -329,6 +325,14 @@ module.exports = {
         },
       },
       {
+        // https://github.com/sveltejs/svelte-loader/issues/139
+        test: /.m?js$/,
+        type: 'javascript/auto',
+        resolve: {
+          fullySpecified: false
+        }
+      },
+      {
         test: /\.ts|\.svelte$/,
         loader: "string-replace-loader",
         options: {
@@ -414,7 +418,8 @@ module.exports = {
         use: {
           loader: "svelte-loader-hot",
           options: {
-            emitCss: true,
+            // https://github.com/sveltejs/svelte-loader/issues/139
+            emitCss: false,
             hotReload: true,
             preprocess: sveltePreprocess({}),
           },
@@ -435,6 +440,7 @@ module.exports = {
     ],
   },
   plugins: [
+    new NodePolyfillPlugin(),
     new CaseSensitivePathsPlugin(),
     new MiniCssExtractPlugin({
       filename: "[name].css",
