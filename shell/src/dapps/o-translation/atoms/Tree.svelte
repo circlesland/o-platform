@@ -1,7 +1,12 @@
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import { onMount } from "svelte";
-import { GetStringsToBeUpdatedAmountDocument, I18n, QueryGetStringsToBeUpdatedAmountArgs } from "../../../shared/api/data/types";
+import { update } from "xstate/lib/actionTypes";
+import {
+  GetStringsToBeUpdatedAmountDocument,
+  I18n,
+  QueryGetStringsToBeUpdatedAmountArgs,
+} from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
 
 import { CTreeNode, StateSnapshot } from "../classes/treenode";
@@ -13,22 +18,22 @@ let dispatch = createEventDispatcher();
 let snapshot: StateSnapshot = {};
 let expand: boolean;
 let searchKey: string = "";
-let stringsToBeUpdated: number;
-
+let amountStringsToBeUpdated: number;
+let updateMode: boolean = false;
 
 $: {
   searchKey;
   language;
   rootNode;
-  stringsToBeUpdated;
+  amountStringsToBeUpdated;
 }
 
 onMount(async () => {
-  stringsToBeUpdated = await getStringsToBeUpdatedAmount(language, rootNode.snapId.replace("root.", ""));
+  amountStringsToBeUpdated = await getStringsToBeUpdatedAmount(language, rootNode.snapId.replace("root.", ""));
 });
 
 async function getStringsToBeUpdatedAmount(lang: string, key: string) {
-  return (stringsToBeUpdated = await ApiClient.query<number, QueryGetStringsToBeUpdatedAmountArgs>(
+  return (amountStringsToBeUpdated = await ApiClient.query<number, QueryGetStringsToBeUpdatedAmountArgs>(
     GetStringsToBeUpdatedAmountDocument,
     {
       lang: lang,
@@ -85,14 +90,15 @@ async function getStringsToBeUpdatedAmount(lang: string, key: string) {
       }}">
       {rootNode.key}
     </p>
-    {#if stringsToBeUpdated > 0 && stringsToBeUpdated != undefined}
+    {#if amountStringsToBeUpdated > 0 && amountStringsToBeUpdated != undefined}
       <p
         class="ml-4 text-warning w-4 text-center hover:bg-blue-500 hover:cursor-pointer hover:rounded"
         on:click="{() => {
           searchKey = rootNode.snapId.replace('root.', '');
-          dispatch('getStringsToUpdate', { searchKey: searchKey });
+          updateMode = true;
+          dispatch('getStringsToUpdate', { searchKey: searchKey, updateMode: updateMode });
         }}">
-        {stringsToBeUpdated}
+        {amountStringsToBeUpdated}
       </p>
     {/if}
   </span>
@@ -103,7 +109,12 @@ async function getStringsToBeUpdatedAmount(lang: string, key: string) {
     {#each rootNode.children as childNode}
       <ul class="ml-4 mb-4">
         {#if !childNode.isLeaf}
-          <svelte:self rootNode="{childNode}" language="{language}" on:expand on:showStrings />
+          <svelte:self
+            rootNode="{childNode}"
+            language="{language}"
+            on:expand
+            on:showStrings
+            on:getStringsToUpdate />
         {/if}
       </ul>
     {/each}

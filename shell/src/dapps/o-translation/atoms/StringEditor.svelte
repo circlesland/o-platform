@@ -1,21 +1,27 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import { data } from "vis-network";
 
 import {
   GetOlderVersionsByKeyAndLangDocument,
+  GetStringByLanguageDocument,
+  GetStringByMaxVersionDocument,
   I18n,
   MutationSetStringUpdateStateArgs,
   MutationUpdateValueArgs,
   QueryGetOlderVersionsByKeyAndLangArgs,
+  QueryGetStringByMaxVersionArgs,
   SetStringUpdateStateDocument,
   UpdateValueDocument,
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
+import Icons from "../../../shared/molecules/Icons.svelte";
 
 export let dataKey: string;
 export let dataLang: string;
 export let dataString: string;
 export let dataVersion: number;
+export let userLanguage: string;
 
 let editMode: boolean = false;
 let inputMode: boolean = false;
@@ -25,7 +31,8 @@ let keyArray = [];
 let selectedVersion: number = dataVersion;
 let inputValue: string;
 let olderVersionData = [];
-
+let compareMode: boolean = false;
+let englishData: I18n = {};
 
 keyArray.concat(keyArray.push(dataKey.split(".")));
 
@@ -61,10 +68,16 @@ async function writeValueToDb(value: string, lang: string, key: string) {
 
 async function setStringUpdateState(key: string) {
   return await ApiClient.query<I18n, MutationSetStringUpdateStateArgs>(SetStringUpdateStateDocument, {
-    key: key
+    key: key,
   });
 }
 
+async function getEnglishVersion(lang: string, key: string) {
+  return await ApiClient.query<I18n, QueryGetStringByMaxVersionArgs>(GetStringByMaxVersionDocument, {
+    lang: lang,
+    key: key,
+  });
+}
 </script>
 
 <div class="flex-row min-w-[600px] border-t-8 border-t-white p-5">
@@ -89,6 +102,9 @@ async function setStringUpdateState(key: string) {
   </div>
   <div class="flex justify-between items-center w-full">
     <p class="text-red-600 ml-6 text-xl w-full">{dataString}</p>
+    {#if compareMode}
+      <p class="text-red-600 ml-6 text-xl w-full">English: {englishData.value}</p>
+    {/if}
 
     <div class="flex">
       {#if editMode}
@@ -97,7 +113,7 @@ async function setStringUpdateState(key: string) {
             class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
             on:click="{async () => {
               let updatedObject = await writeValueToDb(inputValue, dataLang, dataKey);
-              await setStringUpdateState(dataKey)
+              await setStringUpdateState(dataKey);
               await loadOlderVersions(dataLang, dataKey);
               dataVersion = updatedObject.version;
               dataString = updatedObject.value;
@@ -117,6 +133,13 @@ async function setStringUpdateState(key: string) {
           on:click="{() => {
             editMode = true;
           }}">Edit</button>
+      {/if}
+      {#if userLanguage != "en"}
+      <button class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500" on:click="{async () => {
+        englishData = await getEnglishVersion("en", dataKey);
+        compareMode = true;
+      }}"
+        >Compare with english-version</button>
       {/if}
     </div>
   </div>

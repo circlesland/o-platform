@@ -31,6 +31,7 @@ let searchValue: string = "";
 let treeData: I18n[] = [];
 let displayedTree: CTreeNode;
 let snapshot = {};
+let updateMode: boolean = false;
 
 onMount(async () => {
   getPaginatedStrings(pagination_key, keyFilter, userLanguage, searchValue);
@@ -127,13 +128,16 @@ async function createTree(rootData: I18n[]): Promise<CTreeNode> {
         }
         keyFilter = event.detail.searchKey;
         i18nData = [];
+        updateMode = event.detail.updateMode
         getPaginatedStringsToUpdate('', keyFilter, userLanguage, '');
       }}" />
   </div>
   <div class="col-span-3 bg-gray-200 rounded">
     <EditorView
+      userLanguage="{userLanguage}"
       i18nData="{i18nData}"
       searchKey="{keyFilter}"
+      updateMode="{updateMode}"
       on:newString="{() => {
         getPaginatedStrings('', '', userLanguage, '');
       }}"
@@ -156,6 +160,10 @@ async function createTree(rootData: I18n[]): Promise<CTreeNode> {
       on:loadMoreStrings="{() => {
         pagination_key = i18nData[i18nData.length - 1].pagination_key;
         getPaginatedStrings(pagination_key, keyFilter, userLanguage, searchValue);
-      }}" />
+      }}" 
+      on:loadMoreStringsToUpdate="{() => {
+        pagination_key = i18nData[i18nData.length - 1].pagination_key;
+        getPaginatedStringsToUpdate(pagination_key, keyFilter, userLanguage, searchValue);
+      }}"/>
   </div>
 </section>

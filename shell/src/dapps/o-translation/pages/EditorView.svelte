@@ -20,6 +20,8 @@ import { createEventDispatcher } from "svelte";
 
 export let searchKey: string = "";
 export let i18nData: I18n[] = [];
+export let updateMode: boolean = false;
+export let userLanguage: string;
 
 let valueFilter: string = "";
 let allLanguages: string[] = [];
@@ -29,6 +31,7 @@ let createNewStringMode: boolean = false;
 let keyToCreate: string = "";
 let stringToCreate: string = "";
 let availableLanguages: I18n[] = [];
+
 
 const dispatch = createEventDispatcher();
 
@@ -78,10 +81,19 @@ onMount(async () => {
   });
 });
 
-function loadMorenWhenInViewport(e) {
+function loadMoreWhenInViewport(e) {
   const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
-      dispatch("loadMoreStrings");
+      dispatch("loadMoreStrings", updateMode);
+    }
+  });
+  observer.observe(e);
+}
+
+function loadMoreUpdateStringsWhenInViewport(e) {
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      dispatch("loadMoreStringsToUpdate", updateMode);
     }
   });
   observer.observe(e);
@@ -206,6 +218,7 @@ async function setStringUpdateState(key: string) {
         <div class="w-full">
           <StringEditor
             on:save="{() => reload()}"
+            userLanguage="{userLanguage}"
             dataString="{data.value}"
             dataKey="{data.key}"
             dataLang="{data.lang}"
@@ -214,8 +227,10 @@ async function setStringUpdateState(key: string) {
       {/each}
     {/if}
 
-    {#if i18nData.length}
-      <div use:loadMorenWhenInViewport class="btn-primary rounded-btn"></div>
+    {#if i18nData.length && !updateMode}
+      <div use:loadMoreWhenInViewport class="btn-primary rounded-btn"></div>
+    {:else if i18nData.length && updateMode}
+      <div use:loadMoreUpdateStringsWhenInViewport class="btn-primary rounded-btn"></div>
     {/if}
   </div>
 </section>
