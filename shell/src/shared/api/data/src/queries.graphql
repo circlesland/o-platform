@@ -2139,8 +2139,8 @@ query getAllStringsByMaxVersionAndLang($lang: String) {
   }
 }
 
-query getStringsToBeUpdated($lang: String, $key: String) {
-  getStringsToBeUpdated(lang: $lang, key: $key)
+query getStringsToBeUpdatedAmount($lang: String, $key: String) {
+  getStringsToBeUpdatedAmount(lang: $lang, key: $key)
 }
 
 query getStringByMaxVersion($lang: String, $key: String) {
@@ -2205,6 +2205,17 @@ query getFirst20StringsByMaxVersionKey($key: String) {
 
 query getPaginatedStrings($pagination_key: String, $key: String, $lang: String, $value: String) {
   getPaginatedStrings(pagination_key: $pagination_key, key: $key, lang: $lang, value: $value) {
+    lang
+    key
+    createdBy
+    version
+    value
+    pagination_key
+  }
+}
+
+query getPaginatedStringsToUpdate($pagination_key: String, $key: String, $lang: String, $value: String) {
+  getPaginatedStringsToUpdate(pagination_key: $pagination_key, key: $key, lang: $lang, value: $value) {
     lang
     key
     createdBy

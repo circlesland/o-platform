@@ -1,9 +1,7 @@
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import { onMount } from "svelte";
-import { replace } from "svelte-spa-router";
-import { string } from "yup/lib/locale";
-import { GetStringsToBeUpdatedDocument, I18n, QueryGetStringsToBeUpdatedArgs } from "../../../shared/api/data/types";
+import { GetStringsToBeUpdatedAmountDocument, I18n, QueryGetStringsToBeUpdatedAmountArgs } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
 
 import { CTreeNode, StateSnapshot } from "../classes/treenode";
@@ -17,6 +15,7 @@ let expand: boolean;
 let searchKey: string = "";
 let stringsToBeUpdated: number;
 
+
 $: {
   searchKey;
   language;
@@ -25,13 +24,12 @@ $: {
 }
 
 onMount(async () => {
-  stringsToBeUpdated = await getStringsToBeUpdated(language, rootNode.snapId.replace("root.", ""));
-  console.log(language, "blablablabl")
+  stringsToBeUpdated = await getStringsToBeUpdatedAmount(language, rootNode.snapId.replace("root.", ""));
 });
 
-async function getStringsToBeUpdated(lang: string, key: string) {
-  return (stringsToBeUpdated = await ApiClient.query<number, QueryGetStringsToBeUpdatedArgs>(
-    GetStringsToBeUpdatedDocument,
+async function getStringsToBeUpdatedAmount(lang: string, key: string) {
+  return (stringsToBeUpdated = await ApiClient.query<number, QueryGetStringsToBeUpdatedAmountArgs>(
+    GetStringsToBeUpdatedAmountDocument,
     {
       lang: lang,
       key: key,
@@ -88,10 +86,14 @@ async function getStringsToBeUpdated(lang: string, key: string) {
       {rootNode.key}
     </p>
     {#if stringsToBeUpdated > 0 && stringsToBeUpdated != undefined}
-    <span class="ml-4 text-warning">
-      {stringsToBeUpdated}
-    </span>
-      
+      <p
+        class="ml-4 text-warning w-4 text-center hover:bg-blue-500 hover:cursor-pointer hover:rounded"
+        on:click="{() => {
+          searchKey = rootNode.snapId.replace('root.', '');
+          dispatch('getStringsToUpdate', { searchKey: searchKey });
+        }}">
+        {stringsToBeUpdated}
+      </p>
     {/if}
   </span>
 </div>

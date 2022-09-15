@@ -5,7 +5,15 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import TreeView from "./TreeView.svelte";
 import EditorView from "./EditorView.svelte";
-import { GetAllStringsByMaxVersionAndLangDocument, GetAllStringsByMaxVersionAndLangQuery, GetPaginatedStringsDocument, I18n, QueryGetPaginatedStringsArgs } from "../../../shared/api/data/types";
+import {
+  GetPaginatedStringsToUpdateDocument,
+  QueryGetPaginatedStringsToUpdateArgs,
+  GetAllStringsByMaxVersionAndLangDocument,
+  GetAllStringsByMaxVersionAndLangQuery,
+  GetPaginatedStringsDocument,
+  I18n,
+  QueryGetPaginatedStringsArgs,
+} from "../../../shared/api/data/types";
 import { onMount } from "svelte";
 import { ApiClient } from "../../../shared/apiConnection";
 import { Environment } from "../../../shared/environment";
@@ -26,9 +34,9 @@ let snapshot = {};
 
 onMount(async () => {
   getPaginatedStrings(pagination_key, keyFilter, userLanguage, searchValue);
-  await getTreeData(userLanguage)
-  displayedTree = await createTree(treeData)
-  displayedTree.restoreStateSnapshot({ root: true })
+  await getTreeData(userLanguage);
+  displayedTree = await createTree(treeData);
+  displayedTree.restoreStateSnapshot({ root: true });
 });
 
 $: {
@@ -48,16 +56,33 @@ async function getPaginatedStrings(pagination_key: string, searchKey: string, la
   i18nData = i18nData.concat(queryResult);
 }
 
+async function getPaginatedStringsToUpdate(
+  pagination_key: string,
+  searchKey: string,
+  lang: string,
+  searchString: string
+) {
+  let queryResult = await ApiClient.query<I18n[], QueryGetPaginatedStringsToUpdateArgs>(
+    GetPaginatedStringsToUpdateDocument,
+    {
+      key: searchKey,
+      pagination_key: pagination_key,
+      lang: lang,
+      value: searchString,
+    }
+  );
+  i18nData = i18nData.concat(queryResult);
+}
 
 async function getTreeData(userLanguage: string) {
   const queryResult = await ApiClient.query<I18n[], GetAllStringsByMaxVersionAndLangQuery>(
     GetAllStringsByMaxVersionAndLangDocument,
     {
-      lang: userLanguage
+      lang: userLanguage,
     }
   );
-  treeData = queryResult
-  return queryResult
+  treeData = queryResult;
+  return queryResult;
 }
 
 async function createTree(rootData: I18n[]): Promise<CTreeNode> {
@@ -92,6 +117,17 @@ async function createTree(rootData: I18n[]): Promise<CTreeNode> {
         i18nData = [];
         keyFilter = event.detail.keyFilter;
         getPaginatedStrings('', event.detail.keyFilter, userLanguage, '');
+      }}"
+      on:getStringsToUpdate="{(event) => {
+        if (
+          !keyFilter.split('.').includes(event.detail.searchKey.split('.')[0]) ||
+          keyFilter !== event.detail.searchKey
+        ) {
+          i18nData = [];
+        }
+        keyFilter = event.detail.searchKey;
+        i18nData = [];
+        getPaginatedStringsToUpdate('', keyFilter, userLanguage, '');
       }}" />
   </div>
   <div class="col-span-3 bg-gray-200 rounded">
@@ -106,12 +142,11 @@ async function createTree(rootData: I18n[]): Promise<CTreeNode> {
         userLanguage = event.detail.languageCode;
         getPaginatedStrings('', keyFilter, userLanguage, '');
         snapshot = displayedTree.createStateSnapshot();
-        treeData = []
+        treeData = [];
         displayedTree = await createTree(treeData);
         treeData = await getTreeData(userLanguage);
         displayedTree = await createTree(treeData);
-        displayedTree.restoreStateSnapshot(snapshot)
-        console.log(treeData)
+        displayedTree.restoreStateSnapshot(snapshot);
       }}"
       on:stringSearch="{(event) => {
         i18nData = [];

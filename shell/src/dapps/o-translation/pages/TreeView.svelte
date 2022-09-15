@@ -55,6 +55,10 @@ $: {
   </form>
 
   <div class="mr-3 ml-3 mt-3">
-    <Tree rootNode="{displayedTree}" language="{language}" on:showStrings />
+    <Tree
+      rootNode="{displayedTree}"
+      language="{language}"
+      on:showStrings
+      on:getStringsToUpdate />
   </div>
 </section>

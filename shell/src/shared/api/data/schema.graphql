@@ -1339,11 +1339,12 @@ type Query {
   getStringsByMaxVersionKeyAndValue(key: String, value: String): [i18n]
   getFirst20StringsByMaxVersionKey(key: String): [i18n]
   getPaginatedStrings(pagination_key: String, key: String, lang: String, value: String): [i18n]
+  getPaginatedStringsToUpdate(pagination_key: String, key: String, lang: String, value: String): [i18n]
   allProfiles(sinceLastChange: Date): [ExportProfile]!
   allTrusts(sinceLastChange: Date): [ExportTrustRelation!]!
   getRandomAccount: RandomAccount
   signMessage(message: String!, key: String!): String!
-  getStringsToBeUpdated(lang: String, key: String): Int
+  getStringsToBeUpdatedAmount(lang: String, key: String): Int
 }
 
 type Subscription {

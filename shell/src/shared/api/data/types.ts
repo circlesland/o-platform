@@ -1163,11 +1163,12 @@ export type Query = {
   getAllStringsByMaxVersionAndLang?: Maybe<Array<Maybe<I18n>>>;
   getOlderVersionsByKeyAndLang?: Maybe<Array<Maybe<I18n>>>;
   getPaginatedStrings?: Maybe<Array<Maybe<I18n>>>;
+  getPaginatedStringsToUpdate?: Maybe<Array<Maybe<I18n>>>;
   allProfiles: Array<Maybe<ExportProfile>>;
   allTrusts: Array<ExportTrustRelation>;
   getRandomAccount?: Maybe<RandomAccount>;
   signMessage: Scalars['String'];
-  getStringsToBeUpdated?: Maybe<Scalars['Int']>;
+  getStringsToBeUpdatedAmount?: Maybe<Scalars['Int']>;
 };
 
 
@@ -1369,6 +1370,14 @@ export type QueryGetPaginatedStringsArgs = {
 };
 
 
+export type QueryGetPaginatedStringsToUpdateArgs = {
+  pagination_key?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+};
+
+
 export type QueryAllProfilesArgs = {
   sinceLastChange?: Maybe<Scalars['Date']>;
 };
@@ -1385,7 +1394,7 @@ export type QuerySignMessageArgs = {
 };
 
 
-export type QueryGetStringsToBeUpdatedArgs = {
+export type QueryGetStringsToBeUpdatedAmountArgs = {
   lang?: Maybe<Scalars['String']>;
   key?: Maybe<Scalars['String']>;
 };
@@ -3644,15 +3653,15 @@ export type GetAllStringsByMaxVersionAndLangQuery = (
   )>>> }
 );
 
-export type GetStringsToBeUpdatedQueryVariables = Exact<{
+export type GetStringsToBeUpdatedAmountQueryVariables = Exact<{
   lang?: Maybe<Scalars['String']>;
   key?: Maybe<Scalars['String']>;
 }>;
 
 
-export type GetStringsToBeUpdatedQuery = (
+export type GetStringsToBeUpdatedAmountQuery = (
   { __typename?: 'Query' }
-  & Pick<Query, 'getStringsToBeUpdated'>
+  & Pick<Query, 'getStringsToBeUpdatedAmount'>
 );
 
 export type GetStringByMaxVersionQueryVariables = Exact<{
@@ -3747,6 +3756,22 @@ export type GetPaginatedStringsQueryVariables = Exact<{
 export type GetPaginatedStringsQuery = (
   { __typename?: 'Query' }
   & { getPaginatedStrings?: Maybe<Array<Maybe<(
+    { __typename?: 'i18n' }
+    & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value' | 'pagination_key'>
+  )>>> }
+);
+
+export type GetPaginatedStringsToUpdateQueryVariables = Exact<{
+  pagination_key?: Maybe<Scalars['String']>;
+  key?: Maybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetPaginatedStringsToUpdateQuery = (
+  { __typename?: 'Query' }
+  & { getPaginatedStringsToUpdate?: Maybe<Array<Maybe<(
     { __typename?: 'i18n' }
     & Pick<I18n, 'lang' | 'key' | 'createdBy' | 'version' | 'value' | 'pagination_key'>
   )>>> }
@@ -6635,9 +6660,9 @@ export const GetAllStringsByMaxVersionAndLangDocument = gql`
   }
 }
     `;
-export const GetStringsToBeUpdatedDocument = gql`
-    query getStringsToBeUpdated($lang: String, $key: String) {
-  getStringsToBeUpdated(lang: $lang, key: $key)
+export const GetStringsToBeUpdatedAmountDocument = gql`
+    query getStringsToBeUpdatedAmount($lang: String, $key: String) {
+  getStringsToBeUpdatedAmount(lang: $lang, key: $key)
 }
     `;
 export const GetStringByMaxVersionDocument = gql`
@@ -6709,6 +6734,23 @@ export const GetFirst20StringsByMaxVersionKeyDocument = gql`
 export const GetPaginatedStringsDocument = gql`
     query getPaginatedStrings($pagination_key: String, $key: String, $lang: String, $value: String) {
   getPaginatedStrings(
+    pagination_key: $pagination_key
+    key: $key
+    lang: $lang
+    value: $value
+  ) {
+    lang
+    key
+    createdBy
+    version
+    value
+    pagination_key
+  }
+}
+    `;
+export const GetPaginatedStringsToUpdateDocument = gql`
+    query getPaginatedStringsToUpdate($pagination_key: String, $key: String, $lang: String, $value: String) {
+  getPaginatedStringsToUpdate(
     pagination_key: $pagination_key
     key: $key
     lang: $lang
@@ -7194,8 +7236,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     getAllStringsByMaxVersionAndLang(variables?: GetAllStringsByMaxVersionAndLangQueryVariables): Promise<GetAllStringsByMaxVersionAndLangQuery> {
       return withWrapper(() => client.request<GetAllStringsByMaxVersionAndLangQuery>(print(GetAllStringsByMaxVersionAndLangDocument), variables));
     },
-    getStringsToBeUpdated(variables?: GetStringsToBeUpdatedQueryVariables): Promise<GetStringsToBeUpdatedQuery> {
-      return withWrapper(() => client.request<GetStringsToBeUpdatedQuery>(print(GetStringsToBeUpdatedDocument), variables));
+    getStringsToBeUpdatedAmount(variables?: GetStringsToBeUpdatedAmountQueryVariables): Promise<GetStringsToBeUpdatedAmountQuery> {
+      return withWrapper(() => client.request<GetStringsToBeUpdatedAmountQuery>(print(GetStringsToBeUpdatedAmountDocument), variables));
     },
     getStringByMaxVersion(variables?: GetStringByMaxVersionQueryVariables): Promise<GetStringByMaxVersionQuery> {
       return withWrapper(() => client.request<GetStringByMaxVersionQuery>(print(GetStringByMaxVersionDocument), variables));
@@ -7217,6 +7259,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getPaginatedStrings(variables?: GetPaginatedStringsQueryVariables): Promise<GetPaginatedStringsQuery> {
       return withWrapper(() => client.request<GetPaginatedStringsQuery>(print(GetPaginatedStringsDocument), variables));
+    },
+    getPaginatedStringsToUpdate(variables?: GetPaginatedStringsToUpdateQueryVariables): Promise<GetPaginatedStringsToUpdateQuery> {
+      return withWrapper(() => client.request<GetPaginatedStringsToUpdateQuery>(print(GetPaginatedStringsToUpdateDocument), variables));
     },
     getAvailableLanguages(variables?: GetAvailableLanguagesQueryVariables): Promise<GetAvailableLanguagesQuery> {
       return withWrapper(() => client.request<GetAvailableLanguagesQuery>(print(GetAvailableLanguagesDocument), variables));
