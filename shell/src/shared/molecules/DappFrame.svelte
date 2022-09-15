@@ -1313,7 +1313,7 @@ function showMainPage(
       routable: routable,
     },
   };
-  const leftSlotOverride = routable?.type === "page" ? routable.navigation.leftSlot : undefined;
+  const leftSlotOverride = routable?.type === "page" ? routable.navigation?.leftSlot : undefined;
   setNav({
     leftSlotOverride: leftSlotOverride,
     ...currentNavArgs,
