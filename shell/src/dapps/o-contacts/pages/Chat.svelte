@@ -18,7 +18,7 @@
   let _contacts:Contact[] = [];
   contacts.subscribe(c => {
     console.log("Contacts changed.")
-    _contacts = c;
+    _contacts = c.filter(o => !o.metadata?.find(o => o.name == "Search"));
   });
 </script>
 <template lang="pug">
