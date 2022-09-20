@@ -44,17 +44,13 @@ $: {
     fromProfile = toProfile;
 
     amount = Currency.instance().displayAmount(
-      event.payload && event.payload.value
-        ? event.payload.value.toString()
-        : "0",
+      event.payload && event.payload.value ? event.payload.value.toString() : "0",
       event.timestamp,
       $me.displayCurrency
     );
     amountTime = Currency.instance()
       .displayAmount(
-        event.payload && event.payload.value
-          ? event.payload.value.toString()
-          : "0",
+        event.payload && event.payload.value ? event.payload.value.toString() : "0",
         event.timestamp,
         "TIME_CRC",
         null
@@ -80,12 +76,10 @@ $: {
       lastName: "",
       circlesAddress: ercTransfer.to,
     };
-    amount = parseFloat(
-      RpcGateway.get().utils.fromWei(ercTransfer.value, "ether")
-    ).toFixed(2);
+    amount = parseFloat(RpcGateway.get().utils.fromWei(ercTransfer.value, "ether")).toFixed(2);
     message = "ERC-20 Transfer";
     amountTime = amount;
-/*
+    /*
     amountTime = Currency.instance()
       .displayAmount(amount ? amount : "0", event.timestamp, "TIME_CRC", null)
       .toString();
@@ -112,9 +106,7 @@ $: {
       transfers: hubTransfer.transfers,
     };
 
-    message = hubTransfer.tags?.find(
-      (o) => o.typeId === "o-banking:transfer:message:1"
-    )?.value;
+    message = hubTransfer.tags?.find((o) => o.typeId === "o-banking:transfer:message:1")?.value;
 
     if (event.payload?.__typename == EventType.CrcHubTransfer) {
       const ht = <CrcHubTransfer>event.payload;
@@ -125,12 +117,7 @@ $: {
       );
 
       amountTime = Currency.instance()
-        .displayAmount(
-          event.payload && ht.flow ? ht.flow.toString() : "0",
-          event.timestamp,
-          "TIME_CRC",
-          null
-        )
+        .displayAmount(event.payload && ht.flow ? ht.flow.toString() : "0", event.timestamp, "TIME_CRC", null)
         .toString();
     }
 
@@ -140,11 +127,7 @@ $: {
   }
 
   if (event.payload?.__typename != EventType.Erc20Transfer) {
-    amount += ` ${
-      Currency.currencySymbol[
-        $me.displayCurrency ? $me.displayCurrency : "EURS"
-      ]
-    }`;
+    amount += ` ${Currency.currencySymbol[$me.displayCurrency ? $me.displayCurrency : "EURS"]}`;
   }
 
   if (event.timestamp) {
@@ -161,34 +144,25 @@ function loadDetailPage(path) {
 }
 </script>
 
-<div
-  on:click="{() => loadDetailPage(event.transaction_hash)}"
-  class="cursor-pointer">
+<div on:click="{() => loadDetailPage(event.transaction_hash)}" class="cursor-pointer">
   <ItemCard
     params="{{
       edgeless: false,
       imageProfile: targetProfile,
       profileLink: `#/contacts/profile/${targetProfile.circlesAddress}`,
-      imageAlt:
-        event.direction === 'in'
-          ? fromProfile.circlesAddress
-          : toProfile.circlesAddress,
+      imageAlt: event.direction === 'in' ? fromProfile.circlesAddress : toProfile.circlesAddress,
 
-      title: displayableName(
-        targetProfile.firstName,
-        targetProfile.lastName ? targetProfile.lastName : null
-      ),
+      title: displayableName(targetProfile.firstName, targetProfile.lastName ? targetProfile.lastName : null),
       subTitle: messageString ? messageString : '',
       truncateMain: true,
       endTextBig: amount,
       profileLink: true,
       mobileTextCutoff: 19,
-      endTextBigClass: amount.startsWith('-') ? 'text-alert' : undefined,
+      endTextBigClass: amount.startsWith('-') ? 'text-negative' : undefined,
     }}">
     <div slot="itemCardEndSmallElement">
       {#if amountTime}
-        <div
-          class="flex flex-row items-center pt-1 space-x-1 justify-items-center">
+        <div class="flex flex-row items-center pt-1 space-x-1 justify-items-center">
           <div class="justify-self-center">{amountTime}</div>
           <div class="">
             <Icons icon="timeCircle" size="{3}" />

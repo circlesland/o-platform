@@ -9,6 +9,8 @@ import {
   GetAvailableLanguagesQuery,
   I18n,
   MutationCreateNewStringAndKeyArgs,
+  MutationSetStringUpdateStateArgs,
+  SetStringUpdateStateDocument,
 } from "../../../shared/api/data/types";
 
 import { ApiClient } from "../../../shared/apiConnection";
@@ -18,15 +20,17 @@ import { createEventDispatcher } from "svelte";
 
 export let searchKey: string = "";
 export let i18nData: I18n[] = [];
+export let updateMode: boolean = false;
+export let userLanguage: string;
 
 let valueFilter: string = "";
 let allLanguages: string[] = [];
-let nextData: I18n[] = [];
 let selectedLanguage: string = "";
 let createNewStringMode: boolean = false;
 let keyToCreate: string = "";
 let stringToCreate: string = "";
 let availableLanguages: I18n[] = [];
+
 
 const dispatch = createEventDispatcher();
 
@@ -48,20 +52,15 @@ async function getAllLanguages() {
   });
 }
 
-async function reload() {
-  i18nData = i18nData.concat(nextData);
-}
-
 $: {
   i18nData;
-  nextData;
   searchKey;
   selectedLanguage;
 }
 
 onMount(async () => {
   selectedLanguage = Environment.userLanguage;
-  reload();
+  // reload();
   getAllLanguages();
   const i18nResult = await ApiClient.query<I18n[], GetAvailableLanguagesQuery>(GetAvailableLanguagesDocument, {});
   availableLanguages = i18nResult;
@@ -76,10 +75,19 @@ onMount(async () => {
   });
 });
 
-function loadMorenWhenInViewport(e) {
+function loadMoreWhenInViewport(e) {
   const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
-      dispatch("loadMoreStrings");
+      dispatch("loadMoreStrings", updateMode);
+    }
+  });
+  observer.observe(e);
+}
+
+function loadMoreUpdateStringsWhenInViewport(e) {
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      dispatch("loadMoreStringsToUpdate", updateMode);
     }
   });
   observer.observe(e);
@@ -93,6 +101,7 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
     value: value,
   });
 }
+
 </script>
 
 <section class="flex flex-col items-center justify-center p-6">
@@ -173,9 +182,9 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
             on:click="{async () => {
               for (let i = 0; i < availableLanguages.length; i++) {
                 await writeNewKeyToDb(availableLanguages[i].lang, keyToCreate, 1, stringToCreate);
-                dispatch('newString');
               }
               createNewStringMode = false;
+              dispatch('newString');
             }}">create</button>
           <button
             class="bg-red-200 rounded-md btn-md hover:bg-red-500"
@@ -192,21 +201,24 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
   <div class="pt-20 w-full">
     {#if !i18nData.length}
       <h1 class="flex justify-center align-middle text-alert pt-20">No matching result</h1>
-    {:else}
-      {#each i18nData as data (data.key + data.lang + data.version)}
-        <div class="w-full">
-          <StringEditor
-            on:save="{() => reload()}"
-            dataString="{data.value}"
-            dataKey="{data.key}"
-            dataLang="{data.lang}"
-            dataVersion="{data.version}" />
-        </div>
-      {/each}
     {/if}
-
-    {#if i18nData.length}
-      <div use:loadMorenWhenInViewport class="btn-primary rounded-btn"></div>
+    
+    {#each i18nData as data (data.key + data.lang + data.version)}
+      <div class="w-full">
+        <StringEditor
+          on:save
+          userLanguage="{userLanguage}"
+          dataString="{data.value}"
+          dataKey="{data.key}"
+          dataLang="{data.lang}"
+          dataVersion="{data.version}" />
+      </div>
+    {/each}
+  
+    {#if i18nData.length && !updateMode}
+      <div use:loadMoreWhenInViewport class="btn-primary rounded-btn"></div>
+    {:else if i18nData.length && updateMode}
+      <div use:loadMoreUpdateStringsWhenInViewport class="btn-primary rounded-btn"></div>
     {/if}
   </div>
 </section>

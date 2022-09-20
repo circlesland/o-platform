@@ -29,7 +29,8 @@ $: {
   <div class="self-center flex-grow text-center justify-self-start">
     <div class="text-xl">
       <h1 class="text-4xl text-white font-heading">
-        <Label key="dapps.o-dashboard.atoms.dashboardHeader.welcome"  /> {name}
+        <Label key="dapps.o-dashboard.atoms.dashboardHeader.welcome" />
+        {name}
       </h1>
     </div>
   </div>

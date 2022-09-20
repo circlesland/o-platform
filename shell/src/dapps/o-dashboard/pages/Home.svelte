@@ -1,7 +1,7 @@
 <script lang="ts">
 import { me } from "../../../shared/stores/me";
 import { onMount } from "svelte";
-import { push } from "svelte-spa-router";
+
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import {
@@ -18,9 +18,10 @@ import SimpleHeader from "../../../shared/atoms/SimpleHeader.svelte";
 import { Environment } from "../../../shared/environment";
 import Label from "../../../shared/atoms/Label.svelte";
 import DashboardInvitesWidget from "../molecules/DashboardInvitesWidget.svelte";
-import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import Icons from "../../../shared/molecules/Icons.svelte";
 import LangSwitcher from "../../../shared/atoms/LangSwitcher.svelte";
 import { ApiClient } from "../../../shared/apiConnection";
+import DashboardColorCard from "../atoms/DashboardColorCard.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -63,14 +64,6 @@ const init = async () => {
 
 onMount(init);
 
-function loadLink(link, external = false) {
-  if (external) {
-    window.open(link, "_blank").focus();
-  } else {
-    push(link);
-  }
-}
-
 async function fetchStats() {
   const apiClient = await window.o.apiClient.client.subscribeToResult();
   const result = await apiClient.query({
@@ -88,100 +81,73 @@ async function fetchStats() {
 <div class="mx-auto md:w-2/3 xl:w-1/2">
   <div class="m-4 mb-40 ">
     <!--<LangSwitcher />-->
-    <DashboardInvitesWidget stats="{statsResult}" />
-    <!-- <section class="flex items-start bg-white rounded-lg shadow-md cursor-pointer">
-      <div class="flex flex-col w-full" on:click={() => loadLink("/marketplace/locations")}>
-        <header class="rounded-lg shadow-md headerImageContainer">
-          <div class="relative rounded-lg image-wrapper">
-            <img src="/images/events/Screenshot from 2022-06-04 15-34-14.png" alt="" class="rounded-lg" />
-          </div>
-        </header>
-      </div>
-    </section> -->
-    <div class="grid grid-cols-2 gap-4 mt-4 text-base auto-rows-fr dashboard-grid lg:grid-cols-3">
-      <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-        on:click="{() => loadLink('/passport/profile')}">
-        <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
-          <div class="pt-2 text-primary">
-            <!-- <Icons icon="dashpassport" /> -->
-            <Icon name="identification" class="w-20 h-20 heroicon" />
-          </div>
-          <div class="mt-4 text-3xl font-heading text-dark">
-            <Label key="dapps.o-dashboard.pages.home.passport" />
-          </div>
-        </div>
-      </section>
+    <!-- bg-passport-light bg-passport bg-banking bg-banking-light bg-marketplace bg-marketplace-light bg-contacts bg-contacts-light -->
+    <DashboardInvitesWidget />
+    <div class="flex flex-col space-y-4">
+      <DashboardColorCard
+        color="passport"
+        link="/passport/profile"
+        blobshape="60% 40% 56% 38% / 99% 50% 90% 57%"
+        icon="identification"
+        title="dapps.o-dashboard.pages.home.passport" />
+
+      <DashboardColorCard
+        color="banking"
+        link="/banking/transactions"
+        blobshape="137% 1% 119% 38% / 99% 60% 86% 73%"
+        icon="cash"
+        title="dapps.o-dashboard.pages.home.banking" />
+
+      <DashboardColorCard
+        color="marketplace"
+        link="/marketplace/locations"
+        blobshape="60% 4% 83% 88% / 99% 50% 90% 81%"
+        icon="shopping-cart"
+        title="dapps.o-dashboard.pages.home.market" />
+
+      <DashboardColorCard
+        color="contacts"
+        link="/contacts/chat"
+        blobshape="175% 0% 92% 93% / 110% 32% 110% 81%"
+        icon="users"
+        title="dapps.o-dashboard.pages.home.contacts" />
+      <!-- 
       <section
         class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
         on:click="{() => loadLink('/contacts')}">
         <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
           <div class="pt-2 text-primary">
-            <Icon name="users" class="w-20 h-20 heroicon" />
+            <Icons icon="users" class="w-20 h-20 heroicon" />
           </div>
           <div class="mt-4 text-3xl font-heading text-dark">
             <Label key="dapps.o-dashboard.pages.home.contacts" />
           </div>
         </div>
       </section>
-      <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-        on:click="{() => loadLink('/contacts/chat')}">
-        <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
-          <div class="pt-2 text-primary">
-            <Icon name="chat" class="w-20 h-20 heroicon" />
-          </div>
-          <div class="mt-4 text-3xl font-heading text-dark">
-            <Label key="dapps.o-dashboard.pages.home.chat" />
-          </div>
-        </div>
-      </section>
-      <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-        on:click="{() => loadLink('/banking/transactions')}">
-        <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
-          <div class="pt-2 text-primary">
-            <Icon name="cash" class="w-20 h-20 heroicon" />
-          </div>
-          <div class="mt-4 text-3xl font-heading text-dark">
-            <Label key="dapps.o-dashboard.pages.home.banking" />
-          </div>
-        </div>
-      </section>
-      <section
-        class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
-        on:click="{() => loadLink('/marketplace/locations')}">
-        <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
-          <div class="pt-2 text-primary">
-            <Icon name="shopping-cart" class="w-20 h-20 heroicon" />
-          </div>
-          <div class="mt-4 text-3xl font-heading text-dark">
-            <Label key="dapps.o-dashboard.pages.home.market" />
-          </div>
-        </div>
-      </section>
+      
+       -->
 
-      {#if canVerify}
+      <!-- {#if canVerify}
         <section
           class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
           on:click="{() => loadLink('/verification/verifications')}">
           <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
             <div class="pt-2 text-primary">
-              <Icon name="badge-check" class="w-20 h-20 heroicon" />
+              <Icons icon="badge-check" class="w-20 h-20 heroicon" />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
               <Label key="dapps.o-dashboard.pages.home.verified" />
             </div>
           </div>
         </section>
-      {/if}
-      {#if hasTickets}
+      {/if} -->
+      <!-- {#if hasTickets}
         <section
           class="flex items-center justify-center bg-white rounded-lg shadow-md cursor-pointer dashboard-card"
           on:click="{() => loadLink('/marketplace/my-tickets')}">
           <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
             <div class="pt-2 text-primary">
-              <Icon name="ticket" class="w-20 h-20 heroicon" />
+              <Icons icon="ticket" class="w-20 h-20 heroicon" />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
               <Label key="dapps.o-dashboard.pages.home.tickets" />
@@ -195,14 +161,14 @@ async function fetchStats() {
           on:click="{() => loadLink('/gallery/nfts')}">
           <div class="flex flex-col items-center w-full p-4 pt-6 justify-items-center">
             <div class="pt-2 text-primary">
-              <Icon name="photograph" class="w-20 h-20 heroicon" />
+              <Icons icon="photograph" class="w-20 h-20 heroicon" />
             </div>
             <div class="mt-4 text-3xl font-heading text-dark">
               <Label key="dapps.o-dashboard.pages.home.gallery" />
             </div>
           </div>
         </section>
-      {/if}
+      {/if} -->
     </div>
   </div>
 </div>

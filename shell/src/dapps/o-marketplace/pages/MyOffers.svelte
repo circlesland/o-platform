@@ -39,7 +39,7 @@ import { showToast } from "../../../shared/toast";
 import ImageUpload from "../../../shared/molecules/ImageUpload/ImageUpload.svelte";
 import { useMachine } from "@xstate/svelte";
 import { flip } from "svelte/animate";
-import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import Icons from "../../../shared/molecules/Icons.svelte";
 import ShopEditorSelector from "../molecules/ShopEditorSelector.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
@@ -339,7 +339,7 @@ function handleEdit(event) {
                     on:click="{() => imageEditor(category.id, entry.id, false)}">
                     <span>
                       <span class="table-cell w-10 h-10 align-middle bg-black rounded-full text-primary bg-opacity-60">
-                        <Icon name="camera" class="inline w-6 h-6 heroicon smallicon" />
+                        <Icons icon="camera" customClass="inline w-6 h-6 heroicon smallicon" />
                       </span>
                     </span>
                   </div>

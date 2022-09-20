@@ -154,7 +154,7 @@ async function submit() {
 
   {#if fileSelected}
     <div class="flex justify-between w-full p-4">
-      <button class="btn btn-light" on:click="{() => reset()}">Remove Image</button>
+      <button class="btn btn-primary btn-outline" on:click="{() => reset()}">Remove Image</button>
       <button class="btn btn-primary" on:click="{submit}">Save Image</button>
     </div>
   {/if}

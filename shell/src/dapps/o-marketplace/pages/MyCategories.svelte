@@ -9,7 +9,7 @@ import { Routable } from "@o-platform/o-interfaces/dist/routable";
 import ImageUpload from "../../../shared/molecules/ImageUpload/ImageUpload.svelte";
 import { useMachine } from "@xstate/svelte";
 import { flip } from "svelte/animate";
-import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import Icons from "../../../shared/molecules/Icons.svelte";
 import { me } from "../../../shared/stores/me";
 import ShopEditorSelector from "../molecules/ShopEditorSelector.svelte";
 import {
@@ -249,7 +249,7 @@ function toggleEditCategory(categoryId, index) {
                       <span>
                         <span
                           class="table-cell w-10 h-10 align-middle bg-black rounded-full text-primary bg-opacity-60">
-                          <Icon name="camera" class="inline w-6 h-6 heroicon smallicon" />
+                          <Icons icon="camera" customClass="inline w-6 h-6 heroicon smallicon" />
                         </span>
                       </span>
                     </div>
@@ -272,7 +272,7 @@ function toggleEditCategory(categoryId, index) {
                         placeholder="{category.name}"
                         bind:value="{category.name}" />
                       <button class="inline btn btn-square btn-primary" on:click="{() => submit()}">
-                        <Icon name="check" class="inline w-6 h-6 heroicon smallicon" />
+                        <Icons icon="check" customClass="inline w-6 h-6 heroicon smallicon" />
                       </button>
                     {:else}
                       <span class="inline-block">{category.name}</span>
@@ -289,7 +289,7 @@ function toggleEditCategory(categoryId, index) {
                         class:text-base="{editCategoryId == category.id}"
                         class:bg-black="{editCategoryId != category.id}"
                         class:text-primary="{editCategoryId != category.id}">
-                        <Icon name="pencil" class="inline w-6 h-6 heroicon smallicon" />
+                        <Icons icon="pencil" customClass="inline w-6 h-6 heroicon smallicon" />
                       </span>
                     </span>
                   </div>

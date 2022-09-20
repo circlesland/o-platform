@@ -5,3 +5,4 @@ declare namespace svelte.JSX {
     onfinalize?: (event: CustomEvent<DndEvent> & { target: EventTarget & T }) => void;
   }
 }
+/// <reference types="svelte-gestures" />

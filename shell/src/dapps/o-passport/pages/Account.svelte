@@ -28,11 +28,12 @@ $: {
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="px-4 mx-auto mb-20 -mt-3 md:w-2/3 xl:w-1/2">
+<div class="px-4 mx-auto mt-8 mb-20 md:w-2/3 xl:w-1/2">
   <ItemCard
     params="{{
       edgeless: false,
       imageProfile: $me,
+      noShadow: true,
       title: $me.displayName,
       subTitle: `${window.o.i18n('dapps.o-passport.pages.account.subTitle')}`,
       truncateMain: true,

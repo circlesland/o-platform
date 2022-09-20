@@ -41,7 +41,7 @@ onMount(async () => {
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
-<div class="mb-20 -mt-3 ">
+<div class="mb-20 ">
   <!-- <div class="flex flex-wrap items-stretch space-x-4 space-y-8"> -->
   {#if shop}
     <section class="flex items-start px-4 mx-auto mb-4 md:w-2/3 xl:w-1/2 rounded-xl">

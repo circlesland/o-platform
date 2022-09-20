@@ -3,7 +3,7 @@ import { EditorContext } from "./editorContext";
 import ProcessNavigation from "./ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { onMount } from "svelte";
-import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import Icons from "../../../shell/src/shared/molecules/Icons.svelte";
 
 export let context: EditorContext;
 
@@ -47,7 +47,7 @@ function onkeydown(e: KeyboardEvent) {
           }}">
           <span>
             <span class="table-cell w-10 h-10 align-middle bg-black rounded-full text-primary bg-opacity-60">
-              <Icon name="camera" class="inline w-6 h-6 heroicon smallicon" />
+              <Icons icon="camera" customClass="inline w-6 h-6 heroicon smallicon" />
             </span>
           </span>
         </div>

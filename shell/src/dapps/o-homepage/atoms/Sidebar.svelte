@@ -2,7 +2,7 @@
 import { clickOutside } from "src/shared/functions/clickOutside.ts";
 import Hamburger from "./Hamburger.svelte";
 import Label from "../../../shared/atoms/Label.svelte";
-import {Environment} from "../../../shared/environment";
+import { Environment } from "../../../shared/environment";
 export let open = false;
 
 function handleClickOutside(event) {
@@ -19,13 +19,11 @@ function handleClickOutside(event) {
     <Hamburger bind:open />
   </nav>
   <nav class="pt-16 pl-4 text-xl">
-    <a
-      href="/"
-      class="block mb-10 font-bold tracking-wide transition-colors duration-200 hover:text-primary"
+    <a href="/" class="block mb-10 font-bold tracking-wide transition-colors duration-200 hover:text-primary"
       ><Label key="dapps.o-homepage.atoms.sidebar.home" /></a>
 
     <a
-      href="{window.o.i18n("common.supportUrl")}"
+      href="{window.o.i18n('common.supportUrl')}"
       target="_blank"
       aria-label="Our product"
       title="Our product"
