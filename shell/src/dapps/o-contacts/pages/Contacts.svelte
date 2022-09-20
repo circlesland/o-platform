@@ -24,7 +24,7 @@ onMount(() => {
       .sort(sortAlphabetically)
       .filter(o => {
         const {trustIn, trustOut} = trustFromContactMetadata(o);
-        return trustIn > 0 || trustOut > 0;
+        return trustIn > 0 || trustOut > 0 && !o.metadata?.find(o => o.name == "Search");
       });
   });
 });

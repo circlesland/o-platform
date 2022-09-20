@@ -1,11 +1,14 @@
 <script lang="ts">
+import { createEventDispatcher } from "svelte";
 import { onMount } from "svelte";
 
 import {
   GetOlderVersionsByKeyAndLangDocument,
+  GetStringByMaxVersionDocument,
   I18n,
   MutationUpdateValueArgs,
   QueryGetOlderVersionsByKeyAndLangArgs,
+  QueryGetStringByMaxVersionArgs,
   UpdateValueDocument,
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
@@ -14,6 +17,7 @@ export let dataKey: string;
 export let dataLang: string;
 export let dataString: string;
 export let dataVersion: number;
+export let userLanguage: string;
 
 let editMode: boolean = false;
 let inputMode: boolean = false;
@@ -23,7 +27,9 @@ let keyArray = [];
 let selectedVersion: number = dataVersion;
 let inputValue: string;
 let olderVersionData = [];
-
+let compareMode: boolean = false;
+let englishData: I18n = {};
+let dispatch = createEventDispatcher()
 
 keyArray.concat(keyArray.push(dataKey.split(".")));
 
@@ -57,6 +63,12 @@ async function writeValueToDb(value: string, lang: string, key: string) {
   });
 }
 
+async function getEnglishVersion(lang: string, key: string) {
+  return await ApiClient.query<I18n, QueryGetStringByMaxVersionArgs>(GetStringByMaxVersionDocument, {
+    lang: lang,
+    key: key,
+  });
+}
 </script>
 
 <div class="flex-row min-w-[600px] border-t-8 border-t-white p-5">
@@ -81,6 +93,9 @@ async function writeValueToDb(value: string, lang: string, key: string) {
   </div>
   <div class="flex justify-between items-center w-full">
     <p class="text-red-600 ml-6 text-xl w-full">{dataString}</p>
+    {#if compareMode}
+      <p class="text-red-600 ml-6 text-xl w-full">English: {englishData.value}</p>
+    {/if}
 
     <div class="flex">
       {#if editMode}
@@ -95,6 +110,7 @@ async function writeValueToDb(value: string, lang: string, key: string) {
               selectedVersion = updatedObject.version;
               inputValue = '';
               editMode = false;
+              dispatch("save")
             }}">Save</button>
         {/if}
         <button
@@ -108,6 +124,13 @@ async function writeValueToDb(value: string, lang: string, key: string) {
           on:click="{() => {
             editMode = true;
           }}">Edit</button>
+      {/if}
+      {#if userLanguage != "en"}
+      <button class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500" on:click="{async () => {
+        englishData = await getEnglishVersion("en", dataKey);
+        compareMode = true;
+      }}"
+        >Compare with english-version</button>
       {/if}
     </div>
   </div>

@@ -15,11 +15,11 @@ export let routable: Routable;
 let error: string | undefined = undefined;
 let shellEventSubscription: Subscription;
 
-let _contacts: Contact[] = [];
-contacts.subscribe((c) => {
-  console.log("Contacts changed.");
-  _contacts = c;
-});
+  let _contacts:Contact[] = [];
+  contacts.subscribe(c => {
+    console.log("Contacts changed.")
+    _contacts = c.filter(o => !o.metadata?.find(o => o.name == "Search"));
+  });
 </script>
 
 <SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
