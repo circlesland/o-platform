@@ -24,7 +24,7 @@ onMount(() => {
       <svelte:component this="{props.component}" {...props.props} />
     </div>
 
-    <div class="-ml-4 text-xl justify-self-start font-heading">
+    <div class="-ml-6 text-xl justify-self-start font-heading">
       <Label key="shared.molecules.nextNav.components.loginPill.signInNow" />
     </div>
   </div>
