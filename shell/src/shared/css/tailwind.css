@@ -17,6 +17,10 @@ body {
     @apply normal-case;
   }
 
+  .link-primary {
+    @apply text-base;
+  }
+
   .avatar,
   .avatar *,
   .avatar::before,
