@@ -157,6 +157,9 @@ const processDefinition = (processId: string) =>
               }
             );
             context.data.id = result.id;
+
+            await me.reload();
+
             return result;
           },
           onDone: "#success",
@@ -168,7 +171,7 @@ const processDefinition = (processId: string) =>
         id: "success",
         data: (context, event: any) => {
           if (context.data.successAction) {
-            me.reload().then(() => context.data.successAction(context.data));
+            context.data.successAction(context.data);
           }
           return event.data;
         },

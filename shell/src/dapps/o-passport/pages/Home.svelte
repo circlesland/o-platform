@@ -15,6 +15,7 @@ import { upsertOrganisation } from "../../o-coop/processes/upsertOrganisation";
 import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";
 import { upsertShippingAddress } from "../processes/upsertShippingAddress";
 import Label from "../../../shared/atoms/Label.svelte";
+import {loadProfile} from "../../../shared/functions/loadProfile";
 
 let name;
 let profile: Profile;
@@ -146,6 +147,9 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
                       on:click="{() => {
                         window.o.runProcess(upsertShippingAddress, {
                           ...shippingAddress,
+                          successAction: () => {
+                            profile = $me;
+                          }
                         });
                       }}"
                       class="mt-1 btn btn-sm btn-primary btn-outline">Edit Address</button>
@@ -158,7 +162,11 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
               <button
                 class="btn btn-sm btn-primary"
                 on:click="{() => {
-                  window.o.runProcess(upsertShippingAddress, {});
+                  window.o.runProcess(upsertShippingAddress, {
+                    successAction: () => {
+                      profile = $me;
+                    }
+                  });
                 }}">Add Address</button>
             </div>
           {/if}
