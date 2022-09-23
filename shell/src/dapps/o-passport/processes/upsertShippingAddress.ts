@@ -6,12 +6,15 @@ import { createMachine } from "xstate";
 import TextEditor from "@o-platform/o-editors/src/TextEditor.svelte";
 import { promptCity } from "../../../shared/api/promptCity";
 import {
-  City, PostAddress,
-  UpsertShippingAddressDocument, UpsertShippingAddressMutationVariables
+  City,
+  PostAddress,
+  UpsertShippingAddressDocument,
+  UpsertShippingAddressMutationVariables,
 } from "../../../shared/api/data/types";
-import {UpsertIdentityContext} from "./upsertIdentity";
-import {ApiClient} from "../../../shared/apiConnection";
-import {me} from "../../../shared/stores/me";
+import { UpsertIdentityContext } from "./upsertIdentity";
+import { ApiClient } from "../../../shared/apiConnection";
+import { me } from "../../../shared/stores/me";
+import EmailAddressEditor from "@o-platform/o-editors/src/EmailAddressEditor.svelte";
 
 export type UpsertShippingAddressContextData = {
   id?: number;
@@ -21,6 +24,7 @@ export type UpsertShippingAddressContextData = {
   zip: string;
   cityGeonameid: number;
   city?: City;
+  notificationEmail?: string;
   successAction?: (data: UpsertShippingAddressContextData) => void;
 };
 
@@ -38,13 +42,13 @@ const processDefinition = (processId: string) =>
         params: {
           view: {
             title: window.o.i18n("dapps.o-passport.processes.identify.NameAtTheDoor.title"),
-            description: window.o.i18n("dapps.o-passport.processes.identify.NameAtTheDoor.description")
+            description: window.o.i18n("dapps.o-passport.processes.identify.NameAtTheDoor.description"),
           },
         },
         navigation: {
           canSkip: () => false,
           canGoBack: () => false,
-          next: "#street"
+          next: "#street",
         },
       }),
 
@@ -54,14 +58,14 @@ const processDefinition = (processId: string) =>
         params: {
           view: {
             title: window.o.i18n("dapps.o-passport.processes.identify.street.title"),
-            description: window.o.i18n("dapps.o-passport.processes.identify.street.description")
+            description: window.o.i18n("dapps.o-passport.processes.identify.street.description"),
           },
         },
         navigation: {
           next: "#house",
           previous: "#name",
           canSkip: () => false,
-          canGoBack: () => true
+          canGoBack: () => true,
         },
       }),
 
@@ -71,14 +75,14 @@ const processDefinition = (processId: string) =>
         params: {
           view: {
             title: window.o.i18n("dapps.o-passport.processes.identify.house.title"),
-            description: window.o.i18n("dapps.o-passport.processes.identify.house.description")
+            description: window.o.i18n("dapps.o-passport.processes.identify.house.description"),
           },
         },
         navigation: {
           next: "#zip",
           previous: "#street",
           canSkip: () => false,
-          canGoBack: () => true
+          canGoBack: () => true,
         },
       }),
 
@@ -88,14 +92,14 @@ const processDefinition = (processId: string) =>
         params: {
           view: {
             title: window.o.i18n("dapps.o-passport.processes.identify.zip.title"),
-            description: window.o.i18n("dapps.o-passport.processes.identify.zip.description")
+            description: window.o.i18n("dapps.o-passport.processes.identify.zip.description"),
           },
         },
         navigation: {
           next: "#city",
           previous: "#house",
           canSkip: () => false,
-          canGoBack: () => true
+          canGoBack: () => true,
         },
       }),
 
@@ -105,14 +109,32 @@ const processDefinition = (processId: string) =>
         params: {
           view: {
             title: window.o.i18n("dapps.o-passport.processes.identify.city.title"),
-            description: window.o.i18n("dapps.o-passport.processes.identify.city.description")
+            description: window.o.i18n("dapps.o-passport.processes.identify.city.description"),
+          },
+        },
+        navigation: {
+          next: "#notificationEmail",
+          previous: "#zip",
+          canSkip: () => false,
+          canGoBack: () => true,
+        },
+      }),
+
+      notificationEmail: prompt<UpsertShippingAddressContext, any>({
+        id: "notificationEmail",
+        field: "notificationEmail",
+        component: EmailAddressEditor,
+        params: {
+          view: {
+            title: window.o.i18n("dapps.o-passport.processes.identify.notificationEmail.title"),
+            description: window.o.i18n("dapps.o-passport.processes.identify.notificationEmail.description"),
           },
         },
         navigation: {
           next: "#upsertShippingAddress",
-          previous: "#zip",
+          previous: "#city",
           canSkip: () => false,
-          canGoBack: () => true
+          canGoBack: () => true,
         },
       }),
 
@@ -129,9 +151,11 @@ const processDefinition = (processId: string) =>
                   zip: context.data.zip,
                   street: context.data.street,
                   name: context.data.name,
-                  cityGeonameid: context.data.cityGeonameid
-                }
-              });
+                  cityGeonameid: context.data.cityGeonameid,
+                  notificationEmail: context.data.notificationEmail,
+                },
+              }
+            );
             context.data.id = result.id;
             return result;
           },
@@ -151,7 +175,6 @@ const processDefinition = (processId: string) =>
       },
     },
   });
-
 
 export const upsertShippingAddress: ProcessDefinition<void, UpsertShippingAddressContext> = {
   name: "upsertShippingAddress",

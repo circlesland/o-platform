@@ -906,6 +906,7 @@ export type PostAddress = {
   city: Scalars['String'];
   state?: Maybe<Scalars['String']>;
   country: Scalars['String'];
+  notificationEmail?: Maybe<Scalars['String']>;
   osmId?: Maybe<Scalars['String']>;
   hereLocationId?: Maybe<Scalars['String']>;
   cityGeonameid?: Maybe<Scalars['Int']>;
@@ -914,6 +915,7 @@ export type PostAddress = {
 export type PostAddressInput = {
   id?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
+  notificationEmail?: Maybe<Scalars['String']>;
   street: Scalars['String'];
   house: Scalars['String'];
   zip: Scalars['String'];
@@ -1156,6 +1158,8 @@ export type Query = {
   getAllStringsByMaxVersion?: Maybe<Array<Maybe<I18n>>>;
   getAllStringsByMaxVersionAndLang?: Maybe<Array<Maybe<I18n>>>;
   getOlderVersionsByKeyAndLang?: Maybe<Array<Maybe<I18n>>>;
+  getStringsByMaxVersionKeyAndValue?: Maybe<Array<Maybe<I18n>>>;
+  getFirst20StringsByMaxVersionKey?: Maybe<Array<Maybe<I18n>>>;
   getPaginatedStrings?: Maybe<Array<Maybe<I18n>>>;
   getPaginatedStringsToUpdate?: Maybe<Array<Maybe<I18n>>>;
   allProfiles: Array<Maybe<ExportProfile>>;
@@ -1327,6 +1331,7 @@ export type QueryGetAllStringsByMaxVersionAndLangArgs = {
 export type QueryGetOlderVersionsByKeyAndLangArgs = {
   key?: Maybe<Scalars['String']>;
   lang?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
 };
 
 
@@ -1830,7 +1835,7 @@ export type UpsertShippingAddressMutation = (
   { __typename?: 'Mutation' }
   & { upsertShippingAddress?: Maybe<(
     { __typename?: 'PostAddress' }
-    & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'cityGeonameid' | 'city' | 'state' | 'country'>
+    & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'cityGeonameid' | 'city' | 'state' | 'country' | 'notificationEmail'>
   )> }
 );
 
@@ -2384,7 +2389,7 @@ export type InitQuery = (
       & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'confirmedLegalAge' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'provenUniqueness' | 'circlesTokenAddress'>
       & { shippingAddresses?: Maybe<Array<(
         { __typename?: 'PostAddress' }
-        & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
+        & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'notificationEmail' | 'cityGeonameid'>
       )>>, shops?: Maybe<Array<(
         { __typename?: 'Shop' }
         & Pick<Shop, 'id'>
@@ -2589,7 +2594,7 @@ export type MyProfileQuery = (
       & Pick<City, 'geonameid' | 'name' | 'country' | 'latitude' | 'longitude' | 'population'>
     )>, shippingAddresses?: Maybe<Array<(
       { __typename?: 'PostAddress' }
-      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'notificationEmail'>
     )>>, memberships?: Maybe<Array<(
       { __typename?: 'Membership' }
       & Pick<Membership, 'isAdmin'>
@@ -2634,7 +2639,7 @@ export type ProfilesQuery = (
       & Pick<City, 'geonameid' | 'name' | 'country'>
     )>, shippingAddresses?: Maybe<Array<(
       { __typename?: 'PostAddress' }
-      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'notificationEmail'>
     )>>, memberships?: Maybe<Array<(
       { __typename?: 'Membership' }
       & Pick<Membership, 'isAdmin'>
@@ -2703,7 +2708,7 @@ export type ProfilesByNameQuery = (
       & Pick<City, 'geonameid' | 'name' | 'country'>
     )>, shippingAddresses?: Maybe<Array<(
       { __typename?: 'PostAddress' }
-      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'notificationEmail'>
     )>>, verifications?: Maybe<Array<(
       { __typename?: 'Verification' }
       & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
@@ -2762,7 +2767,7 @@ export type ProfilesByCirclesAddressQuery = (
       & Pick<City, 'geonameid' | 'name' | 'country'>
     )>, shippingAddresses?: Maybe<Array<(
       { __typename?: 'PostAddress' }
-      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'notificationEmail'>
     )>>, memberships?: Maybe<Array<(
       { __typename?: 'Membership' }
       & Pick<Membership, 'isAdmin'>
@@ -2804,7 +2809,7 @@ export type ProfilesByIdsQuery = (
       & Pick<City, 'geonameid' | 'name' | 'country'>
     )>, shippingAddresses?: Maybe<Array<(
       { __typename?: 'PostAddress' }
-      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'notificationEmail'>
     )>>, verifications?: Maybe<Array<(
       { __typename?: 'Verification' }
       & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
@@ -2867,7 +2872,7 @@ export type ProfileByIdQuery = (
       & Pick<City, 'geonameid' | 'country' | 'name'>
     )>, shippingAddresses?: Maybe<Array<(
       { __typename?: 'PostAddress' }
-      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'notificationEmail'>
     )>>, verifications?: Maybe<Array<(
       { __typename?: 'Verification' }
       & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
@@ -2895,7 +2900,7 @@ export type ProfileBySafeAddressQuery = (
     & Pick<Profile, 'id' | 'circlesAddress' | 'displayCurrency' | 'circlesSafeOwner' | 'invitationLink' | 'successorOfCirclesAddress' | 'displayName' | 'firstName' | 'lastName' | 'emailAddress' | 'askedForEmailAddress' | 'dream' | 'country' | 'avatarUrl' | 'avatarCid' | 'avatarMimeType' | 'newsletter' | 'displayTimeCircles' | 'cityGeonameid' | 'provenUniqueness' | 'circlesTokenAddress'>
     & { shippingAddresses?: Maybe<Array<(
       { __typename?: 'PostAddress' }
-      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
+      & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'notificationEmail' | 'cityGeonameid'>
     )>>, shops?: Maybe<Array<(
       { __typename?: 'Shop' }
       & Pick<Shop, 'id'>
@@ -3007,7 +3012,7 @@ export type OrganisationsByAddressQuery = (
         & Pick<City, 'geonameid' | 'country' | 'name'>
       )>, shippingAddresses?: Maybe<Array<(
         { __typename?: 'PostAddress' }
-        & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country'>
+        & Pick<PostAddress, 'id' | 'name' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'notificationEmail'>
       )>>, verifications?: Maybe<Array<(
         { __typename?: 'Verification' }
         & Pick<Verification, 'createdAt' | 'revokedAt' | 'verifierSafeAddress'>
@@ -3222,7 +3227,7 @@ export type StreamQuery = (
           & Pick<DeliveryMethod, 'id' | 'name'>
         ), deliveryAddress?: Maybe<(
           { __typename?: 'PostAddress' }
-          & Pick<PostAddress, 'name' | 'id' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
+          & Pick<PostAddress, 'name' | 'id' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid' | 'notificationEmail'>
         )>, lines?: Maybe<Array<(
           { __typename?: 'InvoiceLine' }
           & Pick<InvoiceLine, 'amount' | 'metadata'>
@@ -3259,7 +3264,7 @@ export type StreamQuery = (
           & Pick<DeliveryMethod, 'id' | 'name'>
         ), deliveryAddress?: Maybe<(
           { __typename?: 'PostAddress' }
-          & Pick<PostAddress, 'name' | 'id' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
+          & Pick<PostAddress, 'name' | 'id' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid' | 'notificationEmail'>
         )>, lines?: Maybe<Array<(
           { __typename?: 'PurchaseLine' }
           & Pick<PurchaseLine, 'id' | 'amount' | 'metadata'>
@@ -3491,7 +3496,7 @@ export type AggregatesQuery = (
             & Pick<DeliveryMethod, 'id' | 'name'>
           ), deliveryAddress?: Maybe<(
             { __typename?: 'PostAddress' }
-            & Pick<PostAddress, 'name' | 'id' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid'>
+            & Pick<PostAddress, 'name' | 'id' | 'street' | 'house' | 'zip' | 'city' | 'state' | 'country' | 'cityGeonameid' | 'notificationEmail'>
           )>, buyerProfile?: Maybe<(
             { __typename?: 'Profile' }
             & Pick<Profile, 'id' | 'displayName' | 'firstName' | 'lastName' | 'avatarUrl' | 'circlesAddress' | 'displayCurrency' | 'provenUniqueness'>
@@ -3879,6 +3884,7 @@ export const UpsertShippingAddressDocument = gql`
     city
     state
     country
+    notificationEmail
   }
 }
     `;
@@ -4466,6 +4472,7 @@ export const InitDocument = gql`
         city
         state
         country
+        notificationEmail
         cityGeonameid
       }
       shops {
@@ -4486,6 +4493,7 @@ export const InitDocument = gql`
         zip
         state
         country
+        notificationEmail
       }
       memberships {
         isAdmin
@@ -4740,6 +4748,7 @@ export const MyProfileDocument = gql`
       city
       state
       country
+      notificationEmail
     }
     memberships {
       isAdmin
@@ -4813,6 +4822,7 @@ export const ProfilesDocument = gql`
       city
       state
       country
+      notificationEmail
     }
     memberships {
       isAdmin
@@ -4912,6 +4922,7 @@ export const ProfilesByNameDocument = gql`
       city
       state
       country
+      notificationEmail
     }
     verifications {
       createdAt
@@ -5003,6 +5014,7 @@ export const ProfilesByCirclesAddressDocument = gql`
       city
       state
       country
+      notificationEmail
     }
     memberships {
       isAdmin
@@ -5073,6 +5085,7 @@ export const ProfilesByIdsDocument = gql`
       city
       state
       country
+      notificationEmail
     }
     verifications {
       createdAt
@@ -5171,6 +5184,7 @@ export const ProfileByIdDocument = gql`
       city
       state
       country
+      notificationEmail
     }
     provenUniqueness
     verifications {
@@ -5227,6 +5241,7 @@ export const ProfileBySafeAddressDocument = gql`
       city
       state
       country
+      notificationEmail
       cityGeonameid
     }
     shops {
@@ -5247,6 +5262,7 @@ export const ProfileBySafeAddressDocument = gql`
       zip
       state
       country
+      notificationEmail
     }
     memberships {
       isAdmin
@@ -5412,6 +5428,7 @@ export const OrganisationsByAddressDocument = gql`
           city
           state
           country
+          notificationEmail
         }
         verifications {
           createdAt
@@ -5787,6 +5804,7 @@ export const StreamDocument = gql`
             state
             country
             cityGeonameid
+            notificationEmail
           }
           createdAt
           cancelledAt
@@ -5871,6 +5889,7 @@ export const StreamDocument = gql`
             state
             country
             cityGeonameid
+            notificationEmail
           }
           lines {
             id
@@ -6464,6 +6483,7 @@ export const AggregatesDocument = gql`
               state
               country
               cityGeonameid
+              notificationEmail
             }
             simplePickupCode
             buyerSignature

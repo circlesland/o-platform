@@ -291,15 +291,17 @@ onMount(async () => {
         <br />
         {invoice.deliveryAddress.name}
         <br />
-
-        {`${invoice.deliveryAddress.street} ${invoice.deliveryAddress.house}`}
-        <br />
-        {`${invoice.deliveryAddress.zip} ${invoice.deliveryAddress.city}`}
-        <br />
-        {invoice.deliveryAddress.country}
-        <br />
-
-        {buyerProfile.emailAddress ? buyerProfile.emailAddress : "no email address set"}
+        {#if invoice.deliveryAddress}
+          {`${invoice.deliveryAddress.street} ${invoice.deliveryAddress.house}`}
+          <br />
+          {`${invoice.deliveryAddress.zip} ${invoice.deliveryAddress.city}`}
+          <br />
+          {invoice.deliveryAddress.country}
+          <br />
+          {invoice.deliveryAddress.notificationEmail
+            ? invoice.deliveryAddress.notificationEmail
+            : "no email address set"}
+        {/if}
       </div>
     {/if}
 
