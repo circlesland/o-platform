@@ -298,8 +298,10 @@ onMount(async () => {
           <br />
           {invoice.deliveryAddress.country}
           <br />
+          {invoice.deliveryAddress.notificationEmail
+            ? invoice.deliveryAddress.notificationEmail
+            : "no email address set"}
         {/if}
-        {buyerProfile.emailAddress ? buyerProfile.emailAddress : "no email address set"}
       </div>
     {/if}
 

@@ -237,6 +237,7 @@ type PostAddress {
   city: String!
   state: String
   country: String!
+  notificationEmail: String
   osmId: String
   hereLocationId: String
   cityGeonameid: Int
@@ -1208,6 +1209,7 @@ type ProofUniquenessResult {
 input PostAddressInput {
   id: Int
   name: String
+  notificationEmail: String
   street: String!
   house: String!
   zip: String!
@@ -1327,9 +1329,6 @@ type Query {
   getAllStringsByLanguage(lang: String): [i18n]
   getStringByLanguage(lang: String): [i18n!]
   getStringByMaxVersion(lang: String, key: String): i18n
-  getStringsByMaxVersionKeyAndValue(key: String, value: String): [i18n]
-  getStringsFromLatestValuesByValue(value: String): [i18n]
-  getFirst20StringsByMaxVersionKey(key: String): [i18n]
   getAvailableLanguages: [i18n]
   getAllStringsByMaxVersion: [i18n]
   getAllStringsByMaxVersionAndLang(lang: String): [i18n]
@@ -1337,6 +1336,8 @@ type Query {
   getStringsByMaxVersionKeyAndValue(key: String, value: String): [i18n]
   getFirst20StringsByMaxVersionKey(key: String): [i18n]
   getPaginatedStrings(pagination_key: String, key: String, lang: String, value: String): [i18n]
+  countStrings(key: String): Int!
+  getStringsFromLatestValuesByValue(value: String): [i18n]
   allProfiles(sinceLastChange: Date): [ExportProfile]!
   allTrusts(sinceLastChange: Date): [ExportTrustRelation!]!
   getRandomAccount: RandomAccount

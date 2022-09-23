@@ -40,6 +40,7 @@ query init {
         city
         state
         country
+        notificationEmail
       }
       shops {
         id
@@ -59,6 +60,7 @@ query init {
         zip
         state
         country
+        notificationEmail
       }
       memberships {
         isAdmin
@@ -305,6 +307,7 @@ query myProfile {
       city
       state
       country
+      notificationEmail
     }
     memberships {
       isAdmin
@@ -377,6 +380,7 @@ query profiles($id: [Int!]!) {
       city
       state
       country
+      notificationEmail
     }
     memberships {
       isAdmin
@@ -473,6 +477,7 @@ query profilesByName($searchString: String!) {
       city
       state
       country
+      notificationEmail
     }
     verifications {
       createdAt
@@ -562,6 +567,7 @@ query profilesByCirclesAddress($circlesAddresses: [String!]!) {
       city
       state
       country
+      notificationEmail
     }
     memberships {
       isAdmin
@@ -631,6 +637,7 @@ query profilesByIds($id: [Int!]!) {
       city
       state
       country
+      notificationEmail
     }
     verifications {
       createdAt
@@ -727,6 +734,7 @@ query profileById($id: Int!) {
       city
       state
       country
+      notificationEmail
     }
     provenUniqueness
     verifications {
@@ -782,6 +790,7 @@ query profileBySafeAddress($safeAddress: String!) {
       city
       state
       country
+      notificationEmail
     }
     shops {
       id
@@ -801,6 +810,7 @@ query profileBySafeAddress($safeAddress: String!) {
       zip
       state
       country
+      notificationEmail
     }
     memberships {
       isAdmin
@@ -989,6 +999,7 @@ query organisationsByAddress($addresses: [String!]!) {
           city
           state
           country
+          notificationEmail
         }
         verifications {
           createdAt
@@ -1380,6 +1391,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
             state
             country
             cityGeonameid
+            notificationEmail
           }
           createdAt
           cancelledAt
@@ -1464,6 +1476,7 @@ query stream($types: [EventType!]!, $safeAddress: String!, $pagination: Paginati
             state
             country
             cityGeonameid
+            notificationEmail
           }
           lines {
             id
@@ -2056,6 +2069,7 @@ query aggregates($types: [AggregateType!]!, $safeAddress: String!, $filter: Prof
               state
               country
               cityGeonameid
+              notificationEmail
             }
             simplePickupCode
             buyerSignature

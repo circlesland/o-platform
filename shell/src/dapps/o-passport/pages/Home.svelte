@@ -127,13 +127,7 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
           </div>
           {#if profile.shippingAddresses && profile.shippingAddresses.length}
             {#each profile.shippingAddresses as shippingAddress, index}
-              <div
-                class="flex items-center w-full space-x-2 cursor-pointer sm:space-x-4"
-                on:click="{() => {
-                  window.o.runProcess(upsertShippingAddress, {
-                    ...shippingAddress,
-                  });
-                }}">
+              <div class="flex items-center w-full pb-4 space-x-2 cursor-pointer sm:space-x-4">
                 <div class="text-left">
                   <div class="inline-block break-all">
                     {shippingAddress.name}<br />
@@ -142,6 +136,19 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
                     {shippingAddress.zip}
                     {shippingAddress.city} <br />
                     {shippingAddress.country}
+                    <br />
+                    <span class:text-alert-dark="{shippingAddress.notificationEmail === null}">
+                      {shippingAddress.notificationEmail ? shippingAddress.notificationEmail : "no email address set"}
+                    </span>
+                  </div>
+                  <div>
+                    <button
+                      on:click="{() => {
+                        window.o.runProcess(upsertShippingAddress, {
+                          ...shippingAddress,
+                        });
+                      }}"
+                      class="mt-1 btn btn-sm btn-primary btn-outline">Edit Address</button>
                   </div>
                 </div>
               </div>
