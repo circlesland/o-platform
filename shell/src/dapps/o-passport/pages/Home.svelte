@@ -158,7 +158,11 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
               <button
                 class="btn btn-sm btn-primary"
                 on:click="{() => {
-                  window.o.runProcess(upsertShippingAddress, {});
+                  window.o.runProcess(upsertShippingAddress, {
+                    successAction: () => {
+                      profile = $me;
+                    }
+                  });
                 }}">Add Address</button>
             </div>
           {/if}
