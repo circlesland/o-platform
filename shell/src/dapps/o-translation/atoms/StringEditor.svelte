@@ -71,7 +71,7 @@ async function getEnglishVersion(lang: string, key: string) {
 }
 </script>
 
-<div class="flex-row min-w-[600px] border-t-8 border-t-white p-5">
+<div class="flex-row border-t-8 border-t-white p-5">
   <div class="flex justify-between w-full">
     <p class="text-gray-400 w-full">{dataKey}</p>
     <div class="flex">

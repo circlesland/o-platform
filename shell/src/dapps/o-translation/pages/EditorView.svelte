@@ -17,6 +17,8 @@ import { ApiClient } from "../../../shared/apiConnection";
 import StringEditor from "../atoms/StringEditor.svelte";
 import { Environment } from "../../../shared/environment";
 import { createEventDispatcher } from "svelte";
+import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
+import CreateStringTextArea from "../atoms/CreateStringTextArea.svelte";
 
 export let searchKey: string = "";
 export let i18nData: I18n[] = [];
@@ -30,7 +32,6 @@ let createNewStringMode: boolean = false;
 let keyToCreate: string = "";
 let stringToCreate: string = "";
 let availableLanguages: I18n[] = [];
-
 
 const dispatch = createEventDispatcher();
 
@@ -101,82 +102,76 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
     value: value,
   });
 }
-
 </script>
 
-<section class="flex flex-col items-center justify-center p-6">
-  <div class="w-full flex flex-row flex-wrap items-stretch justify-between">
-    <div class="inline-flex">
+<section class="flex flex-col items-center justify-evenly p-6">
+  <div class="w-full flex flex-row flex-wrap items-stretch justify-evenly">
+    <div class="z-10 flex w-1/3 justify-evenly">
       {#each allLanguages as languageCode}
-        <span
+        <svg
           on:click="{() => {
-            dispatch('toggleLanguage', { languageCode: languageCode });
             selectedLanguage = languageCode;
+            dispatch('toggleLanguage', { languageCode: languageCode });
           }}"
-          class="p-1 w-20 h-20 align-middle"
-          class:w-32="{selectedLanguage == languageCode}">
+          class="w-20 h-12 flex flex-row border-8 border-warning"
+          class:border-8="{selectedLanguage == languageCode}"
+          class:border-warning="{selectedLanguage == languageCode}">
           {#if languageCode == "en"}
-            <img
-              src="{'/country-flags/svg/gb.svg'}"
-              alt="{languageCode}"
-              class=" hover:cursor-pointer mr-auto ml-auto" />
+            <image width="100%" height="100%" preserveAspectRatio="none" xlink:href="{'/countryFlags/gb.svg'}"></image>
           {:else}
-            <img
-              src="{'/country-flags/svg/' + languageCode + '.svg'}"
-              alt="{languageCode}"
-              class=" hover:cursor-pointer mr-auto ml-auto" />
+            <image
+              width="100%"
+              height="100%"
+              preserveAspectRatio="none"
+              xlink:href="{'/countryFlags/' + languageCode + '.svg'}"></image>
           {/if}
-        </span>
+        </svg>
       {/each}
     </div>
-    <div class="inline-flex">
-      <form
-        on:submit|preventDefault="{() => {
-          dispatch('stringSearch', { searchString: valueFilter });
-          valueFilter = '';
-        }}">
-        <input bind:value="{valueFilter}" class="input rounded-r-none" type="text" placeholder="String" />
-      </form>
-      {#if valueFilter == ""}
-        <button class="btn-primary btn-disabled btn-md rounded-btn rounded-l-none bg-gray-400 text-white">
-          search
-        </button>
-      {:else}
-        <button class="btn-primary btn-md rounded-btn rounded-l-none">search</button>
-      {/if}
-    </div>
-    {#if !createNewStringMode}
-      <div class="flex grow">
+    <div class="w-2/3 inline-flex">
+      <div class="inline-flex w-3/4">
+        <form
+          class="justify-sart w-full inline-flex"
+          on:submit|preventDefault="{() => {
+            dispatch('stringSearch', { searchString: valueFilter });
+            valueFilter = '';
+          }}">
+          <input bind:value="{valueFilter}" class="input rounded-r-none w-3/4" type="text" placeholder="String" />
+          {#if valueFilter == ""}
+            <button class="btn-primary btn-disabled btn-md rounded-btn rounded-l-none bg-gray-400 text-white">
+              search
+            </button>
+          {:else}
+            <button class="btn-primary btn-md rounded-btn rounded-l-none">search</button>
+          {/if}
+        </form>
+      </div>
+      <div class="flex grow w-1/4 justify-evenly">
         <button
           class="bg-blue-200 rounded-md btn-md hover:bg-blue-500"
+          class:bg-blue-100="{createNewStringMode}"
+          class:rounded-md="{createNewStringMode}"
+          class:btn-md="{createNewStringMode}"
+          class:hover:cursor-not-allowed="{createNewStringMode}"
           on:click="{() => {
             createNewStringMode = true;
           }}">
           add a new string
         </button>
       </div>
-    {/if}
+    </div>
 
-    {#if createNewStringMode}
-      <div class="flex grow">
-        <button
-          class="bg-blue-100 rounded-md btn-md hover:cursor-not-allowed"
-          on:click="{() => {
-            createNewStringMode = true;
-          }}">
-          add a new string
-        </button>
-      </div>
-      <div class="flex justify-between w-full">
-        <div class="flex">
+    {#if !createNewStringMode}
+      <div class="flex p-5 w-full">
+        <div class="flex-col items-stretch w-full">
           <form class="justify-start">
-            <input bind:value="{keyToCreate}" class="input m-1" type="text" placeholder="key goes here" />
-          </form>
-          <form class="justify-start">
-            <input bind:value="{stringToCreate}" class="input m-1" type="text" placeholder="string goes here" />
+            <input bind:value="{stringToCreate}" class="w-full" type="text" placeholder="key goes here..." />
           </form>
         </div>
-        <div class="flex">
+        <div class="flex justify-center w-full">
+          <CreateStringTextArea/>
+        </div>
+        <div class="flex w-full">
           <button
             class="bg-blue-200 rounded-md btn-md hover:bg-blue-500"
             on:click="{async () => {
@@ -202,7 +197,7 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
     {#if !i18nData.length}
       <h1 class="flex justify-center align-middle text-alert pt-20">No matching result</h1>
     {/if}
-    
+
     {#each i18nData as data (data.key + data.lang + data.version)}
       <div class="w-full">
         <StringEditor
@@ -214,7 +209,7 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
           dataVersion="{data.version}" />
       </div>
     {/each}
-  
+
     {#if i18nData.length && !updateMode}
       <div use:loadMoreWhenInViewport class="btn-primary rounded-btn"></div>
     {:else if i18nData.length && updateMode}

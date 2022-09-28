@@ -54,7 +54,7 @@ const eventDispatcher = createEventDispatcher();
 
 <div class="z-10 flex flex-col flex-1" use:clickOutside on:click_outside="{() => eventDispatcher('clickedOutside')}">
   {#if showSwitcher}
-    <div class="p-6 w-full bg-gray-200">
+    <div class="relative w-full p-6 space-y-2 bg-gray-200">
       <LangSwitcher />
     </div>
   {:else}
