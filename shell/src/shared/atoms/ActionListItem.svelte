@@ -1,6 +1,6 @@
 <script lang="ts">
 import Icons from "../molecules/Icons.svelte";
-import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+
 export let title: string = null;
 export let icon: string = null;
 export let size: number = 6;
@@ -12,7 +12,7 @@ console.log("ICON: ", icon);
 <div class="text-center align-top list-none cursor-pointer inline-table" on:click>
   <span>
     <span class="table-cell w-12 h-12 align-middle rounded-full {colorClass} {customClass} bg-light-light">
-      <Icon name="{icon}" class="w-{size} h-{size} heroicon smallicon inline" />
+      <Icons icon="{icon}" customClass="w-{size} h-{size} heroicon smallicon inline" />
     </span>
     <span class="block w-24 text-xs sm:text-sm mt-1 text-center break-normal {colorClass}">
       {title}

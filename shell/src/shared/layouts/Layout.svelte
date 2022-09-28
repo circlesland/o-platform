@@ -62,12 +62,13 @@ function onkeydown(e: KeyboardEvent) {
   <div class="absolute flex flex-row w-full overflow-auto">
     <main id="main" class="relative w-full overflow-auto overflow-hidden">
       <div
-        class="flex flex-row w-full bg-pagebackground mainContent"
+        class="flex flex-row w-full bg-dappbackground mainContent"
         class:mb-16="{layout.dialogs.center && !layout.dialogs.center.isOpen && dapp === 'homepage:1'}"
         class:blur="{layout.dialogs.center && layout.dialogs.center.isOpen}">
         <div class="z-50">
           {#if layout.dialogs.left && layout.dialogs.left.isOpen}
             {#if $media.small}
+              {console.log(layout.dialogs.left.component)}
               <LeftMobile>
                 <svelte:component
                   this="{layout.dialogs.left.component}"
@@ -151,7 +152,7 @@ function onkeydown(e: KeyboardEvent) {
     {/await}
   {/if}
   {#if navigation}
-    <NextNav navigation="{navigation}" />
+    <NextNav navigation="{navigation}" runtimeDapp="{layout.main.runtimeDapp}" />
   {/if}
 
   {#if layout.dialogs.center && layout.dialogs.center.isOpen}

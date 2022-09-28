@@ -10,6 +10,7 @@ import { onMount } from "svelte";
 import { trustFromContactMetadata } from "../../../shared/functions/trustFromContactMetadata";
 import { inbox } from "../../../shared/stores/inbox";
 import { me } from "../../../shared/stores/me";
+import MarketplaceHeader from "../atoms/MarketplaceHeader.svelte";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: Routable;
@@ -61,15 +62,10 @@ function isMyShop(shopId) {
 }
 </script>
 
-<SimpleHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
+<MarketplaceHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 <div class="mx-auto md:w-2/3 xl:w-1/2">
   <div class="flex flex-col pb-20 space-y-10">
-    <section class="m-4 -mb-4 text-center">
-      <h1>Welcome to the Market</h1>
-      <span>Please choose your location</span>
-    </section>
-
     {#each orgas as orga}
       {#if (orga.shop.enabled && !orga.shop.private) || isMyShop(orga.shop.id)}
         <section

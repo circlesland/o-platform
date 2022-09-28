@@ -24,9 +24,10 @@ import { ProfileType } from "../shared/api/data/types";
 import { push } from "svelte-spa-router";
 import { me } from "../shared/stores/me";
 import CategoryEntryDetail from "./o-marketplace/pages/CategoryEntryDetail.svelte";
-import {addToCart, AddToCartContextData} from "./o-marketplace/processes/addToCart";
+import { addToCart, AddToCartContextData } from "./o-marketplace/processes/addToCart";
+import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 
-const addToCartTrigger: Trigger<{ id: number, shopId: number }, DappState> = {
+const addToCartTrigger: Trigger<{ id: number; shopId: number }, DappState> = {
   isSystem: true,
   routeParts: ["=actions", "=addToCart", ":id", ":shopId"],
   title: "Add to Cart",
@@ -49,7 +50,7 @@ const addToCartTrigger: Trigger<{ id: number, shopId: number }, DappState> = {
     window.o.runProcess(addToCart, <AddToCartContextData>{
       offerId: parseInt(params.id.toString()),
       shopId: parseInt(params.shopId.toString()),
-      redirectTo: `#/marketplace/cart`
+      redirectTo: `#/marketplace/cart`,
     });
   },
 };
@@ -60,6 +61,16 @@ const market: Page<any, DappState> = {
   component: Home,
   title: "Market",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "shopping-cart",
+        backgroundColorClass: "marketplace",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 
 const list: Page<any, DappState> = {
@@ -68,6 +79,16 @@ const list: Page<any, DappState> = {
   component: ListView,
   title: "List",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "shopping-cart",
+        backgroundColorClass: "marketplace",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 
 const locations: Page<any, DappState> = {
@@ -75,6 +96,16 @@ const locations: Page<any, DappState> = {
   component: Locations,
   title: "common.locations",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "shopping-cart",
+        backgroundColorClass: "marketplace",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 
 const pleaseSignIn: Page<any, DappState> = {
@@ -135,6 +166,16 @@ const myShops: Page<any, DappState> = {
   audience: ProfileType.Organisation,
   title: "My Shops",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "shopping-cart",
+        backgroundColorClass: "marketplace",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 const myOffers: Page<any, DappState> = {
   routeParts: ["=my-offers"],
@@ -142,6 +183,16 @@ const myOffers: Page<any, DappState> = {
   audience: ProfileType.Organisation,
   title: "My Offers",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "shopping-cart",
+        backgroundColorClass: "marketplace",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 const myCategories: Page<any, DappState> = {
   routeParts: ["=my-categories"],
@@ -149,6 +200,16 @@ const myCategories: Page<any, DappState> = {
   audience: ProfileType.Organisation,
   title: "My Categories",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "shopping-cart",
+        backgroundColorClass: "marketplace",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 const myOffersDetail: Page<any, DappState> = {
   isSystem: true,
@@ -163,12 +224,32 @@ const myPurchases: Page<any, DappState> = {
   component: MyPurchases,
   title: "common.myPurchases",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "shopping-cart",
+        backgroundColorClass: "marketplace",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 const myTickets: Page<any, DappState> = {
   routeParts: ["=my-tickets"],
   component: MyTickets,
   title: "common.myTickets",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "shopping-cart",
+        backgroundColorClass: "marketplace",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 const scanPurchase: Page<any, DappState> = {
   isSystem: true,
@@ -177,6 +258,16 @@ const scanPurchase: Page<any, DappState> = {
   component: ScanPurchase,
   title: "Scan purchase Code",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "shopping-cart",
+        backgroundColorClass: "marketplace",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 const mySales: Page<any, DappState> = {
   routeParts: ["=my-sales"],
@@ -184,6 +275,16 @@ const mySales: Page<any, DappState> = {
   audience: ProfileType.Organisation,
   title: "My sales",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "shopping-cart",
+        backgroundColorClass: "marketplace",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 const myPurchasesDetail: Page<any, DappState> = {
   isSystem: true,
@@ -271,6 +372,6 @@ export const marketplace: DappManifest<DappState> = {
     myCategories,
     mySales,
     myTickets,
-    myTicketDetail
+    myTicketDetail,
   ],
 };

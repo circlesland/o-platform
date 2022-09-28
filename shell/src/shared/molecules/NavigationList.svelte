@@ -3,7 +3,7 @@ import { onMount } from "svelte";
 import { RuntimeDapp } from "@o-platform/o-interfaces/dist/runtimeDapp";
 import { _ } from "svelte-i18n";
 import LinkPill from "../atoms/LinkPill.svelte";
-import {getRouteList} from "../functions/getRouteList";
+import { getRouteList } from "../functions/getRouteList";
 
 export let runtimeDapp: RuntimeDapp<any>;
 export let routable: RuntimeDapp<any>;
@@ -35,16 +35,16 @@ $: {
       props="{{
         text: $_('common.privacyPolicy'),
         i18nKey: 'common.privacyPolicy',
-        link: 'https://coda.io/@circlesland/terms/privacy-policy-3',
-        extern: true,
+        link: 'homepage/privacy',
+        extern: false,
         isSmall: true,
       }}" />
     <LinkPill
       props="{{
         text: $_('common.termsOfService'),
         i18nKey: 'common.termsOfService',
-        link: 'https://coda.io/@circlesland/terms',
-        extern: true,
+        link: 'homepage/terms',
+        extern: false,
         isSmall: true,
       }}" />
 

@@ -1,6 +1,5 @@
 <script lang="ts">
 import QrCode from "../../../shared/molecules/QrCode/QrCode.svelte";
-import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 import Icons from "../../../shared/molecules/Icons.svelte";
 import CopyToClipboard from "../../../shared/atoms/CopyClipboard.svelte";
 import { me } from "../../../shared/stores/me";
@@ -33,7 +32,7 @@ let foo = false;
         <span class="inline table-cell w-12 h-12 align-middle rounded-full bg-light-light">
           <CopyToClipboard text="{$me.invitationLink}" let:copy>
             <div on:click="{copy}">
-              <Icon name="link" class="inline w-6 h-6 heroicon smallicon" />
+              <Icons icon="link" customClass="inline w-6 h-6 heroicon smallicon" />
             </div>
           </CopyToClipboard>
         </span>
@@ -43,7 +42,7 @@ let foo = false;
           <a
             href="mailto:?subject=Invitation%20to%20Circlesland&body=Hey, i'd like to invite you to circlesland. Check it out: {$me.invitationLink}"
             target="_blank">
-            <Icon name="mail" class="inline w-6 h-6 heroicon smallicon" />
+            <Icons icon="mail" customClass="inline w-6 h-6 heroicon smallicon" />
           </a>
         </span>
       </div>
@@ -64,8 +63,7 @@ let foo = false;
     </div>
   {:else}
     <div class="w-full text-center">
-      <span class="text-alert"
-        ><Label key="dapps.o-dashboard.pages.shareInvitation.shareRefused" /></span>
+      <span class="text-alert"><Label key="dapps.o-dashboard.pages.shareInvitation.shareRefused" /></span>
     </div>
   {/if}
 </section>

@@ -1,6 +1,7 @@
 import type { PostAddress } from "../api/data/types";
 
 export default function formatShippingAddress(address?: PostAddress, multiline: Boolean = false) {
+  console.log("adad", address);
   if (!address) return "";
   let str = "";
   if (address.name) {
@@ -10,6 +11,6 @@ export default function formatShippingAddress(address?: PostAddress, multiline: 
   str += address.house + (multiline ? "<br/>" : ", ");
   str += address.zip + " ";
   str += address.city + "";
-  //str += address.country;
+  str += address.notificationEmail ? "<br/>" + address.notificationEmail : "";
   return str;
 }

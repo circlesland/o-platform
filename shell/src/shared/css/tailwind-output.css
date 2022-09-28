@@ -53,8 +53,7 @@ Improve consistency of default fonts in all browsers. (https://github.com/sindre
 */
 
 body {
-  font-family: system-ui, -apple-system,
-    /* Firefox supports this but not yet `system-ui` */ "Segoe UI", Roboto,
+  font-family: system-ui, -apple-system, /* Firefox supports this but not yet `system-ui` */ "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
@@ -105,8 +104,7 @@ code,
 kbd,
 samp,
 pre {
-  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo,
-    monospace; /* 1 */
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace; /* 1 */
   font-size: 1em; /* 2 */
 }
 
@@ -502,8 +500,7 @@ pre,
 code,
 kbd,
 samp {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 /**
@@ -681,13 +678,12 @@ h2 {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter,
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
     -webkit-backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter, -webkit-backdrop-filter;
   transition-duration: 0.15s;
   transition-duration: 0.2s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -851,13 +847,12 @@ h2 {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter,
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
     -webkit-backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter, -webkit-backdrop-filter;
   transition-duration: 0.15s;
   transition-duration: 0.2s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -867,19 +862,17 @@ h2 {
   border-width: 1px;
   height: 1.5rem;
   --tw-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 transparent),
-    var(--tw-ring-shadow, 0 0 transparent), var(--tw-shadow);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 transparent), var(--tw-ring-shadow, 0 0 transparent), var(--tw-shadow);
   width: 1.5rem;
   border-radius: var(--rounded-btn, 0.5rem);
 }
 .checkbox ~ .checkbox-mark:before {
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter,
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
     -webkit-backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter, -webkit-backdrop-filter;
   transition-duration: 0.15s;
   transition-duration: 0.2s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -912,13 +905,12 @@ h2 {
 }
 .input {
   flex-shrink: 1;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter,
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
     -webkit-backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter, -webkit-backdrop-filter;
   transition-duration: 0.15s;
   transition-duration: 0.2s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -938,13 +930,12 @@ h2 {
 }
 .\!input {
   flex-shrink: 1 !important;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, -webkit-backdrop-filter !important;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter !important;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter,
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
     -webkit-backdrop-filter !important;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter !important;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter, -webkit-backdrop-filter !important;
   transition-duration: 0.15s !important;
   transition-duration: 0.2s !important;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -955,14 +946,10 @@ h2 {
   padding-left: 1rem !important;
   padding-right: 1rem !important;
   --tw-bg-opacity: 1 !important;
-  background-color: hsla(
-    var(--b1, 0 0% 100%) / var(--tw-bg-opacity)
-  ) !important;
+  background-color: hsla(var(--b1, 0 0% 100%) / var(--tw-bg-opacity)) !important;
   --tw-border-opacity: 1 !important;
   --tw-border-opacity: 0 !important;
-  border-color: hsla(
-    var(--bc, 215 28% 17%) / var(--tw-border-opacity)
-  ) !important;
+  border-color: hsla(var(--bc, 215 28% 17%) / var(--tw-border-opacity)) !important;
   border-width: 1px !important;
   border-radius: var(--rounded-btn, 0.5rem) !important;
 }
@@ -978,15 +965,11 @@ h2 {
   outline: 2px solid transparent;
   outline-offset: 2px;
   --tw-ring-offset-width: var(--focus-ring-offset, 2px);
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
-    var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
-    calc(var(--focus-ring, 2px) + var(--tw-ring-offset-width))
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(var(--focus-ring, 2px) + var(--tw-ring-offset-width))
     var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    0 0 transparent;
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    var(--tw-shadow, 0 0 transparent);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), 0 0 transparent;
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 transparent);
   --tw-ring-offset-color: hsl(var(--b1, 0 0% 100%));
   --tw-ring-opacity: 1;
   --tw-ring-opacity: 0.2;
@@ -996,21 +979,15 @@ h2 {
   outline: 2px solid transparent !important;
   outline-offset: 2px !important;
   --tw-ring-offset-width: var(--focus-ring-offset, 2px) !important;
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
-    var(--tw-ring-offset-width) var(--tw-ring-offset-color) !important;
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
-    calc(var(--focus-ring, 2px) + var(--tw-ring-offset-width))
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color) !important;
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(var(--focus-ring, 2px) + var(--tw-ring-offset-width))
     var(--tw-ring-color) !important;
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    0 0 transparent !important;
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    var(--tw-shadow, 0 0 transparent) !important;
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), 0 0 transparent !important;
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 transparent) !important;
   --tw-ring-offset-color: hsl(var(--b1, 0 0% 100%)) !important;
   --tw-ring-opacity: 1 !important;
   --tw-ring-opacity: 0.2 !important;
-  --tw-ring-color: hsla(
-    var(--bc, 215 28% 17%) / var(--tw-ring-opacity)
-  ) !important;
+  --tw-ring-color: hsla(var(--bc, 215 28% 17%) / var(--tw-ring-opacity)) !important;
 }
 .link {
   cursor: pointer;
@@ -1037,13 +1014,12 @@ h2 {
 .menu li span {
   display: flex;
   align-items: center;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter,
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
     -webkit-backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter, -webkit-backdrop-filter;
   transition-duration: 0.15s;
   transition-duration: 0.2s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -1080,13 +1056,12 @@ h2 {
   --tw-bg-opacity: 1;
   --tw-bg-opacity: 0.4;
   background-color: hsla(var(--nf, 222 13% 19%) / var(--tw-bg-opacity));
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter,
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
     -webkit-backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter, -webkit-backdrop-filter;
   transition-duration: 0.15s;
   transition-duration: 0.2s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -1156,21 +1131,19 @@ h2 {
   border-color: hsla(var(--bc, 215 28% 17%) / var(--tw-border-opacity));
   border-width: 1px;
   font-weight: 600;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter,
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
     -webkit-backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter, -webkit-backdrop-filter;
   transition-duration: 0.15s;
   transition-duration: 0.2s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: var(--rounded-btn, 0.5rem);
   background-image: linear-gradient(45deg, transparent 50%, currentColor 0),
     linear-gradient(135deg, currentColor 50%, transparent 0);
-  background-position: calc(100% - 20px) calc(1px + 50%),
-    calc(100% - 16px) calc(1px + 50%);
+  background-position: calc(100% - 20px) calc(1px + 50%), calc(100% - 16px) calc(1px + 50%);
   background-size: 4px 4px, 4px 4px;
   background-repeat: no-repeat;
 }
@@ -1178,15 +1151,11 @@ h2 {
   outline: 2px solid transparent;
   outline-offset: 2px;
   --tw-ring-offset-width: var(--focus-ring-offset, 2px);
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
-    var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
-    calc(var(--focus-ring, 2px) + var(--tw-ring-offset-width))
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(var(--focus-ring, 2px) + var(--tw-ring-offset-width))
     var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    0 0 transparent;
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    var(--tw-shadow, 0 0 transparent);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), 0 0 transparent;
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 transparent);
   --tw-ring-offset-color: hsl(var(--b1, 0 0% 100%));
   --tw-ring-opacity: 1;
   --tw-ring-opacity: 0.2;
@@ -1204,13 +1173,12 @@ h2 {
 }
 .textarea {
   flex-shrink: 1;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter,
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
     -webkit-backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter, -webkit-backdrop-filter;
   transition-duration: 0.15s;
   transition-duration: 0.2s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -1232,15 +1200,11 @@ h2 {
   outline: 2px solid transparent;
   outline-offset: 2px;
   --tw-ring-offset-width: var(--focus-ring-offset, 2px);
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
-    var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
-    calc(var(--focus-ring, 2px) + var(--tw-ring-offset-width))
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(var(--focus-ring, 2px) + var(--tw-ring-offset-width))
     var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    0 0 transparent;
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    var(--tw-shadow, 0 0 transparent);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), 0 0 transparent;
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 transparent);
   --tw-ring-offset-color: hsl(var(--b1, 0 0% 100%));
   --tw-ring-opacity: 1;
   --tw-ring-opacity: 0.2;
@@ -1255,13 +1219,12 @@ h2 {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter,
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
     -webkit-backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter, -webkit-backdrop-filter;
   transition-duration: 0.15s;
   transition-duration: 0.2s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -1271,20 +1234,18 @@ h2 {
   border-width: 1px;
   height: 1.5rem;
   --tw-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 transparent),
-    var(--tw-ring-shadow, 0 0 transparent), var(--tw-shadow);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 transparent), var(--tw-ring-shadow, 0 0 transparent), var(--tw-shadow);
   width: 3rem;
   border-radius: var(--rounded-badge, 9999px);
 }
 .toggle ~ .toggle-mark:before {
   display: block;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter,
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
     -webkit-backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter, -webkit-backdrop-filter;
   transition-duration: 0.15s;
   transition-duration: 0.2s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -1318,12 +1279,9 @@ h2 {
   display: block;
   height: 0.5rem;
   position: absolute;
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
-    var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
-    calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    var(--tw-shadow, 0 0 transparent);
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 transparent);
   --tw-ring-offset-color: hsl(var(--b1, 0 0% 100%));
   --tw-ring-opacity: 1;
   --tw-ring-color: hsla(var(--b1, 0 0% 100%) / var(--tw-ring-opacity));
@@ -1339,12 +1297,9 @@ h2 {
   display: block;
   height: 0.5rem;
   position: absolute;
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
-    var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
-    calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    var(--tw-shadow, 0 0 transparent);
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 transparent);
   --tw-ring-offset-color: hsl(var(--b1, 0 0% 100%));
   --tw-ring-opacity: 1;
   --tw-ring-color: hsla(var(--b1, 0 0% 100%) / var(--tw-ring-opacity));
@@ -1439,15 +1394,11 @@ h2 {
 }
 .btn:focus-visible {
   --tw-ring-offset-width: var(--focus-ring-offset, 2px);
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
-    var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
-    calc(var(--focus-ring, 2px) + var(--tw-ring-offset-width))
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(var(--focus-ring, 2px) + var(--tw-ring-offset-width))
     var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    0 0 transparent;
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    var(--tw-shadow, 0 0 transparent);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), 0 0 transparent;
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 transparent);
   --tw-ring-offset-color: hsl(var(--b1, 0 0% 100%));
   --tw-ring-opacity: 1;
   --tw-ring-color: hsla(var(--nf, 222 13% 19%) / var(--tw-ring-opacity));
@@ -1499,15 +1450,11 @@ h2 {
   --tw-ring-color: hsl(0deg 0% 100%/0%);
   --tw-ring-offset-color: hsl(0deg 0% 0%/30%);
   --tw-ring-offset-width: var(--focus-ring-offset, 2px);
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
-    var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
-    calc(var(--focus-ring, 2px) + var(--tw-ring-offset-width))
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(var(--focus-ring, 2px) + var(--tw-ring-offset-width))
     var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    0 0 transparent;
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    var(--tw-shadow, 0 0 transparent);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), 0 0 transparent;
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 transparent);
 }
 .btn-link {
   background-color: transparent;
@@ -1630,15 +1577,11 @@ h2 {
 }
 .checkbox:focus-visible ~ .checkbox-mark {
   --tw-ring-offset-width: var(--focus-ring-offset, 2px);
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
-    var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
-    calc(var(--focus-ring, 2px) + var(--tw-ring-offset-width))
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(var(--focus-ring, 2px) + var(--tw-ring-offset-width))
     var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    0 0 transparent;
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    var(--tw-shadow, 0 0 transparent);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), 0 0 transparent;
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 transparent);
   --tw-ring-offset-color: hsl(var(--b1, 0 0% 100%));
   --tw-ring-opacity: 1;
   --tw-ring-color: hsla(var(--bc, 215 28% 17%) / var(--tw-ring-opacity));
@@ -1650,8 +1593,7 @@ h2 {
   --tw-border-opacity: 1;
   border-color: hsla(var(--bc, 215 28% 17%) / var(--tw-border-opacity));
   --tw-shadow: 0 0 transparent;
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 transparent),
-    var(--tw-ring-shadow, 0 0 transparent), var(--tw-shadow);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 transparent), var(--tw-ring-shadow, 0 0 transparent), var(--tw-shadow);
   --tw-text-opacity: 1;
   color: hsla(var(--b1, 0 0% 100%) / var(--tw-text-opacity));
 }
@@ -1876,13 +1818,9 @@ h2 {
 .\!input-disabled,
 .\!input[disabled] {
   --tw-bg-opacity: 1 !important;
-  background-color: hsla(
-    var(--b2, 220 20% 98%) / var(--tw-bg-opacity)
-  ) !important;
+  background-color: hsla(var(--b2, 220 20% 98%) / var(--tw-bg-opacity)) !important;
   --tw-border-opacity: 1 !important;
-  border-color: hsla(
-    var(--b2, 220 20% 98%) / var(--tw-border-opacity)
-  ) !important;
+  border-color: hsla(var(--b2, 220 20% 98%) / var(--tw-border-opacity)) !important;
   cursor: not-allowed !important;
   --tw-text-opacity: 0.2 !important;
 }
@@ -1896,9 +1834,7 @@ h2 {
 .\!input[disabled]::-moz-placeholder {
   --tw-placeholder-opacity: 1 !important;
   --tw-placeholder-opacity: 0.2 !important;
-  color: hsla(
-    var(--bc, 215 28% 17%) / var(--tw-placeholder-opacity)
-  ) !important;
+  color: hsla(var(--bc, 215 28% 17%) / var(--tw-placeholder-opacity)) !important;
 }
 .input-disabled:-ms-input-placeholder,
 .input[disabled]:-ms-input-placeholder {
@@ -1910,9 +1846,7 @@ h2 {
 .\!input[disabled]:-ms-input-placeholder {
   --tw-placeholder-opacity: 1 !important;
   --tw-placeholder-opacity: 0.2 !important;
-  color: hsla(
-    var(--bc, 215 28% 17%) / var(--tw-placeholder-opacity)
-  ) !important;
+  color: hsla(var(--bc, 215 28% 17%) / var(--tw-placeholder-opacity)) !important;
 }
 .input-disabled::-moz-placeholder,
 .input[disabled]::-moz-placeholder {
@@ -1936,25 +1870,19 @@ h2 {
 .\!input[disabled]::-moz-placeholder {
   --tw-placeholder-opacity: 1 !important;
   --tw-placeholder-opacity: 0.2 !important;
-  color: hsla(
-    var(--bc, 215 28% 17%) / var(--tw-placeholder-opacity)
-  ) !important;
+  color: hsla(var(--bc, 215 28% 17%) / var(--tw-placeholder-opacity)) !important;
 }
 .\!input-disabled:-ms-input-placeholder,
 .\!input[disabled]:-ms-input-placeholder {
   --tw-placeholder-opacity: 1 !important;
   --tw-placeholder-opacity: 0.2 !important;
-  color: hsla(
-    var(--bc, 215 28% 17%) / var(--tw-placeholder-opacity)
-  ) !important;
+  color: hsla(var(--bc, 215 28% 17%) / var(--tw-placeholder-opacity)) !important;
 }
 .\!input-disabled::placeholder,
 .\!input[disabled]::placeholder {
   --tw-placeholder-opacity: 1 !important;
   --tw-placeholder-opacity: 0.2 !important;
-  color: hsla(
-    var(--bc, 215 28% 17%) / var(--tw-placeholder-opacity)
-  ) !important;
+  color: hsla(var(--bc, 215 28% 17%) / var(--tw-placeholder-opacity)) !important;
 }
 .link-primary {
   --tw-text-opacity: 1;
@@ -2036,9 +1964,7 @@ h2 {
 }
 .\!progress::-moz-progress-bar {
   --tw-bg-opacity: 1 !important;
-  background-color: hsla(
-    var(--n, 219 14% 28%) / var(--tw-bg-opacity)
-  ) !important;
+  background-color: hsla(var(--n, 219 14% 28%) / var(--tw-bg-opacity)) !important;
 }
 .progress-accent::-moz-progress-bar {
   --tw-bg-opacity: 1;
@@ -2053,9 +1979,7 @@ h2 {
 .\!progress::-webkit-progress-bar {
   --tw-bg-opacity: 1 !important;
   --tw-bg-opacity: 0.2 !important;
-  background-color: hsla(
-    var(--n, 219 14% 28%) / var(--tw-bg-opacity)
-  ) !important;
+  background-color: hsla(var(--n, 219 14% 28%) / var(--tw-bg-opacity)) !important;
   border-radius: var(--rounded-box, 1rem) !important;
 }
 .progress::-webkit-progress-value {
@@ -2065,9 +1989,7 @@ h2 {
 }
 .\!progress::-webkit-progress-value {
   --tw-bg-opacity: 1 !important;
-  background-color: hsla(
-    var(--nf, 222 13% 19%) / var(--tw-bg-opacity)
-  ) !important;
+  background-color: hsla(var(--nf, 222 13% 19%) / var(--tw-bg-opacity)) !important;
   border-radius: var(--rounded-box, 1rem) !important;
 }
 .progress-accent::-webkit-progress-value {
@@ -2133,15 +2055,11 @@ h2 {
 }
 .toggle:focus-visible ~ .toggle-mark {
   --tw-ring-offset-width: var(--focus-ring-offset, 2px);
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
-    var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
-    calc(var(--focus-ring, 2px) + var(--tw-ring-offset-width))
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(var(--focus-ring, 2px) + var(--tw-ring-offset-width))
     var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    0 0 transparent;
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    var(--tw-shadow, 0 0 transparent);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), 0 0 transparent;
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 transparent);
   --tw-ring-offset-color: hsl(var(--b1, 0 0% 100%));
   --tw-ring-opacity: 1;
   --tw-ring-color: hsla(var(--b3, 216 12% 84%) / var(--tw-ring-opacity));
@@ -2166,9 +2084,8 @@ h2 {
   --tw-skew-y: 0;
   --tw-scale-x: 1;
   --tw-scale-y: 1;
-  transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y))
-    rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y))
-    scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate))
+    skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
   -webkit-animation: togglemark-on var(--animation-input, 0.4s) ease-in-out;
   animation: togglemark-on var(--animation-input, 0.4s) ease-in-out;
 }
@@ -2746,9 +2663,8 @@ h2 {
   --tw-skew-y: 0;
   --tw-scale-x: 1;
   --tw-scale-y: 1;
-  transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y))
-    rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y))
-    scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate))
+    skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 .cursor-pointer {
   cursor: pointer;
@@ -3124,22 +3040,18 @@ h2 {
 }
 .from {
   --tw-gradient-from: #0e2769;
-  --tw-gradient-stops: var(--tw-gradient-from),
-    var(--tw-gradient-to, rgba(14, 39, 105, 0));
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(14, 39, 105, 0));
 }
 .from-gradient1 {
   --tw-gradient-from: #1dd6a4;
-  --tw-gradient-stops: var(--tw-gradient-from),
-    var(--tw-gradient-to, rgba(29, 214, 164, 0));
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(29, 214, 164, 0));
 }
 .from-primary {
   --tw-gradient-from: #33d8ef;
-  --tw-gradient-stops: var(--tw-gradient-from),
-    var(--tw-gradient-to, rgba(51, 216, 239, 0));
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(51, 216, 239, 0));
 }
 .via {
-  --tw-gradient-stops: var(--tw-gradient-from), #0e2769,
-    var(--tw-gradient-to, rgba(14, 39, 105, 0));
+  --tw-gradient-stops: var(--tw-gradient-from), #0e2769, var(--tw-gradient-to, rgba(14, 39, 105, 0));
 }
 .to {
   --tw-gradient-to: #0e2769;
@@ -3548,50 +3460,37 @@ h2 {
   opacity: 1;
 }
 .shadow-md {
-  --tw-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  --tw-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 .shadow {
   --tw-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 .shadow-xl {
-  --tw-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  --tw-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 .shadow-lg {
-  --tw-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  --tw-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 .shadow-2xl {
   --tw-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 .shadow-none {
   --tw-shadow: 0 0 #0000;
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 .shadow-sm {
   --tw-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 .ring {
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
-    var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
-    calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    var(--tw-shadow, 0 0 #0000);
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
 }
 .ring-white {
   --tw-ring-opacity: 1;
@@ -3607,9 +3506,8 @@ h2 {
   --tw-saturate: var(--tw-empty, /*!*/ /*!*/);
   --tw-sepia: var(--tw-empty, /*!*/ /*!*/);
   --tw-drop-shadow: var(--tw-empty, /*!*/ /*!*/);
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast)
-    var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate)
-    var(--tw-sepia) var(--tw-drop-shadow);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate)
+    var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 .blur {
   --tw-blur: blur(8px);
@@ -3624,25 +3522,20 @@ h2 {
   --tw-backdrop-opacity: var(--tw-empty, /*!*/ /*!*/);
   --tw-backdrop-saturate: var(--tw-empty, /*!*/ /*!*/);
   --tw-backdrop-sepia: var(--tw-empty, /*!*/ /*!*/);
-  -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness)
-    var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale)
-    var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert)
-    var(--tw-backdrop-opacity) var(--tw-backdrop-saturate)
-    var(--tw-backdrop-sepia);
-  backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness)
-    var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale)
-    var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert)
-    var(--tw-backdrop-opacity) var(--tw-backdrop-saturate)
-    var(--tw-backdrop-sepia);
+  -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast)
+    var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity)
+    var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+  backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast)
+    var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity)
+    var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }
 .transition {
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter,
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
     -webkit-backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -3837,11 +3730,7 @@ body {
   left: 0px;
   top: 0px;
   /* background: linear-gradient(transparent 150px, #ffcc33); */
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0.001) 80%,
-    #fff 100%
-  );
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.001) 80%, #fff 100%);
 
   /* background: #ffcc33; */
 }
@@ -3979,12 +3868,9 @@ button:focus {
   outline-offset: 2px;
 }
 .focus-within\:ring-2:focus-within {
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
-    var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
-    calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-    var(--tw-shadow, 0 0 #0000);
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
 }
 .focus-within\:ring-indigo-500:focus-within {
   --tw-ring-opacity: 1;

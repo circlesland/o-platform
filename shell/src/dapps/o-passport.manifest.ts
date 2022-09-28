@@ -1,7 +1,7 @@
 import Home from "./o-passport/pages/Home.svelte";
 import Account from "./o-passport/pages/Account.svelte";
 import VerifyEmail from "./o-passport/pages/VerifyEmail.svelte";
-
+import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 import Settings from "./o-passport/pages/Settings.svelte";
 import { logout } from "./o-passport/processes/logout";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
@@ -19,6 +19,16 @@ const index: Page<any, DappState> = {
   component: Home,
   title: "common.profile",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "identification",
+        backgroundColorClass: "passport",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 
 const verifyEmail: Page<any, DappState> = {
@@ -36,12 +46,32 @@ const profile: Page<any, DappState> = {
   component: Home,
   title: "Profile",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "identification",
+        backgroundColorClass: "passport",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 const account: Page<any, DappState> = {
   routeParts: ["=accounts"],
   component: Account,
   title: "common.accounts",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "identification",
+        backgroundColorClass: "passport",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 
 const settings: Page<any, DappState> = {
@@ -49,6 +79,16 @@ const settings: Page<any, DappState> = {
   component: Settings,
   title: "common.settings",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "identification",
+        backgroundColorClass: "passport",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 
 const logmeout: Trigger<{}, DappState> = {

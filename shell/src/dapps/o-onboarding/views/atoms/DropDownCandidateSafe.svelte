@@ -1,7 +1,7 @@
 <script lang="ts">
-import {SafeInfo} from "../../../../shared/api/data/types";
+import { SafeInfo } from "../../../../shared/api/data/types";
 
-export let item:SafeInfo = undefined;
+export let item: SafeInfo = undefined;
 export let isActive = false;
 export let isFirst = false;
 export let isHover = false;
@@ -11,8 +11,7 @@ let displayName = "";
 $: {
   const classes = [];
 
-  if (item.safeProfile)
-  {
+  if (item.safeProfile) {
     displayName = item.safeProfile.displayName;
   } else {
     displayName = item.safeAddress;
@@ -34,7 +33,7 @@ $: {
 </script>
 
 <section
-  class="flex mb-4 mr-1 items-center justify-center  border rounded-lg shadow-sm customItem  {itemClasses}">
+  class="flex mb-4 mr-1 items-center justify-center  border rounded-lg shadow-sm customItem bg-white {itemClasses} active:border active:border-primary hover:border hover:border-primary">
   <div class="flex items-center w-full p-0 space-x-2 sm:space-x-6 item-body ">
     <div class="relative flex-grow p-3 text-left truncate">
       <div class="max-w-full -mt-1 leading-8 cursor-pointer truncateThis">
@@ -54,17 +53,6 @@ $: {
   cursor: default;
   padding: 0;
   overflow: hidden;
-  @apply bg-white;
-}
-
-.customItem.active {
-  @apply border;
-  @apply border-primary;
-}
-
-.customItem.hover:not(.active) {
-  @apply border;
-  @apply border-primary;
 }
 
 .customItem_title {
