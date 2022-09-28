@@ -30,20 +30,20 @@ $: {
 }
 </script>
 
-<section class="text-white p-6">
+<section class="text-white p-6 flex-col">
   <form
-    class="flex grow justify-center"
+    class="flex justify-center w-[100%] items-stretch"
     on:submit|preventDefault="{() => {
       dispatch('keySearch', { keyFilter: keyFilter, i18nData: displayedI18nData });
       keyFilter = '';
     }}">
-    <input bind:value="{keyFilter}" class="input rounded-r-none" type="text" placeholder="dapps.o-banking..." />
+    <input bind:value="{keyFilter}" class="rounded-r-none w-[75%]" type="text" placeholder="dapps.o-banking..." />
     {#if keyFilter == ""}
-      <button class="btn-primary btn-disabled btn-md rounded-btn rounded-l-none bg-gray-400 text-white">
+      <button class="btn-primary btn-disabled btn-sm rounded-btn rounded-l-none bg-gray-400 text-white w-[25%]">
         search
-      </button>
+      </button> 
     {:else}
-      <button class="btn-primary btn-md rounded-btn rounded-l-none">search</button>
+      <button class="btn-primary btn-sm rounded-btn rounded-l-none w-[25%]">search</button>
     {/if}
   </form>
 
