@@ -1158,8 +1158,6 @@ export type Query = {
   getAllStringsByMaxVersion?: Maybe<Array<Maybe<I18n>>>;
   getAllStringsByMaxVersionAndLang?: Maybe<Array<Maybe<I18n>>>;
   getOlderVersionsByKeyAndLang?: Maybe<Array<Maybe<I18n>>>;
-  getStringsByMaxVersionKeyAndValue?: Maybe<Array<Maybe<I18n>>>;
-  getFirst20StringsByMaxVersionKey?: Maybe<Array<Maybe<I18n>>>;
   getPaginatedStrings?: Maybe<Array<Maybe<I18n>>>;
   getPaginatedStringsToUpdate?: Maybe<Array<Maybe<I18n>>>;
   allProfiles: Array<Maybe<ExportProfile>>;
@@ -1331,7 +1329,6 @@ export type QueryGetAllStringsByMaxVersionAndLangArgs = {
 export type QueryGetOlderVersionsByKeyAndLangArgs = {
   key?: Maybe<Scalars['String']>;
   lang?: Maybe<Scalars['String']>;
-  value?: Maybe<Scalars['String']>;
 };
 
 

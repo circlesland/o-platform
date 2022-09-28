@@ -95,7 +95,7 @@ async function fetchStats() {
         color="banking"
         link="/banking/transactions"
         blobshape="137% 1% 119% 38% / 99% 60% 86% 73%"
-        icon="cash"
+        icon="banking"
         title="dapps.o-dashboard.pages.home.banking" />
 
       <DashboardColorCard

@@ -1,5 +1,6 @@
 <script lang="ts">
 import Icons from "./Icons.svelte";
+import { createEventDispatcher } from "svelte";
 
 /*
  * Edge Case: if the very first items are both super long, it will break into a new line even before clicking on 'more'
@@ -12,6 +13,8 @@ export let actions: {
   colorClass: string;
   action: () => void;
 }[];
+
+const dispatch = createEventDispatcher();
 
 // let showMore = false;
 // let moreItems = undefined;

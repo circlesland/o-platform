@@ -31,7 +31,8 @@ const transactions: Page<any, BankingDappState> = {
     leftSlot: {
       component: ListComponent,
       props: {
-        icon: "home",
+        icon: "banking",
+        backgroundColorClass: "banking",
         // action: () => processNavigation.back(),
       },
     },
@@ -99,6 +100,16 @@ const assets: Page<any, BankingDappState> = {
   title: "common.assets",
   icon: "assets",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "banking",
+        backgroundColorClass: "banking",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 /*
 const nfts: Page<any, BankingDappState> = {

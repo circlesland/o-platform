@@ -15,7 +15,7 @@ import { push } from "svelte-spa-router";
 import { setTrust } from "./o-banking/processes/setTrust";
 import { contacts as contactStore } from "../shared/stores/contacts";
 import { Environment } from "../shared/environment";
-
+import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 export interface DappState {
   // put state here
 }
@@ -26,6 +26,16 @@ const index: Page<any, DappState> = {
   title: "common.contacts",
   icon: "friends",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "users",
+        backgroundColorClass: "contacts",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 
 export class ContactsDappState {
@@ -212,7 +222,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
       actions = actions.concat({
         category: "Contacts",
         key: "setTrust",
-        icon: "shield-check",
+        icon: "trust",
         displayHint: "encouraged",
         title: "Trust new friend",
         action: async () => {
@@ -280,6 +290,16 @@ export const chat: Page<any, ContactsDappState> = {
   title: "Chat",
   icon: "chat",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "users",
+        backgroundColorClass: "contacts",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 
 export const contacts: DappManifest<DappState> = {

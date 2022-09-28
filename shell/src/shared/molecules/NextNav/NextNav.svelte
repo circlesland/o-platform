@@ -10,8 +10,6 @@ import { push } from "svelte-spa-router";
 export let runtimeDapp: RuntimeDapp<any>;
 export let navigation: any;
 export let width: string = "w-full";
-
-console.log(runtimeDapp);
 </script>
 
 <footer
@@ -21,7 +19,10 @@ console.log(runtimeDapp);
   {#if navigation.leftSlot}
     <div class="grid grid-cols-2">
       <div
-        class="flex items-center justify-center w-12 h-12 ml-4 bg-white rounded-full cursor-pointer"
+        class="flex items-center justify-center w-12 h-12 ml-4 {navigation.leftSlot.props.backgroundColorClass
+          ? 'bg-' + navigation.leftSlot.props.backgroundColorClass
+          : 'bg-white'} rounded-full cursor-pointer"
+        class:text-white="{navigation.leftSlot.props.backgroundColorClass}"
         on:click="{navigation.leftSlot.props.action}">
         <svelte:component this="{navigation.leftSlot.component}" {...navigation.leftSlot.props} on:menuButton />
       </div>
