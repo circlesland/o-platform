@@ -75,17 +75,16 @@ const eventDispatcher = createEventDispatcher();
     <div class="relative flex-shrink-0 w-full pt-2 space-y-2">
       <div class="">
         <ProfileSwitcherBar
-          actions="{profiles}"
-          on:siwtchEvent="{() => {
-            showSwitcher = !showSwitcher;
-          }}" />
+          actions="{profiles}" />
       </div>
     </div>
     <div class="w-full text-center">
       <h1 class="pt-4 text-3xl uppercase font-heading">Quick Actions</h1>
     </div>
     <div class="py-6">
-      <DetailActionBar actions="{actions}" />
+      <DetailActionBar actions="{actions}" on:siwtchEvent={() => {
+        showSwitcher = !showSwitcher;
+      }} />
     </div>
   {/if}
 </div>

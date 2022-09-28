@@ -1,6 +1,5 @@
 <script lang="ts">
 import { onMount } from "svelte";
-import { svg_element } from "svelte/internal";
 
 import { GetAvailableLanguagesDocument, GetAvailableLanguagesQuery, I18n } from "../api/data/types";
 

@@ -11,7 +11,6 @@ export let actions: {
   action: () => void;
 }[];
 
-let dispatch = createEventDispatcher();
 
 function handleClick(action) {
   if (action.event) {
