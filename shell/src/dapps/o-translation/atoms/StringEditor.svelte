@@ -29,7 +29,7 @@ let inputValue: string;
 let olderVersionData = [];
 let compareMode: boolean = false;
 let englishData: I18n = {};
-let dispatch = createEventDispatcher()
+let dispatch = createEventDispatcher();
 
 keyArray.concat(keyArray.push(dataKey.split(".")));
 
@@ -110,7 +110,7 @@ async function getEnglishVersion(lang: string, key: string) {
               selectedVersion = updatedObject.version;
               inputValue = '';
               editMode = false;
-              dispatch("save")
+              dispatch('save');
             }}">Save</button>
         {/if}
         <button
@@ -121,31 +121,83 @@ async function getEnglishVersion(lang: string, key: string) {
       {:else}
         <button
           class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
-          on:click="{() => {
+          on:click="{async () => {
             editMode = true;
+            englishData = await getEnglishVersion('en', dataKey);
           }}">Edit</button>
       {/if}
       {#if userLanguage != "en"}
-      <button class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500" on:click="{async () => {
-        englishData = await getEnglishVersion("en", dataKey);
-        compareMode = true;
-      }}"
-        >Compare with english-version</button>
+        <button
+          class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
+          on:click="{async () => {
+            englishData = await getEnglishVersion('en', dataKey);
+            compareMode = true;
+          }}">Compare with english-version</button>
       {/if}
     </div>
   </div>
   {#if editMode}
-    <div class="flex justify-center w-full">
-      <!-- svelte-ignore a11y-autofocus -->
-      <textarea
-        autofocus
-        bind:value="{inputValue}"
-        on:input="{() => {
-          inputMode = true;
-        }}"
-        class="border-black border-2 rounded p-5"
-        cols="60"
-        rows="2"></textarea>
+    <!--Modal effect-->
+    <div class="fixed  inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-40" id="my-modal"></div>
+    <!--modale editor-->
+    <div
+      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mx-auto p-5 border w-[50%] rounded-md bg-white z-50">
+      <div class="max-w-2xl bg-white py-10 px-5 m-auto w-full mt-10">
+        <div class="text-3xl mb-6 text-center ">Edit text/srting</div>
+        <div class="mb-6 text-center text-info">
+          <p>{dataString}</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 max-w-xl m-auto">
+          <div class="col-span-2 break-words">
+            <p>{dataKey}</p>
+          </div>
+
+          {#if userLanguage != "en"}
+            <div class="col-span-2">
+              <p class="text-accent">English version: {englishData.value}</p>
+            </div>
+          {/if}
+
+          <div class="col-span-2">
+            <!-- svelte-ignore a11y-autofocus -->
+            <textarea
+              autofocus
+              bind:value="{inputValue}"
+              cols="30"
+              rows="8"
+              class="border-solid border-gray-400 border-2 p-3 md:text-xl w-full"
+              placeholder="{dataString}"></textarea>
+          </div>
+
+          <div class="sm:col-span-1 text-left col-span-2 sm:text-center w-[100%]">
+            <button
+              class="py-3 px-6 bg-green-500 text-white font-bold w-full sm:w-32 rounded-md"
+              on:click="{async () => {
+                let updatedObject = await writeValueToDb(inputValue, dataLang, dataKey);
+                await loadOlderVersions(dataLang, dataKey);
+                dataVersion = updatedObject.version;
+                dataString = updatedObject.value;
+                selectedVersion = updatedObject.version;
+                inputValue = '';
+                editMode = false;
+                dispatch('save');
+              }}">
+              Save
+            </button>
+          </div>
+
+          <div class="sm:col-span-1 text-right col-span-2 sm:text-center w-[100%]">
+            <button
+              class="py-3 px-6 bg-red-500 text-white font-bold w-full sm:w-32 rounded-md"
+              on:click="{() => {
+                editMode = false;
+              }}">
+              Abort
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   {/if}
 </div>
