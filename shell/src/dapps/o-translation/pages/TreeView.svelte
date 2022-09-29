@@ -6,6 +6,7 @@ import {
 import Tree from "../atoms/Tree.svelte";
 import { CTreeNode } from "../classes/treenode";
 import { createEventDispatcher } from "svelte";
+import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 
 let keyFilter: string = "";
 
@@ -39,11 +40,13 @@ $: {
     }}">
     <input bind:value="{keyFilter}" class="rounded-r-none w-[75%]" type="text" placeholder="dapps.o-banking..." />
     {#if keyFilter == ""}
-      <button class="btn-primary btn-disabled btn-sm rounded-btn rounded-l-none bg-gray-400 text-white w-[25%]">
-        search
+      <button class="btn-primary btn-disabled btn-sm rounded-btn rounded-l-none bg-gray-400 text-white">
+        <Icon name="search" class="h-5 w-5 text-white" solid />
       </button> 
     {:else}
-      <button class="btn-primary btn-sm rounded-btn rounded-l-none w-[25%]">search</button>
+      <button class="btn-primary btn-sm rounded-btn rounded-l-none">
+        <Icon name="search" class="h-5 w-5 text-white" solid />
+      </button>
     {/if}
   </form>
 

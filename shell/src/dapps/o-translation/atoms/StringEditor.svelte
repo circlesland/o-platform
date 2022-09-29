@@ -93,47 +93,14 @@ async function getEnglishVersion(lang: string, key: string) {
   </div>
   <div class="flex justify-between items-center w-full">
     <p class="text-red-600 ml-6 text-xl w-full">{dataString}</p>
-    {#if compareMode}
-      <p class="text-red-600 ml-6 text-xl w-full">English: {englishData.value}</p>
-    {/if}
 
     <div class="flex">
-      {#if editMode}
-        {#if inputMode}
-          <button
-            class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
-            on:click="{async () => {
-              let updatedObject = await writeValueToDb(inputValue, dataLang, dataKey);
-              await loadOlderVersions(dataLang, dataKey);
-              dataVersion = updatedObject.version;
-              dataString = updatedObject.value;
-              selectedVersion = updatedObject.version;
-              inputValue = '';
-              editMode = false;
-              dispatch('save');
-            }}">Save</button>
-        {/if}
-        <button
-          class="bg-red-200 rounded-lg m-1 p-1 hover:bg-red-500"
-          on:click="{() => {
-            editMode = false;
-          }}"><p class="ml-2 mr-2">X</p></button>
-      {:else}
         <button
           class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
           on:click="{async () => {
             editMode = true;
             englishData = await getEnglishVersion('en', dataKey);
           }}">Edit</button>
-      {/if}
-      {#if userLanguage != "en"}
-        <button
-          class="bg-blue-200 rounded-lg m-1 p-1 hover:bg-blue-500"
-          on:click="{async () => {
-            englishData = await getEnglishVersion('en', dataKey);
-            compareMode = true;
-          }}">Compare with english-version</button>
-      {/if}
     </div>
   </div>
   {#if editMode}

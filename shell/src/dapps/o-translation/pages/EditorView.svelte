@@ -9,16 +9,13 @@ import {
   GetAvailableLanguagesQuery,
   I18n,
   MutationCreateNewStringAndKeyArgs,
-  MutationSetStringUpdateStateArgs,
-  SetStringUpdateStateDocument,
 } from "../../../shared/api/data/types";
 
 import { ApiClient } from "../../../shared/apiConnection";
 import StringEditor from "../atoms/StringEditor.svelte";
 import { Environment } from "../../../shared/environment";
 import { createEventDispatcher } from "svelte";
-import TextareaEditor from "@o-platform/o-editors/src/TextareaEditor.svelte";
-import CreateStringTextArea from "../atoms/CreateStringTextArea.svelte";
+import Icon from "@krowten/svelte-heroicons/Icon.svelte";
 
 export let searchKey: string = "";
 export let i18nData: I18n[] = [];
@@ -113,7 +110,7 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
             selectedLanguage = languageCode;
             dispatch('toggleLanguage', { languageCode: languageCode });
           }}"
-          class="w-20 h-12 flex flex-row border-8 border-warning"
+          class="w-12 h-8 flex flex-row border-8 border-warning"
           class:border-8="{selectedLanguage == languageCode}"
           class:border-warning="{selectedLanguage == languageCode}">
           {#if languageCode == "en"}
@@ -139,10 +136,12 @@ async function writeNewKeyToDb(lang: string, key: string, version: number, value
           <input bind:value="{valueFilter}" class="rounded-r-none w-3/4" type="text" placeholder="String" />
           {#if valueFilter == ""}
             <button class="btn-primary btn-disabled btn-sm rounded-btn rounded-l-none bg-gray-400 text-white">
-              search
+              <Icon name="search" class="h-5 w-5 text-white" solid />
             </button>
           {:else}
-            <button class="btn-primary btn-sm rounded-btn rounded-l-none">search</button>
+            <button class="btn-primary btn-sm rounded-btn rounded-l-none">
+              <Icon name="search" class="h-5 w-5 text-white" solid />
+            </button>
           {/if}
         </form>
       </div>
