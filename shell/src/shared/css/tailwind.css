@@ -1,15 +1,27 @@
-body {
-  height: 100vh;
-  @apply text-base;
-}
+@import "./fonts.css";
+/* @import "./button.css"; */
+@import "./quill.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import "./fonts.css";
-@import "./button.css";
-@import "./quill.css";
+body {
+  @apply text-base;
+}
+body {
+  height: 100vh;
+}
+
+@layer base {
+  h1 {
+    @apply text-2xl;
+  }
+
+  h2 {
+    @apply text-xs;
+  }
+}
 
 @layer components {
   .btn {
@@ -29,9 +41,11 @@ body {
     transform: none;
   }
   .text-base {
+    @apply font-normal;
+  }
+  .text-base {
     font-size: 1rem /* 14px */;
     line-height: 1.375 /* 22px */;
-    @apply font-normal;
   }
   .font-heading {
     @apply tracking-wider;
@@ -46,47 +60,9 @@ body {
     line-height: 0.75rem;
   }
 
-  @layer base {
-    h1 {
-      @apply text-2xl;
-    }
-
-    h2 {
-      @apply text-xs;
-    }
-  }
-
   .bg-opacity-60 {
     --tw-bg-opacity: 0.6;
   }
-  /* 
-:root {
-  --p: 187 85% 57%;
-  --pf: 187 100% 68%;
-  --pc: 0 0% 100%;
-  --s: 336 75% 46%;
-  --sf: 336 77% 65%;
-  --sc: 0 0% 100%;
-  --a: 162 91% 44%;
-  --af: 162 91% 44%;
-  --ac: 0 0% 100%;
-  --n: 0 0% 17%;
-  --nf: 0 0% 17%;
-  --nc: 0 0% 100%;
-  --b1: 0 0% 100%;
-  --b2: 210 20% 98%;
-  --b3: 216 12% 84%;
-  --bc: 215 28% 17%;
-  --in: 207 90% 54%;
-  --su: 145 45% 50%;
-  --wa: 36 100% 50%;
-  --er: 0 87% 67%;
-
-  --toastContainerTop: 0;
-  --toastContainerRight: 0;
-  --toastWidth: 100%;
-  --primary: "#0ad99c";
-} */
 
   .textarea {
     min-height: none !important;
@@ -94,11 +70,6 @@ body {
   .textarea:focus {
     box-shadow: none;
   }
-  /* 
-  .label a:hover,
-  .label a:active {
-    @apply text-primary;
-  } */
 
   .circles-button {
     padding-left: 3px;
@@ -111,39 +82,21 @@ body {
   .text-gradient {
     --tw-text-opacity: 1;
     background-image: linear-gradient(270deg, #0ad99c, #003399);
-    /* background-image: linear-gradient(270deg, #4398ee, #4f45d6); Also Cool Color gradient */
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
-  /* 
-.gradient-text {
-  --tw-text-opacity: 1;
-  color: rgba(67, 152, 238, var(--tw-text-opacity));
-  @apply text-base;
-  text-decoration: none;
-}
-
-.gradient-text:not(.text-gradient-none) {
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-image: linear-gradient(270deg, #4398ee, #4f45d6);
-  background-image: linear-gradient(270deg, #003399, #0ad99c);
-}
-*/
-
   .truncateThis:before {
-    content: "";
     @apply w-full;
     @apply h-full;
     @apply absolute;
     @apply left-0;
     @apply top-0;
     @apply z-10;
-    /* background: linear-gradient(transparent 150px, #ffcc33); */
+  }
+  .truncateThis:before {
+    content: "";
     background: linear-gradient(to right, rgba(255, 255, 255, 0.001) 80%, #fff 100%);
-
-    /* background: #ffcc33; */
   }
 
   .label {
@@ -180,23 +133,19 @@ body {
 
   .input-number {
     @apply text-4xl;
+  }
+  .input-number {
     letter-spacing: 1.63rem;
-    /* background: transparent; */
-    /* border: none; */
+
     --tw-border-opacity: 0.2;
     border: 1px solid rgba(31, 41, 55, 0.2);
-    /* line-height: none; */
+
     font-family: monospace;
     padding-left: 0.6rem;
     padding-right: 0;
     height: 3rem;
     width: 19rem;
   }
-  /* @supports (-webkit-touch-callout: none) {
-  .input-number {
-    letter-spacing: 2.15rem;
-  }
-} */
 
   .infocard {
     background-color: #d1ecf1;
@@ -219,32 +168,32 @@ body {
 
   .navbuttonicon {
     @apply text-dark;
-    /* margin-left: 0.15rem;
-  margin-top: 0.15rem; */
     @apply w-7;
     @apply h-7;
   }
 
   .processPill .navbuttonicon {
     @apply text-dark;
-    /* margin-left: 0.15rem;
-  margin-top: 0.15rem; */
     @apply w-3;
     @apply h-3;
   }
 
   .navlogo {
-    margin-top: -1.1rem;
     @apply w-14;
     @apply h-14;
   }
+  .navlogo {
+    margin-top: -1.1rem;
+  }
 
   .processPill .navlogo {
-    margin-top: -0.5rem;
     @apply w-12;
     @apply h-12;
   }
 
+  .processPill .navlogo {
+    margin-top: -0.5rem;
+  }
   .processPillGrid {
     max-width: 7rem;
   }
@@ -262,11 +211,6 @@ body {
   }
 
   .autocomplete-results-list {
-    /* bottom: 12.9rem;
-    top: auto !important;
-    display: inline-flex;
-    flex-direction: column;
-    flex-wrap: wrap-reverse; */
     position: relative;
     display: inline-flex;
     top: auto !important;
@@ -274,7 +218,6 @@ body {
     width: 110%;
     flex-direction: row;
     flex-wrap: wrap-reverse;
-    /* ADJUSTED */
     height: 150px;
   }
 
@@ -370,18 +313,6 @@ body {
     background-clip: padding-box, border-box;
   }
 
-  /* Temporarily de-activating this, as it will prevent ppl from clicking on 'skip' - need to find better solution. */
-  /* .keyboard-open #nextnav {
-  display: none;
-}
-
-.keyboard-open #modalAside {
-  padding-bottom: 0;
-}
-.keyboard-open .modalAsideContentContainer {
-  margin-bottom: 0rem !important;
-} */
-
   .tooltip {
     @apply absolute invisible;
   }
@@ -389,8 +320,6 @@ body {
   .has-tooltip:hover .tooltip {
     @apply z-50 visible;
   }
-
-  @tailwind utilities;
 
   .inline-icon {
     margin-top: -0.12rem;

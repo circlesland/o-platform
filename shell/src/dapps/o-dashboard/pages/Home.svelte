@@ -172,28 +172,3 @@ async function fetchStats() {
     </div>
   </div>
 </div>
-
-<style>
-.dashboard-grid {
-  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
-  grid-auto-rows: 1fr;
-}
-@media (min-width: 640px) {
-  .dashboard-grid {
-    grid-template-columns: repeat(3, minmax(8rem, 1fr));
-  }
-}
-
-.dashboard-grid::before {
-  content: "";
-  width: 0;
-  padding-bottom: 100%;
-  grid-row: 1 / 1;
-  grid-column: 1 / 1;
-}
-
-.dashboard-grid > *:first-child {
-  grid-row: 1 / 1;
-  grid-column: 1 / 1;
-}
-</style>

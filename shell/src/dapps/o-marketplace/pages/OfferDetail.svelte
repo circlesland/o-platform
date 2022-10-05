@@ -140,9 +140,10 @@ onMount(async () => {
                 <div class="pt-2 text-sm">
                   <div class="">
                     <span class="text-xs"
-                      >Available for delivery <Icon
-                        icon="heroicon:truck"
-                        class="inline w-5 h-5 heroicon smallicon" /></span>
+                      >Available for delivery <Icons
+                        icon="truck"
+                        size="{5}"
+                        customClass="inline w-5 h-5 heroicon smallicon" /></span>
                   </div>
                   <div class="pb-2 ">
                     <span class="text-xs"

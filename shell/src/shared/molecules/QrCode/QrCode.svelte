@@ -4,7 +4,7 @@ import { onMount } from "svelte";
 
 export let value: string;
 export let size: number = 300;
-export let image: string = "/logos/circles.png";
+export const image: string = "/logos/circles.png";
 
 let profileQrcode;
 
