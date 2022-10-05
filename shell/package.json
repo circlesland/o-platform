@@ -6,8 +6,8 @@
   "scripts": {
     "clean:all": "npx shx rm -rf public/bundle.* && npx shx rm -rf node_modules",
     "clean": "npx shx rm -rf public/bundle.*",
-    "devs": "DEPLOY_ENVIRONMENT=local ALLOW_VERIFY=true webpack-dev-server --https --cert ./localhost.cert --key ./localhost.key --config webpack.config.js --mode=development",
-    "dev": "DEPLOY_ENVIRONMENT=local ALLOW_VERIFY=true webpack-dev-server --https  --config webpack.config.js --mode=development",
+    "devs": "DEPLOY_ENVIRONMENT=local ALLOW_VERIFY=true webpack serve --server-type https --server-options-key ./localhost.key --server-options-cert ./localhost.cert --config webpack.config.js --mode=development",
+    "dev": "DEPLOY_ENVIRONMENT=local ALLOW_VERIFY=true webpack serve --server-type https  --config webpack.config.js --mode=development",
     "live": "DEPLOY_ENVIRONMENT=main ALLOW_VERIFY=true webpack-dev-server --https  --config webpack.config.js --mode=development",
     "local": "DEPLOY_ENVIRONMENT=ultralocal ALLOW_VERIFY=true webpack-dev-server --config webpack.config.js --mode=development",
     "docker": "SAFE_ADDRESS=0x5528544b97869ce105be00fccf250f659e787034 SAFE_PROXY_FACTORY_ADDRESS=0xdd227f14669e47fe72748a16adb0b26cc2afaa1d CIRCLES_HUB_BLOCK=2 CIRCLES_HUB_ADDRESS=0x59beaa0ced9a35d21d2fc94cacfcb54695e27304 RPC_ENDPOINT=http://localhost:8545 DEPLOY_ENVIRONMENT=docker webpack-dev-server --config webpack.config.js --mode=development",
