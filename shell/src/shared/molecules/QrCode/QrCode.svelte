@@ -28,29 +28,21 @@ onMount(() => {
       crossOrigin: "anonymous",
     },
     dotsOptions: {
-      // color: "#081B4A",
-      gradient: {
-        type: "linear", // 'radial'
-        rotation: 0,
-        colorStops: [
-          { offset: 0, color: "#20d9a2" },
-          { offset: 1, color: "#003399" },
-        ],
-      },
-      type: "dots",
+      color: "#000000",
+
+      type: "square",
     },
     backgroundOptions: {
       color: "#ffffff",
     },
     cornersSquareOptions: {
-      color: "#0A2262",
-      type: "dot",
+      color: "#000000",
+      type: "square",
     },
     cornersDotOptions: {
-      color: "#0A2262",
-      type: "dot",
+      color: "#000000",
+      type: "square",
     },
-    image: image,
   });
   qrCode.append(profileQrcode);
 });

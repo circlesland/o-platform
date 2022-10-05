@@ -285,7 +285,7 @@ onMount(async () => {
         </div>
       {/each}
     </div>
-    {#if invoice.deliveryMethod.id == 2}
+    {#if invoice.deliveryMethod.id == 2 && invoice.deliveryAddress}
       <div class="mt-6">
         <strong>Ship to:</strong>
         <br />
@@ -298,8 +298,10 @@ onMount(async () => {
           <br />
           {invoice.deliveryAddress.country}
           <br />
+          {invoice.deliveryAddress.notificationEmail
+            ? invoice.deliveryAddress.notificationEmail
+            : "no email address set"}
         {/if}
-        {buyerProfile.emailAddress ? buyerProfile.emailAddress : "no email address set"}
       </div>
     {/if}
 

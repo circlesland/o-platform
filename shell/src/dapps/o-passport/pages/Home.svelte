@@ -47,14 +47,14 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
 <PassportHeader runtimeDapp="{runtimeDapp}" routable="{routable}" />
 
 {#if profile}
-  <div class="flex flex-col px-4 mx-auto mb-20 -mt-3 space-y-6 md:w-2/3 xl:w-1/2">
-    <div class="flex flex-col w-full p-4 space-y-4 bg-white rounded-lg shadow-md cardborder">
+  <div class="flex flex-col px-4 mx-auto mt-8 mb-20 space-y-6 md:w-2/3 xl:w-1/2">
+    <div class="flex flex-col w-full p-4 space-y-4 bg-white border rounded-xl border-bordergray">
       <section class="justify-center">
         <div class="flex flex-col w-full space-y-2">
           <div class="text-left text-2xs text-dark-lightest">
             <Label key="dapps.o-passport.pages.home.qrcode" />
           </div>
-          <div class="container">
+          <div class="container p-1 pt-2 xs:p-4">
             <center>
               {#if profile}
                 <QrCode value="{profile.circlesAddress}" />
@@ -64,7 +64,7 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
         </div>
       </section>
     </div>
-    <div class="flex flex-col w-full p-4 space-y-4 bg-white rounded-lg shadow-md cardborder">
+    <div class="flex flex-col w-full p-4 space-y-4 bg-white border rounded-xl border-bordergray">
       <!-- <section class="justify-center">
       <div class="flex flex-col w-full space-y-1">
         <div class="mb-1 text-left text-2xs text-dark-lightest">
@@ -127,13 +127,7 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
           </div>
           {#if profile.shippingAddresses && profile.shippingAddresses.length}
             {#each profile.shippingAddresses as shippingAddress, index}
-              <div
-                class="flex items-center w-full space-x-2 cursor-pointer sm:space-x-4"
-                on:click="{() => {
-                  window.o.runProcess(upsertShippingAddress, {
-                    ...shippingAddress,
-                  });
-                }}">
+              <div class="flex items-center w-full pb-4 space-x-2 cursor-pointer sm:space-x-4">
                 <div class="text-left">
                   <div class="inline-block break-all">
                     {shippingAddress.name}<br />
@@ -142,6 +136,19 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
                     {shippingAddress.zip}
                     {shippingAddress.city} <br />
                     {shippingAddress.country}
+                    <br />
+                    <span class:text-alert-dark="{shippingAddress.notificationEmail === null}">
+                      {shippingAddress.notificationEmail ? shippingAddress.notificationEmail : "no email address set"}
+                    </span>
+                  </div>
+                  <div>
+                    <button
+                      on:click="{() => {
+                        window.o.runProcess(upsertShippingAddress, {
+                          ...shippingAddress,
+                        });
+                      }}"
+                      class="mt-1 btn btn-sm btn-primary btn-outline">Edit Address</button>
                   </div>
                 </div>
               </div>
@@ -151,7 +158,11 @@ function editProfile(dirtyFlags: { [x: string]: boolean }) {
               <button
                 class="btn btn-sm btn-primary"
                 on:click="{() => {
-                  window.o.runProcess(upsertShippingAddress, {});
+                  window.o.runProcess(upsertShippingAddress, {
+                    successAction: () => {
+                      profile = $me;
+                    }
+                  });
                 }}">Add Address</button>
             </div>
           {/if}

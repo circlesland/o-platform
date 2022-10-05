@@ -11,12 +11,7 @@ export let event: ProfileEvent;
 let payload: CrcMinting = <CrcMinting>event.payload;
 
 let amountTime = Currency.instance()
-  .displayAmount(
-    payload && payload.value ? payload.value.toString() : "0",
-    event.timestamp,
-    "TIME_CRC",
-    null
-  )
+  .displayAmount(payload && payload.value ? payload.value.toString() : "0", event.timestamp, "TIME_CRC", null)
   .toString();
 </script>
 
@@ -25,14 +20,9 @@ let amountTime = Currency.instance()
 </div>
 
 <div class="self-center text-6xl text-center text-success font-heading">
-  +{Currency.instance().displayAmount(
-    payload.value,
-    event.timestamp,
-    $me.displayCurrency
-  )}
+  +{Currency.instance().displayAmount(payload.value, event.timestamp, $me.displayCurrency)}
 
-  <span class=" font-primary"
-    >{Currency.currencySymbol[$me.displayCurrency]}</span>
+  <span class=" font-primary">{Currency.currencySymbol[$me.displayCurrency]}</span>
 </div>
 {#if amountTime}
   <div class="self-center text-center">

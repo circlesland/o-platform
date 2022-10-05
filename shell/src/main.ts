@@ -242,7 +242,8 @@ declare global {
 
 
 
-function load() {
+async function load() {
+  await I18nDictionary.instance.waitHandle;
   const App = require("src/App.svelte");
   new App.default({
     target: document.body,

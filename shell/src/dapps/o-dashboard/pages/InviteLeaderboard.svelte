@@ -29,7 +29,7 @@ function loadLink(link, external = false) {
   }
 }
 
-console.log(Environment.userLanguage)
+console.log(Environment.userLanguage);
 </script>
 
 <TopNav runtimeDapp="{runtimeDapp}" routable="{routable}" headerString="Leaderboard" />
@@ -69,7 +69,7 @@ console.log(Environment.userLanguage)
     <div class="flex flex-col space-y-4">
       {#each $stats.leaderboard.skip(1) as entry, i}
         <section class="cursor-pointer ">
-          <div class="flex items-center w-full pb-2 space-x-2 bg-white rounded-lg shadow-md cardborder">
+          <div class="flex items-center w-full pb-2 space-x-2 bg-white cardborder">
             <div class="flex-col flex-grow">
               <div
                 class="flex flex-row items-center justify-between px-3 text-left"
@@ -93,7 +93,8 @@ console.log(Environment.userLanguage)
                           {$_("dapps.o-dashboard.pages.inviteLeadeboard.citizensInvitedHigherRanks", {
                             values: {
                               entryCount: entry.inviteCount,
-                              entryCountBigger1: entry.inviteCount > 1 ? (Environment.userLanguage.startsWith("de") ? "" : "s") : "",
+                              entryCountBigger1:
+                                entry.inviteCount > 1 ? (Environment.userLanguage.startsWith("de") ? "" : "s") : "",
                             },
                           })}
                         </span>

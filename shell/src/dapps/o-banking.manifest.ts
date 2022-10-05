@@ -5,7 +5,7 @@ import XDaiDetail from "./o-banking/pages/XDaiDetail.svelte";
 
 import TransactionDetailPage from "./o-banking/pages/TransactionDetail.svelte";
 
-import {transfer, TransferContextData} from "./o-banking/processes/transfer";
+import { transfer, TransferContextData } from "./o-banking/processes/transfer";
 import { init } from "./o-banking/init";
 import { me } from "../shared/stores/me";
 
@@ -17,7 +17,7 @@ import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { RpcGateway } from "@o-platform/o-circles/dist/rpcGateway";
 import { loadProfileByProfileId } from "../shared/api/loadProfileByProfileId";
 import { Profile } from "../shared/api/data/types";
-import {push} from "svelte-spa-router";
+import { push } from "svelte-spa-router";
 import Erc721Detail from "./o-banking/pages/Erc721Detail.svelte";
 // import {getUbi, getUbiInfo} from "../shared/ubiTimer2";
 
@@ -31,7 +31,8 @@ const transactions: Page<any, BankingDappState> = {
     leftSlot: {
       component: ListComponent,
       props: {
-        icon: "menu",
+        icon: "banking",
+        backgroundColorClass: "banking",
         // action: () => processNavigation.back(),
       },
     },
@@ -79,20 +80,6 @@ const profileJumplist: Jumplist<any, BankingDappState> = {
           });
         },
       },
-      /*{
-        key: "requestUBI",
-        icon: "cash",
-        title: "Request UBI",
-        displayHint: "encouraged",
-        category: "Banking",
-        action: async () => {
-          const safeInfo = await getUbiInfo();
-          await getUbi({
-            nextUbiAt: Date.now(),
-            tokenAddress: safeInfo.tokenAddress
-          });
-        },
-      }*/
     ];
   },
 };
@@ -113,6 +100,16 @@ const assets: Page<any, BankingDappState> = {
   title: "common.assets",
   icon: "assets",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "banking",
+        backgroundColorClass: "banking",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 /*
 const nfts: Page<any, BankingDappState> = {
@@ -126,15 +123,15 @@ const nfts: Page<any, BankingDappState> = {
 
 const transferTrigger: Trigger<any, BankingDappState> = {
   routeParts: ["=send", ":amount", ":to"],
-  action: async (params:any, runtimeDapp: DappManifest<any>) => {
+  action: async (params: any, runtimeDapp: DappManifest<any>) => {
     const $me = handleTransferTrigger(params);
     window.o.runProcess(transfer, <TransferContextData>{
       safeAddress: $me.circlesAddress,
       recipientAddress: params.to,
       tokens: {
         currency: "crc",
-        amount: params.amount
-      }
+        amount: params.amount,
+      },
     });
   },
   title: "common.sendMoney",
@@ -144,20 +141,20 @@ const transferTrigger: Trigger<any, BankingDappState> = {
 
 const transferTriggerRedirect: Trigger<any, BankingDappState> = {
   routeParts: ["=send", ":amount", ":to", ":redirectUrl"],
-  action: async (params:any, runtimeDapp: DappManifest<any>) => {
+  action: async (params: any, runtimeDapp: DappManifest<any>) => {
     const $me = handleTransferTrigger(params);
     window.o.runProcess(transfer, <TransferContextData>{
       safeAddress: $me.circlesAddress,
       recipientAddress: params.to,
       tokens: {
         currency: "crc",
-        amount: params.amount
+        amount: params.amount,
       },
-      successAction:(context) => {
+      successAction: (context) => {
         window.location = params.redirectUrl;
         /*console.log("Transfer completed");
         window.close();*/
-      }
+      },
     });
   },
   title: "common.sendMoney",
@@ -166,20 +163,23 @@ const transferTriggerRedirect: Trigger<any, BankingDappState> = {
 };
 
 function handleTransferTrigger(params) {
-  let $me:Profile;
-  me.subscribe(me => $me = me)();
+  let $me: Profile;
+  me.subscribe((me) => ($me = me))();
   console.log(params);
   if (!RpcGateway.get().utils.isAddress(params.to)) {
     return $me;
   }
   if (!sessionStorage.getItem("circlesKey")) {
-    sessionStorage.setItem("desiredRoute", JSON.stringify({
-      dappId: "banking",
-      "1": "send",
-      "2": params.amount,
-      "3": params.to,
-      "4": params.redirectUrl
-    }));
+    sessionStorage.setItem(
+      "desiredRoute",
+      JSON.stringify({
+        dappId: "banking",
+        "1": "send",
+        "2": params.amount,
+        "3": params.to,
+        "4": params.redirectUrl,
+      })
+    );
     push("/");
     return $me;
   }

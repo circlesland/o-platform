@@ -237,6 +237,7 @@ type PostAddress {
   city: String!
   state: String
   country: String!
+  notificationEmail: String
   osmId: String
   hereLocationId: String
   cityGeonameid: Int
@@ -977,6 +978,7 @@ type i18n {
   version: Int
   value: String
   pagination_key: String
+  needsUpdate: Boolean
 }
 
 enum SortOrder {
@@ -1208,6 +1210,7 @@ type ProofUniquenessResult {
 input PostAddressInput {
   id: Int
   name: String
+  notificationEmail: String
   street: String!
   house: String!
   zip: String!
@@ -1258,6 +1261,7 @@ type Mutation {
   updateValue(lang: String, key: String, createdBy: String, value: String): i18n
   addNewLang(langToCreate: String, langToCopyFrom: String): Int
   createNewStringAndKey(lang: String, key: String, createdBy: String, value: String, version: Int): i18n
+  setStringUpdateState(key: String): [i18n]
 }
 
 type ExportProfile {
@@ -1323,24 +1327,18 @@ type Query {
   invoice(invoiceId: Int!): String
   findInvitationCreator(code: String!): Profile
   clientAssertionJwt: String!
-  getAllStrings: [i18n]
-  getAllStringsByLanguage(lang: String): [i18n]
-  getStringByLanguage(lang: String): [i18n!]
   getStringByMaxVersion(lang: String, key: String): i18n
-  getStringsByMaxVersionKeyAndValue(key: String, value: String): [i18n]
-  getStringsFromLatestValuesByValue(value: String): [i18n]
-  getFirst20StringsByMaxVersionKey(key: String): [i18n]
   getAvailableLanguages: [i18n]
   getAllStringsByMaxVersion: [i18n]
   getAllStringsByMaxVersionAndLang(lang: String): [i18n]
   getOlderVersionsByKeyAndLang(key: String, lang: String): [i18n]
-  getStringsByMaxVersionKeyAndValue(key: String, value: String): [i18n]
-  getFirst20StringsByMaxVersionKey(key: String): [i18n]
   getPaginatedStrings(pagination_key: String, key: String, lang: String, value: String): [i18n]
+  getPaginatedStringsToUpdate(pagination_key: String, key: String, lang: String, value: String): [i18n]
   allProfiles(sinceLastChange: Date): [ExportProfile]!
   allTrusts(sinceLastChange: Date): [ExportTrustRelation!]!
   getRandomAccount: RandomAccount
   signMessage(message: String!, key: String!): String!
+  getStringsToBeUpdatedAmount(lang: String, key: String): Int
 }
 
 type Subscription {

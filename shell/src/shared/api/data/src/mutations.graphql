@@ -9,6 +9,7 @@ mutation upsertShippingAddress($data: PostAddressInput!) {
     city
     state
     country
+    notificationEmail
   }
 }
 
@@ -86,6 +87,18 @@ mutation createNewStringAndKey($lang: String, $key: String, $createdBy: String, 
     createdBy
     version
     value
+    needsUpdate
+  }
+}
+
+mutation setStringUpdateState($key: String) {
+  setStringUpdateState(key: $key) {
+    lang
+    key
+    createdBy
+    version
+    value
+    needsUpdate
   }
 }
 

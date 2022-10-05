@@ -25,7 +25,6 @@
     "@dicebear/avatars-avataaars-sprites": "^4.6.3",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@jaensen/timecircles": "^1.0.3",
-    "@krowten/svelte-heroicons": "^0.0.3",
     "@o-platform/o-circles": "0.1.0",
     "@o-platform/o-editors": "0.1.0",
     "@o-platform/o-events": "0.1.0",
@@ -60,13 +59,14 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "daisyui": "^2.27.0",
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.4",
     "@graphql-codegen/cli": "^1.17.10",
     "@graphql-codegen/typescript": "^1.17.10",
     "@graphql-codegen/typescript-graphql-request": "^2.0.1",
     "@graphql-codegen/typescript-operations": "^1.17.8",
-    "@tailwindcss/typography": "^0.4.1",
+    "@tailwindcss/typography": "^0.5.7",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/svelte": "^3.0.3",
     "@tinymce/tinymce-svelte": "^1.0.0",

@@ -33,25 +33,27 @@ if ($media.small) {
     }
   }}">
   <div
-    class="flex flex-row items-center px-4 py-2 space-x-2 rounded-full"
-    class:bg-dark="{props.isActive && !$media.small}"
-    class:text-white="{props.isActive}"
-    class:bg-white="{!props.isActive && !$media.small}"
-    class:text-light="{!props.isActive && $media.small}"
-    class:shadow-sm="{!$media.small}"
+    class="flex flex-row items-center mt-2 rounded-full"
+    class:btn="{props.isActive}"
+    class:btn-outline="{props.isActive}"
+    class:btn-sm="{props.isActive}"
+    class:btn-base="{props.isActive}"
+    class:text-base="{props.isActive}"
     class:text-lg="{$media.small && !props.isSmall}"
-    class:text-2xl="{props.isActive && $media.small && !props.isSmall}"
     class:text-2xs="{props.isSmall && !$media.small}"
     class:text-sm="{props.isSmall && $media.small}">
     {#if props.icon}
-      <Icons icon="{props.icon}" size="{iconsize}" />
+      <span class="pl-1">
+        <Icons icon="{props.icon}" size="{iconsize}" />
+      </span>
     {/if}
-    <div>
-      {#if !props.i18nKey && props.text}
-        {props.text}
-      {:else if props.i18nKey}
+
+    {#if !props.i18nKey && props.text}
+      {props.text}
+    {:else if props.i18nKey}
+      <span class="px-2">
         <Label key="{props.i18nKey}" />
-      {/if}
-    </div>
+      </span>
+    {/if}
   </div>
 </a>

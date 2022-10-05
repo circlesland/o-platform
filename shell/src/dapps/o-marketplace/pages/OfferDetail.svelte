@@ -2,7 +2,7 @@
 import { onMount } from "svelte";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { Subscription } from "rxjs";
-import Icon from "@krowten/svelte-heroicons/Icon.svelte";
+import Icons from "../../../shared/molecules/Icons.svelte";
 import { push } from "svelte-spa-router";
 import UserImage from "../../../shared/atoms/UserImage.svelte";
 import { offers } from "../../../shared/stores/offers";
@@ -140,12 +140,14 @@ onMount(async () => {
                 <div class="pt-2 text-sm">
                   <div class="">
                     <span class="text-xs"
-                      >Available for delivery <Icon name="truck" class="inline w-5 h-5 heroicon smallicon" /></span>
+                      >Available for delivery <Icon
+                        icon="heroicon:truck"
+                        class="inline w-5 h-5 heroicon smallicon" /></span>
                   </div>
                   <div class="pb-2 ">
                     <span class="text-xs"
                       >Available for in-Store pickup
-                      <Icon name="home" class="inline w-5 h-5 heroicon smallicon" /></span>
+                      <Icons icon="home" customClass="inline w-5 h-5 heroicon smallicon" /></span>
                     <br />
                     <br />
                     Basic Income Lab GmbH<br />
@@ -166,9 +168,9 @@ onMount(async () => {
         <div class="flex flex-row space-x-4">
           <div>
             <button
-              class="btn btn-square btn-light"
+              class="btn btn-square btn-primary btn-outline"
               on:click="{() => push(`#/contacts/chat/${o.createdByProfile.circlesAddress}`)}">
-              <Icon name="chat" class="w-6 h-6 heroicon smallicon" />
+              <Icons icon="chat" customClass="w-6 h-6 heroicon smallicon" />
             </button>
           </div>
           <div class="flex-grow">
@@ -176,7 +178,7 @@ onMount(async () => {
               <button type="submit" class="relative btn btn-primary btn-block" on:click="{() => _addToCart(o, shopId)}">
                 <Label key="dapps.o-marketplace.pages.offerDetail.addToCart" />
                 <div class="absolute mr-1 right-2">
-                  <Icon name="shopping-cart" class="w-6 h-6 heroicon smallicon" />
+                  <Icons icon="shopping-cart" customClass="w-6 h-6 heroicon smallicon" />
                 </div>
               </button>
             {/if}
