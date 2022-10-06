@@ -1,14 +1,14 @@
 import Verifications from "./o-verification/pages/Verifications.svelte";
-import {Page} from "@o-platform/o-interfaces/dist/routables/page";
-import {DappManifest} from "@o-platform/o-interfaces/dist/dappManifest";
+import { Page } from "@o-platform/o-interfaces/dist/routables/page";
+import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import RecentProfiles from "./o-verification/pages/RecentProfiles.svelte";
 import TrustToDo from "./o-verification/pages/TrustToDo.svelte";
-import {ContactsDappState} from "./o-contacts.manifest";
-import {Jumplist} from "@o-platform/o-interfaces/dist/routables/jumplist";
-import {Environment} from "../shared/environment";
-import {performOauth} from "./o-humanode/processes/performOauth";
-import {CapabilityType} from "../shared/api/data/types";
-import {me} from "../shared/stores/me";
+import { ContactsDappState } from "./o-contacts.manifest";
+import { Jumplist } from "@o-platform/o-interfaces/dist/routables/jumplist";
+import { Environment } from "../shared/environment";
+import { performOauth } from "./o-humanode/processes/performOauth";
+import { CapabilityType } from "../shared/api/data/types";
+import { me } from "../shared/stores/me";
 
 const verifications: Page<any, ContactsDappState> = {
   routeParts: ["=verifications"],
@@ -39,22 +39,23 @@ const verificationJumplist: Jumplist<any, ContactsDappState> = {
   items: async (params, runtimeDapp) => {
     const sessionInfo = await me.getSessionInfo();
     const capabilities = sessionInfo.capabilities;
-    const canVerify = capabilities && capabilities.find((o) => o.type == CapabilityType.Verify) && Environment.allowVerify;
-    const alreadyVerified = capabilities.find(o => o.type == CapabilityType.VerifiedByHumanode);
+    const canVerify =
+      capabilities && capabilities.find((o) => o.type == CapabilityType.Verify) && Environment.allowVerify;
+    const alreadyVerified = capabilities.find((o) => o.type == CapabilityType.VerifiedByHumanode);
     /*if (canVerify  && !alreadyVerified) {*/
-      return [
-        {
-          key: "verify-self",
-          icon: "check",
-          title: "Verify yourself",
-          action: () => {
-            window.o.runProcess(performOauth, {
-              origin: "dashboard",
-              successAction: () => {},
-            });
-          },
+    return [
+      {
+        key: "verify-self",
+        icon: "check",
+        title: window.o.i18n("dapps.common.quickactions.verifyYourself"),
+        action: () => {
+          window.o.runProcess(performOauth, {
+            origin: "dashboard",
+            successAction: () => {},
+          });
         },
-      ];
+      },
+    ];
     /*} else {
       return [];
     }*/

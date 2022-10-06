@@ -87,7 +87,7 @@ async function findContactActions(circlesAddress: string) {
     // I can send circles to people who trust me
     availableActions.push({
       key: "sendCircles",
-      title: "Send money",
+      title: window.o.i18n("dapps.common.quickactions.sendMoney"),
       icon: "",
       action: () => {},
     });
@@ -130,7 +130,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
             category: "Chat",
             key: "chat",
             icon: "chat",
-            title: "Chat",
+            title: window.o.i18n("dapps.common.quickactions.chat"),
             action: async () => {
               push("#/contacts/chat/" + recipientProfile.contactAddress);
             },
@@ -148,7 +148,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                     key: "transfer",
                     icon: "cash",
                     displayHint: "encouraged",
-                    title: "Send Money",
+                    title: window.o.i18n("dapps.common.quickactions.sendMoney"),
                     action: async () => {
                       window.o.runProcess(transfer, {
                         safeAddress: $me.circlesAddress,
@@ -165,7 +165,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                     category: "Contacts",
                     key: "setTrust",
                     icon: "minus-circle",
-                    title: "Untrust",
+                    title: window.o.i18n("dapps.common.quickactions.untrust"),
                     displayHint: "discouraged",
                     colorClass: "text-alert",
                     action: async () => {
@@ -184,7 +184,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                     category: "Contacts",
                     key: "setTrust",
                     icon: "shield-check",
-                    title: "Trust",
+                    title: window.o.i18n("dapps.common.quickactions.trust"),
                     displayHint: "encouraged",
                     action: async () => {
                       window.o.runProcess(setTrust, {
@@ -206,7 +206,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
           category: "Contacts",
           key: "setTrust",
           icon: "shield-check",
-          title: "Trust",
+          title: window.o.i18n("dapps.common.quickactions.trust"),
           displayHint: "encouraged",
           action: async () => {
             window.o.runProcess(setTrust, {
@@ -224,7 +224,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         key: "setTrust",
         icon: "trust",
         displayHint: "encouraged",
-        title: "Trust new friend",
+        title: window.o.i18n("dapps.common.quickactions.trustNewFriend"),
         action: async () => {
           window.o.runProcess(setTrust, {
             trustLimit: 100,
@@ -238,7 +238,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         category: "Contacts",
         key: "setTrust",
         icon: "qrcode",
-        title: "Scan to trust",
+        title: window.o.i18n("dapps.common.quickactions.scanToTrust"),
         action: async () => {
           push("#/contacts/scanToTrust/");
         },
