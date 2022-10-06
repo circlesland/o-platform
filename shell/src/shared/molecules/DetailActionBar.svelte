@@ -7,6 +7,7 @@ import { createEventDispatcher } from "svelte";
  */
 import ActionListItem from "src/shared/atoms/ActionListItem.svelte";
 import { Environment } from "../environment";
+import Label from "../atoms/Label.svelte";
 export let actions: {
   icon: string;
   title: string;
@@ -53,7 +54,9 @@ $: {
             <Icons icon="settings" customClass="w-6 h-6 heroicon smallicon inline" />
           </span>
 
-          <span class="block w-24 mt-1 text-xs text-center break-normal sm:text-sm ">Change Language</span>
+          <span class="block w-24 mt-1 text-xs text-center break-normal sm:text-sm ">
+            <Label key="dapps.common.quickactions.changeLanguage" />
+          </span>
         </span>
       </div>
     {/if}

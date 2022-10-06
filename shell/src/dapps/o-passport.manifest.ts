@@ -95,7 +95,7 @@ const logmeout: Trigger<{}, DappState> = {
   isSystem: true,
   anonymous: true,
   routeParts: ["=actions", "=logout"],
-  title: "Log Out",
+  title: window.o.i18n("dapps.common.quickactions.logout"),
   type: "trigger",
   action: async (params) => {
     window.o.runProcess(logout, {});
@@ -162,7 +162,7 @@ export const passport: DappManifest<DappState> = {
           category: "Passport",
           key: "logout",
           type: "profile",
-          title: "Logout",
+          title: window.o.i18n("dapps.common.quickactions.logout"),
           icon: "lock-closed",
           action: () => {
             window.o.runProcess(logout, {});
