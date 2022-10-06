@@ -122,12 +122,8 @@ $: {
     }
 
     if (event.direction == "out") {
-      amount = "-" + amount;
+      amountTime = "-" + amountTime;
     }
-  }
-
-  if (event.payload?.__typename != EventType.Erc20Transfer) {
-    amount += ` ${Currency.currencySymbol[$me.displayCurrency ? $me.displayCurrency : "EURS"]}`;
   }
 
   if (event.timestamp) {
@@ -155,20 +151,9 @@ function loadDetailPage(path) {
       title: displayableName(targetProfile.firstName, targetProfile.lastName ? targetProfile.lastName : null),
       subTitle: messageString ? messageString : '',
       truncateMain: true,
-      endTextBig: amount,
+      endTextBig: amountTime,
       profileLink: true,
       mobileTextCutoff: 19,
-      endTextBigClass: amount.startsWith('-') ? 'text-negative' : undefined,
-    }}">
-    <div slot="itemCardEndSmallElement">
-      {#if amountTime}
-        <div class="flex flex-row items-center pt-1 space-x-1 justify-items-center">
-          <div class="justify-self-center">{amountTime}</div>
-          <div class="">
-            <Icons icon="timeCircle" size="{3}" />
-          </div>
-        </div>
-      {/if}
-    </div>
-  </ItemCard>
+      endTextBigClass: amountTime.startsWith('-') ? 'text-negative' : undefined,
+    }}" />
 </div>

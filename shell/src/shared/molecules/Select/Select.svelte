@@ -818,7 +818,14 @@ onDestroy(() => {
   text-align: var(--text-align, left);
 }
 
-.selectContainer input {
+:global(.selectContainer input) {
+  @apply input;
+  @apply input-bordered;
+  @apply border-dark-lightest;
+  @apply text-lg;
+  @apply text-dark;
+}
+:global(.selectContainer input) {
   cursor: default;
   height: var(--height, 42px);
   line-height: var(--height, 42px);
@@ -830,11 +837,6 @@ onDestroy(() => {
   left: var(--inputLeft, 0);
   /* color: transparent; */
   /* caret-color: transparent; */
-  @apply input;
-  @apply input-bordered;
-  @apply border-dark-lightest;
-  @apply text-lg;
-  @apply text-dark;
 }
 
 .selectContainer input::placeholder {
@@ -854,7 +856,7 @@ onDestroy(() => {
   border-color: var(--borderFocusColor, #006fe8);
 }
 
-.selectContainer.disabled {
+:global(.selectContainer.disabled) {
   background: var(--disabledBackground, #ebedef);
   border-color: var(--disabledBorderColor, #ebedef);
   color: var(--disabledColor, #c1c6cc);
@@ -921,35 +923,6 @@ onDestroy(() => {
   stroke: var(--indicatorStroke, currentcolor);
   stroke-width: 0;
 }
-
-/* .spinner {
-  position: absolute;
-  right: var(--spinnerRight, 10px);
-  top: var(--spinnerLeft, 11px);
-  width: var(--spinnerWidth, 20px);
-  height: var(--spinnerHeight, 20px);
-  color: var(--spinnerColor, #51ce6c);
-  animation: rotate 0.75s linear infinite;
-} */
-
-/* .spinner_icon {
-  display: block;
-  height: 100%;
-  transform-origin: center center;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  -webkit-transform: none;
-} */
-
-/* .spinner_path {
-  stroke-dasharray: 90;
-  stroke-linecap: round;
-} */
 
 .multiSelect {
   display: flex;

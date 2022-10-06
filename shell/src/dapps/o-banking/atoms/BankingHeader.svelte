@@ -37,14 +37,9 @@ $: {
         <div class="relative pt-2 text-center text-white">
           <span class="inline-block tracking-wide font-heading">
             <section class="m-4 -mb-4 text-center">
-              {#if Environment.userLanguage !== "id"}
-                <h1 class="text-5xl sm:text-7xl">
-                  {balanceEuro}<span class=" font-enso">{Currency.currencySymbol["EURS"]}</span>
-                </h1>
-              {/if}
-              <h2 class="text-3xl sm:text-5xl">
+              <h1 class="text-5xl sm:text-7xl">
                 {balanceTime}<Icons icon="timeCircle" size="{8}" customClass="inline inline-icon" />
-              </h2>
+              </h1>
               <span class="text-2xl text-right sm:text-3xl"> BALANCE </span>
             </section>
           </span>

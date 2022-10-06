@@ -13790,13 +13790,23 @@ webpack-dev-server@^4.11.0:
     webpack-dev-middleware "^5.3.1"
     ws "^8.4.2"
 
-webpack-merge@^5.7.3:
+webpack-merge@^5.7.3, webpack-merge@^5.8.0:
   version "5.8.0"
   resolved "https://registry.yarnpkg.com/webpack-merge/-/webpack-merge-5.8.0.tgz#2b39dbf22af87776ad744c390223731d30a68f61"
   integrity sha512-/SaI7xY0831XwP6kzuwhKWVKDP9t1QY1h65lAFLbZqMPIuYcD9QAW4u9STIbU9kaJbPBB/geU/gLr1wDjOhQ+Q==
   dependencies:
     clone-deep "^4.0.1"
     wildcard "^2.0.0"
+
+webpack-nano@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/webpack-nano/-/webpack-nano-1.1.1.tgz#63fb3973a6b6267163cc9f641241987f80f7d7ab"
+  integrity sha512-3dypjHtWQylpgsYmaovsUgFmXmDBoArq8aNMvDjmhVRpaA8MQsYxMiXgsp09GYL3n5y+1PfscytrFW3IXknlIQ==
+  dependencies:
+    chalk "^4.1.0"
+    import-local "^3.0.2"
+    rechoir "^0.7.0"
+    yargs-parser "^20.2.1"
 
 webpack-sources@^1.4.3:
   version "1.4.3"
@@ -14314,7 +14324,7 @@ yaml@^1.10.0, yaml@^1.10.2:
   resolved "https://registry.yarnpkg.com/yaml/-/yaml-1.10.2.tgz#2301c5ffbf12b467de8da2333a459e29e7920e4b"
   integrity sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==
 
-yargs-parser@20.x, yargs-parser@^20.2.2:
+yargs-parser@20.x, yargs-parser@^20.2.1, yargs-parser@^20.2.2:
   version "20.2.9"
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-20.2.9.tgz#2eb7dc3b0289718fc295f362753845c41a0c94ee"
   integrity sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==
