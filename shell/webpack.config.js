@@ -5,10 +5,11 @@ const path = require("path");
 const sveltePreprocess = require("svelte-preprocess");
 const webpack = require("webpack");
 const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
-const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
 const mode = process.env.NODE_ENV || "development";
 let prod = mode === "production";
+const dev = !prod;
 const DEBUG = !process.argv.includes("--release");
 const VERBOSE = process.argv.includes("--verbose");
 
@@ -324,10 +325,10 @@ module.exports = {
       {
         // https://github.com/sveltejs/svelte-loader/issues/139
         test: /.m?js$/,
-        type: 'javascript/auto',
+        type: "javascript/auto",
         resolve: {
-          fullySpecified: false
-        }
+          fullySpecified: false,
+        },
       },
       {
         test: /\.ts|\.svelte$/,
@@ -415,6 +416,21 @@ module.exports = {
         use: {
           loader: "svelte-loader-hot",
           options: {
+            dev,
+            hotReload: true,
+            hotOptions: {
+              // whether to preserve local state (i.e. any `let` variable) or
+              // only public props (i.e. `export let ...`)
+              noPreserveState: false,
+              // optimistic will try to recover from runtime errors happening
+              // during component init. This goes funky when your components are
+              // not pure enough.
+              optimistic: true,
+
+              // See docs of svelte-loader-hot for all available options:
+              //
+              // https://github.com/rixo/svelte-loader-hot#usage
+            },
             // https://github.com/sveltejs/svelte-loader/issues/139
             emitCss: false,
             hotReload: true,
