@@ -5,10 +5,7 @@ import { EditorContext } from "./editorContext";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { onMount } from "svelte";
 import Item from "./DropdownSelectItem.svelte";
-import {
-  normalizePromptField,
-  PromptField,
-} from "@o-platform/o-process/dist/states/prompt";
+import { normalizePromptField, PromptField } from "@o-platform/o-process/dist/states/prompt";
 import { DropdownSelectorContext } from "./DropdownSelectEditorContext";
 
 /*
@@ -27,9 +24,7 @@ let selectComponent: Select;
 let field: PromptField<any>;
 let filterText: string;
 let showSafeAddressInput: boolean = false;
-let fieldId = context.isSensitive
-  ? Math.random().toString().replace(".", "")
-  : context.field;
+let fieldId = context.isSensitive ? Math.random().toString().replace(".", "") : context.field;
 
 $: {
   _context = context;
@@ -54,6 +49,7 @@ onMount(async () => {
 });
 
 function handleSelect(event) {
+  console.log("OH YES ", event);
   selected = event.detail;
   context.editorDirtyFlags[field.name] = true;
 }
@@ -107,13 +103,9 @@ function toggleInputView() {
             bind:value="{_context.data[context.field]}"
             on:focus
             on:blur
-            on:change="{() =>
-              (context.editorDirtyFlags[context.field] = true)}" />
+            on:change="{() => (context.editorDirtyFlags[context.field] = true)}" />
           <div>
-            <ProcessNavigation
-              on:buttonClick="{submitSafeAddressInput}"
-              context="{context}"
-              type="small" />
+            <ProcessNavigation on:buttonClick="{submitSafeAddressInput}" context="{context}" type="small" />
           </div>
         </div>
       {:else}
@@ -122,8 +114,7 @@ function toggleInputView() {
           autoComplete="off"
           isFocused="{false}"
           selectedValue="{selected}"
-          loadOptions="{(searchString) =>
-            context.params.choices.find(searchString, context)}"
+          loadOptions="{(searchString) => context.params.choices.find(searchString, context)}"
           noOptionsMessage=""
           placeholder="Search..."
           listAutoWidth="{false}"
@@ -136,9 +127,7 @@ function toggleInputView() {
           optionIdentifier="{context.params.keyProperty}"
           getSelectionLabel="{context.params.getLabel}"
           getOptionLabel="{context.params.getLabel}"
-          Item="{context.params.itemTemplate
-            ? context.params.itemTemplate
-            : Item}"
+          Item="{context.params.itemTemplate ? context.params.itemTemplate : Item}"
           on:select="{handleSelect}"
           bind:this="{selectComponent}"
           bind:filterText
@@ -149,16 +138,13 @@ function toggleInputView() {
           class="sticky text-xs text-right cursor-pointer text-primary left-16"
           style="z-index: 999999999999; right: 5.5rem; bottom: 0.2rem;"
           on:click="{toggleInputView}">
-          {showSafeAddressInput
-            ? "Click to search for Circles Profile"
-            : "Click to enter Circles Safe Address"}
+          {showSafeAddressInput ? "Click to search for Circles Profile" : "Click to enter Circles Safe Address"}
         </div>
       {/if}
     </div>
     {#if context.messages[context.field]}
       <label class="text-right label" for="form-error">
-        <span id="form-error" class="label-text-alt text-error"
-          >{context.messages[context.field]}</span>
+        <span id="form-error" class="label-text-alt text-error">{context.messages[context.field]}</span>
       </label>
     {/if}
   </div>

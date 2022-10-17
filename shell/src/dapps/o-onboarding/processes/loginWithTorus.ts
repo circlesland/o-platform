@@ -13,7 +13,7 @@ import HtmlViewer from "../../../../../packages/o-editors/src/HtmlViewer.svelte"
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { show } from "@o-platform/o-process/dist/actions/show";
 import ErrorView from "../../../shared/atoms/Error.svelte";
-import {getOpenLogin, GetOpenLoginResult} from "../../../shared/openLogin";
+import { getOpenLogin, GetOpenLoginResult } from "../../../shared/openLogin";
 import {
   FindInvitationCreatorDocument,
   Profile,
@@ -23,16 +23,16 @@ import {
 } from "../../../shared/api/data/types";
 import { ApiClient } from "../../../shared/apiConnection";
 import { AvataarGenerator } from "../../../shared/avataarGenerator";
-import {setWindowLastError} from "../../../shared/processes/actions/setWindowLastError";
-import {OpenloginUserInfo} from "@toruslabs/openlogin";
-import {Environment} from "../../../shared/environment";
+import { setWindowLastError } from "../../../shared/processes/actions/setWindowLastError";
+import { OpenloginUserInfo } from "@toruslabs/openlogin";
+import { Environment } from "../../../shared/environment";
 
 export type LoginWithTorusContextData = {
   chooseFlow?: {
     key: string;
     label: string;
   };
-  useMockProfileIndex?: number,
+  useMockProfileIndex?: number;
   userInfo?: any;
   privateKey?: string;
   encryptionPin?: string;
@@ -59,19 +59,20 @@ let loginOptions = [
     class: "btn btn-outline",
     icon: "apple",
   },
+  /*
   {
     key: "github",
     label: window.o.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.github.label"),
     target: "#github",
     class: "btn btn-outline",
     icon: "github",
-  } /*
+  } 
           {
             key: "email",
             label: window.o.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.email.label"),
             target: "#email",
             class: "btn-info",
-          }*/,
+          }*/
 ];
 
 const processDefinition = (processId: string) =>
@@ -128,7 +129,9 @@ const processDefinition = (processId: string) =>
               }" /> <b>${context.data.inviterProfile.displayName}${window.o.i18n(
                 "dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.htmlContext"
               )}`,
-            submitButtonText: window.o.i18n("dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.loginButton"),
+            submitButtonText: window.o.i18n(
+              "dapps.o-onboarding.processes.loginWithTorus.showInviteMessage.loginButton"
+            ),
             hideNav: false,
           },
           navigation: {
@@ -177,7 +180,7 @@ const processDefinition = (processId: string) =>
               submitButtonText: "",
             },
           },
-          options: loginOptions = [
+          options: (loginOptions = [
             {
               key: "google",
               label: window.o.i18n("dapps.o-onboarding.processes.loginWithTorus.loginOptions.google.label"),
@@ -205,7 +208,7 @@ const processDefinition = (processId: string) =>
                       target: "#email",
                       class: "btn-info",
                     }*/,
-          ],
+          ]),
         }),
         useMockProfile: {
           id: "useMockProfile",
@@ -226,13 +229,13 @@ const processDefinition = (processId: string) =>
               const openLogin = <GetOpenLoginResult>{
                 async login(params: any): Promise<{ privKey: string }> {
                   return {
-                    privKey: mockProfile.privateKey
+                    privKey: mockProfile.privateKey,
                   };
                 },
                 async getUserInfo(): Promise<OpenloginUserInfo> {
                   delete mockProfile.privateKey;
                   return mockProfile;
-                }
+                },
               };
               const privateKey = await openLogin.login({
                 loginProvider: "google",

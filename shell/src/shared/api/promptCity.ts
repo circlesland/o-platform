@@ -1,10 +1,7 @@
 import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import {
-  normalizePromptField,
-  prompt,
-  PromptField,
-} from "@o-platform/o-process/dist/states/prompt";
+import { normalizePromptField, prompt, PromptField } from "@o-platform/o-process/dist/states/prompt";
+import LocationSearchEditor from "@o-platform/o-editors/src/LocationSearchEditor.svelte";
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
 import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelectEditorContext";
 import DropDownCity from "@o-platform/o-editors/src/dropdownItems/DropDownCity.svelte";
@@ -14,14 +11,11 @@ import {
   CitiesByIdQueryVariables,
   CitiesByNameDocument,
   CitiesByNameQueryVariables,
-  City
+  City,
 } from "./data/types";
-import {ApiClient} from "../apiConnection";
+import { ApiClient } from "../apiConnection";
 
-export function promptCity<
-  TContext extends ProcessContext<any>,
-  TEvent extends PlatformEvent
->(spec: {
+export function promptCity<TContext extends ProcessContext<any>, TEvent extends PlatformEvent>(spec: {
   id?: string;
   field: PromptField<TContext>;
   params: {
@@ -31,16 +25,10 @@ export function promptCity<
   navigation?: {
     // If you want to allow the user to go one step back then specify here where he came from
     previous?: string;
-    canGoBack?: (
-      context: ProcessContext<TContext>,
-      event: { type: string; [x: string]: any }
-    ) => boolean;
+    canGoBack?: (context: ProcessContext<TContext>, event: { type: string; [x: string]: any }) => boolean;
     next?: string;
     skip?: string;
-    canSkip?: (
-      context: ProcessContext<TContext>,
-      event: { type: string; [x: string]: any }
-    ) => boolean;
+    canSkip?: (context: ProcessContext<TContext>, event: { type: string; [x: string]: any }) => boolean;
   };
 }) {
   const field = normalizePromptField(spec.field);
@@ -59,28 +47,28 @@ export function promptCity<
       keyProperty: "geonameid",
       choices: {
         byKey: async (key: number) => {
-          const result = await ApiClient.query<City[], CitiesByIdQueryVariables>(
-            CitiesByIdDocument, {
-              ids: [key]
-            }
-          );
-          return result.length > 0
-            ? result[0]
-            : undefined;
+          const result = await ApiClient.query<City[], CitiesByIdQueryVariables>(CitiesByIdDocument, {
+            ids: [key],
+          });
+          return result.length > 0 ? result[0] : undefined;
         },
         find: async (filter: string) => {
-          const n = <any>navigator;
-          const lang = n.language || n.userLanguage;
+          const url =
+            "https://autocomplete.search.hereapi.com/v1/autocomplete?q=" +
+            encodeURIComponent(filter) +
+            "&resultType='city'&apiKey=fhiIkoASi1B-z8R7ytKBnfJltOpaUlYBV1kydXyK1sE";
 
-          const result = await ApiClient.query<City[], CitiesByNameQueryVariables>(
-            CitiesByNameDocument, {
-              name: (filter ?? "") + "%",
-              languageCode: lang.substr(0, 2),
-            }
-          );
-          return result.length
-            ? result.reverse()
-            : [];
+          const response = await fetch(url);
+          const json = await response.json();
+
+          // Unfortunately we have to monger this data a bit in order to work for our Dropdown Component
+          // As this Data structure differs from all other ones, which we control ourselves.
+          const arr = json.items;
+          arr.forEach((obj) => {
+            obj.name = obj.title;
+          });
+
+          return json.items.length ? json.items : [];
         },
       },
     },
