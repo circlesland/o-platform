@@ -163,7 +163,8 @@ export const passport: DappManifest<DappState> = {
           key: "logout",
           type: "profile",
           title: window.o.i18n("dapps.common.quickactions.logout"),
-          icon: "lock-closed",
+          //icon: "lock-closed",
+          icon: "icons/logout.svg",
           action: () => {
             window.o.runProcess(logout, {});
           },

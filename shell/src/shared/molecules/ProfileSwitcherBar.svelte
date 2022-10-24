@@ -47,7 +47,7 @@ function handleClick(action) {
       {:else}
         <div class="text-center align-top list-none cursor-pointer inline-table" on:click="{() => handleClick(action)}">
           <span>
-            {#if action.icon.startsWith("http") || action.icon.startsWith("data:")}
+            {#if action.icon.startsWith("http") || action.icon.indexOf("/") > -1 || action.icon.startsWith("data:")}
               <span class="inline table-cell w-12 h-12 align-middle rounded-full bg-light-light">
                 <div class="self-center text-center rounded-full justify-self-center" style="padding: 1px;">
                   <div class="w-12 h-12 m-auto bg-white rounded-full">
