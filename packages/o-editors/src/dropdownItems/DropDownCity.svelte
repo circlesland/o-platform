@@ -1,12 +1,11 @@
-<script>
+<script lang="ts">
 export let item = undefined;
-// export let isActive = false;
 export let isFirst = false;
 export let isHover = false;
+export let getOptionLabel:(item:any) => string;
 
 let itemClasses = "";
 
-console.log("ITS MEEE");
 $: {
   const classes = [];
 
@@ -23,8 +22,6 @@ $: {
     classes.push("hover");
   }
   itemClasses = classes.join(" ");
-
-  console.log("ITEM: ", item);
 }
 </script>
 
@@ -32,11 +29,8 @@ $: {
   <div class="flex items-center w-full p-0 space-x-2 sm:space-x-6 item-body ">
     <div class="relative flex-grow p-3 text-left truncate">
       <div class="max-w-full -mt-1 leading-8 cursor-pointer truncateThis">
-        {@html item.title}
+        {@html getOptionLabel(item)}
       </div>
-      <!-- <div class="text-xs text-left text-dark-lightest">
-        {item.country}
-      </div> -->
     </div>
   </div>
 </section>

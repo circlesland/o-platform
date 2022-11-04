@@ -40,6 +40,7 @@ let __ALLOW_CREATE_ORGANISATION__ = !process.env.ALLOW_CREATE_ORGANISATION ? "fa
 let __USE_MOCKS__ = !process.env.USE_MOCKS ? "false" : "true";
 let __FIXED_GAS_PRICE__ = !process.env.FIXED_GAS_PRICE ? "0" : process.env.FIXED_GAS_PRICE;
 let __SHOW_LANGUAGE_SWITCHER__ = "true";
+let __HERE_API_KEY__ = "fhiIkoASi1B-z8R7ytKBnfJltOpaUlYBV1kydXyK1sE";
 
 if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __AUTH_ENDPOINT__ = "https://auth.circles.name";
@@ -166,6 +167,15 @@ module.exports = {
         options: {
           search: "__HUMANODE_SCOPE__",
           replace: __HUMANODE_SCOPE__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__HERE_API_KEY__",
+          replace: __HERE_API_KEY__,
           flags: "g",
         },
       },

@@ -1,19 +1,25 @@
-import { ProcessContext } from "@o-platform/o-process/dist/interfaces/processContext";
-import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
-import { normalizePromptField, prompt, PromptField } from "@o-platform/o-process/dist/states/prompt";
-import LocationSearchEditor from "@o-platform/o-editors/src/LocationSearchEditor.svelte";
+import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
+import {PlatformEvent} from "@o-platform/o-events/dist/platformEvent";
+import {normalizePromptField, prompt, PromptField} from "@o-platform/o-process/dist/states/prompt";
 import DropdownSelectEditor from "@o-platform/o-editors/src/DropdownSelectEditor.svelte";
-import { DropdownSelectorParams } from "@o-platform/o-editors/src/DropdownSelectEditorContext";
+import {DropdownSelectorParams} from "@o-platform/o-editors/src/DropdownSelectEditorContext";
 import DropDownCity from "@o-platform/o-editors/src/dropdownItems/DropDownCity.svelte";
-import { EditorViewContext } from "@o-platform/o-editors/src/shared/editorViewContext";
-import {
-  CitiesByIdDocument,
-  CitiesByIdQueryVariables,
-  CitiesByNameDocument,
-  CitiesByNameQueryVariables,
-  City,
-} from "./data/types";
-import { ApiClient } from "../apiConnection";
+import {EditorViewContext} from "@o-platform/o-editors/src/shared/editorViewContext";
+import {Environment} from "../environment";
+
+type City = {
+  id: string;
+  name: string;
+  title: string;
+  country: string;
+  address: Address;
+}
+
+type Address = {
+  label: string;
+  countryCode: string;
+  countryName: string;
+}
 
 export function promptCity<TContext extends ProcessContext<any>, TEvent extends PlatformEvent>(spec: {
   id?: string;
@@ -37,37 +43,26 @@ export function promptCity<TContext extends ProcessContext<any>, TEvent extends 
     id: spec.id ?? field.name,
     field: spec.field,
     component: DropdownSelectEditor,
-    params: <DropdownSelectorParams<TContext, City, number>>{
+    params: <DropdownSelectorParams<TContext, City, string>>{
       view: spec.params.view,
       placeholder: spec.params.view.placeholder,
       submitButtonText: spec.params.view.submitButtonText,
       itemTemplate: DropDownCity,
-      getKey: (o) => o.geonameid,
-      getLabel: (o) => `${o.name} (${o.country})`,
-      keyProperty: "geonameid",
+      getKey: (o) => o.id,
+      getLabel: (o) => `${o.title}`,
+      keyProperty: "id",
       choices: {
-        byKey: async (key: number) => {
-          const result = await ApiClient.query<City[], CitiesByIdQueryVariables>(CitiesByIdDocument, {
-            ids: [key],
-          });
-          return result.length > 0 ? result[0] : undefined;
+        byKey: async (key: string) => {
+          const url = `https://lookup.search.hereapi.com/v1/lookup?id=${encodeURIComponent(key)}&apiKey=${Environment.hereApiKey}`
+          const response = await fetch(url);
+          return await response.json();
         },
         find: async (filter: string) => {
           const url =
-            "https://autocomplete.search.hereapi.com/v1/autocomplete?q=" +
-            encodeURIComponent(filter) +
-            "&resultType='city'&apiKey=fhiIkoASi1B-z8R7ytKBnfJltOpaUlYBV1kydXyK1sE";
+            `https://autocomplete.search.hereapi.com/v1/autocomplete?q=${encodeURIComponent(filter)}&resultType='city'&apiKey=${Environment.hereApiKey}`;
 
           const response = await fetch(url);
           const json = await response.json();
-
-          // Unfortunately we have to monger this data a bit in order to work for our Dropdown Component
-          // As this Data structure differs from all other ones, which we control ourselves.
-          const arr = json.items;
-          arr.forEach((obj) => {
-            obj.name = obj.title;
-          });
-
           return json.items.length ? json.items : [];
         },
       },
