@@ -90,6 +90,23 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __FIXED_GAS_PRICE__ = "1";
   __HUMANODE_CLIENT_ID__ = "circles-ubi-staging";
   prod = false;
+} else if (process.env.DEPLOY_ENVIRONMENT === "ci") {
+  __APP_ID__ = process.env.APP_ID;
+  __EXTERNAL_URL__ = process.env.EXTERNAL_URL;
+
+  __API_ENDPOINT__ = process.env.API_ENDPOINT;
+  __RPC_ENDPOINT__ = process.env.RPC_ENDPOINT;
+  __AUTH_ENDPOINT__ = process.env.AUTH_ENDPOINT;
+
+  __CIRCLES_HUB_ADDRESS__ = process.env.CIRCLES_HUB_ADDRESS;
+  __CIRCLES_HUB_BLOCK__ = process.env.CIRCLES_HUB_BLOCK;
+  __SAFE_PROXY_FACTORY_ADDRESS__ = process.env.SAFE_PROXY_FACTORY_ADDRESS;
+  __SAFE_ADDRESS__ = process.env.SAFE_ADDRESS;
+
+  __FILES_APP_ID__ = process.env.FILES_APP_ID;
+  __HUMANODE_CLIENT_ID__ = process.env.HUMANODE_CLIENT_ID;
+  __SHOW_LANGUAGE_SWITCHER__ = process.env.SHOW_LANGUAGE_SWITCHER;
+  prod = false;
 }
 
 __HUMANODE_REDIRECT_URL__ = __EXTERNAL_URL__;
