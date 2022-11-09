@@ -1,0 +1,35 @@
+FROM node:16 as build
+
+ARG DEPLOY_ENVIRONMENT=ci
+ARG SERVER_COMMIT
+
+ARG APP_ID=${SERVER_COMMIT}.dev.circles.land
+ARG EXTERNAL_URL=https://${APP_ID}
+ARG API_ENDPOINT=${SERVER_COMMIT}.dev.api.circles.land
+
+ARG RPC_ENDPOINT=https://rpc.circles.land
+ARG AUTH_ENDPOINT=https://dev.auth.circles.name
+
+ARG CIRCLES_HUB_ADDRESS=0x29b9a7fBb8995b2423a71cC17cf9810798F6C543
+ARG CIRCLES_HUB_BLOCK=12529458
+ARG SAFE_PROXY_FACTORY_ADDRESS=0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2
+ARG SAFE_ADDRESS=0x3E5c63644E683549055b9Be8653de26E0B4CD36E
+
+ARG FILES_APP_ID=dev.files.circles.land
+ARG HUMANODE_CLIENT_ID=circles-ubi-staging
+ARG SHOW_LANGUAGE_SWITCHER=false
+
+RUN echo "${DEPLOY_ENVIRONMENT}" ; \
+    echo "${SERVER_COMMIT}"      ; \
+    echo "${APP_ID}"             ; \
+    echo "${EXTERNAL_URL}"       ; \
+    echo "${API_ENDPOINT}"
+
+COPY . /o-platform
+WORKDIR /o-platform
+RUN ./build.sh ${DEPLOY_ENVIRONMENT} ${API_ENDPOINT}
+
+FROM nginx:stable-alpine as server
+COPY --from=build /o-platform/shell/public /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
