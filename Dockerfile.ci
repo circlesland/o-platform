@@ -5,7 +5,7 @@ ARG SERVER_COMMIT
 
 ARG APP_ID=${SERVER_COMMIT}.dev.circles.land
 ARG EXTERNAL_URL=https://${APP_ID}
-ARG API_ENDPOINT=${SERVER_COMMIT}.dev.api.circles.land
+ARG API_ENDPOINT=https://${SERVER_COMMIT}.dev.api.circles.land
 
 ARG RPC_ENDPOINT=https://rpc.circles.land
 ARG AUTH_ENDPOINT=https://dev.auth.circles.name
