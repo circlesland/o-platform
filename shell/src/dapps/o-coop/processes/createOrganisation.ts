@@ -168,7 +168,7 @@ const processDefinition = (processId: string) =>
       }),
       country: promptCity<CreateOrganisationContext, any>({
         id: "country",
-        field: "cityGeonameid",
+        field: "id",
         params: {
           view: {
             title: window.o.i18n("dapps.o-coop.processes.createOrganisations.createOrganisationContext.country.title"),

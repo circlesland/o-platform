@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile.ci
+      args:
+        SERVER_COMMIT: ${SERVER_COMMIT}

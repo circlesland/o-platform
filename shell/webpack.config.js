@@ -40,6 +40,7 @@ let __ALLOW_CREATE_ORGANISATION__ = !process.env.ALLOW_CREATE_ORGANISATION ? "fa
 let __USE_MOCKS__ = !process.env.USE_MOCKS ? "false" : "true";
 let __FIXED_GAS_PRICE__ = !process.env.FIXED_GAS_PRICE ? "0" : process.env.FIXED_GAS_PRICE;
 let __SHOW_LANGUAGE_SWITCHER__ = "true";
+let __HERE_API_KEY__ = "fhiIkoASi1B-z8R7ytKBnfJltOpaUlYBV1kydXyK1sE";
 
 if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __AUTH_ENDPOINT__ = "https://auth.circles.name";
@@ -88,6 +89,23 @@ if (process.env.DEPLOY_ENVIRONMENT === "main") {
   __ALLOW_CREATE_ORGANISATION__ = "true";
   __FIXED_GAS_PRICE__ = "1";
   __HUMANODE_CLIENT_ID__ = "circles-ubi-staging";
+  prod = false;
+} else if (process.env.DEPLOY_ENVIRONMENT === "ci") {
+  __APP_ID__ = process.env.APP_ID;
+  __EXTERNAL_URL__ = process.env.EXTERNAL_URL;
+
+  __API_ENDPOINT__ = process.env.API_ENDPOINT;
+  __RPC_ENDPOINT__ = process.env.RPC_ENDPOINT;
+  __AUTH_ENDPOINT__ = process.env.AUTH_ENDPOINT;
+
+  __CIRCLES_HUB_ADDRESS__ = process.env.CIRCLES_HUB_ADDRESS;
+  __CIRCLES_HUB_BLOCK__ = process.env.CIRCLES_HUB_BLOCK;
+  __SAFE_PROXY_FACTORY_ADDRESS__ = process.env.SAFE_PROXY_FACTORY_ADDRESS;
+  __SAFE_ADDRESS__ = process.env.SAFE_ADDRESS;
+
+  __FILES_APP_ID__ = process.env.FILES_APP_ID;
+  __HUMANODE_CLIENT_ID__ = process.env.HUMANODE_CLIENT_ID;
+  __SHOW_LANGUAGE_SWITCHER__ = process.env.SHOW_LANGUAGE_SWITCHER;
   prod = false;
 }
 
@@ -166,6 +184,15 @@ module.exports = {
         options: {
           search: "__HUMANODE_SCOPE__",
           replace: __HUMANODE_SCOPE__,
+          flags: "g",
+        },
+      },
+      {
+        test: /\.ts|\.js|\.svelte$/,
+        loader: "string-replace-loader",
+        options: {
+          search: "__HERE_API_KEY__",
+          replace: __HERE_API_KEY__,
           flags: "g",
         },
       },

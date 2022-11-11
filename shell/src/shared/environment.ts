@@ -102,6 +102,10 @@ export class Environment {
     return "__OPENLOGIN_CLIENT_ID__";
   }
 
+  public static get hereApiKey(): string {
+    return "__HERE_API_KEY__";
+  }
+
   public static getShopMetadata(shopId: number): string {
     return localStorage.getItem("shopMetadata." + shopId);
   }
