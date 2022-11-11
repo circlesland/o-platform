@@ -1,0 +1,78 @@
+name: Build application container
+
+on:
+  workflow_dispatch:
+    inputs:
+      server_ref:
+        description: "A commit sha from CirclesUBI/api-server to whose deployment this frontend instance is linked."
+        required: true
+        type: string
+      client_ref:
+        description: "A commit sha from this repository."
+        required: true
+        type: string
+
+env:
+  REGISTRY: registry.digitalocean.com
+  IMAGE_OWNER: circles-land
+  IMAGE_REPOSITORY: o-platform
+
+jobs:
+  build-docker-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      -
+        name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.client_ref }}
+
+      - id: readPackageJson
+        run: |
+          content=`cat ./package.json`
+          # the following lines are only required for multi line json
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          # end of optional handling for multi line json
+          echo "::set-output name=packageJson::$content"
+
+      -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ env.REGISTRY }}/${{ env. IMAGE_OWNER }}/${{ env.IMAGE_REPOSITORY }}
+          tags: |
+            latest-${{ inputs.server_ref }}
+            ${{ sha }}-${{ inputs.server_ref }}
+            ${{ branch }}-${{ inputs.server_ref }}
+            ${{ base_ref }}-${{ inputs.server_ref }}
+            ${{ fromJson(steps.readPackageJson.outputs.packageJson).version }}${{ branch }}-${{ inputs.server_ref }}
+            ${{ fromJson(steps.readPackageJson.outputs.packageJson).version }}${{ base_ref }}-${{ inputs.server_ref }}
+
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      -
+        name: Login to Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DIGITALOCEAN_PASSWORD }}
+          password: ${{ secrets.DIGITALOCEAN_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          build-args: |
+            SERVER_REF=${{ inputs.server_ref }}
+          tags: ${{ steps.meta.outputs.tags }}
+          file: {context}/Dockerfile.ci

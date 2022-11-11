@@ -1,11 +1,11 @@
 FROM node:16 as build
 
 ARG DEPLOY_ENVIRONMENT=ci
-ARG SERVER_COMMIT
+ARG SERVER_REF
 
-ARG APP_ID=${SERVER_COMMIT}.dev.circles.land
+ARG APP_ID=${SERVER_REF}.dev.circles.land
 ARG EXTERNAL_URL=https://${APP_ID}
-ARG API_ENDPOINT=https://${SERVER_COMMIT}.dev.api.circles.land
+ARG API_ENDPOINT=https://${SERVER_REF}.dev.api.circles.land
 
 ARG RPC_ENDPOINT=https://rpc.circles.land
 ARG AUTH_ENDPOINT=https://dev.auth.circles.name
@@ -20,7 +20,7 @@ ARG HUMANODE_CLIENT_ID=circles-ubi-staging
 ARG SHOW_LANGUAGE_SWITCHER=false
 
 RUN echo "${DEPLOY_ENVIRONMENT}" ; \
-    echo "${SERVER_COMMIT}"      ; \
+    echo "${SERVER_REF}"      ; \
     echo "${APP_ID}"             ; \
     echo "${EXTERNAL_URL}"       ; \
     echo "${API_ENDPOINT}"
