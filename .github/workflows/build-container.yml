@@ -75,4 +75,4 @@ jobs:
           build-args: |
             SERVER_REF=${{ inputs.server_ref }}
           tags: ${{ steps.meta.outputs.tags }}
-          file: {context}/Dockerfile.ci
+          file: "${{ context }}/Dockerfile.ci"
