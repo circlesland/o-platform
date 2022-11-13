@@ -179,6 +179,7 @@ const processDefinition = (processId: string) =>
     },
   });
 
+
 export const upsertShippingAddress: ProcessDefinition<void, UpsertShippingAddressContext> = {
   name: "upsertShippingAddress",
   stateMachine: <any>processDefinition,

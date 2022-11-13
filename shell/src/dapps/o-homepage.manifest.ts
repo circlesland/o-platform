@@ -3,7 +3,9 @@ import Home from "./o-homepage/pages/Home.svelte";
 import { Page } from "@o-platform/o-interfaces/dist/routables/page";
 import { DappManifest } from "@o-platform/o-interfaces/dist/dappManifest";
 import { Link } from "@o-platform/o-interfaces/dist/routables/link";
-import {Environment} from "../shared/environment";
+import { Environment } from "../shared/environment";
+import Terms from "./o-homepage/pages/Terms.svelte";
+import Privacy from "./o-homepage/pages/Privacy.svelte";
 
 const externalChat: Link<any, DappState> = {
   type: "link",
@@ -47,6 +49,26 @@ const invite: Page<{ inviteCode: string }, DappState> = {
   type: "page",
 };
 
+const terms: Page<any, DappState> = {
+  type: "page",
+  isSystem: true,
+  anonymous: true,
+  title: "common.termsOfService",
+  routeParts: ["=terms"],
+  icon: "forum",
+  component: Terms,
+};
+
+const privacy: Page<any, DappState> = {
+  type: "page",
+  isSystem: true,
+  anonymous: true,
+  title: "common.privacyPolicy",
+  routeParts: ["=privacy"],
+  icon: "forum",
+  component: Privacy,
+};
+
 export interface DappState {
   // put state here
 }
@@ -71,11 +93,5 @@ export const homepage: DappManifest<DappState> = {
       cancelDependencyLoading: false,
     };
   },
-  routables: [
-    index,
-    invite,
-    login,
-    externalChat,
-    externalForum,
-  ],
+  routables: [index, invite, login, terms, privacy, externalChat, externalForum],
 };

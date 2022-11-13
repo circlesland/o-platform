@@ -1,4 +1,6 @@
 <script context="module" lang="ts">
+// import { Animate } from "svelte-swipeable";
+// import { swipe } from "svelte-gestures";
 let scrollContent;
 export function scrollToBottom() {
   scrollToPosition(1000000000);
@@ -62,6 +64,19 @@ const sub = window.o.events.subscribe((event) => {
 const initBar = (bar) => {
   scrollContent = bar;
 };
+
+let options = {
+  // threshY: 60, // threshold in y before event is triggered (px)
+};
+function handleSwipe(event) {
+  console.log(event.detail.initial.y); //0
+  console.log(event.detail.y); //200
+  console.log(event.detail.direction.y); //up
+
+  // onClose();
+}
+
+const onClose = () => window.o.publishEvent({ type: "shell.closeModal" });
 </script>
 
 <aside
@@ -72,9 +87,7 @@ const initBar = (bar) => {
   role="dialog"
   class="z-40 pt-2 text-base overlay"
   class:blur_aside="{blur}">
-  <div
-    id="modalAsideContentContainer"
-    class="w-full p-2 pb-0 mt-1 modalAsideContentContainer">
+  <div id="modalAsideContentContainer" class="w-full p-2 pb-0 mt-1 modalAsideContentContainer">
     <div
       class="w-full mt-2 bg-white rounded-xl modalAsideContent md:w-2/3 xl:w-1/2"
       use:clickOutside

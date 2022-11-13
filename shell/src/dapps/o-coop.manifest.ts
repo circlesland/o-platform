@@ -9,11 +9,11 @@ import { addMember } from "./o-coop/processes/addMember";
 import { JumplistItem } from "@o-platform/o-interfaces/dist/routables/jumplist";
 import { PlatformEvent } from "@o-platform/o-events/dist/platformEvent";
 import { loadProfile } from "../shared/functions/loadProfile";
-import {CapabilityType, InitDocument, InitQueryVariables, Profile, SessionInfo} from "../shared/api/data/types";
+import { CapabilityType, InitDocument, InitQueryVariables, Profile, SessionInfo } from "../shared/api/data/types";
 import { me } from "../shared/stores/me";
 import { getSessionInfo } from "./o-passport/processes/identify/services/getSessionInfo";
 import { addOwner } from "./o-coop/processes/addOwner";
-import {ApiClient} from "../shared/apiConnection";
+import { ApiClient } from "../shared/apiConnection";
 
 const index: Page<any, ContactsDappState> = {
   routeParts: ["=organisations"],
@@ -69,7 +69,7 @@ export const coop: DappManifest<DappState> = {
           type: "profile",
           icon: "plus",
           category: "Coops",
-          title: "Create organization",
+          title: window.o.i18n("dapps.common.quickactions.createOrganization"),
           action: async () => {
             window.o.runProcess(
               createOrganisation,
@@ -97,7 +97,7 @@ export const coop: DappManifest<DappState> = {
             key: "addMember",
             type: "action",
             icon: "plus",
-            title: "Add member",
+            title: window.o.i18n("dapps.common.quickactions.addMember"),
             action: async () => {
               window.o.runProcess(
                 addMember,
@@ -114,7 +114,7 @@ export const coop: DappManifest<DappState> = {
             key: "addOwner",
             type: "action",
             icon: "plus",
-            title: "Add owner",
+            title: window.o.i18n("dapps.common.quickactions.addOwner"),
             action: async () => {
               window.o.runProcess(
                 addOwner,

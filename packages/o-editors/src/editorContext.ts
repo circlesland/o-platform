@@ -3,7 +3,7 @@ import {PlatformEvent} from "../../o-events/dist/platformEvent";
 import {PromptField} from "@o-platform/o-process/dist/states/prompt";
 import {ProcessContext} from "@o-platform/o-process/dist/interfaces/processContext";
 
-export interface EditorContext extends ProcessContext<any> {
+export interface  EditorContext extends ProcessContext<any> {
   field?: PromptField<any>;
   editorDirtyFlags: { [x: string]: any };
   params: { [x: string]: any };

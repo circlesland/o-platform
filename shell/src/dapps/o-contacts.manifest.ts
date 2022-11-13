@@ -15,7 +15,7 @@ import { push } from "svelte-spa-router";
 import { setTrust } from "./o-banking/processes/setTrust";
 import { contacts as contactStore } from "../shared/stores/contacts";
 import { Environment } from "../shared/environment";
-
+import ListComponent from "../shared/molecules/NextNav/Components/List.svelte";
 export interface DappState {
   // put state here
 }
@@ -26,6 +26,16 @@ const index: Page<any, DappState> = {
   title: "common.contacts",
   icon: "friends",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "users",
+        backgroundColorClass: "contacts",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 
 export class ContactsDappState {
@@ -77,7 +87,7 @@ async function findContactActions(circlesAddress: string) {
     // I can send circles to people who trust me
     availableActions.push({
       key: "sendCircles",
-      title: "Send money",
+      title: window.o.i18n("dapps.common.quickactions.sendMoney"),
       icon: "",
       action: () => {},
     });
@@ -120,7 +130,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
             category: "Chat",
             key: "chat",
             icon: "chat",
-            title: "Chat",
+            title: window.o.i18n("dapps.common.quickactions.chat"),
             action: async () => {
               push("#/contacts/chat/" + recipientProfile.contactAddress);
             },
@@ -138,7 +148,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                     key: "transfer",
                     icon: "cash",
                     displayHint: "encouraged",
-                    title: "Send Money",
+                    title: window.o.i18n("dapps.common.quickactions.sendMoney"),
                     action: async () => {
                       window.o.runProcess(transfer, {
                         safeAddress: $me.circlesAddress,
@@ -155,7 +165,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                     category: "Contacts",
                     key: "setTrust",
                     icon: "minus-circle",
-                    title: "Untrust",
+                    title: window.o.i18n("dapps.common.quickactions.untrust"),
                     displayHint: "discouraged",
                     colorClass: "text-alert",
                     action: async () => {
@@ -174,7 +184,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
                     category: "Contacts",
                     key: "setTrust",
                     icon: "shield-check",
-                    title: "Trust",
+                    title: window.o.i18n("dapps.common.quickactions.trust"),
                     displayHint: "encouraged",
                     action: async () => {
                       window.o.runProcess(setTrust, {
@@ -196,7 +206,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
           category: "Contacts",
           key: "setTrust",
           icon: "shield-check",
-          title: "Trust",
+          title: window.o.i18n("dapps.common.quickactions.trust"),
           displayHint: "encouraged",
           action: async () => {
             window.o.runProcess(setTrust, {
@@ -212,9 +222,9 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
       actions = actions.concat({
         category: "Contacts",
         key: "setTrust",
-        icon: "shield-check",
+        icon: "trust",
         displayHint: "encouraged",
-        title: "Trust new friend",
+        title: window.o.i18n("dapps.common.quickactions.trustNewFriend"),
         action: async () => {
           window.o.runProcess(setTrust, {
             trustLimit: 100,
@@ -228,7 +238,7 @@ const profileJumplist: Jumplist<any, ContactsDappState> = {
         category: "Contacts",
         key: "setTrust",
         icon: "qrcode",
-        title: "Scan to trust",
+        title: window.o.i18n("dapps.common.quickactions.scanToTrust"),
         action: async () => {
           push("#/contacts/scanToTrust/");
         },
@@ -280,6 +290,16 @@ export const chat: Page<any, ContactsDappState> = {
   title: "Chat",
   icon: "chat",
   type: "page",
+  navigation: {
+    leftSlot: {
+      component: ListComponent,
+      props: {
+        icon: "users",
+        backgroundColorClass: "contacts",
+        // action: () => processNavigation.back(),
+      },
+    },
+  },
 };
 
 export const contacts: DappManifest<DappState> = {

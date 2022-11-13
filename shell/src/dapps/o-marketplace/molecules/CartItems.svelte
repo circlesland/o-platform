@@ -320,7 +320,7 @@ function handleClickOutside(event) {
     <Label key="dapps.o-marketplace.pages.shoppingCart.yourCartIsEmpty" />
   </p>
   <div class="w-full mt-6">
-    <button class="h-auto btn-block btn btn-light" on:click="{(event) => handleClickOutside(event)}"
+    <button class="h-auto btn-block btn btn-primary" on:click="{(event) => handleClickOutside(event)}"
       ><Label key="dapps.o-marketplace.pages.shoppingCart.continueShopping" /></button>
   </div>
 {/if}

@@ -40,7 +40,5 @@ export const welcome: DappManifest<DappState> = {
   isEnabled: true,
   hideFooter: false,
   isFullWidth: true,
-  routables: [
-    takeASeat, checkIn
-  ],
+  routables: [takeASeat, checkIn],
 };

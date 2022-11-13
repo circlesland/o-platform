@@ -3,10 +3,7 @@ import { EditorContext } from "./editorContext";
 import ProcessNavigation from "./ProcessNavigation.svelte";
 import { Continue } from "@o-platform/o-process/dist/events/continue";
 import { onMount } from "svelte";
-import UAParser from "ua-parser-js";
 import CopyToClipboard from "../../../shell/src/shared/atoms/CopyClipboard.svelte";
-
-const uaParser = new UAParser();
 
 export let context: EditorContext;
 
@@ -48,7 +45,6 @@ const validateFormatting = () => {
 onMount(() => {
   let textarea = document.querySelector("textarea");
   textarea.addEventListener("input", autoExpand);
-  let detectedDevice = uaParser.getDevice();
   if (length > 17) {
     textarea.dispatchEvent(new Event("input"));
   }

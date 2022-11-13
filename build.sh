@@ -11,7 +11,9 @@ sed -i.bak "$search_replace" ./shell/public/index.html
 rm -f ./shell/public/index.html.bak
 
 echo "Installing build dependencies .."
-npm i
+# npm i WE HAVE TO INSTALL YARN ON THE SERVER THE RIGHT WAY - otherwise it screws everything up ;)
+# use sudo npm install -g yarn instead.
+# then yarn set version latest
 npx --no-install yarn || exit
 
 echo "Building 'o-utils' .."

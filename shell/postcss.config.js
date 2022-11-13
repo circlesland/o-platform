@@ -1,13 +1,29 @@
-const tailwindcss = require("tailwindcss");
-const autoprefixer = require("autoprefixer");
+// const config = {
+//   plugins: [
+//     require("postcss-import"),
+//     require("tailwindcss/nesting")(require("postcss-nesting")),
+//     require("autoprefixer"),
+//     require("tailwindcss"),
+//   ],
+// };
 
-const config = {
+// module.exports = config;
+
+let postcss = require("postcss");
+
+module.exports = {
   plugins: [
-    //Some plugins, like tailwindcss/nesting, need to run before Tailwind,
-    tailwindcss(),
-    //But others, like autoprefixer, need to run after,
-    autoprefixer(),
+    {
+      postcssPlugin: "grouped",
+      Once(root, { result }) {
+        return postcss([require("postcss-import"), require("postcss-mixins"), require("postcss-simple-vars")]).process(
+          root,
+          result.opts
+        );
+      },
+    },
+    require("tailwindcss"),
+    require("postcss-nested"),
+    require("autoprefixer"),
   ],
 };
-
-module.exports = config;
