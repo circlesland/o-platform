@@ -128,7 +128,7 @@ module.exports = {
     bundle: ["./src/main.ts"],
   },
   node: {
-    fs: "empty",
+
   },
   resolve: {
     alias: {
